@@ -1,0 +1,23 @@
+﻿@inherits LayoutComponentBase
+
+<header class="navbar navbar-dark bg-secondary px-3 shadow-sm">
+    <div class="d-flex align-items-center w-100">
+        <!-- Klik na naslov vodi na početnu -->
+        <a class="navbar-brand fw-bold text-white me-4" href="/">DodjelaStanovaZG</a>
+
+        <!-- Navigacija (pomaknuta bliže naslovu) -->
+        <NavMenu />
+    </div>
+</header>
+
+<div class="container mt-3">
+    <article class="content">
+        @Body
+    </article>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
