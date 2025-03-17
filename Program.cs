@@ -3,6 +3,7 @@ using DodjelaStanovaZG.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Registracija DbContext-a
@@ -46,6 +47,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRouting();
+//app.MapFallbackToPage("/_Host"); 
 
 app.UseAntiforgery();
 

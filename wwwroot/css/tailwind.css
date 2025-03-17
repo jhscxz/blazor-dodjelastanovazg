@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+body {
+    @apply bg-gray-100;
+}
 
 @layer utilities {
     .bg-blue-500 {
