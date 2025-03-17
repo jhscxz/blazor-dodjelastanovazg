@@ -1,0 +1,11 @@
+@tailwind utilities;
+
+@layer utilities {
+    .bg-blue-500 {
+        background-color: #3b82f6;
+    }
+
+    .text-black {
+        color: #000;
+    }
+}
