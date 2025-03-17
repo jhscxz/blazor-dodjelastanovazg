@@ -2,29 +2,91 @@
 
 <link href="css/output.css" rel="stylesheet">
 
-<header class="navbar navbar-dark bg-secondary px-3 shadow-sm">
-    <div class="d-flex align-items-center w-100">
-        <!-- Klik na naslov vodi na početnu -->
-        <a class="navbar-brand fw-bold text-white me-4" href="/">DodjelaStanovaZG</a>
+<!-- Top Nav -->
+<div class="flex flex-col min-h-screen">
+    <header class="bg-[#163d73] text-white">
+        <div class="max-w-[105rem] mx-auto px-4 py-md-3 flex items-center">
+            <!-- Lijevi blok (Logo + Naziv) -->
+            <div class="flex items-center space-x-2 mr-auto">
+                <img src="images/logo.png" alt="Zagreb Grb" class="h-14 w-auto"/>
+                <div class="leading-tight">
+                    <div class="font-bold text-xs">
+                        GRAD ZAGREB - GRADSKI URED ZA UPRAVLJANJE IMOVINOM I STANOVANJE
+                    </div>
+                    <div class="text-xs">
+                        DODJELA STANOVA
+                    </div>
+                </div>
+            </div>
 
-        <!-- Navigacija (pomaknuta bliže naslovu) -->
-        <NavMenu />
+            <!-- Srednji blok: Zaobljeni "pilula" nav linkovi -->
+            <nav class="bg-[#1e497f] rounded px-3 py-1 flex items-center">
+                <NavLink href="/"
+                         style="text-decoration: none !important;"
+                         class="btn-custom">
+                    POČETNA
+                </NavLink>
+                <NavLink href="/socijalni-natjecaj"
+                         style="text-decoration: none !important;"
+                         class="btn-custom">
+                    SOCIJALNI NATJEČAJ
+                </NavLink>
+                <NavLink href="/pristivi-natjecaj"
+                         style="text-decoration: none !important;"
+                         class="btn-custom">
+                    PRIUŠTIVI NATJEČAJ
+                </NavLink>
+                <NavLink href="/izracun-najamnine"
+                         style="text-decoration: none !important;"
+                         class="btn-custom">
+                    IZRAČUN NAJAMNINE
+                </NavLink>
+            </nav>
+
+
+            <!-- Desni blok: korisnički info -->
+            <div class="ml-auto">
+                <div class="bg-[#1e497f] rounded px-3 py-1 flex items-center">
+            <span class="px-2 py-2 rounded text-xs hover:bg-[#0B2C4D] transition-colors duration-200">
+                JHUSIC
+            </span>
+                    <span
+                        class="px-2 py-2 rounded text-xs font-bold text-red-500 hover:bg-red-600 hover:text-white transition-colors duration-200">
+                SUPERADMIN
+            </span>
+                    <NavLink href="/admin"
+                             style="text-decoration: none !important;"
+                             class="px-3 py-2 rounded text-xs font-bold text-white hover:bg-[#163d73] transition-colors duration-200">
+                        Admin Panel
+                    </NavLink>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="flex-grow container mx-auto p-4">
+        <article class="content">
+            @Body
+        </article>
     </div>
-</header>
 
-<div class="container mt-3">
-    <article class="content">
-        @Body
-    </article>
-</div>
+    <div id="blazor-error-ui" data-nosnippet>
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
 
-<div class="bg-blue-500 text-black p-4">
-    Tailwind CSS radi! 🚀
-</div>
-
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+    <footer
+        class="mt-4 bg-white dark:bg-gray-900 flex-shrink-0 border border-gray-300 transition-shadow duration-200 ease-in-out">
+        <div class="mx-auto w-full max-w-screen-xl p-4 py-3 lg:py-4">
+            <div class="sm:flex sm:items-center sm:justify-between">
+            <span class="text-sm text-gray-400 sm:text-right dark:text-gray-300 inline-block"
+                  style="text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6); opacity: 0.9;">
+                <span style="color: #163d73;">© Grad Zagreb</span>,
+                <span style="font-size: 0.85em;">handcrafted by Jasmin Husić</span>
+            </span>
+            </div>
+        </div>
+    </footer>
 </div>

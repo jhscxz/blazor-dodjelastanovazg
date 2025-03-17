@@ -1,4 +1,5 @@
-@tailwind utilities;
+@import "tailwindcss";
+
 
 @layer utilities {
     .bg-blue-500 {
@@ -8,4 +9,16 @@
     .text-black {
         color: #000;
     }
+}
+
+h1.text-\[12px\] {
+    font-weight: 700 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+}
+
+/* Definirajte novu klasu za gumbe */
+.btn-custom {
+    @apply px-3 py-2 rounded text-xs font-bold text-white hover:bg-[#163d73] transition-colors duration-200;
 }
