@@ -1,9 +1,15 @@
 using DodjelaStanovaZG.Components;
 using DodjelaStanovaZG.Data;
+using DodjelaStanovaZG.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// =============================
+// KONFIGURACIJA SERVISA
+// =============================
 
 // Registracija DbContext-a
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -11,39 +17,48 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
-// ✅ Ispravna Identity konfiguracija s podrškom za role
+// Konfiguracija Identity sustava s podrškom za role
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddRoles<IdentityRole>() // Dodaj role podršku
+    .AddRoles<IdentityRole>() // Omogućuje rad s rolama
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(); // Omogućava autorizaciju u aplikaciji
 
-// Omogući Identity UI
+// Konfiguracija Identity kolačića
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Identity/Account/Login"; // obavezno ovo!
+    options.LoginPath = "/Identity/Account/Login"; // Postavlja putanju za prijavu
 });
 
+// Identity opcije
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.User.RequireUniqueEmail = true;
-    options.SignIn.RequireConfirmedAccount = false; // ili true, ako koristis email potvrdu
+    options.User.RequireUniqueEmail = true; // Svaki korisnik mora imati jedinstven email
+    options.SignIn.RequireConfirmedAccount = false; // Postavi na `true` ako koristiš email potvrdu
 });
 
-
+// Razor komponenta & autorizacija
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AuthorizeFolder("/"); // Sve stranice zahtijevaju login
-    options.Conventions.AllowAnonymousToPage("/Identity/Account/Login"); // Omogući pristup login stranici
+    options.Conventions.AuthorizeFolder("/"); // Svi Razor Pages zahtijevaju login
+    options.Conventions.AllowAnonymousToPage("/Identity/Account/Login"); // Login stranica dostupna svima
 });
 
+// Registracija servisa
+builder.Services.AddScoped<SeedService>(); // Dodaj SeedService
+builder.Services.AddScoped<SignInManager<IdentityUser>>();
+
+// =============================
+// KONFIGURACIJA APLIKACIJE
+// =============================
 
 var app = builder.Build();
 
+// Postavljanje middleware-a za produkciju
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -54,70 +69,22 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication(); // Autentifikacija korisnika
+app.UseAuthorization();  // Autorizacija pristupa
 
+// Mapiranje Razor komponenti
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .DisableAntiforgery(); // ✅ OVO JE BITNO
+    .DisableAntiforgery(); // Isključuje Antiforgery (koristi s oprezom!)
 
-app.MapRazorPages();
+app.MapRazorPages(); // Omogućava klasične Razor Pages rute
 
-// 🟢 Kreiraj SCOPE ZA SEED ADMINA nakon `app.Build()`
+// Seed podataka nakon pokretanja aplikacije
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    await SeedAdminUser(services);
+    var seedService = services.GetRequiredService<SeedService>();
+    await seedService.SeedAdminUser();
 }
 
 app.Run();
-
-// ✅ Popravljena metoda za dodavanje korisnika i rola
-async Task SeedAdminUser(IServiceProvider serviceProvider)
-{
-    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-    string adminEmail = "jhsc.xz@gmail.com";
-    string adminPassword = "Admin@123"; // OBAVEZNO promijenite ovo na sigurnu lozinku
-    string adminRole = "Admin";
-
-    // ✅ Kreiraj rolu ako ne postoji
-    if (!await roleManager.RoleExistsAsync(adminRole))
-    {
-        await roleManager.CreateAsync(new IdentityRole(adminRole));
-    }
-
-    // ✅ Provjeri postoji li korisnik
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-    if (adminUser == null)
-    {
-        adminUser = new IdentityUser
-        {
-            UserName = "jhusic",
-            Email = adminEmail,
-            EmailConfirmed = true
-        };
-
-        var result = await userManager.CreateAsync(adminUser, adminPassword);
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(adminUser, adminRole); // ✅ Dodaj ulogu admina
-        }
-        else
-        {
-            foreach (var error in result.Errors)
-            {
-                Console.WriteLine($"Error: {error.Description}");
-            }
-        }
-    }
-    else
-    {
-        // ✅ Osiguraj da korisnik ima administratorsku rolu
-        if (!await userManager.IsInRoleAsync(adminUser, adminRole))
-        {
-            await userManager.AddToRoleAsync(adminUser, adminRole);
-        }
-    }
-}
