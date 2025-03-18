@@ -3,11 +3,13 @@
 @using Microsoft.AspNetCore.Authorization
 @using DodjelaStanovaZG.Components.UI
 
-<CardComponent
-    Title="Odaberite socijalni natječaj"
-    Description="Pregled dostupnih socijalnih natječaja i odabir na temelju kriterija."
-    ButtonText="Pregled"
-    OnClick="OnCardClick" />
+<Container>
+    <CardComponent
+        Title="Odaberite socijalni natječaj"
+        Description="Pregled dostupnih socijalnih natječaja i odabir na temelju kriterija."
+        ButtonText="Pregled"
+        OnClick="OnCardClick" />
+</Container>
 
 @code {
     private void OnCardClick()

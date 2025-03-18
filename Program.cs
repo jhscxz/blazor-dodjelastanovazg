@@ -1,7 +1,6 @@
 using DodjelaStanovaZG.Components;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Services;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,7 +49,6 @@ builder.Services.AddRazorPages(options =>
 
 // Registracija servisa
 builder.Services.AddScoped<SeedService>(); // Dodaj SeedService
-builder.Services.AddScoped<SignInManager<IdentityUser>>();
 
 // =============================
 // KONFIGURACIJA APLIKACIJE

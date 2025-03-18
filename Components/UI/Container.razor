@@ -1,0 +1,7 @@
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}
+
+<div class="w-full max-w-[115rem] mx-auto bg-white rounded-lg shadow-md p-6 h-full">
+    @ChildContent
+</div>
