@@ -1,16 +1,17 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+    : IdentityDbContext<IdentityUser>(options) // Promjena iz DbContext u IdentityDbContext
 {
-    public DbSet<User> Users { get; set; }
+    //public DbSet<User> Users { get; set; }
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.Entity<IdentityUser>().HasIndex(u => u.UserName).IsUnique();
+    }
+
 }
-
-public class User
-{
-    public int Id { get; set; }
-    public required string Name { get; set; }
-}
-
-

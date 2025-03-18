@@ -3,61 +3,116 @@ using DodjelaStanovaZG.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Registracija DbContext-a
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddAuthorizationCore();
+// ✅ Ispravna Identity konfiguracija s podrškom za role
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddRoles<IdentityRole>() // Dodaj role podršku
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
-// Add services to the container.
+builder.Services.AddAuthorization();
+
+// Omogući Identity UI
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login"; // obavezno ovo!
+});
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = false; // ili true, ako koristis email potvrdu
+});
+
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddRazorPages(); // Obavezno za Identity UI
 
 var app = builder.Build();
 
-// testiranje baze
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.EnsureCreated();
-
-    if (!db.Users.Any())
-    {
-        db.Users.Add(new User { Name = "Test User" });
-        db.SaveChanges();
-    }
-}
-
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseRouting();
-//app.MapFallbackToPage("/_Host"); 
-
-app.UseAntiforgery();
-
-app.MapStaticAssets();
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode()
+    .DisableAntiforgery(); // ✅ OVO JE BITNO
+
+app.MapRazorPages();
+
+// 🟢 Kreiraj SCOPE ZA SEED ADMINA nakon `app.Build()`
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await SeedAdminUser(services);
+}
 
 app.Run();
 
+// ✅ Popravljena metoda za dodavanje korisnika i rola
+async Task SeedAdminUser(IServiceProvider serviceProvider)
+{
+    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+    string adminEmail = "jhsc.xz@gmail.com";
+    string adminPassword = "Admin@123"; // OBAVEZNO promijenite ovo na sigurnu lozinku
+    string adminRole = "Admin";
 
+    // ✅ Kreiraj rolu ako ne postoji
+    if (!await roleManager.RoleExistsAsync(adminRole))
+    {
+        await roleManager.CreateAsync(new IdentityRole(adminRole));
+    }
+
+    // ✅ Provjeri postoji li korisnik
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new IdentityUser
+        {
+            UserName = "jhusic",
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, adminRole); // ✅ Dodaj ulogu admina
+        }
+        else
+        {
+            foreach (var error in result.Errors)
+            {
+                Console.WriteLine($"Error: {error.Description}");
+            }
+        }
+    }
+    else
+    {
+        // ✅ Osiguraj da korisnik ima administratorsku rolu
+        if (!await userManager.IsInRoleAsync(adminUser, adminRole))
+        {
+            await userManager.AddToRoleAsync(adminUser, adminRole);
+        }
+    }
+}

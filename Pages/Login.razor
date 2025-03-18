@@ -1,0 +1,50 @@
+@page "/prijava"
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Forms
+@inject SignInManager<IdentityUser> SignInManager
+@inject NavigationManager NavigationManager
+
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin" FormName="LoginForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <label>Email</label>
+    <InputText class="form-control" @bind-Value="loginModel.Email" />
+
+    <label>Lozinka</label>
+    <InputText type="password" class="form-control" @bind-Value="loginModel.Password" />
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="text-danger">@errorMessage</div>
+}
+
+@code {
+    private LoginModel loginModel = new();
+    private string errorMessage;
+
+    public class LoginModel
+    {
+        [Required(ErrorMessage = "Email je obavezan")]
+        [EmailAddress(ErrorMessage = "Neispravna email adresa")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "Lozinka je obavezna")]
+        public string Password { get; set; } = "";
+    }
+
+    private async Task HandleLogin()
+    {
+        var result = await SignInManager.PasswordSignInAsync(
+            loginModel.Email, loginModel.Password, false, false);
+
+        if (result.Succeeded)
+            NavigationManager.NavigateTo("/");
+        else
+            errorMessage = "Neispravni podaci za prijavu.";
+    }
+}
