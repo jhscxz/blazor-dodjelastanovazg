@@ -1,21 +1,52 @@
 ﻿@page
 @model LogoutModel
 @{
-    ViewData["Title"] = "Log out";
+    Layout = null;
+    ViewData["Title"] = "Odjava";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    @{
-        if (User.Identity?.IsAuthenticated ?? false)
-        {
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
-            </form>
-        }
-        else
-        {
-            <p>You have successfully logged out of the application.</p>
-        }
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <!-- Uključi Tailwind CSS (provjeri je li putanja ~/css/tw.min.css točna) -->
+    <link rel="stylesheet" href="~/css/tw.min.css" />
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-100">
+
+<!-- "Kartica" za odjavu -->
+<div class="bg-white rounded shadow p-6 max-w-sm">
+    <h2 class="text-xl font-semibold text-center mb-4">@ViewData["Title"]</h2>
+    <p class="text-center mb-6">Jeste li sigurni da se želite odjaviti?</p>
+
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <form method="post"
+              asp-area="Identity"
+              asp-page="/Account/Logout"
+              asp-route-returnUrl='@Url.Page("/Account/Login", new { area = "Identity" })'>
+            @Html.AntiForgeryToken()
+
+            <div class="flex justify-center mt-4">
+                <button type="submit"
+                        class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold text-sm py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-500 transition">
+                    <!-- SVG ikona za logout -->
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 1 1-4 0v-1m4-4V7a2 2 0 1 0-4 0v1" />
+                    </svg>
+                    Odjavi se
+                </button>
+            </div>
+        </form>
     }
-</header>
+    else
+    {
+        <p class="text-center text-green-500">Uspješno ste odjavljeni.</p>
+    }
+</div>
+
+</body>
+</html>

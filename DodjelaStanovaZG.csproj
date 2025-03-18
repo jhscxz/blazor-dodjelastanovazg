@@ -29,4 +29,8 @@
     <AdditionalFiles Include="Components\UI\CardComponent.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>
