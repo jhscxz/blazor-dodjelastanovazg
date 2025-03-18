@@ -2,83 +2,62 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    Layout = null;
+    ViewData["Title"] = "Prijava";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="username" />
-                    <label asp-for="Input.UserName" class="form-label">Username</label>
-                    <span asp-validation-for="Input.UserName" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                                about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
-    trla trla
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/iw.min.css" rel="stylesheet">
+
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<div class="w-full max-w-sm bg-white shadow-lg rounded-xl p-6">
+    <h2 class="text-2xl font-semibold text-gray-800 text-center mb-4">Prijava</h2>
+
+    <form method="post" class="space-y-4">
+        <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm"></div>
+
+        <!-- Username input -->
+        <div>
+            <div class="relative">
+                    <span class="absolute inset-y-0 start-0 flex items-center pl-3 text-gray-500">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+                        </svg>
+                    </span>
+                <input asp-for="Input.UserName" class="w-full pl-10 p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="username" required />
+            </div>
+            <span asp-validation-for="Input.UserName" class="text-red-500 text-xs"></span>
+        </div>
+
+        <!-- Password input -->
+        <div>
+            <div class="relative">
+                    <span class="absolute inset-y-0 start-0 flex items-center pl-3 text-gray-500">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 16">
+                            <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
+                            <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
+                        </svg>
+                    </span>
+                <input asp-for="Input.Password" type="password" class="w-full pl-10 p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500" autocomplete="current-password" required />
+            </div>
+            <span asp-validation-for="Input.Password" class="text-red-500 text-xs"></span>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 transition-all text-white font-medium py-2.5 rounded-lg flex justify-center items-center gap-2">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 10a8 8 0 1 1 8 8 8 8 0 0 1-8-8Zm13.707-1.707a1 1 0 0 0-1.414-1.414L9 12.172 6.707 9.879a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.414 0l6-6Z"/>
+            </svg>
+            Prijavi se
+        </button>
+    </form>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+</body>
+</html>

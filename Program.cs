@@ -35,7 +35,12 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddRazorPages(); // Obavezno za Identity UI
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/"); // Sve stranice zahtijevaju login
+    options.Conventions.AllowAnonymousToPage("/Identity/Account/Login"); // Omogući pristup login stranici
+});
+
 
 var app = builder.Build();
 

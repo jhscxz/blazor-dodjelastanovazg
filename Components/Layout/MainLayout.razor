@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<link href="css/output.css" rel="stylesheet">
+<link href="css/iw.min.css" rel="stylesheet">
 
 <!-- Top Nav -->
 <div class="flex flex-col min-h-screen">
@@ -19,41 +19,40 @@
                 </div>
             </div>
 
-            <!-- Srednji blok: Zaobljeni "pilula" nav linkovi -->
-            <nav class="bg-[#1e497f] rounded px-3 py-1 flex items-center">
+            <!-- Srednji blok: Popravljen underline, hover, font i veličina -->
+            <nav class="bg-[#1e497f] rounded-lg px-3 py-1 flex items-center space-x-3">
                 <NavLink href="/"
-                         style="text-decoration: none !important;"
-                         class="btn-custom">
+                         class="px-3 py-2 text-xs font-bold text-white rounded-lg hover:bg-[#163d73] transition-colors duration-200 no-underline">
                     POČETNA
                 </NavLink>
                 <NavLink href="/socijalni-natjecaj"
-                         style="text-decoration: none !important;"
-                         class="btn-custom">
+                         class="px-3 py-2 text-xs font-bold text-white rounded-lg hover:bg-[#163d73] transition-colors duration-200 no-underline">
                     SOCIJALNI NATJEČAJ
                 </NavLink>
                 <NavLink href="/pristivi-natjecaj"
-                         style="text-decoration: none !important;"
-                         class="btn-custom">
+                         class="px-3 py-2 text-xs font-bold text-white rounded-lg hover:bg-[#163d73] transition-colors duration-200 no-underline">
                     PRIUŠTIVI NATJEČAJ
                 </NavLink>
                 <NavLink href="/izracun-najamnine"
-                         style="text-decoration: none !important;"
-                         class="btn-custom">
+                         class="px-3 py-2 text-xs font-bold text-white rounded-lg hover:bg-[#163d73] transition-colors duration-200 no-underline">
                     IZRAČUN NAJAMNINE
                 </NavLink>
             </nav>
 
 
+
+
+
             <!-- Desni blok: korisnički info -->
             <div class="ml-auto">
                 <div class="bg-[#1e497f] rounded px-3 py-1 flex items-center">
-            <span class="px-2 py-2 rounded text-xs hover:bg-[#0B2C4D] transition-colors duration-200">
-                JHUSIC
-            </span>
+                    <span class="px-2 py-2 rounded text-xs hover:bg-[#0B2C4D] transition-colors duration-200">
+                        JHUSIC
+                    </span>
                     <span
                         class="px-2 py-2 rounded text-xs font-bold text-red-500 hover:bg-red-600 hover:text-white transition-colors duration-200">
-                SUPERADMIN
-            </span>
+                        SUPERADMIN
+                    </span>
                     <NavLink href="/admin"
                              style="text-decoration: none !important;"
                              class="px-3 py-2 rounded text-xs font-bold text-white hover:bg-[#163d73] transition-colors duration-200">
@@ -82,12 +81,18 @@
         class="mt-4 bg-white dark:bg-gray-900 flex-shrink-0 border border-gray-300 transition-shadow duration-200 ease-in-out">
         <div class="mx-auto w-full max-w-screen-xl p-4 py-3 lg:py-4">
             <div class="sm:flex sm:items-center sm:justify-between">
-            <span class="text-sm text-gray-400 sm:text-right dark:text-gray-300 inline-block"
-                  style="text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6); opacity: 0.9;">
-                <span style="color: #163d73;">© Grad Zagreb</span>,
-                <span style="font-size: 0.85em;">handcrafted by Jasmin Husić</span>
-            </span>
+                <span class="text-sm text-gray-400 sm:text-right dark:text-gray-300 inline-block"
+                      style="text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6); opacity: 0.9;">
+                    <span style="color: #163d73;">© Grad Zagreb</span>,
+                    <span style="font-size: 0.85em;">handcrafted by Jasmin Husić</span>
+                </span>
             </div>
         </div>
     </footer>
 </div>
+
+<style>
+    a {
+        text-decoration: none !important;
+    }
+</style>
