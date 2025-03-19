@@ -30,6 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Home\" />
+    <Folder Include="Areas\Izracun\" />
+    <Folder Include="Areas\Korisnici\" />
+    <Folder Include="Areas\Natjecaji\" />
     <Folder Include="Models\" />
   </ItemGroup>
 
