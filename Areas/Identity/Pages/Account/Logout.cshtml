@@ -1,4 +1,6 @@
 ﻿@page
+@using DodjelaStanovaZG.Areas.Identity.Pages.Account.Model
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model LogoutModel
 @{
     Layout = null;
@@ -16,7 +18,7 @@
 <body class="min-h-screen flex items-center justify-center bg-gray-100">
 
 <!-- "Kartica" za odjavu -->
-<div class="bg-white rounded shadow p-6 max-w-sm">
+<div class="bg-white rounded shadow p-6 max-w-sm border-1 border-gray-300 hover:border-gray-400">
     <h2 class="text-xl font-semibold text-center mb-4">@ViewData["Title"]</h2>
     <p class="text-center mb-6">Jeste li sigurni da se želite odjaviti?</p>
 
@@ -28,18 +30,14 @@
               asp-route-returnUrl='@Url.Page("/Account/Login", new { area = "Identity" })'>
             @Html.AntiForgeryToken()
 
-            <div class="flex justify-center mt-4">
-                <button type="submit"
-                        class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold text-sm py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-500 transition">
-                    <!-- SVG ikona za logout -->
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-                         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 1 1-4 0v-1m4-4V7a2 2 0 1 0-4 0v1" />
-                    </svg>
-                    Odjavi se
-                </button>
-            </div>
+            <!-- Logout button -->
+            @await Html.PartialAsync("_LoginLogoutButton", new LoginLogoutButtonModel
+            {
+                ButtonText = "Odjavi se",
+                ButtonClasses = "inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold text-sm py-2 px-4 rounded focus:outline-none focus:ring-2 transition",
+                IconType = "logout"
+            })
+
         </form>
     }
     else
