@@ -10,34 +10,31 @@ var builder = WebApplication.CreateBuilder(args);
 // KONFIGURACIJA SERVISA
 // =============================
 
-// Registracija DbContext-a
+// Registracija DbContext-a s SQL Serverom
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
-
 // Konfiguracija Identity sustava s podrškom za role
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddRoles<IdentityRole>() // Omogućuje rad s rolama
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+    {
+        // Identity opcije
+        options.User.RequireUniqueEmail = true;
+        options.SignIn.RequireConfirmedAccount = false; // Promijenite na true ako koristite potvrdu email-a
+    })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddAuthorization(); // Omogućava autorizaciju u aplikaciji
+// Dodavanje autorizacije
+builder.Services.AddAuthorization();
 
-// Konfiguracija Identity kolačića
+// Konfiguracija kolačića za Identity
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login"; // Postavlja putanju za prijavu
 });
 
-// Identity opcije
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.User.RequireUniqueEmail = true; // Svaki korisnik mora imati jedinstven email
-    options.SignIn.RequireConfirmedAccount = false; // Postavi na `true` ako koristiš email potvrdu
-});
-
-// Razor komponenta & autorizacija
+// Registracija Razor komponenti i Razor Pages
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -47,16 +44,15 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Identity/Account/Login"); // Login stranica dostupna svima
 });
 
-// Registracija servisa
-builder.Services.AddScoped<SeedService>(); // Dodaj SeedService
+// Registracija dodatnih servisa
+builder.Services.AddScoped<SeedService>();
 
 // =============================
 // KONFIGURACIJA APLIKACIJE
 // =============================
-
 var app = builder.Build();
 
-// Postavljanje middleware-a za produkciju
+// Middleware konfiguracija za produkciju
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -70,18 +66,18 @@ app.UseRouting();
 app.UseAuthentication(); // Autentifikacija korisnika
 app.UseAuthorization();  // Autorizacija pristupa
 
-// Mapiranje Razor komponenti
+// Mapiranje Razor komponenti s interaktivnim renderiranjem i isključenim antiforgery zaštitom (koristite s oprezom)
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .DisableAntiforgery(); // Isključuje Antiforgery (koristi s oprezom!)
+    .DisableAntiforgery();
 
-app.MapRazorPages(); // Omogućava klasične Razor Pages rute
+// Mapiranje klasičnih Razor Pages ruta
+app.MapRazorPages();
 
-// Seed podataka nakon pokretanja aplikacije
+// Seed podataka (primjerice, admin korisnika) nakon pokretanja aplikacije
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var seedService = services.GetRequiredService<SeedService>();
+    var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
     await seedService.SeedAdminUser();
 }
 

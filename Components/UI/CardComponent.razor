@@ -1,11 +1,4 @@
-@code {
-    [Parameter] public string Title { get; set; } = "Naslov kartice";
-    [Parameter] public string Description { get; set; } = "Opis kartice";
-    [Parameter] public string ButtonText { get; set; } = "Pregled";
-    [Parameter] public EventCallback OnClick { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-}
-
+@* Komponenta "Card" koja prikazuje naslov, opis, opcionalni sadržaj te gumb s definiranim akcijama *@
 <div class="max-w-sm mx-auto bg-white rounded shadow-md p-6">
     <h5 class="text-lg font-semibold text-gray-900 mb-2">@Title</h5>
     <p class="text-sm text-gray-500 mb-4">@Description</p>
@@ -22,3 +15,35 @@
         @ButtonText
     </button>
 </div>
+
+@code {
+    /// <summary>
+    /// Naslov kartice.
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = "Naslov kartice";
+
+    /// <summary>
+    /// Opis kartice.
+    /// </summary>
+    [Parameter]
+    public string Description { get; set; } = "Opis kartice";
+
+    /// <summary>
+    /// Tekst na gumbu.
+    /// </summary>
+    [Parameter]
+    public string ButtonText { get; set; } = "Pregled";
+
+    /// <summary>
+    /// Akcijski callback koji se poziva pri kliku na gumb.
+    /// </summary>
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    /// <summary>
+    /// Opcionalni sadržaj koji se može umetnuti unutar kartice.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

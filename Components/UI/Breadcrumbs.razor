@@ -1,17 +1,20 @@
 @inherits LayoutComponentBase
 
 <nav aria-label="Breadcrumb" class="flex items-center space-x-2 text-sm">
-    @if (Items != null && Items.Any())
+    @* Prikazuje navigacijski "breadcrumb" ako postoji barem jedna stavka *@
+    @if (Items?.Any() == true)
     {
-        @foreach (var item in Items.Select((value, index) => (value, index)))
+        var totalCount = Items.Count;  // Izračunaj ukupan broj stavki jednom radi bolje performansi
+        @foreach (var (item, index) in Items.Select((item, index) => (item, index)))
         {
             <span>
-                <a href="@item.value.Url" class="text-blue-600 hover:underline">
-                    @item.value.Text
+                <a href="@item.Url" class="text-blue-600 hover:underline">
+                    @item.Text
                 </a>
             </span>
 
-            @if (item.index < Items.Count() - 1)
+            @* Dodaj separator "/" osim nakon zadnje stavke *@
+            @if (index < totalCount - 1)
             {
                 <span class="text-gray-400">/</span>
             }
@@ -20,12 +23,18 @@
 </nav>
 
 @code {
+    /// <summary>
+    /// Lista stavki za breadcrumb navigaciju.
+    /// </summary>
     [Parameter]
     public List<BreadcrumbItem> Items { get; set; }
+
+    /// <summary>
+    /// Model pojedinačne breadcrumb stavke s tekstom i URL-om.
+    /// </summary>
     public class BreadcrumbItem
     {
         public string Text { get; set; }
         public string Url { get; set; }
     }
 }
-

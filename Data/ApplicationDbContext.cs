@@ -13,5 +13,4 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         base.OnModelCreating(builder);
         builder.Entity<IdentityUser>().HasIndex(u => u.UserName).IsUnique();
     }
-
 }

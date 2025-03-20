@@ -1,12 +1,27 @@
 @code {
+    /// <summary>
+    /// Naslov koji se prikazuje na kartici.
+    /// </summary>
     [Parameter] public string Title { get; set; } = string.Empty;
-    [Parameter] public string? Description { get; set; } // Opcionalni opis
+
+    /// <summary>
+    /// Opcionalni opis kartice.
+    /// </summary>
+    [Parameter] public string? Description { get; set; }
+
+    /// <summary>
+    /// Lista breadcrumb stavki za navigaciju.
+    /// </summary>
     [Parameter] public List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = new();
+
+    /// <summary>
+    /// RenderFragment za glavni sadržaj kartice.
+    /// </summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
 }
 
 <div class="w-full max-w-[115rem] mx-auto bg-white rounded shadow-sm border border-gray-300 pt-3 pb-4 px-4 h-fit">
-    <!-- Header -->
+    @* Header sekcija *@
     <div class="flex justify-between items-center h-fit">
         <div class="flex flex-col leading-tight gap-y-0">
             <p class="text-base font-bold text-gray-900">@Title</p>
@@ -20,10 +35,10 @@
         </div>
     </div>
 
-    <!-- Horizontal Line -->
+    @* Horizontalna linija za odvajanje sekcija *@
     <div class="border-t border-gray-300 mt-2 mb-4"></div>
 
-    <!-- Main Content -->
+    @* Glavni sadržaj *@
     <div>
         @ChildContent
     </div>

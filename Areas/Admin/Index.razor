@@ -8,40 +8,37 @@
 
 <Container Title="Admin Panel" BreadcrumbItems="breadcrumbItems">
     <div class="flex justify-center">
-        <div class="mx-5">
-            <SimpleCardComponent>
-                <a href="/admin/users" class="block">
-                    <h2 class="text-xl font-semibold mb-2 text-blue-700">Korisnici</h2>
-                    <p class="text-gray-600">Upravljanje korisnicima i ulogama.</p>
-                </a>
-            </SimpleCardComponent>
-        </div>
-
-        <div class="mx-5">
-            <SimpleCardComponent>
-                <a href="/admin/settings" class="block">
-                    <h2 class="text-xl font-semibold mb-2 text-blue-700">Postavke</h2>
-                    <p class="text-gray-600">Konfiguracija sustava i aplikacije.</p>
-                </a>
-            </SimpleCardComponent>
-        </div>
-
-        <div class="mx-5">
-            <SimpleCardComponent>
-                <a href="/admin/reports" class="block">
-                    <h2 class="text-xl font-semibold mb-2 text-blue-700">Izvještaji</h2>
-                    <p class="text-gray-600">Pregled izvještaja i statistika.</p>
-                </a>
-            </SimpleCardComponent>
-        </div>
+        @* Generiramo kartice za admin panel pomoću petlje *@
+        @foreach (var card in adminCards)
+        {
+            <div class="mx-5">
+                <SimpleCardComponent>
+                    <a href="@card.Link" class="block">
+                        <h2 class="text-xl font-semibold mb-2 text-blue-700">@card.Title</h2>
+                        <p class="text-gray-600">@card.Description</p>
+                    </a>
+                </SimpleCardComponent>
+            </div>
+        }
     </div>
 </Container>
 
-
 @code {
+    // Definicija breadcrumb stavki za navigaciju
     private List<Breadcrumbs.BreadcrumbItem> breadcrumbItems = new()
     {
         new Breadcrumbs.BreadcrumbItem { Text = "Home", Url = "/" },
         new Breadcrumbs.BreadcrumbItem { Text = "Admin Panel", Url = "/admin" },
+    };
+
+    // Model koji predstavlja karticu u admin panelu
+    private record AdminCard(string Title, string Link, string Description);
+
+    // Lista kartica za admin panel - omogućuje lakše dodavanje ili izmjenu kartica
+    private List<AdminCard> adminCards = new()
+    {
+        new AdminCard("Korisnici", "/admin/users", "Upravljanje korisnicima i ulogama."),
+        new AdminCard("Postavke", "/admin/settings", "Konfiguracija sustava i aplikacije."),
+        new AdminCard("Izvještaji", "/admin/reports", "Pregled izvještaja i statistika.")
     };
 }
