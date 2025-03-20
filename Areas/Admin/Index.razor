@@ -1,57 +1,42 @@
 @page "/admin"
-
 @attribute [Authorize(Roles = "Admin")]
 @using DodjelaStanovaZG.Components.UI
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Web
+
 <PageTitle>Admin Panel</PageTitle>
 
-<Container>
-    <div class="p-8 max-w-7xl mx-auto">
-        <Breadcrumbs Items="breadcrumbItems" />
-        <hr />
-        <h1 class="text-3xl font-bold mb-6">Admin Panel</h1>
-        <p class="mb-4">Dobrodošli u Admin Panel! Ovdje možete upravljati korisnicima, postavkama i izvještajima.</p>
-
-        <hr />
-        <!-- Grid s 3 stupca, kartice poredane horizontalno -->
-
-        <div class="flex justify-center">
-            <!-- Prva kartica -->
-            <div class="mx-5">
-                <SimpleCardComponent>
-                    <a href="/admin/users" class="block">
-                        <h2 class="text-xl font-semibold mb-2 text-blue-700">Korisnici</h2>
-                        <p class="text-gray-600">Upravljanje korisnicima i ulogama.</p>
-                    </a>
-                </SimpleCardComponent>
-            </div>
-
-            <!-- Druga kartica -->
-            <div class="mx-5">
-                <SimpleCardComponent>
-                    <a href="/admin/settings" class="block">
-                        <h2 class="text-xl font-semibold mb-2 text-blue-700">Postavke</h2>
-                        <p class="text-gray-600">Konfiguracija sustava i aplikacije.</p>
-                    </a>
-                </SimpleCardComponent>
-            </div>
-
-            <!-- Treća kartica -->
-            <div class="mx-5">
-                <SimpleCardComponent>
-                    <a href="/admin/reports" class="block">
-                        <h2 class="text-xl font-semibold mb-2 text-blue-700">Izvještaji</h2>
-                        <p class="text-gray-600">Pregled izvještaja i statistika.</p>
-                    </a>
-                </SimpleCardComponent>
-            </div>
+<Container Title="Admin Panel" BreadcrumbItems="breadcrumbItems">
+    <div class="flex justify-center">
+        <div class="mx-5">
+            <SimpleCardComponent>
+                <a href="/admin/users" class="block">
+                    <h2 class="text-xl font-semibold mb-2 text-blue-700">Korisnici</h2>
+                    <p class="text-gray-600">Upravljanje korisnicima i ulogama.</p>
+                </a>
+            </SimpleCardComponent>
         </div>
 
+        <div class="mx-5">
+            <SimpleCardComponent>
+                <a href="/admin/settings" class="block">
+                    <h2 class="text-xl font-semibold mb-2 text-blue-700">Postavke</h2>
+                    <p class="text-gray-600">Konfiguracija sustava i aplikacije.</p>
+                </a>
+            </SimpleCardComponent>
+        </div>
 
-
+        <div class="mx-5">
+            <SimpleCardComponent>
+                <a href="/admin/reports" class="block">
+                    <h2 class="text-xl font-semibold mb-2 text-blue-700">Izvještaji</h2>
+                    <p class="text-gray-600">Pregled izvještaja i statistika.</p>
+                </a>
+            </SimpleCardComponent>
+        </div>
     </div>
 </Container>
+
 
 @code {
     private List<Breadcrumbs.BreadcrumbItem> breadcrumbItems = new()

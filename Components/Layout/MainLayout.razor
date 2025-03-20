@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Identity
+@using DodjelaStanovaZG.Components.UI.Nav
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
 @inject SignInManager<IdentityUser> SignInManager
@@ -23,33 +24,22 @@
                 </div>
             </div>
 
-            <!-- Srednji blok: Navigacija kroz aplikaciju -->
+            <!-- Središnja navigacija -->
             <nav class="bg-[#1e497f] rounded-lg px-3 py-1 flex items-center space-x-3">
-                <NavLink href="/" class="px-3 py-2 text-xs font-bold text-white rounded-lg hover:bg-[#163d73] transition-colors duration-200 no-underline">POČETNA</NavLink>
-                <NavLink href="/socijalni-natjecaj" class="px-3 py-2 text-xs font-bold text-white rounded-lg hover:bg-[#163d73] transition-colors duration-200 no-underline">SOCIJALNI NATJEČAJ</NavLink>
-                <NavLink href="/pristivi-natjecaj" class="px-3 py-2 text-xs font-bold text-white rounded-lg hover:bg-[#163d73] transition-colors duration-200 no-underline">PRIUŠTIVI NATJEČAJ</NavLink>
-                <NavLink href="/izracun-najamnine" class="px-3 py-2 text-xs font-bold text-white rounded-lg hover:bg-[#163d73] transition-colors duration-200 no-underline">IZRAČUN NAJAMNINE</NavLink>
+                <NavMenuLinks />
             </nav>
 
-            <!-- Desni blok: Korisničke informacije + Logout -->
+            <!-- Desni korisnički panel -->
             <div class="ml-auto">
-                <div class="bg-[#1e497f] rounded px-3 py-1 flex items-center space-x-2">
-                    <span class="px-2 py-2 rounded text-xs hover:bg-[#0B2C4D] transition-colors duration-200">JHUSIC</span>
-                    <span class="px-2 py-2 rounded text-xs font-bold text-red-500 hover:bg-red-600 hover:text-white transition-colors duration-200">SUPERADMIN</span>
-                    <NavLink href="/admin" class="px-3 py-2 rounded text-xs font-bold text-white hover:bg-[#163d73] transition-colors duration-200">Admin Panel</NavLink>
-
-                    <!-- Logout gumb -->
-                    <AuthorizeView>
-                        <Authorized>
-                            <NavLink href="/Identity/Account/Logout" class="px-3 py-2 rounded text-xs font-bold text-white bg-red-500 hover:bg-red-600 transition-colors duration-200">
-                                Logout
-                            </NavLink>
-                        </Authorized>
-                    </AuthorizeView>
+                <div class="bg-[#1e497f] rounded-lg px-3 py-1 flex items-center space-x-3">
+                    <UserMenuLinks />
                 </div>
             </div>
+
         </div>
     </header>
+
+
 
     <!-- Glavni sadržaj stranice -->
     <main class="flex flex-col h-screen w-full">
