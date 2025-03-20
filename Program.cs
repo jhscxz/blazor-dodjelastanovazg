@@ -81,4 +81,11 @@ using (var scope = app.Services.CreateScope())
     await seedService.SeedAdminUser();
 }
 
+// Pokretanje seeda za ostale korisnike
+/*using (var scope = app.Services.CreateScope())
+{
+    var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
+    await seedService.SeedAllUsers();
+}
+*/
 app.Run();

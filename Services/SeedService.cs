@@ -17,8 +17,57 @@ namespace DodjelaStanovaZG.Services
         }
 
         /// <summary>
+        /// Seeding superadmin korisnika. Postoji samo jedan superadmin.
+        /// Napomena: Promijenite lozinku u sigurnu verziju!
+        /// </summary>
+        public async Task SeedSuperAdminUser()
+        {
+            string superAdminEmail = "superadmin@example.com";
+            string superAdminPassword = "SuperAdmin@123"; // OBAVEZNO promijeniti na sigurnu lozinku!
+            string superAdminRole = "SuperAdmin";
+
+            // Kreiraj rolu ako ne postoji
+            if (!await _roleManager.RoleExistsAsync(superAdminRole))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(superAdminRole));
+            }
+
+            // Provjera postoji li superadmin korisnik
+            var superAdminUser = await _userManager.FindByEmailAsync(superAdminEmail);
+            if (superAdminUser == null)
+            {
+                superAdminUser = new IdentityUser
+                {
+                    UserName = "superadmin",
+                    Email = superAdminEmail,
+                    EmailConfirmed = true
+                };
+
+                var result = await _userManager.CreateAsync(superAdminUser, superAdminPassword);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(superAdminUser, superAdminRole);
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        Console.WriteLine($"Greška pri kreiranju superadmin korisnika: {error.Description}");
+                    }
+                }
+            }
+            else
+            {
+                if (!await _userManager.IsInRoleAsync(superAdminUser, superAdminRole))
+                {
+                    await _userManager.AddToRoleAsync(superAdminUser, superAdminRole);
+                }
+            }
+        }
+
+        /// <summary>
         /// Seeding administrativnog korisnika.
-        /// Napomena: Promijenite lozinku u sigurnu verziju.
+        /// Napomena: Promijenite lozinku u sigurnu verziju!
         /// </summary>
         public async Task SeedAdminUser()
         {
@@ -52,7 +101,7 @@ namespace DodjelaStanovaZG.Services
                 {
                     foreach (var error in result.Errors)
                     {
-                        Console.WriteLine($"Error creating admin user: {error.Description}");
+                        Console.WriteLine($"Greška pri kreiranju admin korisnika: {error.Description}");
                     }
                 }
             }
@@ -105,7 +154,7 @@ namespace DodjelaStanovaZG.Services
                     {
                         foreach (var error in result.Errors)
                         {
-                            Console.WriteLine($"Error creating user {user.Email}: {error.Description}");
+                            Console.WriteLine($"Greška pri kreiranju korisnika {user.Email}: {error.Description}");
                         }
                     }
                 }
@@ -121,6 +170,45 @@ namespace DodjelaStanovaZG.Services
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Metoda za seeding svih korisnika: superadmin, admin i regularni korisnici (Korisnik).
+        /// </summary>
+        public async Task SeedAllUsers()
+        {
+            // Seed superadmin (jedini)
+            await SeedSuperAdminUser();
+
+            // Seed admin korisnika
+            await SeedAdminUser();
+
+            // Seed regularnih korisnika (20-ak korisnika)
+            var seedUsers = new List<SeedUserModel>
+            {
+                new SeedUserModel { Username = "ivanivic", Email = "ivanivic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "markomarkic", Email = "markomarkic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "petarpetrovic", Email = "petarpetrovic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "lukalukic", Email = "lukalukic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "josipjosic", Email = "josipjosic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "anteantic", Email = "anteantic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "mariomarinovic", Email = "mariomarinovic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "nikolanikolic", Email = "nikolanikolic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "dariodario", Email = "dariodario@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "zoranzoranic", Email = "zoranzoranic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "gorangoric", Email = "gorangoric@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "tomislavtomicic", Email = "tomislavtomicic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "stjepanstjesisic", Email = "stjepanstjesisic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "mihaelmiskovic", Email = "mihaelmiskovic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "andrejandrejic", Email = "andrejandrejic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "darkodarkic", Email = "darkodarkic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "sasasasacic", Email = "sasasasacic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "damirdamirovic", Email = "damirdamirovic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "bojanbojanic", Email = "bojanbojanic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
+                new SeedUserModel { Username = "kresikreso", Email = "kresikreso@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } }
+            };
+
+            await SeedUsers(seedUsers);
         }
     }
 
