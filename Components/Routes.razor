@@ -1,6 +1,14 @@
-﻿<Router AppAssembly="typeof(Program).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="routeData" Selector="h1" />
-    </Found>
-</Router>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="typeof(Program).Assembly" @rendermode="RenderMode.InteractiveServer">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="typeof(Layout.MainLayout)"/>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+        </Found>
+        <NotFound>
+            <MudText>Stranica nije pronađena.</MudText>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

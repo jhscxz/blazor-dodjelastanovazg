@@ -1,8 +1,10 @@
 using DodjelaStanovaZG.Components;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Services;
+using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +48,7 @@ builder.Services.AddRazorPages(options =>
 
 // Registracija dodatnih servisa
 builder.Services.AddScoped<SeedService>();
+builder.Services.AddMudServices();
 
 // =============================
 // KONFIGURACIJA APLIKACIJE
@@ -88,4 +91,6 @@ using (var scope = app.Services.CreateScope())
     await seedService.SeedAllUsers();
 }
 */
+
+
 app.Run();

@@ -15,6 +15,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    <PackageReference Include="MudBlazor" Version="8.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,7 +32,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Izracun\" />
-    <Folder Include="Areas\Korisnici\" />
     <Folder Include="Areas\Natjecaji\" />
     <Folder Include="Models\" />
   </ItemGroup>

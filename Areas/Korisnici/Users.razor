@@ -1,0 +1,128 @@
+@page "/admin/users"
+@attribute [Authorize(Roles = "Admin,SuperAdmin")]
+@using Microsoft.AspNetCore.Identity
+@using MudBlazor
+@using Microsoft.EntityFrameworkCore
+@inject UserManager<IdentityUser> UserManager
+@inject NavigationManager Navigation
+@using DodjelaStanovaZG.Components
+@using Microsoft.AspNetCore.Authorization
+@using DodjelaStanovaZG.Components.UI
+
+<Container>
+    <MudPaper Class="pa-4">
+        @* Polje za pretragu – koristi Value/ValueChanged *@
+        <MudTextField Label="Pretraga korisnika"
+                      Value="@searchText"
+                      ValueChanged="@((string e) => OnValueChanged(e))"
+                      Immediate="true"
+                      DebounceInterval="300"
+                      Variant="Variant.Outlined"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="Icons.Material.Filled.Search" />
+
+        @* Tablica s server-side paginacijom *@
+        <MudTable T="IdentityUser"
+                  ServerData="LoadUsers"
+                  @ref="table"
+                  Hover="true"
+                  Striped="true"
+                  RowsPerPage="rowsPerPage"
+                  Dense="true">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Lista korisnika</MudText>
+                <MudSpacer />
+                <MudSelect T="int" Label="Redova po stranici" @bind-Value="rowsPerPage">
+                    <MudSelectItem T="int" Value="5">5</MudSelectItem>
+                    <MudSelectItem T="int" Value="10">10</MudSelectItem>
+                    <MudSelectItem T="int" Value="20">20</MudSelectItem>
+                </MudSelect>
+            </ToolBarContent>
+
+            <HeaderContent>
+                <MudTh>Username</MudTh>
+                <MudTh>Email</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Username">@context.UserName</MudTd>
+                <MudTd DataLabel="Email">@context.Email</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditUser(@context.Id))">
+                        Edit
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => DeleteUser(@context.Id))">
+                        Delete
+                    </MudButton>
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+</Container>
+
+@code {
+    private MudTable<IdentityUser> table;
+    private string searchText = "";
+    private int rowsPerPage = 5;
+
+    // Server-side dohvat podataka – koristi searchText za filtriranje
+    private async Task<TableData<IdentityUser>> LoadUsers(TableState state, CancellationToken cancellationToken)
+    {
+        Console.WriteLine($"LoadUsers: Page={state.Page}, PageSize={state.PageSize}, searchText='{searchText}'");
+
+        var query = UserManager.Users.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            query = query.Where(u => u.UserName.Contains(searchText) || u.Email.Contains(searchText));
+        }
+
+        int totalItems = await query.CountAsync(cancellationToken);
+
+        var users = await query.OrderBy(u => u.UserName)
+                               .Skip(state.Page * state.PageSize)
+                               .Take(state.PageSize)
+                               .ToListAsync(cancellationToken);
+
+        Console.WriteLine($"Returning {users.Count} items out of {totalItems}");
+        return new TableData<IdentityUser>
+        {
+            Items = users,
+            TotalItems = totalItems
+        };
+    }
+
+    // OnValueChanged – ručno postavlja searchText i reloada tablicu
+    private async Task OnValueChanged(string newValue)
+    {
+        searchText = newValue;
+        if (table != null)
+        {
+            await table.ReloadServerData();
+        }
+    }
+
+    private void EditUser(string userId)
+    {
+        Navigation.NavigateTo($"/admin/users/edit/{userId}");
+    }
+
+    private async Task DeleteUser(string userId)
+    {
+        var user = await UserManager.FindByIdAsync(userId);
+        if (user != null)
+        {
+            var result = await UserManager.DeleteAsync(user);
+            if (result.Succeeded && table != null)
+            {
+                Console.WriteLine($"User {userId} deleted.");
+                await table.ReloadServerData();
+            }
+        }
+    }
+}
