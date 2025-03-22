@@ -1,18 +1,18 @@
-using DodjelaStanovaZG.DTO;
-using DodjelaStanovaZG.Services;
+using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO;
+using DodjelaStanovaZG.Areas.Admin.Korisnici.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
-
-namespace DodjelaStanovaZG.Areas.Korisnici
+    
+namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Components
 {
-    public partial class UsersTableBase : ComponentBase
+    public partial class UsersTable : ComponentBase
     {
-        [Inject] public UserManager<IdentityUser> UserManager { get; set; }
-        [Inject] public IUserService UserService { get; set; }
-        [Inject] public NavigationManager Navigation { get; set; }
+        [Inject] public required UserManager<IdentityUser> UserManager { get; set; }
+        [Inject] public required IUserService UserService { get; set; }
+        [Inject] public required NavigationManager Navigation { get; set; }
 
-        protected MudTable<UserDto> table;
+        protected MudTable<UserDto> Table = default!;
 
         protected string SearchText { get; set; } = "";
         protected string FilterRole { get; set; } = RoleNames.All;
@@ -21,22 +21,18 @@ namespace DodjelaStanovaZG.Areas.Korisnici
         protected async Task OnValueChanged(string newValue)
         {
             SearchText = newValue;
-            if (table != null)
-            {
-                await table.ReloadServerData();
-            }
+            await Table.ReloadServerData();
         }
 
         protected async Task OnFilterRoleChanged()
         {
-            if (table != null)
-            {
-                await table.ReloadServerData();
-            }
+            await Table.ReloadServerData();
         }
 
+        // Potrebno 2 parametra: (TableState, CancellationToken) ako MudTable to traži
         protected async Task<TableData<UserDto>> LoadUsers(TableState state, CancellationToken cancellationToken)
         {
+            // Dohvaćamo korisnike iz servisa
             var result = await UserService.GetUsersAsync(UserManager, SearchText, FilterRole, state, cancellationToken);
 
             return new TableData<UserDto>
@@ -51,12 +47,13 @@ namespace DodjelaStanovaZG.Areas.Korisnici
             Navigation.NavigateTo($"/admin/users/edit/{userId}");
         }
 
+        // Ako imate i brisanje
         protected async Task DeleteUser(string userId)
         {
             bool success = await UserService.DeleteUserAsync(UserManager, userId);
-            if (success && table != null)
+            if (success)
             {
-                await table.ReloadServerData();
+                await Table.ReloadServerData();
             }
         }
     }

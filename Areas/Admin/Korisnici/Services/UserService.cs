@@ -1,10 +1,9 @@
-using DodjelaStanovaZG.Areas.Korisnici;
-using DodjelaStanovaZG.DTO;
+using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 
-namespace DodjelaStanovaZG.Services
+namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
 {
     public interface IUserService
     {
@@ -27,7 +26,7 @@ namespace DodjelaStanovaZG.Services
             // Filtriranje po searchText (UserName ili Email)
             if (!string.IsNullOrWhiteSpace(searchText))
             {
-                query = query.Where(u => u.UserName.Contains(searchText) || u.Email.Contains(searchText));
+                query = query.Where(u => u.UserName != null && u.Email != null && (u.UserName.Contains(searchText) || u.Email.Contains(searchText)));
             }
 
             // Filtriranje po roli, ako nije "All"

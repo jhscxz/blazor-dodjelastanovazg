@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="Areas\Admin\Korisnici\Users.razor" />
     <AdditionalFiles Include="Components\UI\CardComponent.razor" />
   </ItemGroup>
 

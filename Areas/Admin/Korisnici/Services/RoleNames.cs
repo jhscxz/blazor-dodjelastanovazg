@@ -1,4 +1,4 @@
-namespace DodjelaStanovaZG.Areas.Korisnici;
+namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services;
 
 public static class RoleNames
 {
