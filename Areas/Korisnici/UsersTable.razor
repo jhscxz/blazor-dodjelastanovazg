@@ -1,0 +1,199 @@
+@using DodjelaStanovaZG.Services
+@using DodjelaStanovaZG.DTO
+@using Microsoft.AspNetCore.Identity
+@using MudBlazor
+@using Microsoft.EntityFrameworkCore
+@using DodjelaStanovaZG.Components.UI
+
+@inject IUserService UserService
+@inject NavigationManager Navigation
+@inject UserManager<IdentityUser> UserManager
+
+<Container>
+    <MudPaper Class="pa-4">
+
+        <!-- Polje za pretragu korisnika -->
+        <MudTextField Label="Pretraga"
+                      @bind-Value="SearchText"
+                      @bind-Value:after="OnSearchTextChanged"
+                      Immediate="true"
+                      DebounceInterval="300"
+                      Variant="Variant.Outlined"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Class="mb-4" />
+
+        <MudTable T="UserDto"
+                  ServerData="LoadUsers"
+                  Hover="true"
+                  Striped="true"
+                  RowsPerPage="@RowsPerPage"
+                  Dense="true"
+                  Class="my-custom-table"
+                  @ref="table">
+
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Lista korisnika</MudText>
+                <MudSpacer />
+
+                <!-- Izbornik za broj redova po stranici -->
+                <MudSelect T="int" Label="Prikaži redova:"
+                           @bind-Value="RowsPerPage"
+                           Variant="Variant.Outlined"
+                           Class="custom-rows-select">
+                    <MudSelectItem T="int" Value="5">5</MudSelectItem>
+                    <MudSelectItem T="int" Value="10">10</MudSelectItem>
+                    <MudSelectItem T="int" Value="20">20</MudSelectItem>
+                </MudSelect>
+
+                <!-- Izbornik za filtriranje po roli -->
+                <MudSelect T="string" Label="Filter Role:"
+                           @bind-Value="FilterRole"
+                           @bind-Value:after="OnFilterRoleChanged"
+                           Variant="Variant.Outlined"
+                           Class="custom-role-select"
+                           Style="margin-left: 1rem;">
+                    <MudSelectItem T="string" Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
+                    <MudSelectItem T="string" Value="@RoleNames.User">@RoleNames.User</MudSelectItem>
+                    <MudSelectItem T="string" Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
+                    <MudSelectItem T="string" Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
+                </MudSelect>
+            </ToolBarContent>
+
+            <HeaderContent>
+                <MudTh>Username</MudTh>
+                <MudTh>Email</MudTh>
+                <MudTh>Roles</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Username">@context.UserName</MudTd>
+                <MudTd DataLabel="Email">@context.Email</MudTd>
+                <MudTd DataLabel="Roles">@context.Roles</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditUser(@context.Id))">
+                        <MudIcon Icon="@Icons.Material.Filled.Edit" /> Edit
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-2" OnClick="@(() => DeleteUser(@context.Id))">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" /> Delete
+                    </MudButton>
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+</Container>
+
+@code {
+    // Ref na MudTable
+    private MudTable<UserDto> table;
+
+    // Privatna polja za pretragu i filtriranje
+    private string _searchText = "";
+    private string _filterRole = RoleNames.All;
+    private int _rowsPerPage = 5;
+
+    // Svojstva za @bind
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            if (_searchText != value)
+            {
+                _searchText = value;
+            }
+        }
+    }
+
+    public string FilterRole
+    {
+        get => _filterRole;
+        set
+        {
+            if (_filterRole != value)
+            {
+                _filterRole = value;
+            }
+        }
+    }
+
+    public int RowsPerPage
+    {
+        get => _rowsPerPage;
+        set
+        {
+            if (_rowsPerPage != value)
+            {
+                _rowsPerPage = value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Poziva se nakon što korisnik unese ili obriše tekst pretrage.
+    /// </summary>
+    private async Task OnSearchTextChanged()
+    {
+        Console.WriteLine($"[SearchText changed] => {SearchText}");
+        if (table != null)
+        {
+            // Reloadaj tablicu s novim uvjetima pretrage
+            await table.ReloadServerData();
+        }
+    }
+
+    /// <summary>
+    /// Poziva se nakon što korisnik promijeni odabranu rolu u izborniku.
+    /// </summary>
+    private async Task OnFilterRoleChanged()
+    {
+        Console.WriteLine($"[FilterRole changed] => {FilterRole}");
+        if (table != null)
+        {
+            // Reloadaj tablicu s novim filtrom
+            await table.ReloadServerData();
+        }
+    }
+
+    /// <summary>
+    /// Metoda koja se zove za dohvaćanje podataka iz baze (server-side).
+    /// Mora imati potpis: Task<TableData<UserDto>> (TableState, CancellationToken)
+    /// </summary>
+    private async Task<TableData<UserDto>> LoadUsers(TableState state, CancellationToken cancellationToken)
+    {
+        Console.WriteLine($"LoadUsers => Page={state.Page}, PageSize={state.PageSize}, searchText='{SearchText}', filterRole='{FilterRole}'");
+
+        // Pozovemo UserService i proslijedimo mu searchText i filterRole.
+        // U UserService.GetUsersAsync treba se implementirati filtriranje i paginacija.
+        return await UserService.GetUsersAsync(UserManager, SearchText, FilterRole, state, cancellationToken);
+    }
+
+    /// <summary>
+    /// Otvara stranicu za uređivanje korisnika.
+    /// </summary>
+    private void EditUser(string userId)
+    {
+        Navigation.NavigateTo($"/admin/users/edit/{userId}");
+    }
+
+    /// <summary>
+    /// Briše korisnika i osvježava tablicu ako je brisanje uspješno.
+    /// </summary>
+    private async Task DeleteUser(string userId)
+    {
+        bool success = await UserService.DeleteUserAsync(UserManager, userId);
+        if (success)
+        {
+            Console.WriteLine($"User {userId} deleted.");
+            if (table != null)
+            {
+                await table.ReloadServerData();
+            }
+        }
+    }
+}
