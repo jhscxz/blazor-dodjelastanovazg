@@ -1,0 +1,81 @@
+@page "/admin/users/add"
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+
+@attribute [Authorize(Roles = "Admin,SuperAdmin")]
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12" sm="8" md="4" lg="3">
+            <MudCard Class="pa-6 border border-gray-300">
+                <MudCardContent>
+                    <!-- Prikaz grešaka ako postoje -->
+                    @if (ErrorMessages?.Count > 0)
+                    {
+                        <MudAlert Severity="Severity.Error" Elevation="0" Class="mb-4">
+                            <ul>
+                                @foreach (var msg in ErrorMessages)
+                                {
+                                    <li>@msg</li>
+                                }
+                            </ul>
+                        </MudAlert>
+                    }
+
+                    <MudForm @ref="AddForm" Model="UserModel">
+                        <MudText Typo="Typo.h6" Class="mb-4">Dodaj korisnika</MudText>
+
+                        <!-- Korisničko ime -->
+                        <MudTextField T="string"
+                                      Label="Korisničko ime"
+                                      @bind-Value="UserModel.UserName"
+                                      Required="true"
+                                      Variant="Variant.Text"
+                                      Color="Color.Primary"/>
+
+                        <!-- Email -->
+                        <MudTextField T="string"
+                                      Label="Email"
+                                      @bind-Value="UserModel.Email"
+                                      Required="true"
+                                      Variant="Variant.Text"
+                                      Color="Color.Primary"/>
+
+                        <!-- Lozinka -->
+                        <MudTextField T="string"
+                                      Label="Lozinka"
+                                      @bind-Value="UserModel.Password"
+                                      InputType="InputType.Password"
+                                      Required="true"
+                                      Variant="Variant.Text"
+                                      Color="Color.Primary"/>
+
+                        <!-- Rola -->
+                        <MudSelect T="string"
+                                   Label="Rola"
+                                   @bind-Value="UserModel.Role"
+                                   Required="true"
+                                   Variant="Variant.Text"
+                                   Color="Color.Primary">
+                            <MudSelectItem T="string" Value="@("Korisnik")">Korisnik</MudSelectItem>
+                            <MudSelectItem T="string" Value="@("Admin")">Admin</MudSelectItem>
+                            <MudSelectItem T="string" Value="@("SuperAdmin")">SuperAdmin</MudSelectItem>
+
+                            <!-- Po potrebi dodajte još rolí -->
+                        </MudSelect>
+
+                        <div class="mt-4 d-flex gap-4">
+                            <MudButton OnClick="SubmitForm" Color="Color.Primary" Variant="Variant.Filled">
+                                Spremi
+                            </MudButton>
+                            <MudButton OnClick="Cancel" Color="Color.Default" Variant="Variant.Outlined">
+                                Odustani
+                            </MudButton>
+                        </div>
+                    </MudForm>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</Container>
