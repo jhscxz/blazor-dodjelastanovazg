@@ -16,7 +16,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Components
 
         protected string SearchText { get; set; } = "";
         protected string FilterRole { get; set; } = RoleNames.All;
-        protected int RowsPerPage { get; set; } = 5;
+        protected int RowsPerPage { get; set; } = 10;
 
         protected async Task OnValueChanged(string newValue)
         {

@@ -8,27 +8,37 @@
         <!-- Pretraga, filter, tablica... -->
 
         <div class="flex items-center gap-4 mb-4">
-            <MudTextField Label="Pretraga korisnika"
-                          Value="@SearchText"
-                          ValueChanged="@((string e) => OnValueChanged(e))"
-                          Immediate="true"
-                          DebounceInterval="300"
-                          Variant="Variant.Text"
-                          Color="Color.Primary"
-                          Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search"/>
-            <MudSelect T="string" Label="Role:"
-                       @bind-Value="FilterRole"
-                       @bind-Value:after="OnFilterRoleChanged"
-                       Variant="Variant.Text"
-                       Color="Color.Primary"
-                       Dense="true"
-                       Style="min-width: 120px;">
-                <MudSelectItem T="string" Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
-                <MudSelectItem T="string" Value="@RoleNames.User">@RoleNames.User</MudSelectItem>
-                <MudSelectItem T="string" Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
-                <MudSelectItem T="string" Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
-            </MudSelect>
+            <!-- Omotač za polje pretrage, rastezljiv (flex-1) -->
+            <div class="flex-1">
+                <MudTextField
+                    Label="Pretraga korisnika"
+                    Value="@SearchText"
+                    ValueChanged="@((string e) => OnValueChanged(e))"
+                    Immediate="true"
+                    DebounceInterval="300"
+                    Variant="Variant.Text"
+                    Color="Color.Primary"
+                    Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Search"
+                    Class="w-full"/>
+            </div>
+
+            <!-- Omotač za rolu, ne rasteže se (flex-none) i fiksna širina -->
+            <div class="flex-none w-[120px]">
+                <MudSelect T="string"
+                           Label="Role:"
+                           @bind-Value="FilterRole"
+                           @bind-Value:after="OnFilterRoleChanged"
+                           Variant="Variant.Text"
+                           Color="Color.Primary"
+                           Dense="true"
+                           Class="w-full">
+                    <MudSelectItem T="string" Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
+                    <MudSelectItem T="string" Value="@RoleNames.User">@RoleNames.User</MudSelectItem>
+                    <MudSelectItem T="string" Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
+                    <MudSelectItem T="string" Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
+                </MudSelect>
+            </div>
         </div>
 
         <MudTable T="UserDto"
@@ -79,10 +89,12 @@
 </Container>
 
 @code {
+
     private List<Breadcrumbs.BreadcrumbItem> breadcrumbItems = new()
     {
         new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
         new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
         new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" }
     };
+
 }
