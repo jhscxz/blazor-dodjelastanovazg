@@ -1,0 +1,121 @@
+@page "/admin/users/edit/{UserId}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Areas.Admin.Korisnici.Services
+@using MudBlazor
+@attribute [Authorize(Roles = "Admin,SuperAdmin")]
+
+<Container BreadcrumbItems="breadcrumbItems">
+    <MudPaper Class="pa-4">
+        <MudForm @ref="editForm" Model="@userModel" Valid="() => isValid = true" Invalid="() => isValid = false">
+            <MudText Typo="Typo.h6">Uredi korisnika</MudText>
+            <!-- Umjesto MudSpacer s Class, koristimo Style -->
+            <MudSpacer />
+
+            <!-- Korisničko ime -->
+            <MudTextField T="string"
+                          Label="Korisničko ime"
+                          @bind-Value="@userModel.UserName"
+                          Required="true"
+                          Variant="Variant.Text"
+                          Color="Color.Primary" />
+
+            <!-- Email -->
+            <MudTextField T="string"
+                          Label="Email"
+                          @bind-Value="@userModel.Email"
+                          Required="true"
+                          Variant="Variant.Text"
+                          Color="Color.Primary" />
+
+            <MudSpacer />
+
+            <!-- Gumbi -->
+            <div class="flex gap-4">
+                <MudButton OnClick="@SaveUser" Disabled="@( !isValid )" Color="Color.Primary" Variant="Variant.Filled">
+                    Spremi
+                </MudButton>
+                <MudButton OnClick="@Cancel" Color="Color.Default" Variant="Variant.Outlined">
+                    Odustani
+                </MudButton>
+            </div>
+        </MudForm>
+    </MudPaper>
+</Container>
+
+@code {
+    [Parameter] public string UserId { get; set; } = default!;
+
+    [Inject] public UserManager<IdentityUser> UserManager { get; set; } = default!;
+    [Inject] public NavigationManager Navigation { get; set; } = default!;
+    [Inject] public IUserService UserService { get; set; } = default!;
+
+    private EditUserModel userModel = new();
+    private MudForm editForm = default!;
+    private bool isValid;
+
+    private List<Breadcrumbs.BreadcrumbItem> breadcrumbItems = new()
+    {
+        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Uredi korisnika" }
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = await UserManager.FindByIdAsync(UserId);
+        if (user == null)
+        {
+            Navigation.NavigateTo("/admin/users");
+            return;
+        }
+
+        userModel = new EditUserModel
+        {
+            UserId = user.Id,
+            UserName = user.UserName ?? "",
+            Email = user.Email ?? ""
+        };
+    }
+
+    private async Task SaveUser()
+    {
+        await editForm.Validate();
+        if (!isValid)
+            return;
+
+        var user = await UserManager.FindByIdAsync(userModel.UserId);
+        if (user == null)
+        {
+            Navigation.NavigateTo("/admin/users");
+            return;
+        }
+
+        user.UserName = userModel.UserName;
+        user.Email = userModel.Email;
+
+        var result = await UserManager.UpdateAsync(user);
+        if (result.Succeeded)
+        {
+            Navigation.NavigateTo("/admin/users");
+        }
+        else
+        {
+            // Obrada grešaka
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/admin/users");
+    }
+
+    private class EditUserModel
+    {
+        public string UserId { get; set; } = "";
+        public string UserName { get; set; } = "";
+        public string Email { get; set; } = "";
+    }
+}
