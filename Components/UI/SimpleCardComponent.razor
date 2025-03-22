@@ -1,13 +1,12 @@
 @inherits LayoutComponentBase
 
-<div class="bg-white rounded-lg shadow-sm p-6 border-1 border-gray-300 hover:border-gray-400">
-    @ChildContent
+<div class="bg-[#1e497f] text-white rounded-lg shadow-sm border border-transparent hover:border-[#1e497f] transition-colors duration-200">
+    <div class="c-padding-p-5">
+        @ChildContent
+    </div>
 </div>
 
 @code {
-    /// <summary>
-    /// Sadržaj koji će biti prikazan unutar komponente.
-    /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 }

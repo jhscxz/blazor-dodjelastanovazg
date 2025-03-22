@@ -3,7 +3,7 @@
 @using MudBlazor
 @using DodjelaStanovaZG.Components.UI
 
-<Container>
+<Container BreadcrumbItems="breadcrumbItems">
     <MudPaper Class="pa-4">
         <!-- Pretraga, filter, tablica... -->
 
@@ -77,3 +77,12 @@
         </MudTable>
     </MudPaper>
 </Container>
+
+@code {
+    private List<Breadcrumbs.BreadcrumbItem> breadcrumbItems = new()
+    {
+        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" }
+    };
+}
