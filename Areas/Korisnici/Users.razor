@@ -17,19 +17,25 @@
     <MudPaper Class="pa-4">
         <!-- Kontejner za pretragu i filter, postavljen horizontalno -->
         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+
+            <!-- Polje za pretragu u "Text" varijanti -->
             <MudTextField Label="Pretraga korisnika"
                           Value="@searchText"
                           ValueChanged="@((string e) => OnValueChanged(e))"
                           Immediate="true"
                           DebounceInterval="300"
-                          Variant="Variant.Outlined"
+                          Variant="Variant.Text"
+                          Color="Color.Primary"
                           Adornment="Adornment.Start"
                           AdornmentIcon="@Icons.Material.Filled.Search" />
 
-            <MudSelect T="string" Label="Role:"
+            <!-- Select za filtriranje po roli, također "Text" varijanta -->
+            <MudSelect T="string"
+                       Label="Role:"
                        @bind-Value="filterRole"
                        @bind-Value:after="OnFilterRoleChanged"
-                       Variant="Variant.Outlined"
+                       Variant="Variant.Text"
+                       Color="Color.Primary"
                        Dense="true"
                        Style="min-width: 120px;">
                 <MudSelectItem T="string" Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
@@ -37,7 +43,9 @@
                 <MudSelectItem T="string" Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
                 <MudSelectItem T="string" Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
             </MudSelect>
+
         </div>
+
 
         <!-- Tablica s korisničkim podacima -->
         <MudTable T="UserDto"
@@ -66,15 +74,24 @@
                 <MudTd DataLabel="Email">@context.Email</MudTd>
                 <MudTd DataLabel="Roles">@context.Roles</MudTd>
                 <MudTd DataLabel="Actions">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditUser(@context.Id))">
-                        <MudIcon Icon="@Icons.Material.Filled.Edit" /> Edit
-                    </MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-2" OnClick="@(() => DeleteUser(@context.Id))">
-                        <MudIcon Icon="@Icons.Material.Filled.Delete" /> Delete
-                    </MudButton>
+                    <button @onclick="@(() => EditUser(@context.Id))"
+                            class="inline-flex items-center p-2 text-blue-600 hover:text-blue-800 border border-blue-600 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke-width="1.5"
+                             stroke="currentColor"
+                             class="w-5 h-5">
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                        </svg>
+                    </button>
                 </MudTd>
-            </RowTemplate>
 
+
+
+            </RowTemplate>
             <PagerContent>
                 <MudTablePager />
             </PagerContent>
