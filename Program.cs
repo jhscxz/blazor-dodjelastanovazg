@@ -49,6 +49,7 @@ builder.Services.AddRazorPages(options =>
 // Registracija dodatnih servisa
 builder.Services.AddScoped<SeedService>();
 builder.Services.AddMudServices();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // =============================
 // KONFIGURACIJA APLIKACIJE

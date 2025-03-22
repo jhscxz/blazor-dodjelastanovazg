@@ -1,17 +1,18 @@
-@using DodjelaStanovaZG.Services
-@using DodjelaStanovaZG.DTO
+@attribute [Authorize(Roles = "Admin,SuperAdmin")]
+
 @using Microsoft.AspNetCore.Identity
 @using MudBlazor
-@using Microsoft.EntityFrameworkCore
+@using DodjelaStanovaZG.Services
+@using DodjelaStanovaZG.DTO
 @using DodjelaStanovaZG.Components.UI
+@using Microsoft.AspNetCore.Authorization
 
+@inject UserManager<IdentityUser> UserManager
 @inject IUserService UserService
 @inject NavigationManager Navigation
-@inject UserManager<IdentityUser> UserManager
 
 <Container>
     <MudPaper Class="pa-4">
-
         <!-- Polje za pretragu korisnika -->
         <MudTextField Label="Pretraga"
                       @bind-Value="SearchText"
@@ -35,7 +36,6 @@
             <ToolBarContent>
                 <MudText Typo="Typo.h6">Lista korisnika</MudText>
                 <MudSpacer />
-
                 <!-- Izbornik za broj redova po stranici -->
                 <MudSelect T="int" Label="Prikaži redova:"
                            @bind-Value="RowsPerPage"
@@ -89,7 +89,7 @@
 </Container>
 
 @code {
-    // Ref na MudTable
+    // Referenca na MudTable
     private MudTable<UserDto> table;
 
     // Privatna polja za pretragu i filtriranje
@@ -142,7 +142,6 @@
         Console.WriteLine($"[SearchText changed] => {SearchText}");
         if (table != null)
         {
-            // Reloadaj tablicu s novim uvjetima pretrage
             await table.ReloadServerData();
         }
     }
@@ -155,21 +154,18 @@
         Console.WriteLine($"[FilterRole changed] => {FilterRole}");
         if (table != null)
         {
-            // Reloadaj tablicu s novim filtrom
             await table.ReloadServerData();
         }
     }
 
     /// <summary>
-    /// Metoda koja se zove za dohvaćanje podataka iz baze (server-side).
-    /// Mora imati potpis: Task<TableData<UserDto>> (TableState, CancellationToken)
+    /// Metoda za dohvaćanje podataka iz baze (server-side) koja koristi pretragu i filtriranje po roli.
     /// </summary>
     private async Task<TableData<UserDto>> LoadUsers(TableState state, CancellationToken cancellationToken)
     {
         Console.WriteLine($"LoadUsers => Page={state.Page}, PageSize={state.PageSize}, searchText='{SearchText}', filterRole='{FilterRole}'");
 
-        // Pozovemo UserService i proslijedimo mu searchText i filterRole.
-        // U UserService.GetUsersAsync treba se implementirati filtriranje i paginacija.
+        // Pozivamo UserService i prosljeđujemo searchText i filterRole – implementirajte filtriranje u GetUsersAsync.
         return await UserService.GetUsersAsync(UserManager, SearchText, FilterRole, state, cancellationToken);
     }
 

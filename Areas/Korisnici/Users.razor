@@ -1,17 +1,21 @@
 @page "/admin/users"
 @attribute [Authorize(Roles = "Admin,SuperAdmin")]
+
 @using Microsoft.AspNetCore.Identity
-@using MudBlazor
 @using Microsoft.EntityFrameworkCore
-@inject UserManager<IdentityUser> UserManager
-@inject NavigationManager Navigation
-@using DodjelaStanovaZG.Components
+@using MudBlazor
+@using DodjelaStanovaZG.Services
+@using DodjelaStanovaZG.DTO
 @using Microsoft.AspNetCore.Authorization
 @using DodjelaStanovaZG.Components.UI
 
+@inject UserManager<IdentityUser> UserManager
+@inject IUserService UserService
+@inject NavigationManager Navigation
+
 <Container>
     <MudPaper Class="pa-4">
-        @* Polje za pretragu – koristi Value/ValueChanged *@
+        <!-- Polje za pretragu korisnika -->
         <MudTextField Label="Pretraga korisnika"
                       Value="@searchText"
                       ValueChanged="@((string e) => OnValueChanged(e))"
@@ -19,41 +23,55 @@
                       DebounceInterval="300"
                       Variant="Variant.Outlined"
                       Adornment="Adornment.Start"
-                      AdornmentIcon="Icons.Material.Filled.Search" />
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Class="mb-4" />
 
-        @* Tablica s server-side paginacijom *@
-        <MudTable T="IdentityUser"
+        <!-- Tablica s korisničkim podacima (uključujući role) -->
+        <MudTable T="UserDto"
                   ServerData="LoadUsers"
                   @ref="table"
                   Hover="true"
                   Striped="true"
-                  RowsPerPage="rowsPerPage"
+                  RowsPerPage="@rowsPerPage"
                   Dense="true">
             <ToolBarContent>
                 <MudText Typo="Typo.h6">Lista korisnika</MudText>
                 <MudSpacer />
-                <MudSelect T="int" Label="Redova po stranici" @bind-Value="rowsPerPage">
+                <!-- Izbornik za broj redova po stranici -->
+                <MudSelect T="int" Label="Redova po stranici" @bind-Value="rowsPerPage"
+                           Variant="Variant.Outlined" Class="custom-rows-select">
                     <MudSelectItem T="int" Value="5">5</MudSelectItem>
                     <MudSelectItem T="int" Value="10">10</MudSelectItem>
                     <MudSelectItem T="int" Value="20">20</MudSelectItem>
+                </MudSelect>
+                <!-- Izbornik za filtriranje po roli -->
+                <MudSelect T="string" Label="Filter Role:" @bind-Value="filterRole"
+                           @bind-Value:after="OnFilterRoleChanged"
+                           Variant="Variant.Outlined" Class="custom-role-select" Style="margin-left: 1rem;">
+                    <MudSelectItem T="string" Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
+                    <MudSelectItem T="string" Value="@RoleNames.User">@RoleNames.User</MudSelectItem>
+                    <MudSelectItem T="string" Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
+                    <MudSelectItem T="string" Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
                 </MudSelect>
             </ToolBarContent>
 
             <HeaderContent>
                 <MudTh>Username</MudTh>
                 <MudTh>Email</MudTh>
+                <MudTh>Roles</MudTh>
                 <MudTh>Actions</MudTh>
             </HeaderContent>
 
             <RowTemplate>
                 <MudTd DataLabel="Username">@context.UserName</MudTd>
                 <MudTd DataLabel="Email">@context.Email</MudTd>
+                <MudTd DataLabel="Roles">@context.Roles</MudTd>
                 <MudTd DataLabel="Actions">
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditUser(@context.Id))">
-                        Edit
+                        <MudIcon Icon="@Icons.Material.Filled.Edit" /> Edit
                     </MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => DeleteUser(@context.Id))">
-                        Delete
+                    <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-2" OnClick="@(() => DeleteUser(@context.Id))">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" /> Delete
                     </MudButton>
                 </MudTd>
             </RowTemplate>
@@ -66,38 +84,17 @@
 </Container>
 
 @code {
-    private MudTable<IdentityUser> table;
+    // Ref na MudTable
+    private MudTable<UserDto> table;
+
+    // Privatna polja za pretragu, filtriranje i broj redova
     private string searchText = "";
+    private string filterRole = RoleNames.All;
     private int rowsPerPage = 5;
 
-    // Server-side dohvat podataka – koristi searchText za filtriranje
-    private async Task<TableData<IdentityUser>> LoadUsers(TableState state, CancellationToken cancellationToken)
-    {
-        Console.WriteLine($"LoadUsers: Page={state.Page}, PageSize={state.PageSize}, searchText='{searchText}'");
-
-        var query = UserManager.Users.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(searchText))
-        {
-            query = query.Where(u => u.UserName.Contains(searchText) || u.Email.Contains(searchText));
-        }
-
-        int totalItems = await query.CountAsync(cancellationToken);
-
-        var users = await query.OrderBy(u => u.UserName)
-                               .Skip(state.Page * state.PageSize)
-                               .Take(state.PageSize)
-                               .ToListAsync(cancellationToken);
-
-        Console.WriteLine($"Returning {users.Count} items out of {totalItems}");
-        return new TableData<IdentityUser>
-        {
-            Items = users,
-            TotalItems = totalItems
-        };
-    }
-
-    // OnValueChanged – ručno postavlja searchText i reloada tablicu
+    /// <summary>
+    /// Metoda se poziva kad se mijenja pretraga.
+    /// </summary>
     private async Task OnValueChanged(string newValue)
     {
         searchText = newValue;
@@ -107,22 +104,45 @@
         }
     }
 
+    /// <summary>
+    /// Metoda se poziva kad se mijenja odabrana rola u filteru.
+    /// </summary>
+    private async Task OnFilterRoleChanged()
+    {
+        Console.WriteLine($"[FilterRole changed] => {filterRole}");
+        if (table != null)
+        {
+            await table.ReloadServerData();
+        }
+    }
+
+    /// <summary>
+    /// Dohvat podataka server-side uz filtriranje i pretragu.
+    /// </summary>
+    private async Task<TableData<UserDto>> LoadUsers(TableState state, CancellationToken cancellationToken)
+    {
+        Console.WriteLine($"LoadUsers => Page={state.Page}, PageSize={state.PageSize}, searchText='{searchText}', filterRole='{filterRole}'");
+        // Prosljeđujemo searchText i filterRole u UserService
+        return await UserService.GetUsersAsync(UserManager, searchText, filterRole, state, cancellationToken);
+    }
+
+    /// <summary>
+    /// Navigira na stranicu za uređivanje korisnika.
+    /// </summary>
     private void EditUser(string userId)
     {
         Navigation.NavigateTo($"/admin/users/edit/{userId}");
     }
 
+    /// <summary>
+    /// Briše korisnika i ponovno učitava tablicu.
+    /// </summary>
     private async Task DeleteUser(string userId)
     {
-        var user = await UserManager.FindByIdAsync(userId);
-        if (user != null)
+        bool success = await UserService.DeleteUserAsync(UserManager, userId);
+        if (success && table != null)
         {
-            var result = await UserManager.DeleteAsync(user);
-            if (result.Succeeded && table != null)
-            {
-                Console.WriteLine($"User {userId} deleted.");
-                await table.ReloadServerData();
-            }
+            await table.ReloadServerData();
         }
     }
 }
