@@ -15,44 +15,43 @@
 
 <Container>
     <MudPaper Class="pa-4">
-        <!-- Polje za pretragu korisnika -->
-        <MudTextField Label="Pretraga korisnika"
-                      Value="@searchText"
-                      ValueChanged="@((string e) => OnValueChanged(e))"
-                      Immediate="true"
-                      DebounceInterval="300"
-                      Variant="Variant.Outlined"
-                      Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
-                      Class="mb-4" />
+        <!-- Kontejner za pretragu i filter, postavljen horizontalno -->
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+            <MudTextField Label="Pretraga korisnika"
+                          Value="@searchText"
+                          ValueChanged="@((string e) => OnValueChanged(e))"
+                          Immediate="true"
+                          DebounceInterval="300"
+                          Variant="Variant.Outlined"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" />
 
-        <!-- Tablica s korisničkim podacima (uključujući role) -->
+            <MudSelect T="string" Label="Role:"
+                       @bind-Value="filterRole"
+                       @bind-Value:after="OnFilterRoleChanged"
+                       Variant="Variant.Outlined"
+                       Dense="true"
+                       Style="min-width: 120px;">
+                <MudSelectItem T="string" Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
+                <MudSelectItem T="string" Value="@RoleNames.User">@RoleNames.User</MudSelectItem>
+                <MudSelectItem T="string" Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
+                <MudSelectItem T="string" Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
+            </MudSelect>
+        </div>
+
+        <!-- Tablica s korisničkim podacima -->
         <MudTable T="UserDto"
                   ServerData="LoadUsers"
-                  @ref="table"
                   Hover="true"
                   Striped="true"
                   RowsPerPage="@rowsPerPage"
-                  Dense="true">
+                  Dense="true"
+                  Class="my-custom-table"
+                  @ref="table">
+
             <ToolBarContent>
                 <MudText Typo="Typo.h6">Lista korisnika</MudText>
                 <MudSpacer />
-                <!-- Izbornik za broj redova po stranici -->
-                <MudSelect T="int" Label="Redova po stranici" @bind-Value="rowsPerPage"
-                           Variant="Variant.Outlined" Class="custom-rows-select">
-                    <MudSelectItem T="int" Value="5">5</MudSelectItem>
-                    <MudSelectItem T="int" Value="10">10</MudSelectItem>
-                    <MudSelectItem T="int" Value="20">20</MudSelectItem>
-                </MudSelect>
-                <!-- Izbornik za filtriranje po roli -->
-                <MudSelect T="string" Label="Filter Role:" @bind-Value="filterRole"
-                           @bind-Value:after="OnFilterRoleChanged"
-                           Variant="Variant.Outlined" Class="custom-role-select" Style="margin-left: 1rem;">
-                    <MudSelectItem T="string" Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
-                    <MudSelectItem T="string" Value="@RoleNames.User">@RoleNames.User</MudSelectItem>
-                    <MudSelectItem T="string" Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
-                    <MudSelectItem T="string" Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
-                </MudSelect>
             </ToolBarContent>
 
             <HeaderContent>
@@ -82,6 +81,7 @@
         </MudTable>
     </MudPaper>
 </Container>
+
 
 @code {
     // Ref na MudTable
