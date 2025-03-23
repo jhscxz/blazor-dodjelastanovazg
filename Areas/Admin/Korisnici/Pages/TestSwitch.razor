@@ -1,0 +1,45 @@
+@page "/test-switch"
+
+@using MudBlazor
+
+<MudPaper Class="pa-4" Style="min-width: 400px;">
+    <!-- MudSwitch sada koristi Value binding -->
+    <MudSwitch T="bool" @bind-Value="_allowEditing"
+               Color="Color.Primary"
+               Class="mb-4"
+               Label="Omogući izmjenu polja" />
+
+    <MudTextField T="string"
+                  Label="Test polje"
+                  @bind-Value="_testValue"
+                  Disabled="@(!_allowEditing)"
+                  Variant="Variant.Outlined"
+                  Color="Color.Primary"
+                  Class="mb-4" />
+
+    <!-- Koristimo Row="true" i AlignItems="Center" za horizontalni raspored -->
+    <MudStack Row="true"
+              AlignItems="AlignItems.Center"
+              Spacing="2"
+              Style="width: 100%;">
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">
+            Gumb 1
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined">
+            Gumb 2
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary">
+            Gumb 3
+        </MudButton>
+
+    </MudStack>
+
+</MudPaper>
+
+@code {
+    private bool _allowEditing;
+    private string _testValue = "Hello";
+}

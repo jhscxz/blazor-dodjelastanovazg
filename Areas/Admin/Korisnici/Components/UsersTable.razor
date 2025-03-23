@@ -36,8 +36,8 @@
                     ValueChanged="@((string e) => OnValueChanged(e))"
                     Immediate="true"
                     DebounceInterval="300"
-                    Variant="Variant.Text"
-                    Color="Color.Primary"
+                    Variant="Variant.Outlined"
+                    Margin="Margin.Dense"
                     Adornment="Adornment.Start"
                     AdornmentIcon="@Icons.Material.Filled.Search"
                     Class="w-full"/>
@@ -49,8 +49,8 @@
                            Label="Role:"
                            @bind-Value="FilterRole"
                            @bind-Value:after="OnFilterRoleChanged"
-                           Variant="Variant.Text"
-                           Color="Color.Primary"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
                            Dense="true"
                            Class="w-full">
                     <MudSelectItem T="string" Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
@@ -69,18 +69,29 @@
                   Dense="true"
                   @ref="Table">
 
-
             <HeaderContent>
-                <MudTh>Username</MudTh>
-                <MudTh>Email</MudTh>
-                <MudTh>Roles</MudTh>
-                <MudTh>Actions</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73;">Korisničko ime</MudTh>
+                <MudTh Style="font-weight: bold; color: white;background-color: #163d73;">Email</MudTh>
+                <MudTh Style="font-weight: bold; color: white;background-color: #163d73;">Role</MudTh>
+                <MudTh Style="font-weight: bold; color: white;background-color: #163d73;">Status</MudTh>
+                <MudTh Style="font-weight: bold; color: white;background-color: #163d73;">Akcija</MudTh>
             </HeaderContent>
 
             <RowTemplate>
                 <MudTd DataLabel="Username">@context.UserName</MudTd>
                 <MudTd DataLabel="Email">@context.Email</MudTd>
                 <MudTd DataLabel="Roles">@context.Roles</MudTd>
+                <MudTd DataLabel="Status">
+                    @if (context.IsLocked)
+                    {
+                        <MudChip T="string" Text="red" Variant="Variant.Text" Color="Color.Error" Size="Size.Small">Zaključan</MudChip>
+                    }
+                    else
+                    {
+                        <MudChip T="string" Text="green" Variant="Variant.Text" Color="Color.Success" Size="Size.Small">Otključan
+                        </MudChip>
+                    }
+                </MudTd>
                 <MudTd DataLabel="Actions">
                     <MudButton OnClick="() => EditUser(context.Id)"
                                Variant="Variant.Text"
@@ -90,14 +101,14 @@
                         <MudIcon Icon="@Icons.Material.Filled.Edit" Class="custom-icon-sm"/>
                     </MudButton>
                 </MudTd>
-
-
             </RowTemplate>
 
             <PagerContent>
                 <MudTablePager/>
             </PagerContent>
         </MudTable>
+
+
     </MudPaper>
 </Container>
 

@@ -7,7 +7,9 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
 {
     public interface IUserService
     {
-        Task<TableData<UserDto>> GetUsersAsync(UserManager<IdentityUser> userManager, string searchText, string filterRole, TableState state, CancellationToken cancellationToken);
+        Task<TableData<UserDto>> GetUsersAsync(UserManager<IdentityUser> userManager, string searchText,
+            string filterRole, TableState state, CancellationToken cancellationToken);
+
         Task<bool> DeleteUserAsync(UserManager<IdentityUser> userManager, string userId);
     }
 
@@ -26,7 +28,8 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
             // Filtriranje po searchText (UserName ili Email)
             if (!string.IsNullOrWhiteSpace(searchText))
             {
-                query = query.Where(u => u.UserName != null && u.Email != null && (u.UserName.Contains(searchText) || u.Email.Contains(searchText)));
+                query = query.Where(u => u.UserName != null && u.Email != null &&
+                                         (u.UserName.Contains(searchText) || u.Email.Contains(searchText)));
             }
 
             // Filtriranje po roli, ako nije "All"
@@ -54,12 +57,16 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
             foreach (var user in userEntities)
             {
                 var roles = await userManager.GetRolesAsync(user);
+                var lockoutEnd = await userManager.GetLockoutEndDateAsync(user);
+                bool isLocked = lockoutEnd.HasValue && lockoutEnd > DateTimeOffset.UtcNow;
+
                 users.Add(new UserDto
                 {
                     Id = user.Id,
                     UserName = user.UserName,
                     Email = user.Email,
-                    Roles = string.Join(", ", roles)
+                    Roles = string.Join(", ", roles),
+                    IsLocked = isLocked
                 });
             }
 
@@ -70,6 +77,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
             };
         }
 
+
         public async Task<bool> DeleteUserAsync(UserManager<IdentityUser> userManager, string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
@@ -78,6 +86,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
                 var result = await userManager.DeleteAsync(user);
                 return result.Succeeded;
             }
+
             return false;
         }
     }
