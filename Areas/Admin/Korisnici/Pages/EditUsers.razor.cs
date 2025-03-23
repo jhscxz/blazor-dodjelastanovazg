@@ -19,12 +19,13 @@ public partial class EditUsers : ComponentBase
     private List<string> ErrorMessages { get; } = [];
 
     protected readonly List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems =
-    [
+    new List<Breadcrumbs.BreadcrumbItem>
+    {
         new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
         new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
         new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" },
         new Breadcrumbs.BreadcrumbItem { Text = "Uredi korisnika" }
-    ];
+    };
 
     private bool _firstRender = true;
 
@@ -97,11 +98,11 @@ public partial class EditUsers : ComponentBase
             return;
         }
 
-        // Ažuriraj ulogu
+        // Ažuriraj ulogu koristeći pojedinačno uklanjanje
         if (!await UpdateUserRoleAsync(user))
             return;
 
-        // Ažuriraj lockout status
+        // Ažuriraj lockout status (zaključavanje/otključavanje računa)
         var lockoutResult = UserModel.IsLocked
             ? await UserManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddYears(100))
             : await UserManager.SetLockoutEndDateAsync(user, null);
@@ -122,7 +123,6 @@ public partial class EditUsers : ComponentBase
             ErrorMessages.Add("Email adresa je već zauzeta.");
             return true;
         }
-
         return false;
     }
 
@@ -134,28 +134,29 @@ public partial class EditUsers : ComponentBase
             ErrorMessages.Add("Korisničko ime je već zauzeto.");
             return true;
         }
-
         return false;
     }
 
     private async Task<bool> UpdateUserRoleAsync(IdentityUser user)
     {
         var currentRoles = await UserManager.GetRolesAsync(user);
-        if (!currentRoles.Contains(UserModel.Role))
+        // Ukloni svaku postojeću rolu pojedinačno
+        foreach (var role in currentRoles)
         {
-            var removeResult = await UserManager.RemoveFromRolesAsync(user, currentRoles);
+            var removeResult = await UserManager.RemoveFromRoleAsync(user, role);
             if (!removeResult.Succeeded)
             {
                 ErrorMessages.AddRange(removeResult.Errors.Select(e => e.Description));
                 return false;
             }
+        }
 
-            var addResult = await UserManager.AddToRoleAsync(user, UserModel.Role);
-            if (!addResult.Succeeded)
-            {
-                ErrorMessages.AddRange(addResult.Errors.Select(e => e.Description));
-                return false;
-            }
+        // Dodaj novu rolu
+        var addResult = await UserManager.AddToRoleAsync(user, UserModel.Role);
+        if (!addResult.Succeeded)
+        {
+            ErrorMessages.AddRange(addResult.Errors.Select(e => e.Description));
+            return false;
         }
 
         return true;

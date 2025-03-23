@@ -84,14 +84,18 @@
                 <MudTd DataLabel="Status">
                     @if (context.IsLocked)
                     {
-                        <MudChip T="string" Text="red" Variant="Variant.Text" Color="Color.Error" Size="Size.Small">Zaključan</MudChip>
+                        <MudChip T="string" Variant="Variant.Text" Color="Color.Error" Size="Size.Small">
+                            Zaključan
+                        </MudChip>
                     }
                     else
                     {
-                        <MudChip T="string" Text="green" Variant="Variant.Text" Color="Color.Success" Size="Size.Small">Otključan
+                        <MudChip T="string" Variant="Variant.Text" Color="Color.Success" Size="Size.Small">
+                            Otključan
                         </MudChip>
                     }
                 </MudTd>
+
                 <MudTd DataLabel="Actions">
                     <MudButton OnClick="() => EditUser(context.Id)"
                                Variant="Variant.Text"
