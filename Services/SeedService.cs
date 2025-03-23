@@ -186,26 +186,26 @@ namespace DodjelaStanovaZG.Services
             // Seed regularnih korisnika (20-ak korisnika)
             var seedUsers = new List<SeedUserModel>
             {
-                new SeedUserModel { Username = "ivanivic", Email = "ivanivic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "markomarkic", Email = "markomarkic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "petarpetrovic", Email = "petarpetrovic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "lukalukic", Email = "lukalukic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "josipjosic", Email = "josipjosic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "anteantic", Email = "anteantic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "mariomarinovic", Email = "mariomarinovic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "nikolanikolic", Email = "nikolanikolic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "dariodario", Email = "dariodario@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "zoranzoranic", Email = "zoranzoranic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "gorangoric", Email = "gorangoric@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "tomislavtomicic", Email = "tomislavtomicic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "stjepanstjesisic", Email = "stjepanstjesisic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "mihaelmiskovic", Email = "mihaelmiskovic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "andrejandrejic", Email = "andrejandrejic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "darkodarkic", Email = "darkodarkic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "sasasasacic", Email = "sasasasacic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "damirdamirovic", Email = "damirdamirovic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "bojanbojanic", Email = "bojanbojanic@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } },
-                new SeedUserModel { Username = "kresikreso", Email = "kresikreso@example.com", Password = "User@123", Roles = new List<string> { "Korisnik" } }
+                new SeedUserModel { Username = "ivanivic", Email = "ivanivic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "markomarkic", Email = "markomarkic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "petarpetrovic", Email = "petarpetrovic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "lukalukic", Email = "lukalukic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "josipjosic", Email = "josipjosic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "anteantic", Email = "anteantic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "mariomarinovic", Email = "mariomarinovic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "nikolanikolic", Email = "nikolanikolic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "dariodario", Email = "dariodario@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "zoranzoranic", Email = "zoranzoranic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "gorangoric", Email = "gorangoric@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "tomislavtomicic", Email = "tomislavtomicic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "stjepanstjesisic", Email = "stjepanstjesisic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "mihaelmiskovic", Email = "mihaelmiskovic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "andrejandrejic", Email = "andrejandrejic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "darkodarkic", Email = "darkodarkic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "sasasasacic", Email = "sasasasacic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "damirdamirovic", Email = "damirdamirovic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "bojanbojanic", Email = "bojanbojanic@example.com", Password = "User@123", Roles = new List<string> { "User" } },
+                new SeedUserModel { Username = "kresikreso", Email = "kresikreso@example.com", Password = "User@123", Roles = new List<string> { "User" } }
             };
 
             await SeedUsers(seedUsers);
