@@ -1,10 +1,10 @@
+using System.ComponentModel.DataAnnotations;
 using DodjelaStanovaZG.Components.UI;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
-using System.ComponentModel.DataAnnotations;
 
-namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages
+namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
 {
     public partial class EditUsers : ComponentBase
     {

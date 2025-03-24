@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
-using System.Linq;
 
-namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages
+namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
 {
     public partial class EditUserRoles : ComponentBase
     {
