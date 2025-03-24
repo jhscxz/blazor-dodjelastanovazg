@@ -4,16 +4,15 @@
 @using DodjelaStanovaZG.Components.UI
 
 <Container BreadcrumbItems="breadcrumbItems">
-    <MudPaper Class="pa-4">
+    <MudPaper Outlined="true" Class="pa-4">
         <!-- Pretraga, filter, tablica... -->
 
         <div class="flex items-center gap-4 mb-4">
             <!-- Gumb za dodavanje korisnika -->
             <MudButton OnClick="@AddUser"
                        Variant="Variant.Filled"
-                       Dense="true"
-                       DisableElevation="true"
-                       Style="background-color: #163d73; color: white;"
+                       Color="Color.Primary"
+                       DropShadow="false"
                        Class="inline-flex items-center px-4 py-2 font-bold">
                 <svg xmlns="http://www.w3.org/2000/svg"
                      fill="none"
@@ -67,6 +66,7 @@
                   Striped="true"
                   RowsPerPage="@RowsPerPage"
                   Dense="true"
+                  Outlined="true"
                   @ref="Table">
 
             <HeaderContent>
@@ -99,8 +99,6 @@
                 <MudTd DataLabel="Actions">
                     <MudButton OnClick="() => EditUser(context.Id)"
                                Variant="Variant.Text"
-                               Dense="true"
-                               DisableElevation="true"
                                Class="p-2 custom-edit-button">
                         <MudIcon Icon="@Icons.Material.Filled.Edit" Class="custom-icon-sm"/>
                     </MudButton>

@@ -8,7 +8,7 @@
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudGrid Justify="Justify.Center">
         <MudItem xs="12" sm="10" md="6" lg="4">
-            <MudCard Class="pa-6 border border-gray-300">
+            <MudCard Outlined="true" Rounded="true" Class="pa-6">
                 <MudCardContent>
                     @if (ErrorMessages?.Count > 0)
                     {
@@ -22,87 +22,87 @@
                         </MudAlert>
                     }
 
-                    <MudForm @ref="_editForm" Model="@UserModel"
-                             Valid="@(() => _isValid = true)"
-                             Invalid="@(() => _isValid = false)">
-                        <MudText Typo="Typo.h6" Class="mb-4">Uredi korisnika</MudText>
+                    <MudTabs Outlined="true" Rounded="true" PanelClass="pa-6">
+                        <!-- TAB 1: Osnovni podaci o korisniku -->
+                        <MudTabPanel Text="Korisnički podaci">
+                            <MudForm @ref="_editForm" Model="@UserModel"
+                                     Valid="@(() => _isValid = true)"
+                                     Invalid="@(() => _isValid = false)">
 
-                        <!-- Switch za omogućavanje izmjene podataka -->
-                        <MudSwitch T="bool"
-                                   @bind-Value="AllowEditing"
-                                   Color="Color.Primary"
-                                   Class="mb-4"
-                                   Label="Omogući izmjenu korisničkih podataka"/>
+                                <!-- Switch za omogućavanje izmjene podataka -->
+                                <MudSwitch T="bool"
+                                           @bind-Value="AllowEditing"
+                                           Color="Color.Primary"
+                                           Class="mb-4"
+                                           Label="Omogući izmjenu korisničkih podataka"/>
 
-                        <!-- Korisničko ime -->
-                        <MudTextField T="string"
-                                      Label="Korisničko ime"
-                                      @bind-Value="UserModel.UserName"
-                                      Disabled="@(!AllowEditing)"
-                                      Required="true"
-                                      Variant="Variant.Outlined"
-                                      Margin="Margin.Dense"
-                                      Class="mb-4"
-                                      AutoFocus="true"/>
+                                <!-- Korisničko ime -->
+                                <MudTextField T="string"
+                                              Label="Korisničko ime"
+                                              @bind-Value="UserModel.UserName"
+                                              Disabled="@(!AllowEditing)"
+                                              Required="true"
+                                              Variant="Variant.Outlined"
+                                              Margin="Margin.Dense"
+                                              Class="mb-4"
+                                              AutoFocus="true"/>
 
-                        <!-- Email -->
-                        <MudTextField T="string"
-                                      Label="Email"
-                                      @bind-Value="UserModel.Email"
-                                      Disabled="@(!AllowEditing)"
-                                      Required="true"
-                                      Variant="Variant.Outlined"
-                                      Margin="Margin.Dense"
-                                      Class="mb-4"/>
+                                <!-- Email -->
+                                <MudTextField T="string"
+                                              Label="Email"
+                                              @bind-Value="UserModel.Email"
+                                              Disabled="@(!AllowEditing)"
+                                              Required="true"
+                                              Variant="Variant.Outlined"
+                                              Margin="Margin.Dense"
+                                              Class="mb-4"/>
 
-                        <!-- Rola (uvijek omogućen) -->
-                        <MudSelect T="string"
-                                   Label="Rola"
-                                   @bind-Value="UserModel.Role"
-                                   Required="true"
-                                   Variant="Variant.Outlined"
-                                   Margin="Margin.Dense"
-                                   Dense="true"
-                                   Class="mb-4">
-                            <MudSelectItem T="string" Value="@("Korisnik")">Korisnik</MudSelectItem>
-                            <MudSelectItem T="string" Value="@("Admin")">Admin</MudSelectItem>
-                            <MudSelectItem T="string" Value="@("SuperAdmin")">SuperAdmin</MudSelectItem>
-                        </MudSelect>
+                                <!-- Switch za zaključavanje/otključavanje računa -->
+                                <MudSwitch T="bool"
+                                           @bind-Value="UserModel.IsLocked"
+                                           Color="Color.Error"
+                                           Label="@LockLabel"/>
 
-                        <!-- Switch za zaključavanje/otključavanje računa -->
-                        <MudSwitch T="bool"
-                                   @bind-Value="UserModel.IsLocked"
-                                   Color="Color.Error"
-                                   Label="@LockLabel"/>
+                                <!-- Gumbi (Spremi, Odustani, Promijeni lozinku) -->
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-4"
+                                          Style="width: 100%;">
+                                    <MudButton OnClick="@SaveUser"
+                                               StartIcon="@Icons.Material.Filled.Save"
+                                               Size="Size.Small"
+                                               Variant="Variant.Filled"
+                                               DropShadow="false"
+                                               Color="Color.Primary">
+                                        Spremi
+                                    </MudButton>
 
-                        <!-- Gumbi -->
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-4"
-                                  Style="width: 100%;">
-                            <MudButton OnClick="@SaveUser"
-                                       StartIcon="@Icons.Material.Filled.Save"
-                                       Style="min-width: 120px; background-color: #163d73; color: white;"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Primary">
-                                Spremi
-                            </MudButton>
+                                    <MudButton
+                                        OnClick="@Cancel"
+                                        StartIcon="@Icons.Material.Filled.Cancel"
+                                        Size="Size.Small"
+                                        Variant="Variant.Filled"
+                                        DropShadow="false"
+                                        Color="Color.Default">
+                                        Odustani
+                                    </MudButton>
 
-                            <MudButton Style="min-width: 120px"
-                                       OnClick="@Cancel"
-                                       StartIcon="@Icons.Material.Filled.Cancel"
-                                       Variant="Variant.Outlined"
-                                       Color="Color.Default">
-                                Odustani
-                            </MudButton>
+                                    <MudButton
+                                        OnClick="@ChangePassword"
+                                        StartIcon="@Icons.Material.Filled.LockReset"
+                                        Size="Size.Small"
+                                        Variant="Variant.Filled"
+                                        DropShadow="false"
+                                        IconColor="Color.Error">
+                                        Promijeni lozinku
+                                    </MudButton>
+                                </MudStack>
+                            </MudForm>
+                        </MudTabPanel>
 
-                            <MudButton Style="min-width: 160px"
-                                       OnClick="@ChangePassword"
-                                       StartIcon="@Icons.Material.Filled.LockReset"
-                                       Variant="Variant.Outlined"
-                                       Color="Color.Secondary">
-                                Promijeni lozinku
-                            </MudButton>
-                        </MudStack>
-                    </MudForm>
+                        <!-- TAB 2: Upravljanje rolama -->
+                        <MudTabPanel Text="Role">
+                            <EditUserRoles UserId="@UserId"/>
+                        </MudTabPanel>
+                    </MudTabs>
                 </MudCardContent>
             </MudCard>
         </MudItem>
