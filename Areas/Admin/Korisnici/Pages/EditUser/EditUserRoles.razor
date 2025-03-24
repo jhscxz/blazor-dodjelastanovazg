@@ -15,10 +15,10 @@
 }
 
 <!-- Tablica prikazuje sve role (string) u kojima je korisnik -->
-<MudTable Items="@UserRoles" Hover="true" Striped="true" Outlined="true" RowsPerPage="@RowsPerPage" Dense="true">
+<MudTable Items="@UserRoles" Hover="true" Striped="true" Outlined="true" RowsPerPage="@RowsPerPage" Dense="true" SortLabel="Sort By">
     <HeaderContent>
-        <MudTh Style="font-weight: bold; color: white; background-color: #163d73;">Role Name</MudTh>
-        <MudTh Style="font-weight: bold; color: white; background-color: #163d73;">Akcije</MudTh>
+        <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Rola</MudTh>
+        <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Akcija</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Role Name">@context</MudTd>
@@ -51,10 +51,11 @@
     </MudSelect>
     <MudButton Variant="Variant.Filled"
                Size="Size.Small"
-               Color="Color.Primary"
+               IconColor="Color.Success"
                OnClick="AddUserToRole"
-               Style="margin-top: 4px;"
+               Style="margin-top: 4px; border: 1px solid #d3d3d3;"
                DropShadow="false"
+               Color="Color.Default"
                StartIcon="@Icons.Material.Filled.Add">
         Dodaj
     </MudButton>

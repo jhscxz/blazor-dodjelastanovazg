@@ -22,7 +22,7 @@
                         </MudAlert>
                     }
 
-                    <MudTabs Outlined="true" Rounded="true" PanelClass="pa-6">
+                    <MudTabs Color="Color.Default" Rounded="true" PanelClass="pa-6">
                         <!-- TAB 1: Osnovni podaci o korisniku -->
                         <MudTabPanel Text="Korisnički podaci">
                             <MudForm @ref="_editForm" Model="@UserModel"
@@ -71,7 +71,9 @@
                                                Size="Size.Small"
                                                Variant="Variant.Filled"
                                                DropShadow="false"
-                                               Color="Color.Primary">
+                                               Color="Color.Default"
+                                               Style="border: 1px solid #d3d3d3;"
+                                               IconColor="Color.Success">
                                         Spremi
                                     </MudButton>
 
@@ -81,6 +83,8 @@
                                         Size="Size.Small"
                                         Variant="Variant.Filled"
                                         DropShadow="false"
+                                        IconColor="Color.Error"
+                                        Style="border: 1px solid #d3d3d3;"
                                         Color="Color.Default">
                                         Odustani
                                     </MudButton>
@@ -91,6 +95,8 @@
                                         Size="Size.Small"
                                         Variant="Variant.Filled"
                                         DropShadow="false"
+                                        Color="Color.Default"
+                                        Style="border: 1px solid #d3d3d3;"
                                         IconColor="Color.Error">
                                         Promijeni lozinku
                                     </MudButton>

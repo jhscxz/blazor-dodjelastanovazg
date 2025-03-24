@@ -23,7 +23,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
             new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
             new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
             new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" },
-            new Breadcrumbs.BreadcrumbItem { Text = "Promijeni lozinku" }
+            new Breadcrumbs.BreadcrumbItem { Text = "Promijeni lozinku", CssClass = "text-red-500 font-bold" }
         };
         protected override async Task OnInitializedAsync()
         {

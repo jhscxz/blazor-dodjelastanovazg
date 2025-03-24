@@ -24,7 +24,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
                 new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
                 new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
                 new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" },
-                new Breadcrumbs.BreadcrumbItem { Text = "Uredi korisnika" }
+                new Breadcrumbs.BreadcrumbItem { Text = "Uredi korisnika", CssClass = "text-red-500 font-bold"}
             };
 
         private bool _firstRender = true;

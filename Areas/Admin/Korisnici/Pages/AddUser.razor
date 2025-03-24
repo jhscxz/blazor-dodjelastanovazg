@@ -8,7 +8,7 @@
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudGrid Justify="Justify.Center">
         <MudItem xs="12" sm="10" md="6" lg="4">
-            <MudCard Class="pa-6 border border-gray-300">
+            <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
                     @if (ErrorMessages?.Any() == true)
                     {
@@ -23,7 +23,6 @@
                     }
 
                     <MudForm @ref="_addForm" Model="UserModel">
-                        <MudText Typo="Typo.h6" Class="mb-4">Dodaj korisnika</MudText>
 
                         <!-- Korisničko ime -->
                         <MudTextField T="string"
@@ -73,16 +72,22 @@
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-4">
                             <MudButton OnClick="@SubmitForm"
                                        StartIcon="@Icons.Material.Filled.Save"
+                                       Size="Size.Small"
                                        Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       Style="min-width: 120px; background-color: #163d73; color: white;">
+                                       DropShadow="false"
+                                       Color="Color.Default"
+                                       Style="border: 1px solid #d3d3d3;"
+                                       IconColor="Color.Success">
                                 Spremi
                             </MudButton>
                             <MudButton OnClick="@Cancel"
                                        StartIcon="@Icons.Material.Filled.Cancel"
-                                       Variant="Variant.Outlined"
+                                       Size="Size.Small"
+                                       Variant="Variant.Filled"
                                        Color="Color.Default"
-                                       Style="min-width: 120px;">
+                                       Style="border: 1px solid #d3d3d3;"
+                                       IconColor="Color.Error"
+                                       DropShadow="false">
                                 Odustani
                             </MudButton>
                         </MudStack>
