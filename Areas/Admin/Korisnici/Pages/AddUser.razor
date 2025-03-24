@@ -25,7 +25,7 @@
                     <MudForm @ref="_addForm" Model="UserModel">
 
                         <!-- Korisničko ime -->
-                        <MudTextField T="string"
+                        <MudTextField ShrinkLabel T="string"
                                       Label="Korisničko ime"
                                       @bind-Value="UserModel.UserName"
                                       Required="true"
@@ -35,7 +35,7 @@
                                       Class="mb-4" />
 
                         <!-- Email -->
-                        <MudTextField T="string"
+                        <MudTextField ShrinkLabel T="string"
                                       Label="Email"
                                       @bind-Value="UserModel.Email"
                                       Required="true"
@@ -45,7 +45,7 @@
                                       Class="mb-4" />
 
                         <!-- Lozinka -->
-                        <MudTextField T="string"
+                        <MudTextField ShrinkLabel T="string"
                                       Label="Lozinka"
                                       @bind-Value="UserModel.Password"
                                       InputType="InputType.Password"
