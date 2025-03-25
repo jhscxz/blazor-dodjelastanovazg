@@ -1,13 +1,24 @@
 @using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
 
 @* Navigacijski link za korisnički profil *@
-<NavItem Href="/profile" Text="JHUSIC" />
-
-@* Statički prikaz statusa SUPERADMIN *@
-<span class="px-3 py-2 text-xs font-bold rounded-lg hover:bg-red-700 transition-colors duration-200"
-      style="background-color: #ef4444; color: #ffffff;">
-    SUPERADMIN
-</span>
+<AuthorizeView>
+    <Authorized>
+        @if (!string.IsNullOrEmpty(currentUserId))
+        {
+            <!-- NavItem s linkom na profil i prikazom "Username (UserId)" -->
+            <NavItem Href="@($"/profile/{currentUserId}")"
+                     Text="@($"{currentUserName}")" />
+        }
+        else
+        {
+            <span>Neuspjelo dohvaćanje ID-a</span>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <span>Prijavite se</span>
+    </NotAuthorized>
+</AuthorizeView>
 
 @* Navigacijski link za admin panel s prilagođenom bojom teksta *@
 <NavItem Href="/admin" Text="ADMIN PANEL" TextColor="#ef4444" />
@@ -19,3 +30,22 @@
         <NavItem Href="/Identity/Account/Logout" Text="ODJAVI SE" TextColor="#9CA3AF" UseLogoutIcon="true" />
     </Authorized>
 </AuthorizeView>
+
+@code {
+    private string currentUserId = "";
+    private string currentUserName = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            // Dohvaćamo UserId iz claima NameIdentifier
+            currentUserId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
+            
+            // Dohvaćamo UserName iz user.Identity.Name (ili iz nekog drugog claima)
+            currentUserName = user.Identity.Name ?? "";
+        }
+    }
+}
