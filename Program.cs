@@ -51,6 +51,7 @@ builder.Services.AddRazorPages(options =>
 builder.Services.AddScoped<SeedService>();
 builder.Services.AddMudServices();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 
 // =============================
 // KONFIGURACIJA APLIKACIJE

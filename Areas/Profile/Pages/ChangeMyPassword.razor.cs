@@ -4,43 +4,29 @@ using DodjelaStanovaZG.Components.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
 using MudBlazor;
+using DodjelaStanovaZG.Services;
+using DodjelaStanovaZG.DTO;       // uvoz DTO-a
 
 namespace DodjelaStanovaZG.Areas.Profile.Pages
 {
     [Authorize]
     public partial class ChangeMyPassword
     {
-        // Model za promjenu lozinke
-        public class ChangePasswordInputModel
-        {
-            [Required(ErrorMessage = "Stara lozinka je obavezna")]
-            public string OldPassword { get; set; } = "";
-
-            [Required(ErrorMessage = "Nova lozinka je obavezna")]
-            public string NewPassword { get; set; } = "";
-
-            [Required(ErrorMessage = "Potvrda nove lozinke je obavezna")]
-            [Compare("NewPassword", ErrorMessage = "Lozinke se ne podudaraju")]
-            public string ConfirmPassword { get; set; } = "";
-        }
-
-        // Polja i propertyji koje koristimo u .razor datoteci
+        // Sada koristimo DTO umjesto lokalnog modela
         private MudForm _form;
         private bool _isValid = false;
         private List<string> ErrorMessages = new();
-        private ChangePasswordInputModel ChangePasswordModel = new();
+        private ChangeMyPasswordDto ChangePasswordModel = new();
 
         // Injekcije
-        [Inject] public UserManager<IdentityUser> UserManager { get; set; } = default!;
-        [Inject] public SignInManager<IdentityUser> SignInManager { get; set; } = default!;
+        [Inject] public IPasswordService PasswordService { get; set; } = default!;
         [Inject] public NavigationManager Navigation { get; set; } = default!;
 
-        // Dohvat AuthenticationState iz Blazora (ako želite provjeru korisnika)
+        // Dohvat AuthenticationState iz Blazora
         [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
 
-        // Za breadcrumb (ako koristite vlastitu komponentu)
+        // Breadcrumbs (opcionalno)
         protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = new()
         {
             new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
@@ -51,10 +37,8 @@ namespace DodjelaStanovaZG.Areas.Profile.Pages
         protected override async Task OnInitializedAsync()
         {
             var authState = await AuthenticationStateTask;
-            var user = authState.User;
-            if (user?.Identity is null || !user.Identity.IsAuthenticated)
+            if (authState.User?.Identity is null || !authState.User.Identity.IsAuthenticated)
             {
-                // Ako korisnik nije prijavljen, preusmjeri na login
                 Navigation.NavigateTo("/login");
                 return;
             }
@@ -62,15 +46,15 @@ namespace DodjelaStanovaZG.Areas.Profile.Pages
 
         private async Task ChangePasswordAsync()
         {
-            // Validiraj formu
+            // Validiraj formu (MudBlazor validacija)
             await _form.Validate();
-            if (!_isValid)
+            if (!_form.IsValid)
                 return;
 
-            // Dohvati trenutno logiranog korisnika
+            // Dohvati userId iz claimova
             var authState = await AuthenticationStateTask;
-            var userClaims = authState.User;
-            var userId = userClaims.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = authState.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ErrorMessages.Clear();
 
             if (string.IsNullOrWhiteSpace(userId))
             {
@@ -78,24 +62,16 @@ namespace DodjelaStanovaZG.Areas.Profile.Pages
                 return;
             }
 
-            var identityUser = await UserManager.FindByIdAsync(userId);
-            if (identityUser == null)
-            {
-                ErrorMessages.Add("Korisnik ne postoji.");
-                return;
-            }
-
-            // Promijeni lozinku
-            var result = await UserManager.ChangePasswordAsync(
-                identityUser,
+            // Pozovi servis koji sada sam dohvaća korisnika i izvršava promjenu lozinke
+            var result = await PasswordService.ChangeOwnPasswordAsync(
+                userId,
                 ChangePasswordModel.OldPassword,
                 ChangePasswordModel.NewPassword
             );
 
             if (!result.Succeeded)
             {
-                // Prikaži greške
-                ErrorMessages.Clear();
+                // Prikaži sve greške
                 foreach (var error in result.Errors)
                 {
                     ErrorMessages.Add(error.Description);
@@ -103,11 +79,8 @@ namespace DodjelaStanovaZG.Areas.Profile.Pages
             }
             else
             {
-                // Osvježi korisničku autentikaciju nakon promjene lozinke
-                await SignInManager.RefreshSignInAsync(identityUser);
-
-                // Preusmjeri natrag na profil ili neku drugu stranicu
-                Navigation.NavigateTo("/profile");
+                // Ako je promjena uspješna, preusmjeri natrag na profil
+                Navigation.NavigateTo($"/profile/{userId}");
             }
         }
     }
