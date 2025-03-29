@@ -52,6 +52,7 @@ builder.Services.AddScoped<SeedService>();
 builder.Services.AddMudServices();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<BreadcrumbService>();
 
 // =============================
 // KONFIGURACIJA APLIKACIJE

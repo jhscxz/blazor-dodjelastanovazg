@@ -132,3 +132,8 @@ a {
     height: 1rem !important;    /* ako se koristi i height */
 }
 
+.table-header-cell {
+    font-weight: bold;
+    color: white;
+    background-color: #163d73;
+}

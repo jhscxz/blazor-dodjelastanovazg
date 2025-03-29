@@ -23,25 +23,16 @@
                     }
 
                     <MudForm @ref="_addForm" Model="UserModel">
-
-                        <!-- Korisničko ime -->
-                        <MudTextField ShrinkLabel T="string"
-                                      Label="Korisničko ime"
+                        <MudTextField ShrinkLabel T="string" Label="Korisničko ime"
                                       @bind-Value="UserModel.UserName"
-                                      Required="true"
-                                      Variant="Variant.Outlined"
-                                      Margin="Margin.Dense"
-                                      Autocomplete="off"
+                                      Required="true" Variant="Variant.Outlined"
+                                      Margin="Margin.Dense" Autocomplete="off"
                                       Class="mb-4" />
 
-                        <!-- Email -->
-                        <MudTextField ShrinkLabel T="string"
-                                      Label="Email"
+                        <MudTextField ShrinkLabel T="string" Label="Email"
                                       @bind-Value="UserModel.Email"
-                                      Required="true"
-                                      Variant="Variant.Outlined"
-                                      Margin="Margin.Dense"
-                                      Autocomplete="off"
+                                      Required="true" Variant="Variant.Outlined"
+                                      Margin="Margin.Dense" Autocomplete="off"
                                       Class="mb-4" />
 
                         <!-- Lozinka -->
@@ -55,39 +46,25 @@
                                       Autocomplete="new-password"
                                       Class="mb-4" />
 
-                        <!-- Rola -->
-                        <MudSelect T="string"
-                                   Label="Rola"
-                                   @bind-Value="UserModel.Role"
-                                   Required="true"
-                                   Variant="Variant.Outlined"
-                                   Margin="Margin.Dense"
-                                   Class="mb-4">
-                            <MudSelectItem T="string" Value="@("Korisnik")">Korisnik</MudSelectItem>
-                            <MudSelectItem T="string" Value="@("Admin")">Admin</MudSelectItem>
-                            <MudSelectItem T="string" Value="@("SuperAdmin")">SuperAdmin</MudSelectItem>
-                        </MudSelect>
-
-                        <!-- Gumbi u MudStack -->
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-4">
-                            <MudButton OnClick="@SubmitForm"
+                            <MudButton OnClick="SubmitForm"
                                        StartIcon="@Icons.Material.Filled.Save"
                                        Size="Size.Small"
                                        Variant="Variant.Filled"
-                                       DropShadow="false"
-                                       Color="Color.Default"
                                        Style="border: 1px solid #d3d3d3;"
-                                       IconColor="Color.Success">
+                                       DropShadow="false"
+                                       IconColor="Color.Success"
+                                       Color="Color.Default">
                                 Spremi
                             </MudButton>
-                            <MudButton OnClick="@Cancel"
+                            <MudButton OnClick="Cancel"
                                        StartIcon="@Icons.Material.Filled.Cancel"
                                        Size="Size.Small"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Default"
+                                       DropShadow="false"
                                        Style="border: 1px solid #d3d3d3;"
+                                       Variant="Variant.Filled"
                                        IconColor="Color.Error"
-                                       DropShadow="false">
+                                       Color="Color.Default">
                                 Odustani
                             </MudButton>
                         </MudStack>

@@ -1,87 +1,71 @@
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.DTO;
+using DodjelaStanovaZG.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
-using DodjelaStanovaZG.Services;
-using DodjelaStanovaZG.DTO;       // uvoz DTO-a
 
-namespace DodjelaStanovaZG.Areas.Profile.Pages
+namespace DodjelaStanovaZG.Areas.Profile.Pages;
+
+[Authorize]
+public partial class ChangeMyPassword : ComponentBase
 {
-    [Authorize]
-    public partial class ChangeMyPassword
+    [Inject] private IPasswordService PasswordService { get; set; } = null!;
+    [Inject] private NavigationManager Navigation { get; set; } = null!;
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
+
+    private MudForm _form = null!;
+    private protected bool IsValid = false;
+    private readonly List<string> _errorMessages = [];
+    private readonly ChangeMyPasswordDto _changePasswordModel = new();
+
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
+    [
+        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Profil", Url = "/profile" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Promjena lozinke", CssClass = "text-red-500 font-bold" }
+    ];
+
+    protected override async Task OnInitializedAsync()
     {
-        // Sada koristimo DTO umjesto lokalnog modela
-        private MudForm _form;
-        private bool _isValid = false;
-        private List<string> ErrorMessages = new();
-        private ChangeMyPasswordDto ChangePasswordModel = new();
-
-        // Injekcije
-        [Inject] public IPasswordService PasswordService { get; set; } = default!;
-        [Inject] public NavigationManager Navigation { get; set; } = default!;
-
-        // Dohvat AuthenticationState iz Blazora
-        [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
-
-        // Breadcrumbs (opcionalno)
-        protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = new()
+        var authState = await AuthenticationStateTask;
+        if (authState.User?.Identity is not { IsAuthenticated: true })
         {
-            new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-            new Breadcrumbs.BreadcrumbItem { Text = "Profil", Url = "/profile" },
-            new Breadcrumbs.BreadcrumbItem { Text = "Promjena lozinke", CssClass = "text-red-500 font-bold" }
-        };
+            Navigation.NavigateTo("/login");
+        }
+    }
 
-        protected override async Task OnInitializedAsync()
+    private async Task ChangePasswordAsync()
+    {
+        await _form.Validate();
+        if (!_form.IsValid) return;
+
+        var authState = await AuthenticationStateTask;
+        var userId = authState.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        _errorMessages.Clear();
+        if (string.IsNullOrWhiteSpace(userId))
         {
-            var authState = await AuthenticationStateTask;
-            if (authState.User?.Identity is null || !authState.User.Identity.IsAuthenticated)
-            {
-                Navigation.NavigateTo("/login");
-                return;
-            }
+            _errorMessages.Add("Nije pronađen ID korisnika.");
+            return;
         }
 
-        private async Task ChangePasswordAsync()
+        var result = await PasswordService.ChangeOwnPasswordAsync(
+            userId,
+            _changePasswordModel.OldPassword,
+            _changePasswordModel.NewPassword
+        );
+
+        if (!result.Succeeded)
         {
-            // Validiraj formu (MudBlazor validacija)
-            await _form.Validate();
-            if (!_form.IsValid)
-                return;
-
-            // Dohvati userId iz claimova
-            var authState = await AuthenticationStateTask;
-            var userId = authState.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            ErrorMessages.Clear();
-
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                ErrorMessages.Add("Nije pronađen ID korisnika.");
-                return;
-            }
-
-            // Pozovi servis koji sada sam dohvaća korisnika i izvršava promjenu lozinke
-            var result = await PasswordService.ChangeOwnPasswordAsync(
-                userId,
-                ChangePasswordModel.OldPassword,
-                ChangePasswordModel.NewPassword
-            );
-
-            if (!result.Succeeded)
-            {
-                // Prikaži sve greške
-                foreach (var error in result.Errors)
-                {
-                    ErrorMessages.Add(error.Description);
-                }
-            }
-            else
-            {
-                // Ako je promjena uspješna, preusmjeri natrag na profil
-                Navigation.NavigateTo($"/profile/{userId}");
-            }
+            _errorMessages.AddRange(result.Errors.Select(e => e.Description));
+        }
+        else
+        {
+            Navigation.NavigateTo($"/profile/{userId}");
         }
     }
 }
+

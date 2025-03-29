@@ -1,53 +1,47 @@
 @using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO
 @using DodjelaStanovaZG.Areas.Admin.Korisnici.Services
-@using MudBlazor
 @using DodjelaStanovaZG.Components.UI
+@using MudBlazor
 
-<Container BreadcrumbItems="breadcrumbItems">
+<Container BreadcrumbItems="_breadcrumbItems">
     <MudPaper Outlined="true" Class="pa-4">
-        <!-- Pretraga, filter, tablica... -->
 
         <div class="flex items-center gap-4 mb-4">
-            <!-- Gumb za dodavanje korisnika -->
             <MudButton OnClick="@AddUser"
                        Variant="Variant.Filled"
                        Color="Color.Default"
                        IconColor="Color.Success"
-                       Style="border: 1px solid #d3d3d3;"
                        DropShadow="false"
                        StartIcon="@Icons.Material.Filled.Add">
                 Dodaj
             </MudButton>
 
-            <!-- Omotač za polje pretrage, rastezljiv (flex-1) -->
             <div class="flex-1">
-                <MudTextField
-                    Label="Pretraga korisnika"
-                    Value="@SearchText"
-                    ValueChanged="@((string e) => OnValueChanged(e))"
-                    Immediate="true"
-                    DebounceInterval="300"
-                    Variant="Variant.Outlined"
-                    Margin="Margin.Dense"
-                    Adornment="Adornment.Start"
-                    AdornmentIcon="@Icons.Material.Filled.Search"
-                    Class="w-full"/>
+                <MudTextField Label="Pretraga korisnika"
+                              Value="@SearchText"
+                              ValueChanged="@((string e) => OnValueChanged(e))"
+                              Immediate="true"
+                              DebounceInterval="300"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Class="w-full" />
             </div>
 
-            <!-- Omotač za rolu, ne rasteže se (flex-none) i fiksna širina -->
             <div class="flex-none w-[120px]">
                 <MudSelect T="string"
                            Label="Role:"
-                           @bind-Value="FilterRole"
-                           @bind-Value:after="OnFilterRoleChanged"
+                           Value="@FilterRole"
+                           ValueChanged="@OnFilterRoleChanged"
                            Variant="Variant.Outlined"
                            Margin="Margin.Dense"
                            Dense="true"
                            Class="w-full">
-                    <MudSelectItem T="string" Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
-                    <MudSelectItem T="string" Value="@RoleNames.User">@RoleNames.User</MudSelectItem>
-                    <MudSelectItem T="string" Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
-                    <MudSelectItem T="string" Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
+                    <MudSelectItem Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
+                    <MudSelectItem Value="@RoleNames.User">@RoleNames.User</MudSelectItem>
+                    <MudSelectItem Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
+                    <MudSelectItem Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
                 </MudSelect>
             </div>
         </div>
@@ -59,14 +53,14 @@
                   RowsPerPage="@RowsPerPage"
                   Dense="true"
                   Outlined="true"
-                  @ref="Table">
+                  @ref="_table">
 
             <HeaderContent>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Korisničko ime</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Email</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Role</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Status</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Akcija</MudTh>
+                <MudTh Class="table-header-cell">Korisničko ime</MudTh>
+                <MudTh Class="table-header-cell">Email</MudTh>
+                <MudTh Class="table-header-cell">Role</MudTh>
+                <MudTh Class="table-header-cell">Status</MudTh>
+                <MudTh Class="table-header-cell">Akcija</MudTh>
             </HeaderContent>
 
             <RowTemplate>
@@ -74,50 +68,26 @@
                 <MudTd DataLabel="Email">@context.Email</MudTd>
                 <MudTd DataLabel="Roles">@context.Roles</MudTd>
                 <MudTd DataLabel="Status">
-                    @if (context.IsLocked)
-                    {
-                        <MudChip T="string" Variant="Variant.Text" Color="Color.Error" Size="Size.Small">
-                            Zaključan
-                        </MudChip>
-                    }
-                    else
-                    {
-                        <MudChip T="string" Variant="Variant.Text" Color="Color.Success" Size="Size.Small">
-                            Otključan
-                        </MudChip>
-                    }
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@(context.IsLocked ? Color.Error : Color.Success)">
+                        @(context.IsLocked ? "Zaključan" : "Otključan")
+                    </MudChip>
                 </MudTd>
 
                 <MudTd DataLabel="Actions">
                     <MudButton OnClick="() => EditUser(context.Id)"
                                Variant="Variant.Text"
-                               Class="p-2 custom-edit-button">
+                               Class="p-2">
                         <MudIcon Icon="@Icons.Material.Filled.Edit" Class="custom-icon-sm"/>
                     </MudButton>
                 </MudTd>
             </RowTemplate>
 
             <PagerContent>
-                <MudTablePager/>
+                <MudTablePager />
             </PagerContent>
         </MudTable>
-
-
     </MudPaper>
 </Container>
-
-@code {
-
-    private List<Breadcrumbs.BreadcrumbItem> breadcrumbItems = new()
-    {
-        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", CssClass = "text-red-500 font-bold" }
-    };
-
-    private void AddUser()
-    {
-        Navigation.NavigateTo("/admin/users/add");
-    }
-
-}

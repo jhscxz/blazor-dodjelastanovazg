@@ -1,11 +1,8 @@
 @page "/profile/{UserId}"
 @using Microsoft.AspNetCore.Authorization
-@using MudBlazor
-@using System.ComponentModel.DataAnnotations
-@using DodjelaStanovaZG.Data
-@using Microsoft.EntityFrameworkCore
 @using DodjelaStanovaZG.Components.UI
-@using Microsoft.AspNetCore.Identity
+@using MudBlazor
+
 @attribute [Authorize]
 
 <Container BreadcrumbItems="BreadcrumbItems">
@@ -13,32 +10,23 @@
         <MudItem xs="12" sm="10" md="6" lg="4">
             <MudCard Outlined="true" Rounded="true" Style="width: 350px; margin: auto;">
                 <MudCardContent>
-                    @if (!isLoaded)
+                    @if (!_isLoaded)
                     {
                         <MudText Typo="Typo.h6" Class="text-center">Učitavam...</MudText>
                     }
                     else
                     {
-                        <MudForm @ref="_profileForm" Model="@profileModel">
-                            <MudTextField ShrinkLabel T="string"
-                                          Label="Ime"
-                                          @bind-Value="profileModel.UserName"
-                                          Disabled="true"
-                                          Margin="Margin.Dense"
-                                          Variant="Variant.Outlined"
-                                          Class="mb-4" />
-                            <MudTextField ShrinkLabel T="string"
-                                          Label="Email"
-                                          @bind-Value="profileModel.Email"
-                                          Disabled="true"
-                                          Margin="Margin.Dense"
-                                          Variant="Variant.Outlined"
-                                          Class="mb-4" />
-                        </MudForm>
+                        <MudTextField Label="Ime" T="string" Value="@_profileModel.UserName"
+                                      Disabled="true" Margin="Margin.Dense" Variant="Variant.Outlined" Class="mb-4" />
+
+                        <MudTextField Label="Email" T="string" Value="@_profileModel.Email"
+                                      Disabled="true" Margin="Margin.Dense" Variant="Variant.Outlined" Class="mb-4" />
+
                         <MudText Typo="Typo.caption" Class="mt-2">
-                            Uloge: @string.Join(", ", UserRoles)
+                            Uloge: @string.Join(", ", _userRoles)
                         </MudText>
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-4" Style="width: auto;">
+
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-4">
                             <MudButton Variant="Variant.Filled"
                                        Size="Size.Small"
                                        IconColor="Color.Error"
@@ -56,59 +44,3 @@
         </MudItem>
     </MudGrid>
 </Container>
-
-@code {
-    [Parameter] public string UserId { get; set; } = "";
-    private MudForm _profileForm;
-    private ProfileModel profileModel = new ProfileModel();
-    private bool isLoaded = false;
-    private List<string> UserRoles = new List<string>();
-
-    [Inject] public ApplicationDbContext DbContext { get; set; } = null!;
-    [Inject] public NavigationManager Navigation { get; set; } = null!;
-    [Inject] public UserManager<IdentityUser> UserManager { get; set; } = null!;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var user = await DbContext.Users.FirstOrDefaultAsync(u => u.Id == UserId);
-        if (user == null)
-        {
-            Navigation.NavigateTo("/profile");
-            return;
-        }
-
-        profileModel = new ProfileModel
-        {
-            Id = user.Id,
-            UserName = user.UserName,
-            Email = user.Email
-        };
-
-        // Dohvat rola korisnika
-        UserRoles = (await UserManager.GetRolesAsync(user)).ToList();
-
-        isLoaded = true;
-    }
-
-    private void NavigateToChangePassword()
-    {
-        Navigation.NavigateTo($"/profile/change-password");
-    }
-
-    public class ProfileModel
-    {
-        public string Id { get; set; } = "";
-        [Required(ErrorMessage = "Ime je obavezno")]
-        public string UserName { get; set; } = "";
-        [Required(ErrorMessage = "Email je obavezan")]
-        [EmailAddress(ErrorMessage = "Email nije ispravan")]
-        public string Email { get; set; } = "";
-    }
-
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = new List<Breadcrumbs.BreadcrumbItem>
-    {
-        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Profil", Url = "/profile" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Moj profil", CssClass = "text-red-500 font-bold" }
-    };
-}
