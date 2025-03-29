@@ -1,3 +1,4 @@
+using DodjelaStanovaZG.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,4 +13,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         base.OnModelCreating(builder);
         builder.Entity<IdentityUser>().HasIndex(u => u.UserName).IsUnique();
     }
+    
+    public DbSet<Natjecaj> Natjecaji { get; set; }
+    public DbSet<SocijalniNatjecaj> SocijalniNatjecaji { get; set; }
 }
