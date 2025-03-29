@@ -3,7 +3,7 @@
 @using DodjelaStanovaZG.Components.UI
 @using MudBlazor
 
-<Container BreadcrumbItems="_breadcrumbItems">
+<Container BreadcrumbItems="BreadcrumbItems">
     <MudPaper Outlined="true" Class="pa-4">
 
         <div class="flex items-center gap-4 mb-4">
@@ -56,11 +56,11 @@
                   @ref="_table">
 
             <HeaderContent>
-                <MudTh Class="table-header-cell">Korisničko ime</MudTh>
-                <MudTh Class="table-header-cell">Email</MudTh>
-                <MudTh Class="table-header-cell">Role</MudTh>
-                <MudTh Class="table-header-cell">Status</MudTh>
-                <MudTh Class="table-header-cell">Akcija</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Korisničko ime</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Email</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Role</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Status</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Akcija</MudTh>
             </HeaderContent>
 
             <RowTemplate>

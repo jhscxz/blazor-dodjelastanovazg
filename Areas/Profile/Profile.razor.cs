@@ -19,11 +19,13 @@ public partial class Profile : ComponentBase
     [Inject] public UserManager<IdentityUser> UserManager { get; set; } = null!;
     [Inject] public NavigationManager Navigation { get; set; } = null!;
     [Inject] public BreadcrumbService BreadcrumbService { get; set; } = null!;
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = [];
-
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
+    [
+        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Moj profil", CssClass = "text-red-500 font-bold" }
+    ];
     protected override async Task OnInitializedAsync()
     {
-        BreadcrumbItems = BreadcrumbService.Create("Početna", "Profil", "Moj profil");
 
         var user = await DbContext.Users.FirstOrDefaultAsync(u => u.Id == UserId);
         if (user == null)

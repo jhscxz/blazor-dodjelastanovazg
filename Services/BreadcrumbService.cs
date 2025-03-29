@@ -8,10 +8,9 @@ public class BreadcrumbService
     {
         ["Početna"] = ("/", null),
         ["Admin Nadzorna ploča"] = ("/admin", null),
-        ["Korisnici"] = ("/admin/users", "text-red-500 font-bold"),
+        ["Korisnici"] = ("/admin/users", null),
         ["Profil"] = ("/profile", null),
-        ["Promjena lozinke"] = (null, "text-red-500 font-bold"),
-        // Dodaj ostale prema potrebi
+        ["Promjena lozinke"] = ("/admin", "text-red-500 font-bold"),
     };
 
     public List<Breadcrumbs.BreadcrumbItem> Create(params string[] labels)

@@ -5,9 +5,8 @@ using Microsoft.EntityFrameworkCore;
 namespace DodjelaStanovaZG.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
-    : IdentityDbContext<IdentityUser>(options) // Promjena iz DbContext u IdentityDbContext
+    : IdentityDbContext<IdentityUser>(options)
 {
-    //public DbSet<User> Users { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

@@ -34,7 +34,6 @@
     <Folder Include="Areas\Izracun\" />
     <Folder Include="Areas\Natjecaji\" />
     <Folder Include="Models\" />
-    <Folder Include="Services\IServices\" />
   </ItemGroup>
 
 </Project>

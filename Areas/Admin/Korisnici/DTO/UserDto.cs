@@ -6,8 +6,6 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.DTO
         public required string? UserName { get; set; }
         public required string? Email { get; set; }
         public required string Roles { get; set; }
-        
-        // Dodan property za status zaključanosti
         public bool IsLocked { get; set; }
     }
 }

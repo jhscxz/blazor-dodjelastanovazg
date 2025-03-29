@@ -17,15 +17,15 @@ public partial class UsersTable : ComponentBase
 
     private MudTable<UserDto> _table = null!;
     private string SearchText { get; set; } = "";
-    protected string FilterRole { get; set; } = RoleNames.All;
+    private string FilterRole { get; set; } = RoleNames.All;
     private static int RowsPerPage => 10;
-
-    private List<Breadcrumbs.BreadcrumbItem> _breadcrumbItems = new();
-
-    protected override void OnInitialized()
-    {
-        _breadcrumbItems = BreadcrumbService.Create("Početna", "Admin Nadzorna ploča", "Korisnici");
-    }
+    
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
+    [
+        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", CssClass = "text-red-500 font-bold" },
+    ];
 
     private async Task OnValueChanged(string newValue)
     {

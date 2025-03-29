@@ -13,19 +13,18 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
         [Inject] public NavigationManager Navigation { get; set; } = null!;
 
         protected EditUserModel UserModel { get; set; } = new();
-        protected MudForm _editForm = null!;
-        protected bool _isValid;
+        private MudForm _editForm = null!;
+        private bool _isValid;
         protected bool AllowEditing { get; set; }
-        protected List<string> ErrorMessages { get; } = new();
+        private List<string> ErrorMessages { get; } = [];
 
         protected readonly List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems =
-            new()
-            {
-                new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-                new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
-                new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" },
-                new Breadcrumbs.BreadcrumbItem { Text = "Uredi korisnika", CssClass = "text-red-500 font-bold"}
-            };
+        [
+            new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
+            new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
+            new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" },
+            new Breadcrumbs.BreadcrumbItem { Text = "Uredi korisnika", CssClass = "text-red-500 font-bold" }
+        ];
 
         private bool _firstRender = true;
 
@@ -128,10 +127,10 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
             return false;
         }
 
-        protected void Cancel() => Navigation.NavigateTo("/admin/users");
-        protected void ChangePassword() => Navigation.NavigateTo($"/admin/users/change-password/{UserId}");
+        private void Cancel() => Navigation.NavigateTo("/admin/users");
+        private void ChangePassword() => Navigation.NavigateTo($"/admin/users/change-password/{UserId}");
 
-        protected string LockLabel => UserModel.IsLocked ? "Otključaj account" : "Zaključaj account";
+        private string LockLabel => UserModel.IsLocked ? "Otključaj account" : "Zaključaj account";
 
         protected class EditUserModel
         {

@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO;
 using DodjelaStanovaZG.Components.UI;
-using DodjelaStanovaZG.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
@@ -14,18 +13,19 @@ public partial class AddUser : ComponentBase
 {
     [Inject] private UserManager<IdentityUser> UserManager { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
-    [Inject] private BreadcrumbService BreadcrumbService { get; set; } = null!;
     protected AddUserDto UserModel { get; } = new();
     private MudForm _addForm = null!;
 
     private List<string> ErrorMessages { get; } = [];
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = [];
 
-    protected override void OnInitialized()
-    {
-        BreadcrumbItems = BreadcrumbService.Create("Početna", "Admin Nadzorna ploča", "Korisnici", "Dodaj korisnika");
-    }
-
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
+    [
+        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" },
+        new Breadcrumbs.BreadcrumbItem { Text = "Dodaj korisnika", CssClass = "text-red-500 font-bold" }
+    ];
+    
     private async Task<bool> ValidateForm()
     {
         await _addForm.Validate();
