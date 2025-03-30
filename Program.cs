@@ -1,8 +1,8 @@
 using DodjelaStanovaZG.Areas.Admin.Korisnici.Services;
+using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Components;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Services;
-using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
@@ -48,11 +48,14 @@ builder.Services.AddRazorPages(options =>
 });
 
 // Registracija dodatnih servisa
-builder.Services.AddScoped<SeedService>();
 builder.Services.AddMudServices();
+builder.Services.AddScoped<UserSeedService>();
+builder.Services.AddScoped<NatjecajSeedService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<BreadcrumbService>();
+builder.Services.AddScoped<INatjecajService, NatjecajService>();
+builder.Services.AddScoped<SeedService>();
 
 // =============================
 // KONFIGURACIJA APLIKACIJE
@@ -84,17 +87,15 @@ app.MapRazorPages();
 // Seed podataka (primjerice, admin korisnika) nakon pokretanja aplikacije
 using (var scope = app.Services.CreateScope())
 {
-    var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
+    var seedService = scope.ServiceProvider.GetRequiredService<UserSeedService>();
     await seedService.SeedAdminUser();
-}
-
-// Pokretanje seeda za ostale korisnike
-/*using (var scope = app.Services.CreateScope())
-{
-    var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
     await seedService.SeedAllUsers();
 }
-*/
 
+using (var scope = app.Services.CreateScope())
+{
+    var natjecajSeed = scope.ServiceProvider.GetRequiredService<NatjecajSeedService>();
+    await natjecajSeed.SeedNatjecajiAsync();
+}
 
 app.Run();

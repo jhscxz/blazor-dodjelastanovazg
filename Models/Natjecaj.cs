@@ -13,9 +13,6 @@ public class Natjecaj
     public byte PriustiviIliSocijalni { get; set; } // 1 = priustivi, 2 = socijalni
 
     [Required]
-    public int Godina { get; set; }
-
-    [Required]
     public int Klasa { get; set; }
 
     [Required]

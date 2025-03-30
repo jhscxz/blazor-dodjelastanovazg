@@ -1,0 +1,99 @@
+@page "/admin/natjecaji"
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO
+@using MudBlazor
+@inherits NatjecajiPregledBase
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudPaper Outlined="true" Class="pa-4">
+
+        <div class="flex items-center gap-4 mb-4">
+            <MudButton OnClick="@KreirajNatjecaj"
+                       Variant="Variant.Filled"
+                       Color="Color.Default"
+                       IconColor="Color.Success"
+                       DropShadow="false"
+                       StartIcon="@Icons.Material.Filled.Add">
+                Dodaj natječaj
+            </MudButton>
+
+            <div class="flex-none w-[200px]">
+                <MudSelect T="string"
+                           Label="Vrsta:"
+                           @bind-Value="OdabranaVrsta"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Dense="true"
+                           Class="w-full">
+                    <MudSelectItem Value="@("Socijalni")">Socijalni</MudSelectItem>
+                    <MudSelectItem Value="@("Priuštivi")">Priuštivi</MudSelectItem>
+                </MudSelect>
+            </div>
+        </div>
+
+        <MudTable T="NatjecajDto"
+                  Items="FilteredNatjecaji"
+                  Hover="true"
+                  Striped="true"
+                  RowsPerPage="10"
+                  Dense="true"
+                  Outlined="true"
+                  @ref="_table">
+
+            <HeaderContent>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Vrsta</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Godina</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Klasa</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Prosjek (€)</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Status</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Akcija</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd>@context.Vrsta</MudTd>
+                <MudTd>@context.DatumObjave?.Year</MudTd>
+                <MudTd>@context.Klasa</MudTd>
+                <MudTd>@context.ProsjekPlace.ToString("N2") €</MudTd>
+                <MudTd>
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@(context.Status == "Aktivan" ? Color.Success : Color.Error)">
+                        @context.Status
+                    </MudChip>
+                </MudTd>
+                <MudTd>
+                    <MudButton OnClick="() => Uredi(context)"
+                               Variant="Variant.Text"
+                               Class="p-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Edit" />
+                    </MudButton>
+
+                    @if (context.Status == "Aktivan")
+                    {
+                        <MudButton OnClick="() => Zakljucaj(context)"
+                                   Variant="Variant.Text"
+                                   Color="Color.Error"
+                                   Class="p-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Lock" />
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudButton OnClick="() => Otkljucaj(context)"
+                                   Variant="Variant.Text"
+                                   Color="Color.Primary"
+                                   Class="p-2">
+                            <MudIcon Icon="@Icons.Material.Filled.LockOpen" />
+                        </MudButton>
+                    }
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+
+        </MudTable>
+    </MudPaper>
+</Container>

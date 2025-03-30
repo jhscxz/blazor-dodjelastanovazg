@@ -1,0 +1,102 @@
+@page "/admin/natjecaji/add"
+@page "/admin/natjecaji/edit/{Klasa:int}"
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12" sm="10" md="6" lg="5">
+            <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
+                <MudCardContent>
+
+                    <MudText Typo="Typo.h6" Class="mb-4">@FormTitle</MudText>
+
+                    <MudForm @ref="_form" Model="@Natjecaj" Valid="OnValidSubmit">
+
+                        <MudSelect T="string"
+                                   Label="Vrsta natječaja"
+                                   @bind-Value="Natjecaj.Vrsta"
+                                   Required="true"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   Class="mb-4">
+                            <MudSelectItem Value="@("Socijalni")">Socijalni</MudSelectItem>
+                            <MudSelectItem Value="@("Priuštivi")">Priuštivi</MudSelectItem>
+                        </MudSelect>
+
+                        <MudTextField T="int"
+                                      Label="Klasa"
+                                      @bind-Value="Natjecaj.Klasa"
+                                      Required="true"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Class="mb-4"
+                                      Autocomplete="off"
+                                      ShrinkLabel="true" />
+
+                        <MudTextField T="decimal"
+                                      Label="Prosjek plaće (€)"
+                                      @bind-Value="Natjecaj.ProsjekPlace"
+                                      Required="true"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Class="mb-4"
+                                      Autocomplete="off"
+                                      ShrinkLabel="true" />
+
+                        <MudDatePicker Label="Datum objave"
+                                       @bind-Date="Natjecaj.DatumObjave"
+                                       DateFormat="dd.MM.yyyy."
+                                       Required="true"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense"
+                                       Class="mb-4" />
+
+                        <MudDatePicker Label="Rok za prijavu"
+                                       @bind-Date="Natjecaj.RokZaPrijavu"
+                                       DateFormat="dd.MM.yyyy."
+                                       Required="true"
+                                       Variant="Variant.Outlined"
+                                       Margin="Margin.Dense"
+                                       Class="mb-4" />
+
+                        <MudSelect T="string"
+                                   Label="Status"
+                                   @bind-Value="Natjecaj.Status"
+                                   Required="true"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   Class="mb-4">
+                            <MudSelectItem Value="@("Aktivan")">Aktivan</MudSelectItem>
+                            <MudSelectItem Value="@("Zaključen")">Zaključen</MudSelectItem>
+                        </MudSelect>
+
+                        <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
+                            <MudButton OnClick="SubmitForm"
+                                       StartIcon="@Icons.Material.Filled.Save"
+                                       Size="Size.Small"
+                                       Variant="Variant.Filled"
+                                       Style="border: 1px solid #d3d3d3;"
+                                       DropShadow="false"
+                                       IconColor="Color.Success"
+                                       Color="Color.Default">
+                                Spremi
+                            </MudButton>
+                            <MudButton OnClick="Povratak"
+                                       StartIcon="@Icons.Material.Filled.Cancel"
+                                       Size="Size.Small"
+                                       Variant="Variant.Filled"
+                                       Style="border: 1px solid #d3d3d3;"
+                                       DropShadow="false"
+                                       IconColor="Color.Error"
+                                       Color="Color.Default">
+                                Odustani
+                            </MudButton>
+                        </MudStack>
+
+                    </MudForm>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</Container>

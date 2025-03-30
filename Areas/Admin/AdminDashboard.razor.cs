@@ -33,7 +33,7 @@ public partial class AdminDashboard : ComponentBase
             {
                 Title = "Upravljanje natječajima",
                 Description = "Upravljajte natječajima, uredite popise i omogućite razne dodatne opcije.",
-                NavigateTo = "/admin/tenders",
+                NavigateTo = "/admin/natjecaji",
                 ButtonText = "ID NA UPRAVLJANJE NATJEČAJIMA",
                 IconSvg = RenderTendersIcon()
             }
