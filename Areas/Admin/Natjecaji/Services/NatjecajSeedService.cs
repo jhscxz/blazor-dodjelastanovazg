@@ -2,7 +2,7 @@ using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DodjelaStanovaZG.Services;
+namespace DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 
 public class NatjecajSeedService
 {

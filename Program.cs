@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.Admin.Korisnici.Services;
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 using DodjelaStanovaZG.Components;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Services;
@@ -56,6 +57,8 @@ builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<BreadcrumbService>();
 builder.Services.AddScoped<INatjecajService, NatjecajService>();
 builder.Services.AddScoped<SeedService>();
+builder.Services.AddScoped<INatjecajOdabirService, NatjecajOdabirService>();
+
 
 // =============================
 // KONFIGURACIJA APLIKACIJE
