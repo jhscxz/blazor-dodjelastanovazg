@@ -23,7 +23,9 @@
                                Class="mb-4 w-full">
                         @foreach (var natjecaj in Natjecaji)
                         {
-                            <MudSelectItem Value="natjecaj.Id">@natjecaj.Godina</MudSelectItem>
+                            <MudSelectItem Value="natjecaj.Id" @key="natjecaj.Id">
+                                @natjecaj.Godina
+                            </MudSelectItem>
                         }
                     </MudSelect>
 
@@ -39,7 +41,6 @@
                             Pregled
                         </MudButton>
                     </MudStack>
-
 
                 </MudCardContent>
             </MudCard>

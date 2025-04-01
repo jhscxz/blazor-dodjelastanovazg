@@ -20,10 +20,10 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
 
         protected readonly List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems =
         [
-            new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-            new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
-            new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" },
-            new Breadcrumbs.BreadcrumbItem { Text = "Uredi korisnika", CssClass = "text-red-500 font-bold" }
+            new() { Text = "Početna", Url = "/" },
+            new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
+            new() { Text = "Korisnici", Url = "/admin/users" },
+            new() { Text = "Uredi korisnika", CssClass = "text-red-500 font-bold" }
         ];
 
         private bool _firstRender = true;

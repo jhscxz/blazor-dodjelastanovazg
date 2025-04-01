@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO;
 using DodjelaStanovaZG.Components.UI;
 using Microsoft.AspNetCore.Authorization;
@@ -20,10 +19,10 @@ public partial class AddUser : ComponentBase
 
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
-        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Dodaj korisnika", CssClass = "text-red-500 font-bold" }
+        new() { Text = "Početna", Url = "/" },
+        new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
+        new() { Text = "Korisnici", Url = "/admin/users" },
+        new() { Text = "Dodaj korisnika", CssClass = "text-red-500 font-bold" }
     ];
     
     private async Task<bool> ValidateForm()

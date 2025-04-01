@@ -17,21 +17,20 @@ public partial class ChangeMyPassword : ComponentBase
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
 
     private MudForm _form = null!;
-    private protected bool IsValid = false;
     private readonly List<string> _errorMessages = [];
     private readonly ChangeMyPasswordDto _changePasswordModel = new();
 
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
-        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Profil", Url = "/profile" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Promjena lozinke", CssClass = "text-red-500 font-bold" }
+        new() { Text = "Početna", Url = "/" },
+        new() { Text = "Profil", Url = "/profile" },
+        new() { Text = "Promjena lozinke", CssClass = "text-red-500 font-bold" }
     ];
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateTask;
-        if (authState.User?.Identity is not { IsAuthenticated: true })
+        if (authState.User.Identity is not { IsAuthenticated: true })
         {
             Navigation.NavigateTo("/login");
         }

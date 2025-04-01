@@ -8,7 +8,7 @@ public class HomePageBase : ComponentBase
 {
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
-        new Breadcrumbs.BreadcrumbItem
+        new()
         {
             Text = "Početna",
             CssClass = "text-red-500 font-bold",

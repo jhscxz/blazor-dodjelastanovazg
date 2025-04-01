@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
 using Microsoft.AspNetCore.Components;
 
@@ -15,8 +16,8 @@ public class IndexBase : ComponentBase
 
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
-        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Socijalni natječaji", CssClass = "text-red-500 font-bold" },
+        new() { Text = "Početna", Url = "/" },
+        new() { Text = "Socijalni natječaji", CssClass = "text-red-500 font-bold" },
     ];
 
     protected override async Task OnInitializedAsync()
@@ -34,9 +35,10 @@ public class IndexBase : ComponentBase
             .OrderByDescending(n => n.Godina)
             .ToList();
 
-        if (Natjecaji.Any())
+        if (Natjecaji.Count != 0)
         {
             SelectedId = Natjecaji.First().Id;
+            StateHasChanged();
         }
     }
 

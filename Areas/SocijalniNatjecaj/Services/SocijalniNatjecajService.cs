@@ -1,22 +1,16 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 
-public class SocijalniNatjecajService : ISocijalniNatjecajService
+public class SocijalniNatjecajService(ApplicationDbContext context) : ISocijalniNatjecajService
 {
-    private readonly ApplicationDbContext _context;
-
-    public SocijalniNatjecajService(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<List<SocijalniNatjecajDto>> GetAllAsync()
     {
-        return await _context.SocijalniNatjecaji
+        return await context.SocijalniNatjecaji
             .Select(x => new SocijalniNatjecajDto
             {
                 Id = x.Id,

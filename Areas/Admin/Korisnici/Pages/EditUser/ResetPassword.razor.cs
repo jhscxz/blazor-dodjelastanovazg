@@ -14,16 +14,15 @@ public partial class ResetPassword : ComponentBase
     [Inject] private NavigationManager Navigation { get; set; } = null!;
 
     private MudForm _form = null!;
-    private protected bool IsValid = false;
     private readonly ResetPasswordDto _resetPasswordModel = new();
     private readonly List<string> _errorMessages = [];
     
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
-        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", Url = "/admin/users" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Promijeni lozinku", CssClass = "text-red-500 font-bold" }
+        new() { Text = "Početna", Url = "/" },
+        new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
+        new() { Text = "Korisnici", Url = "/admin/users" },
+        new() { Text = "Promijeni lozinku", CssClass = "text-red-500 font-bold" }
     ];
 
     protected override async Task OnInitializedAsync()

@@ -11,16 +11,16 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
         [Inject] public NavigationManager Navigation { get; set; } = null!;
 
         // Lista naziva rola u kojima je korisnik trenutno
-        protected List<string> UserRoles { get; set; } = new();
+        private List<string> UserRoles { get; set; } = [];
 
         // Lista svih dostupnih rola dohvaćenih iz baze
-        protected List<string> AllRoles { get; set; } = new();
+        private List<string?> AllRoles { get; set; } = [];
 
         // Odabrana rola iz dropdowna
         protected string NewRoleName { get; set; } = "";
 
-        protected int RowsPerPage { get; set; } = 10;
-        protected List<string> ErrorMessages { get; set; } = new();
+        private int RowsPerPage { get; set; } = 10;
+        private List<string> ErrorMessages { get; set; } = [];
 
         protected override async Task OnInitializedAsync()
         {
@@ -42,13 +42,14 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
             UserRoles = roles.ToList();
         }
 
-        private async Task LoadAllRolesAsync()
+        private Task LoadAllRolesAsync()
         {
             // Dohvati sve dostupne role iz RoleManager-a.
             // Ako RoleManager.Roles podržava asinkrono dohvaćanje, možete koristiti ToListAsync()
             // Primjer: AllRoles = (await RoleManager.Roles.ToListAsync()).Select(r => r.Name).ToList();
             // Ovdje koristimo sinhrono dohvaćanje:
             AllRoles = RoleManager.Roles.Select(r => r.Name).ToList();
+            return Task.CompletedTask;
         }
 
         protected async Task AddUserToRole()

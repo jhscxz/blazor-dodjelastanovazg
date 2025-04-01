@@ -14,14 +14,14 @@ namespace DodjelaStanovaZG.Data
             var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
 
             // Migracije baze
-            context.Database.Migrate();
+            await context.Database.MigrateAsync();
 
             // Seed dokumentacije (ako još nije)
             if (!context.DokazniDokumenti.Any())
             {
                 var dokumenti = DokazniDokumentSeeder.GetObaveznaDokumentacija();
                 context.DokazniDokumenti.AddRange(dokumenti);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
 
             // Seed SuperAdmin korisnika

@@ -1,6 +1,6 @@
 using DodjelaStanovaZG.Models;
 
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
+namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 
 public interface INatjecajOdabirService
 {

@@ -1,6 +1,6 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
+namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 
 public interface ISocijalniNatjecajService
 {

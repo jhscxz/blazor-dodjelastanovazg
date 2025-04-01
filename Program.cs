@@ -1,6 +1,7 @@
 using DodjelaStanovaZG.Areas.Admin.Korisnici.Services;
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Services;
@@ -73,7 +74,8 @@ app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .DisableAntiforgery();
+    .DisableAntiforgery()
+    .RequireAuthorization();
 
 app.MapRazorPages();
 
