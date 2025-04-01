@@ -16,4 +16,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     public DbSet<Natjecaj> Natjecaji { get; set; }
     public DbSet<SocijalniNatjecaj> SocijalniNatjecaji { get; set; }
+
+    // Socijalni natječaj - članovi i dokumentacija
+    public DbSet<SocijalniNatjecajClan> SocijalniNatjecajClanovi { get; set; }
+    public DbSet<DokazniDokument> DokazniDokumenti { get; set; }
+    public DbSet<DostavljenaDokumentacijaClan> DostavljenaDokumentacijaClanova { get; set; }
+
+
 }
