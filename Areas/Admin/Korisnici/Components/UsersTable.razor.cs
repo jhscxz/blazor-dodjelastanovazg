@@ -1,7 +1,6 @@
 using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO;
 using DodjelaStanovaZG.Areas.Admin.Korisnici.Services;
 using DodjelaStanovaZG.Components.UI;
-using DodjelaStanovaZG.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
@@ -13,7 +12,6 @@ public partial class UsersTable : ComponentBase
     [Inject] public required UserManager<IdentityUser> UserManager { get; set; }
     [Inject] public required IUserService UserService { get; set; }
     [Inject] public required NavigationManager Navigation { get; set; }
-    [Inject] public required BreadcrumbService BreadcrumbService { get; set; }
 
     private MudTable<UserDto> _table = null!;
     private string SearchText { get; set; } = "";
@@ -22,9 +20,9 @@ public partial class UsersTable : ComponentBase
     
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
-        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", Url = "/admin" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Korisnici", CssClass = "text-red-500 font-bold" },
+        new() { Text = "Početna", Url = "/" },
+        new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
+        new(text: "Korisnici", cssClass: "text-red-500 font-bold"),
     ];
 
     private async Task OnValueChanged(string newValue)

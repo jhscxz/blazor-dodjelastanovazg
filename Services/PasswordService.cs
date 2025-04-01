@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 
 namespace DodjelaStanovaZG.Services
 {
     public class PasswordService(
-        UserManager<IdentityUser> userManager,
-        SignInManager<IdentityUser> signInManager)
+        UserManager<IdentityUser> userManager)
         : IPasswordService
     {
         public async Task<IdentityResult> ChangeOwnPasswordAsync(

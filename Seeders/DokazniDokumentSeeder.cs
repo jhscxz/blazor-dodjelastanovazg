@@ -1,7 +1,7 @@
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 
-namespace DodjelaStanovaZG.Services;
+namespace DodjelaStanovaZG.Seeders;
 
 public static class DokazniDokumentSeeder
 {
