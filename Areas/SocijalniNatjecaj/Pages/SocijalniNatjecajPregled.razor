@@ -1,0 +1,51 @@
+@page "/socijalni/pregled/{NatjecajId:long}"
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using MudBlazor
+@inherits SocijalniNatjecajPregledBase
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudPaper Outlined="true" Class="pa-4">
+        <MudTable T="SocijalniNatjecajDto"
+                  Items="Natjecaji"
+                  Hover="true"
+                  Striped="true"
+                  RowsPerPage="10"
+                  Dense="true"
+                  Outlined="true"
+                  @ref="_table">
+
+            <HeaderContent>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Klasa predmeta</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Datum podnošenja</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Adresa</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Ukupni prihod (€)</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Stambeni status</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Sastav kućanstva</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Aktivan</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Klasa">@context.KlasaPredmeta</MudTd>
+                <MudTd DataLabel="Datum">@context.DatumPodnosenjaZahtjeva.ToString("dd.MM.yyyy.")</MudTd>
+                <MudTd DataLabel="Adresa">@context.Adresa</MudTd>
+                <MudTd DataLabel="Prihod">@context.UkupniPrihodKucanstva.ToString("N2") €</MudTd>
+                <MudTd DataLabel="Stambeni">@context.StambeniStatusKucanstva</MudTd>
+                <MudTd DataLabel="Sastav">@context.SastavKucanstva</MudTd>
+                <MudTd DataLabel="Aktivan">
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@(context.Aktivan == 1 ? Color.Success : Color.Error)">
+                        @(context.Aktivan == 1 ? "Da" : "Ne")
+                    </MudChip>
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+
+        </MudTable>
+    </MudPaper>
+</Container>

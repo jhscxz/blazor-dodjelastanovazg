@@ -58,6 +58,7 @@ builder.Services.AddScoped<BreadcrumbService>();
 builder.Services.AddScoped<INatjecajService, NatjecajService>();
 builder.Services.AddScoped<SeedService>();
 builder.Services.AddScoped<INatjecajOdabirService, NatjecajOdabirService>();
+builder.Services.AddScoped<ISocijalniNatjecajService, SocijalniNatjecajService>();
 
 
 // =============================

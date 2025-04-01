@@ -29,13 +29,17 @@ public class SocijalniNatjecaj
 
     public byte Aktivan { get; set; } = 1;
 
-    public long? CreatedBy { get; set; }
-    public long? EditedBy { get; set; }
+    // FK na ASP.NET IdentityUser (string ID)
+    [ForeignKey("CreatedByUser")]
+    public string? CreatedBy { get; set; }
+
+    [ForeignKey("EditedByUser")]
+    public string? EditedBy { get; set; }
 
     [Required]
+    [ForeignKey("Natjecaj")]
     public long NatjecajId { get; set; }
 
-    // Navigacija (opcionalno ako želiš uključiti povezane entitete)
     public Natjecaj? Natjecaj { get; set; }
     public IdentityUser? CreatedByUser { get; set; }
     public IdentityUser? EditedByUser { get; set; }

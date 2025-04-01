@@ -10,7 +10,7 @@ public class IndexBase : ComponentBase
     [Inject] public required INatjecajOdabirService NatjecajOdabirService { get; set; }
     [Inject] public required NavigationManager Navigation { get; set; }
 
-    protected List<SocijalniNatjecajDto> Natjecaji = [];
+    protected List<SocijalniNatjecajOdabirDto> Natjecaji = [];
     protected int SelectedId;
 
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
@@ -25,7 +25,7 @@ public class IndexBase : ComponentBase
 
         Natjecaji = svi
             .Where(n => n.PriustiviIliSocijalni == 2)
-            .Select(n => new SocijalniNatjecajDto
+            .Select(n => new SocijalniNatjecajOdabirDto
             {
                 Id = (int)n.Id,
                 Godina = n.DatumObjave.Year,
@@ -44,7 +44,7 @@ public class IndexBase : ComponentBase
     {
         if (SelectedId != 0)
         {
-            Navigation.NavigateTo($"/socijalni/{SelectedId}");
+            Navigation.NavigateTo($"/socijalni/pregled/{SelectedId}");
         }
     }
 }
