@@ -7,9 +7,9 @@ public class ProfileDto
     public string Id { get; set; } = "";
 
     [Required(ErrorMessage = "Ime je obavezno")]
-    public string UserName { get; set; } = "";
+    public string UserName { get; init; } = "";
 
     [Required(ErrorMessage = "Email je obavezan")]
     [EmailAddress(ErrorMessage = "Email nije ispravan")]
-    public string Email { get; set; } = "";
+    public string Email { get; init; } = "";
 }

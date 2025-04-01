@@ -1,5 +1,4 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
 using Microsoft.AspNetCore.Components;
@@ -29,8 +28,7 @@ public class IndexBase : ComponentBase
             .Select(n => new SocijalniNatjecajOdabirDto
             {
                 Id = (int)n.Id,
-                Godina = n.DatumObjave.Year,
-                PriustiviIliSocijalni = n.PriustiviIliSocijalni
+                Godina = n.DatumObjave.Year
             })
             .OrderByDescending(n => n.Godina)
             .ToList();

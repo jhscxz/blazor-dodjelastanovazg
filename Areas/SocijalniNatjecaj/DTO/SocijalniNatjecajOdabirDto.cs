@@ -4,7 +4,6 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 
 public class SocijalniNatjecajOdabirDto
 {
-    public int Id { get; set; }
-    public int Godina { get; set; }
-    public byte PriustiviIliSocijalni { get; set; } // 1 = priuštivi, 2 = socijalni
+    public int Id { get; init; }
+    public int Godina { get; init; }
 }
