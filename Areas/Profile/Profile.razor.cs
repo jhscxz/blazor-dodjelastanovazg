@@ -1,7 +1,6 @@
 using DodjelaStanovaZG.Areas.Profile.DTO;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Data;
-using DodjelaStanovaZG.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +17,11 @@ public partial class Profile : ComponentBase
     [Inject] public ApplicationDbContext DbContext { get; set; } = null!;
     [Inject] public UserManager<IdentityUser> UserManager { get; set; } = null!;
     [Inject] public NavigationManager Navigation { get; set; } = null!;
-    [Inject] public BreadcrumbService BreadcrumbService { get; set; } = null!;
+
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
-        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Moj profil", CssClass = "text-red-500 font-bold" }
+        new() { Text = "Početna", Url = "/" },
+        new() { Text = "Moj profil", CssClass = "text-red-500 font-bold" }
     ];
     protected override async Task OnInitializedAsync()
     {

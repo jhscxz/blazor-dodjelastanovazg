@@ -13,7 +13,6 @@ public class SocijalniNatjecajService(ApplicationDbContext context) : ISocijalni
         return await context.SocijalniNatjecaji
             .Select(x => new SocijalniNatjecajDto
             {
-                Id = x.Id,
                 KlasaPredmeta = x.KlasaPredmeta,
                 DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
                 Adresa = x.Adresa,
