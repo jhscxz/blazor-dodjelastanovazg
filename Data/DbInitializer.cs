@@ -15,15 +15,7 @@ namespace DodjelaStanovaZG.Data
 
             // Migracije baze
             await context.Database.MigrateAsync();
-
-            // Seed dokumentacije (ako još nije)
-            if (!context.DokazniDokumenti.Any())
-            {
-                var dokumenti = DokazniDokumentSeeder.GetObaveznaDokumentacija();
-                context.DokazniDokumenti.AddRange(dokumenti);
-                await context.SaveChangesAsync();
-            }
-
+            
             // Seed SuperAdmin korisnika
             await seedService.SeedUserAsync(UserSeedData.GetSuperAdmin());
 

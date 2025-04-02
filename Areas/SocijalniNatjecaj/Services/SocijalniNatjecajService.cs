@@ -17,10 +17,6 @@ public class SocijalniNatjecajService(ApplicationDbContext context) : ISocijalni
                 KlasaPredmeta = x.KlasaPredmeta,
                 DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
                 Adresa = x.Adresa!,
-                UkupniPrihodKucanstva = x.UkupniPrihodKucanstva,
-                StambeniStatusKucanstva = x.StambeniStatusKucanstva,
-                SastavKucanstva = x.SastavKucanstva,
-                Aktivan = x.Aktivan,
                 NatjecajId = x.NatjecajId
             })
             .ToListAsync();
@@ -34,10 +30,6 @@ public class SocijalniNatjecajService(ApplicationDbContext context) : ISocijalni
             KlasaPredmeta = dto.KlasaPredmeta.GetValueOrDefault(),
             DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva,
             Adresa = dto.Adresa,
-            UkupniPrihodKucanstva = dto.UkupniPrihodKucanstva.GetValueOrDefault(),
-            StambeniStatusKucanstva = dto.StambeniStatusKucanstva.GetValueOrDefault(),
-            SastavKucanstva = dto.SastavKucanstva.GetValueOrDefault(),
-            Aktivan = dto.Aktivan,
             CreatedAt = DateTime.UtcNow,
         };
 
@@ -46,14 +38,11 @@ public class SocijalniNatjecajService(ApplicationDbContext context) : ISocijalni
 
         var clan = new SocijalniNatjecajClan
         {
-            NatjecajId = entitet.Id,
-            ImeIPrezime = imePrezime,
             Oib = oib,
             Srodstvo = Srodstvo.PodnositeljZahtjeva,
             CreatedAt = DateTime.UtcNow
         };
 
-        await context.SocijalniNatjecajClanovi.AddAsync(clan);
         await context.SaveChangesAsync();
     }
 }

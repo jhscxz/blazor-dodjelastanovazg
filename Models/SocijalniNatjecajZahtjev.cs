@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DodjelaStanovaZG.Enums;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Models;
 
@@ -16,43 +17,30 @@ public class SocijalniNatjecajZahtjev
     [Required]
     public DateOnly DatumPodnosenjaZahtjeva { get; set; }
 
+    [StringLength(255)]
     public string? Adresa { get; set; }
 
     [Required]
-    [Column(TypeName = "decimal(10,2)")]
-    public decimal UkupniPrihodKucanstva { get; set; }
+    public RezultatObrade RezultatObrade { get; set; }
 
-    [Required]
-    public StambeniStatusKucanstva StambeniStatusKucanstva { get; set; }
+    [StringLength(1000)]
+    public string? NapomenaObrade { get; set; }
 
-    [Required]
-    public SastavKucanstva SastavKucanstva { get; set; }
-
-    [Required]
-    public bool ImaUseljivuNekretninu { get; set; }
-
-    [Required]
-    [Range(0, 99)]
-    public byte BrojGodinaPrebivanja { get; set; }
-
-    public byte Aktivan { get; set; } = 1;
-
-    [ForeignKey("CreatedByUser")]
+    [ForeignKey(nameof(CreatedByUser))]
+    [MaxLength(450)]
     public string? CreatedBy { get; set; }
 
-    [ForeignKey("EditedByUser")]
-    public string? EditedBy { get; set; }
+    public IdentityUser? CreatedByUser { get; set; }
 
     [Required]
-    [ForeignKey("Natjecaj")]
+    [ForeignKey(nameof(Natjecaj))]
     public long NatjecajId { get; set; }
 
     public Natjecaj? Natjecaj { get; set; }
-    public IdentityUser? CreatedByUser { get; set; }
-    public IdentityUser? EditedByUser { get; set; }
 
     public ICollection<SocijalniNatjecajClan> Clanovi { get; set; } = [];
-    public ICollection<SocijalniKucanstvoDokumentacija> KucanstvoDokumenti { get; set; } = [];
+
+    public SocijalniNatjecajBodovniPodaci? BodovniPodaci { get; set; }
 
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

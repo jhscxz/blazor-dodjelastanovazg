@@ -4,6 +4,7 @@ using DodjelaStanovaZG.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DodjelaStanovaZG.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250402183353_UpdateDokumentacijaEnumRefactor")]
+    partial class UpdateDokumentacijaEnumRefactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,39 @@ namespace DodjelaStanovaZG.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("DodjelaStanovaZG.Models.DostavljenaDokumentacijaClan", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ClanId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte>("Dokument")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("Dostavljeno")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Napomena")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClanId");
+
+                    b.ToTable("DostavljenaDokumentacijaClanova");
+                });
 
             modelBuilder.Entity("DodjelaStanovaZG.Models.Natjecaj", b =>
                 {
@@ -59,7 +95,7 @@ namespace DodjelaStanovaZG.Migrations
                     b.ToTable("Natjecaji");
                 });
 
-            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajBodovniPodaci", b =>
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniKucanstvoDokumentacija", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -67,97 +103,26 @@ namespace DodjelaStanovaZG.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<byte?>("BrojCivilnihStradalnika")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("BrojClanovaZrtavaSeksualnogNasiljaDomovinskiRat")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("BrojGodinaPrebivanja")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("BrojMaloljetneDjece")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("BrojMaloljetnihKorisnikaInvalidnine")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("BrojMjeseciObranaSuvereniteta")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("BrojOdraslihKorisnikaInvalidnine")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("BrojOsobaUAlternativnojSkrbi")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("BrojUzdrzavanePunoljetneDjece")
-                        .HasColumnType("tinyint");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("EditedBy")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EditedByUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<byte?>("ManjeOd35Godina")
+                    b.Property<byte>("Dokument")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte?>("ObrazovanjeBaccMaster")
-                        .HasColumnType("tinyint");
+                    b.Property<bool>("Dostavljeno")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime>("PeriodEnd")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("PeriodEnd");
-
-                    b.Property<DateTime>("PeriodStart")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("PeriodStart");
-
-                    b.Property<byte?>("SastavKucanstva")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("StambeniStatusKucanstva")
-                        .HasColumnType("tinyint");
-
-                    b.Property<decimal?>("UkupniPrihodKucanstva")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<long>("NatjecajZahtjevId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("ZahtjevId")
-                        .HasColumnType("bigint");
-
-                    b.Property<byte?>("ZrtvaObiteljskogNasilja")
-                        .HasColumnType("tinyint");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("EditedByUserId");
+                    b.HasIndex("NatjecajZahtjevId");
 
-                    b.HasIndex("ZahtjevId")
-                        .IsUnique();
-
-                    b.ToTable("SocijalniNatjecajBodovniPodaci", (string)null);
-
-                    b.ToTable(tb => tb.IsTemporal(ttb =>
-                            {
-                                ttb.UseHistoryTable("SocijalniNatjecajBodovniPodaciHistory");
-                                ttb
-                                    .HasPeriodStart("PeriodStart")
-                                    .HasColumnName("PeriodStart");
-                                ttb
-                                    .HasPeriodEnd("PeriodEnd")
-                                    .HasColumnName("PeriodEnd");
-                            }));
+                    b.ToTable("SocijalniKucanstvoDokumenti");
                 });
 
             modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajClan", b =>
@@ -168,28 +133,29 @@ namespace DodjelaStanovaZG.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Adresa")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ImePrezime")
+                    b.Property<DateOnly?>("DatumRodenja")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImeIPrezime")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("NatjecajId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Oib")
                         .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
-
-                    b.Property<DateTime>("PeriodEnd")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("PeriodEnd");
-
-                    b.Property<DateTime>("PeriodStart")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("PeriodStart");
 
                     b.Property<int>("Srodstvo")
                         .HasColumnType("int");
@@ -197,25 +163,11 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("ZahtjevId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ZahtjevId");
+                    b.HasIndex("NatjecajId");
 
-                    b.ToTable("SocijalniNatjecajClanovi", (string)null);
-
-                    b.ToTable(tb => tb.IsTemporal(ttb =>
-                            {
-                                ttb.UseHistoryTable("SocijalniNatjecajClanoviHistory");
-                                ttb
-                                    .HasPeriodStart("PeriodStart")
-                                    .HasColumnName("PeriodStart");
-                                ttb
-                                    .HasPeriodEnd("PeriodEnd")
-                                    .HasColumnName("PeriodEnd");
-                            }));
+                    b.ToTable("SocijalniNatjecajClanovi");
                 });
 
             modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", b =>
@@ -227,41 +179,43 @@ namespace DodjelaStanovaZG.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Adresa")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("Aktivan")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BrojGodinaPrebivanja")
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateOnly>("DatumPodnosenjaZahtjeva")
                         .HasColumnType("date");
 
+                    b.Property<string>("EditedBy")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("ImaUseljivuNekretninu")
+                        .HasColumnType("bit");
+
                     b.Property<int>("KlasaPredmeta")
                         .HasColumnType("int");
-
-                    b.Property<string>("NapomenaObrade")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<long>("NatjecajId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("PeriodEnd")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("PeriodEnd");
-
-                    b.Property<DateTime>("PeriodStart")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("PeriodStart");
-
-                    b.Property<byte>("RezultatObrade")
+                    b.Property<byte>("SastavKucanstva")
                         .HasColumnType("tinyint");
+
+                    b.Property<byte>("StambeniStatusKucanstva")
+                        .HasColumnType("tinyint");
+
+                    b.Property<decimal>("UkupniPrihodKucanstva")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -270,20 +224,11 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.HasIndex("CreatedBy");
 
+                    b.HasIndex("EditedBy");
+
                     b.HasIndex("NatjecajId");
 
-                    b.ToTable("SocijalniNatjecajZahtjevi", (string)null);
-
-                    b.ToTable(tb => tb.IsTemporal(ttb =>
-                            {
-                                ttb.UseHistoryTable("SocijalniNatjecajZahtjeviHistory");
-                                ttb
-                                    .HasPeriodStart("PeriodStart")
-                                    .HasColumnName("PeriodStart");
-                                ttb
-                                    .HasPeriodEnd("PeriodEnd")
-                                    .HasColumnName("PeriodEnd");
-                            }));
+                    b.ToTable("SocijalniNatjecajZahtjevi");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -488,32 +433,37 @@ namespace DodjelaStanovaZG.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajBodovniPodaci", b =>
+            modelBuilder.Entity("DodjelaStanovaZG.Models.DostavljenaDokumentacijaClan", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "EditedByUser")
-                        .WithMany()
-                        .HasForeignKey("EditedByUserId");
-
-                    b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", "Zahtjev")
-                        .WithOne("BodovniPodaci")
-                        .HasForeignKey("DodjelaStanovaZG.Models.SocijalniNatjecajBodovniPodaci", "ZahtjevId")
+                    b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajClan", "Clan")
+                        .WithMany("Dokumenti")
+                        .HasForeignKey("ClanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("EditedByUser");
+                    b.Navigation("Clan");
+                });
 
-                    b.Navigation("Zahtjev");
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniKucanstvoDokumentacija", b =>
+                {
+                    b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", "NatjecajZahtjev")
+                        .WithMany("KucanstvoDokumenti")
+                        .HasForeignKey("NatjecajZahtjevId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NatjecajZahtjev");
                 });
 
             modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajClan", b =>
                 {
-                    b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", "Zahtjev")
+                    b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", "Natjecaj")
                         .WithMany("Clanovi")
-                        .HasForeignKey("ZahtjevId")
+                        .HasForeignKey("NatjecajId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Zahtjev");
+                    b.Navigation("Natjecaj");
                 });
 
             modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", b =>
@@ -522,6 +472,10 @@ namespace DodjelaStanovaZG.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedBy");
 
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "EditedByUser")
+                        .WithMany()
+                        .HasForeignKey("EditedBy");
+
                     b.HasOne("DodjelaStanovaZG.Models.Natjecaj", "Natjecaj")
                         .WithMany()
                         .HasForeignKey("NatjecajId")
@@ -529,6 +483,8 @@ namespace DodjelaStanovaZG.Migrations
                         .IsRequired();
 
                     b.Navigation("CreatedByUser");
+
+                    b.Navigation("EditedByUser");
 
                     b.Navigation("Natjecaj");
                 });
@@ -584,11 +540,16 @@ namespace DodjelaStanovaZG.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajClan", b =>
+                {
+                    b.Navigation("Dokumenti");
+                });
+
             modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", b =>
                 {
-                    b.Navigation("BodovniPodaci");
-
                     b.Navigation("Clanovi");
+
+                    b.Navigation("KucanstvoDokumenti");
                 });
 #pragma warning restore 612, 618
         }
