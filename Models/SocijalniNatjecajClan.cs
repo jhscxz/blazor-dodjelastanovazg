@@ -21,14 +21,16 @@ public class SocijalniNatjecajClan
 
     public DateOnly? DatumRodenja { get; set; }
 
-    // Adresa je potrebna samo za podnositelja zahtjeva
     public string? Adresa { get; set; }
+
+    [EmailAddress]
+    public string? Email { get; set; }  // <-- samo za podnositelja
 
     [Required]
     public long NatjecajId { get; set; }
 
     [ForeignKey(nameof(NatjecajId))]
-    public SocijalniNatjecaj? Natjecaj { get; set; }
+    public SocijalniNatjecajZahtjev? Natjecaj { get; set; }
 
     public ICollection<DostavljenaDokumentacijaClan> Dokumenti { get; set; } = [];
 

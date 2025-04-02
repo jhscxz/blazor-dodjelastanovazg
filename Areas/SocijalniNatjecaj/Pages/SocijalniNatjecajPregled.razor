@@ -1,11 +1,25 @@
 @page "/socijalni/pregled/{NatjecajId:long}"
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @using MudBlazor
 @inherits SocijalniNatjecajPregledBase
 
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudPaper Outlined="true" Class="pa-4">
+
+        <div class="flex items-center gap-4 mb-4">
+            <MudButton OnClick="@AddZahtjev"
+                       Variant="Variant.Filled"
+                       Color="Color.Default"
+                       IconColor="Color.Success"
+                       DropShadow="false"
+                       StartIcon="@Icons.Material.Filled.Add">
+                Dodaj
+            </MudButton>
+            
+        </div>
+        
         <MudTable T="SocijalniNatjecajDto"
                   Items="Natjecaji"
                   Hover="true"
@@ -29,7 +43,9 @@
                 <MudTd DataLabel="Klasa">@context.KlasaPredmeta</MudTd>
                 <MudTd DataLabel="Datum">@context.DatumPodnosenjaZahtjeva.ToString("dd.MM.yyyy.")</MudTd>
                 <MudTd DataLabel="Adresa">@context.Adresa</MudTd>
-                <MudTd DataLabel="Prihod">@context.UkupniPrihodKucanstva.ToString("N2") €</MudTd>
+                <MudTd DataLabel="Prihod">
+                    @($"{context.UkupniPrihodKucanstva?.ToString("N2") ?? ""} €")
+                </MudTd>
                 <MudTd DataLabel="Stambeni">@context.StambeniStatusKucanstva</MudTd>
                 <MudTd DataLabel="Sastav">@context.SastavKucanstva</MudTd>
                 <MudTd DataLabel="Aktivan">
@@ -43,7 +59,7 @@
             </RowTemplate>
 
             <PagerContent>
-                <MudTablePager />
+                <MudTablePager/>
             </PagerContent>
 
         </MudTable>

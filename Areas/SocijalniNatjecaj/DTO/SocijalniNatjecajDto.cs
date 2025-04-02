@@ -1,13 +1,22 @@
+using System.ComponentModel.DataAnnotations;
+using DodjelaStanovaZG.Enums;
+
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 
 public class SocijalniNatjecajDto
 {
-    public int KlasaPredmeta { get; init; }
-    public DateOnly DatumPodnosenjaZahtjeva { get; init; }
-    public string? Adresa { get; init; }
-    public decimal UkupniPrihodKucanstva { get; init; }
-    public byte StambeniStatusKucanstva { get; init; }
-    public byte SastavKucanstva { get; init; }
-    public byte Aktivan { get; init; }
-    public long NatjecajId { get; init; }
+    [Required(ErrorMessage = "Klasa predmeta je obavezna.")]
+    public int? KlasaPredmeta { get; set; } 
+    [Required(ErrorMessage = "Datum podnošenja zahtjeva je obavezan.")]
+    public DateOnly DatumPodnosenjaZahtjeva { get; set; }
+    [Required(ErrorMessage = "Adresa je obavezna.")]
+    public string Adresa { get; set; }
+    [Required(ErrorMessage = "Ukupni prihod kućanstva je obavezan.")]
+    public decimal? UkupniPrihodKucanstva { get; set; }
+    [Required(ErrorMessage = "Stambeni status kućanstva je obavezan.")]
+    public StambeniStatusKucanstva? StambeniStatusKucanstva { get; set; }
+    [Required(ErrorMessage = "Sastav kućanstva je obavezan.")]
+    public SastavKucanstva? SastavKucanstva { get; set; }
+    public byte Aktivan { get; set; } = 1;
+    public long NatjecajId { get; set; }
 }

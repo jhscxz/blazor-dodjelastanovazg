@@ -9,7 +9,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages;
 public class SocijalniNatjecajPregledBase : ComponentBase
 {
     [Inject] public required ISocijalniNatjecajService SocijalniNatjecajService { get; set; }
-
+    [Inject] public NavigationManager Navigation { get; set; } = null!;
     [Parameter]
     public long NatjecajId { get; set; }
 
@@ -28,5 +28,10 @@ public class SocijalniNatjecajPregledBase : ComponentBase
         Natjecaji = (await SocijalniNatjecajService.GetAllAsync())
             .Where(x => x.NatjecajId == NatjecajId)
             .ToList();
+    }
+    
+    protected void AddZahtjev()
+    {
+        Navigation.NavigateTo($"/socijalni/dodaj/{NatjecajId}");
     }
 }

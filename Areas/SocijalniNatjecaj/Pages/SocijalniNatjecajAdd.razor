@@ -1,0 +1,138 @@
+@page "/socijalni/dodaj/{NatjecajId:long}"
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Enums
+@using DodjelaStanovaZG.Helpers
+@using MudBlazor
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12" sm="10" md="8">
+            <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
+                <MudCardContent>
+
+                    <MudText Typo="Typo.h6" Class="mb-4">Novi zahtjev za socijalni najam</MudText>
+
+                    @if (ErrorMessages?.Any() == true)
+                    {
+                        <MudAlert Severity="Severity.Error" Class="mb-4">
+                            <ul>
+                                @foreach (var msg in ErrorMessages)
+                                {
+                                    <li>@msg</li>
+                                }
+                            </ul>
+                        </MudAlert>
+                    }
+
+                    <MudForm @ref="_form" Model="@ZahtjevModel">
+                        <MudGrid Gutter="Size.Small">
+                            <MudItem xs="12" sm="6">
+                                <MudTextField T="int?" Label="Klasa predmeta" @bind-Value="ZahtjevModel.KlasaPredmeta" Required="true"
+                                              Variant="Variant.Outlined" Margin="Margin.Dense" Class="mb-4" ShrinkLabel="true" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudDatePicker ShrinkLabel T="DateTime?" Label="Datum podnošenja zahtjeva"
+                                               @bind-Date="_datumPodnosenja"
+                                               Required="true"
+                                               DateFormat="dd.MM.yyyy"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Class="mb-4" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudTextField ShrinkLabel T="string" Label="Ime i prezime" @bind-Value="ImePrezime" Required="true"
+                                              Variant="Variant.Outlined" Margin="Margin.Dense" Class="mb-4" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudTextField ShrinkLabel T="string" Label="OIB" @bind-Value="Oib" Required="true" MaxLength="11"
+                                              Variant="Variant.Outlined" Margin="Margin.Dense" Class="mb-4" />
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <MudTextField ShrinkLabel T="string" Label="Adresa" @bind-Value="ZahtjevModel.Adresa" Required="true"
+                                              Variant="Variant.Outlined" Margin="Margin.Dense" Class="mb-4" />
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <MudTextField ShrinkLabel T="decimal?" Label="Ukupni prihod kućanstva (€)" @bind-Value="ZahtjevModel.UkupniPrihodKucanstva" Required="true"
+                                              Variant="Variant.Outlined" Margin="Margin.Dense" Class="mb-4" />
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudSelect ShrinkLabel T="StambeniStatusKucanstva?" Label="Stambeni status kućanstva"
+                                           @bind-Value="ZahtjevModel.StambeniStatusKucanstva"
+                                           Required="true"
+                                           Variant="Variant.Outlined"
+                                           Margin="Margin.Dense"
+                                           Class="mb-4">
+                                    <MudSelectItem Value="@((StambeniStatusKucanstva?)null)" Disabled="true">
+                                        Odaberite status
+                                    </MudSelectItem>
+                                    @foreach (StambeniStatusKucanstva status in Enum.GetValues(typeof(StambeniStatusKucanstva)))
+                                    {
+                                        <MudSelectItem Value="@( (StambeniStatusKucanstva?)status )">
+                                            @status.GetDisplayName()
+                                        </MudSelectItem>
+                                    }
+                                </MudSelect>
+
+
+
+
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6">
+                                <MudSelect ShrinkLabel T="SastavKucanstva?" Label="Sastav kućanstva"
+                                           @bind-Value="ZahtjevModel.SastavKucanstva"
+                                           Required="true"
+                                           Variant="Variant.Outlined"
+                                           Margin="Margin.Dense"
+                                           Class="mb-4">
+                                    <MudSelectItem Value="@((SastavKucanstva?)null)" Disabled="true">
+                                        Odaberite sastav
+                                    </MudSelectItem>
+                                    @foreach (SastavKucanstva sastav in Enum.GetValues(typeof(SastavKucanstva)))
+                                    {
+                                        <MudSelectItem Value="@( (SastavKucanstva?)sastav )">
+                                            @sastav.GetDisplayName()
+                                        </MudSelectItem>
+                                    }
+                                </MudSelect>
+
+
+                            </MudItem>
+
+                        </MudGrid>
+
+                        <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
+                            <MudButton OnClick="SubmitForm"
+                                       StartIcon="@Icons.Material.Filled.Save"
+                                       Size="Size.Small"
+                                       Variant="Variant.Filled"
+                                       Style="border: 1px solid #d3d3d3;"
+                                       DropShadow="false"
+                                       IconColor="Color.Success"
+                                       Color="Color.Default">
+                                Spremi
+                            </MudButton>
+                            <MudButton OnClick="Cancel"
+                                       StartIcon="@Icons.Material.Filled.Cancel"
+                                       Size="Size.Small"
+                                       Variant="Variant.Filled"
+                                       Style="border: 1px solid #d3d3d3;"
+                                       DropShadow="false"
+                                       IconColor="Color.Error"
+                                       Color="Color.Default">
+                                Odustani
+                            </MudButton>
+                        </MudStack>
+
+                    </MudForm>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</Container>
