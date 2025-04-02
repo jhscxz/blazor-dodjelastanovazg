@@ -23,7 +23,7 @@ public partial class SocijalniNatjecajAdd : ComponentBase
     [Required(ErrorMessage = "OIB je obavezan.")]
     protected string? Oib { get; set; }
 
-    private DateTime? _datumPodnosenja;
+    private DateTime? _datumPodnosenja; // <- ovo je ono što se bind-a u UI
     protected List<string> ErrorMessages { get; } = new();
 
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
@@ -36,7 +36,7 @@ public partial class SocijalniNatjecajAdd : ComponentBase
     protected override void OnInitialized()
     {
         ZahtjevModel.NatjecajId = NatjecajId;
-        _datumPodnosenja = null;
+        _datumPodnosenja = null; // početna vrijednost prazna
     }
 
     private async Task SubmitForm()
@@ -49,6 +49,15 @@ public partial class SocijalniNatjecajAdd : ComponentBase
             ErrorMessages.Add("Forma nije validna. Provjerite unesene podatke.");
             return;
         }
+
+        // Konverzija DateTime? u DateOnly
+        if (_datumPodnosenja == null)
+        {
+            ErrorMessages.Add("Datum podnošenja zahtjeva je obavezan.");
+            return;
+        }
+
+        ZahtjevModel.DatumPodnosenjaZahtjeva = DateOnly.FromDateTime(_datumPodnosenja.Value);
 
         try
         {

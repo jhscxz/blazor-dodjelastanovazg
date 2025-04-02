@@ -16,7 +16,7 @@ public class SocijalniNatjecajService(ApplicationDbContext context) : ISocijalni
             {
                 KlasaPredmeta = x.KlasaPredmeta,
                 DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
-                Adresa = x.Adresa,
+                Adresa = x.Adresa!,
                 UkupniPrihodKucanstva = x.UkupniPrihodKucanstva,
                 StambeniStatusKucanstva = x.StambeniStatusKucanstva,
                 SastavKucanstva = x.SastavKucanstva,
@@ -28,16 +28,15 @@ public class SocijalniNatjecajService(ApplicationDbContext context) : ISocijalni
 
     public async Task CreateAsync(SocijalniNatjecajDto dto, string imePrezime, string oib)
     {
-        // Ako je validacija forme uspješna, DTO će imati sve potrebne vrijednosti
         var entitet = new SocijalniNatjecajZahtjev
         {
             NatjecajId = dto.NatjecajId,
-            KlasaPredmeta = dto.KlasaPredmeta.Value,
-            DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva, // Ako je potrebno, izvršite konverziju u DateTime
+            KlasaPredmeta = dto.KlasaPredmeta.GetValueOrDefault(),
+            DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva,
             Adresa = dto.Adresa,
-            UkupniPrihodKucanstva = dto.UkupniPrihodKucanstva.Value,
-            StambeniStatusKucanstva = dto.StambeniStatusKucanstva.Value,
-            SastavKucanstva = dto.SastavKucanstva.Value,
+            UkupniPrihodKucanstva = dto.UkupniPrihodKucanstva.GetValueOrDefault(),
+            StambeniStatusKucanstva = dto.StambeniStatusKucanstva.GetValueOrDefault(),
+            SastavKucanstva = dto.SastavKucanstva.GetValueOrDefault(),
             Aktivan = dto.Aktivan,
             CreatedAt = DateTime.UtcNow,
         };

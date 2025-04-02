@@ -10,7 +10,7 @@ public class SocijalniNatjecajDto
     [Required(ErrorMessage = "Datum podnošenja zahtjeva je obavezan.")]
     public DateOnly DatumPodnosenjaZahtjeva { get; set; }
     [Required(ErrorMessage = "Adresa je obavezna.")]
-    public string Adresa { get; set; }
+    public string Adresa { get; set; } = string.Empty;
     [Required(ErrorMessage = "Ukupni prihod kućanstva je obavezan.")]
     public decimal? UkupniPrihodKucanstva { get; set; }
     [Required(ErrorMessage = "Stambeni status kućanstva je obavezan.")]
