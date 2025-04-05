@@ -27,7 +27,6 @@
                   Dense="true"
                   Outlined="true"
                   @ref="Table">
-
             <HeaderContent>
                 <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Klasa predmeta</MudTh>
                 <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Datum podnošenja</MudTh>
@@ -35,6 +34,7 @@
                 <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Ukupni prihod (€)</MudTh>
                 <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Stambeni status</MudTh>
                 <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Sastav kućanstva</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Detalji</MudTh>
             </HeaderContent>
 
             <RowTemplate>
@@ -46,12 +46,19 @@
                 </MudTd>
                 <MudTd DataLabel="Stambeni">@context.Bodovni?.StambeniStatusKucanstva</MudTd>
                 <MudTd DataLabel="Sastav">@context.Bodovni?.SastavKucanstva</MudTd>
+                <MudTd DataLabel="Detalji">
+                    <MudButton OnClick="() => NavigateToDetails(context)"
+                               Variant="Variant.Text"
+                               Class="p-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Info" Class="custom-icon-sm"/>
+                    </MudButton>
+                </MudTd>
+
             </RowTemplate>
 
             <PagerContent>
                 <MudTablePager />
             </PagerContent>
-
         </MudTable>
     </MudPaper>
 </Container>

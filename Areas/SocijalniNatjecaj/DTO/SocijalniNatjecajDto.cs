@@ -27,5 +27,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 
         [Required]
         public SocijalniBodovniDto Bodovni { get; set; } = new();
+
+        // Dodani property za članove kućanstva
+        public List<SocijalniNatjecajClanDto>? Clanovi { get; set; }
     }
 }

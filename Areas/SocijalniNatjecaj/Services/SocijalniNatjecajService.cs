@@ -5,7 +5,6 @@ using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 

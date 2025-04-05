@@ -1,0 +1,62 @@
+@page "/socijalni/detalji/{NatjecajId:long}"
+@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using DodjelaStanovaZG.Components.UI
+@using MudBlazor
+@using DodjelaStanovaZG.Models
+@inherits SocijalniNatjecajDetaljiBase
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudPaper Outlined="true" Class="pa-4">
+        <MudTabs>
+            <!-- Prvi tab: Osnovni podaci -->
+            <MudTabPanel Text="Osnovni podaci">
+                <MudGrid Gutter="Size.Small">
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.subtitle1">Klasa predmeta:</MudText>
+                        <MudText>@Detalji.KlasaPredmeta</MudText>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.subtitle1">Datum podnošenja:</MudText>
+                        <MudText>@Detalji.DatumPodnosenjaZahtjeva.ToString("dd.MM.yyyy.")</MudText>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.subtitle1">Adresa:</MudText>
+                        <MudText>@Detalji.Adresa</MudText>
+                    </MudItem>
+                    <!-- Dodaj ovdje i druge dodatne podatke ako su potrebni -->
+                </MudGrid>
+            </MudTabPanel>
+
+            <!-- Drugi tab: Članovi kućanstva -->
+            <MudTabPanel Text="Članovi kućanstva">
+                @if (Detalji.Clanovi != null && Detalji.Clanovi.Any())
+                {
+                    <MudTable T="SocijalniNatjecajClanDto" Items="Detalji.Clanovi">
+                        <HeaderContent>
+                            <MudTh>Ime i prezime</MudTh>
+                            <MudTh>OIB</MudTh>
+                            <MudTh>Srodstvo</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Ime">@context.ImePrezime</MudTd>
+                            <MudTd DataLabel="OIB">@context.Oib</MudTd>
+                            <MudTd DataLabel="Srodstvo">@context.Srodstvo?.ToString()</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+
+                }
+                else
+                {
+                    <MudText>Nema unesenih članova kućanstva.</MudText>
+                }
+            </MudTabPanel>
+
+            <!-- Treći tab: Opcije bodovanja -->
+            <MudTabPanel Text="Opcije bodovanja">
+                <MudText>Odaberi opcije koje utječu na bodovanje:</MudText>
+                <!-- Primjer kontrole – prilagodi prema stvarnim opcijama -->
+                <!-- Dodaj više kontrola po potrebi -->
+            </MudTabPanel>
+        </MudTabs>
+    </MudPaper>
+</Container>
