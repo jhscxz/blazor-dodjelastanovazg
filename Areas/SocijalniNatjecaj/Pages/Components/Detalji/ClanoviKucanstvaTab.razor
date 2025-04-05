@@ -1,0 +1,27 @@
+@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using MudBlazor
+@using DodjelaStanovaZG.DTO
+@code {
+    [Parameter]
+    public List<SocijalniNatjecajClanDto> Clanovi { get; set; } = new();
+}
+
+@if (Clanovi.Any())
+{
+    <MudTable T="SocijalniNatjecajClanDto" Items="Clanovi">
+        <HeaderContent>
+            <MudTh>Ime i prezime</MudTh>
+            <MudTh>OIB</MudTh>
+            <MudTh>Srodstvo</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Ime">@context.ImePrezime</MudTd>
+            <MudTd DataLabel="OIB">@context.Oib</MudTd>
+            <MudTd DataLabel="Srodstvo">@context.Srodstvo?.ToString()</MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+else
+{
+    <MudText>Nema unesenih članova kućanstva.</MudText>
+}

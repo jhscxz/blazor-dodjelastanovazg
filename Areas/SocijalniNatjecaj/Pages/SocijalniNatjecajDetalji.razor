@@ -1,62 +1,72 @@
 @page "/socijalni/detalji/{NatjecajId:long}"
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
+@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
 @using DodjelaStanovaZG.Components.UI
 @using MudBlazor
-@using DodjelaStanovaZG.Models
-@inherits SocijalniNatjecajDetaljiBase
+@inject ISocijalniNatjecajDetaljiService DetaljiService
 
 <Container BreadcrumbItems="BreadcrumbItems">
-    <MudPaper Outlined="true" Class="pa-4">
-        <MudTabs>
-            <!-- Prvi tab: Osnovni podaci -->
-            <MudTabPanel Text="Osnovni podaci">
-                <MudGrid Gutter="Size.Small">
-                    <MudItem xs="12" sm="6">
-                        <MudText Typo="Typo.subtitle1">Klasa predmeta:</MudText>
-                        <MudText>@Detalji.KlasaPredmeta</MudText>
-                    </MudItem>
-                    <MudItem xs="12" sm="6">
-                        <MudText Typo="Typo.subtitle1">Datum podnošenja:</MudText>
-                        <MudText>@Detalji.DatumPodnosenjaZahtjeva.ToString("dd.MM.yyyy.")</MudText>
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudText Typo="Typo.subtitle1">Adresa:</MudText>
-                        <MudText>@Detalji.Adresa</MudText>
-                    </MudItem>
-                    <!-- Dodaj ovdje i druge dodatne podatke ako su potrebni -->
-                </MudGrid>
-            </MudTabPanel>
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12" sm="10" md="8" lg="6">
+            <MudCard Outlined="true" Rounded="true" Class="pa-6">
+                <MudCardContent>
 
-            <!-- Drugi tab: Članovi kućanstva -->
-            <MudTabPanel Text="Članovi kućanstva">
-                @if (Detalji.Clanovi != null && Detalji.Clanovi.Any())
-                {
-                    <MudTable T="SocijalniNatjecajClanDto" Items="Detalji.Clanovi">
-                        <HeaderContent>
-                            <MudTh>Ime i prezime</MudTh>
-                            <MudTh>OIB</MudTh>
-                            <MudTh>Srodstvo</MudTh>
-                        </HeaderContent>
-                        <RowTemplate>
-                            <MudTd DataLabel="Ime">@context.ImePrezime</MudTd>
-                            <MudTd DataLabel="OIB">@context.Oib</MudTd>
-                            <MudTd DataLabel="Srodstvo">@context.Srodstvo?.ToString()</MudTd>
-                        </RowTemplate>
-                    </MudTable>
+                    @if (_detalji is null)
+                    {
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudTabs Color="Color.Default"
+                                 Rounded="true"
+                                 PanelClass="pa-6">
 
-                }
-                else
-                {
-                    <MudText>Nema unesenih članova kućanstva.</MudText>
-                }
-            </MudTabPanel>
+                            <MudTabPanel Text="Osnovni podaci">
+                                <OsnovniPodaciTab Detalji="_detalji" />
+                            </MudTabPanel>
 
-            <!-- Treći tab: Opcije bodovanja -->
-            <MudTabPanel Text="Opcije bodovanja">
-                <MudText>Odaberi opcije koje utječu na bodovanje:</MudText>
-                <!-- Primjer kontrole – prilagodi prema stvarnim opcijama -->
-                <!-- Dodaj više kontrola po potrebi -->
-            </MudTabPanel>
-        </MudTabs>
-    </MudPaper>
+                            <MudTabPanel Text="Članovi kućanstva">
+                                <ClanoviKucanstvaTab Clanovi="_detalji.Clanovi" />
+                            </MudTabPanel>
+
+                            @if (_detalji.Bodovni != null)
+                            {
+                                <MudTabPanel Text="Opcije bodovanja">
+                                    <BodovanjeOpcijeTab BodovniPodaci="_detalji.Bodovni" />
+                                </MudTabPanel>
+                            }
+                        </MudTabs>
+                    }
+
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
 </Container>
+
+@code {
+    [Parameter]
+    public long NatjecajId { get; set; }
+
+    private SocijalniNatjecajDto? _detalji;
+
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } =
+    [
+        new() { Text = "Početna", Url = "/" },
+        new() { Text = "Socijalni natječaji", Url = "/socijalni-natjecaj" },
+        new() { Text = "Detalji zahtjeva", CssClass = "text-red-500 font-bold" },
+    ];
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _detalji = await DetaljiService.GetDetaljiAsync(NatjecajId);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Greška prilikom dohvaćanja detalja: {ex.Message}");
+        }
+    }
+}

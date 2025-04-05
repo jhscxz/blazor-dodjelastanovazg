@@ -1,0 +1,22 @@
+@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using MudBlazor
+
+@code {
+    [Parameter]
+    public SocijalniNatjecajDto Detalji { get; set; } = new();
+}
+
+<MudGrid Gutter="Size.Small">
+    <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.subtitle1">Klasa predmeta:</MudText>
+        <MudText>@Detalji.KlasaPredmeta</MudText>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudText Typo="Typo.subtitle1">Datum podnošenja:</MudText>
+        <MudText>@Detalji.DatumPodnosenjaZahtjeva.ToString("dd.MM.yyyy.")</MudText>
+    </MudItem>
+    <MudItem xs="12">
+        <MudText Typo="Typo.subtitle1">Adresa:</MudText>
+        <MudText>@Detalji.Adresa</MudText>
+    </MudItem>
+</MudGrid>
