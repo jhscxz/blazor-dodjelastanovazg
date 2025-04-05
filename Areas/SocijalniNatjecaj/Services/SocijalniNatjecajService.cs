@@ -29,6 +29,7 @@ public class SocijalniNatjecajService : ISocijalniNatjecajService
         return await _context.SocijalniNatjecajZahtjevi
             .Select(x => new SocijalniNatjecajDto
             {
+                Id=x.Id,
                 KlasaPredmeta = x.KlasaPredmeta,
                 DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
                 Adresa = x.Adresa!,

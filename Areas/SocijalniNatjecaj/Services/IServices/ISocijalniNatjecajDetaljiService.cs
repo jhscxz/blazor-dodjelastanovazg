@@ -4,6 +4,6 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
 {
     public interface ISocijalniNatjecajDetaljiService
     {
-        Task<SocijalniNatjecajDto> GetDetaljiAsync(long natjecajId);
+        Task<SocijalniNatjecajDto> GetDetaljiAsync(long id);
     }
 }

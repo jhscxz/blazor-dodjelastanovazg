@@ -1,4 +1,4 @@
-@page "/socijalni/detalji/{NatjecajId:long}"
+@page "/socijalni/detalji/{Id:long}"
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
@@ -47,7 +47,7 @@
 
 @code {
     [Parameter]
-    public long NatjecajId { get; set; }
+    public long Id { get; set; }
 
     private SocijalniNatjecajDto? _detalji;
 
@@ -62,7 +62,7 @@
     {
         try
         {
-            _detalji = await DetaljiService.GetDetaljiAsync(NatjecajId);
+            _detalji = await DetaljiService.GetDetaljiAsync(Id);
         }
         catch (Exception ex)
         {

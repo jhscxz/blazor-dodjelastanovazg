@@ -1,6 +1,7 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
+using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,33 +16,35 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
             _context = context;
         }
 
-        public async Task<SocijalniNatjecajDto> GetDetaljiAsync(long natjecajId)
+        public async Task<SocijalniNatjecajDto> GetDetaljiAsync(long id)
         {
             var entity = await _context.SocijalniNatjecajZahtjevi
                 .Include(x => x.Clanovi)
-                //.Include(x => x.BodovniPodaci) // Ako imaš bodovne podatke, uključi ih ovdje
-                .FirstOrDefaultAsync(x => x.NatjecajId == natjecajId);
+                .Include(x => x.BodovniPodaci)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (entity == null)
-            {
                 throw new Exception("Zahtjev nije pronađen.");
-            }
 
-            // Mapiranje entiteta u DTO; pretpostavljamo da je podnositelj prvi član u kolekciji.
-            var dto = new SocijalniNatjecajDto
+            var podnositelj = entity.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
+
+            return new SocijalniNatjecajDto
             {
+                Id = entity.Id,
                 NatjecajId = entity.NatjecajId,
                 KlasaPredmeta = entity.KlasaPredmeta,
                 DatumPodnosenjaZahtjeva = entity.DatumPodnosenjaZahtjeva,
                 Adresa = entity.Adresa,
-                ImePrezime = entity.Clanovi.FirstOrDefault()?.ImePrezime ?? string.Empty,
-                Oib = entity.Clanovi.FirstOrDefault()?.Oib,
+                ImePrezime = podnositelj?.ImePrezime ?? string.Empty,
+                Oib = podnositelj?.Oib,
                 RezultatObrade = entity.RezultatObrade,
                 NapomenaObrade = entity.NapomenaObrade,
-                Bodovni = new SocijalniBodovniDto
-                {
-                    // Mapiraj bodovne podatke prema potrebi.
-                },
+                Bodovni = entity.BodovniPodaci != null
+                    ? new SocijalniBodovniDto
+                    {
+                        // mapiraj polja ako imaš
+                    }
+                    : new SocijalniBodovniDto(),
                 Clanovi = entity.Clanovi.Select(clan => new SocijalniNatjecajClanDto
                 {
                     Id = clan.Id,
@@ -50,8 +53,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                     Srodstvo = clan.Srodstvo
                 }).ToList()
             };
-
-            return dto;
         }
+
     }
 }

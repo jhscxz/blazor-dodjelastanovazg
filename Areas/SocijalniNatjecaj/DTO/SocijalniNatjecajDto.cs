@@ -5,6 +5,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 {
     public class SocijalniNatjecajDto
     {
+        public long Id { get; set; }
+
         [Required(ErrorMessage = "Klasa predmeta je obavezna.")]
         public int? KlasaPredmeta { get; set; }
 

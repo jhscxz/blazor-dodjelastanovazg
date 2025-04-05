@@ -38,7 +38,7 @@ public class SocijalniNatjecajPregledBase : ComponentBase
     protected void NavigateToDetails(SocijalniNatjecajDto dto)
     {
         // Pretpostavljamo da je stranica detalja na /socijalni/detalji/{NatjecajId}
-        Navigation.NavigateTo($"/socijalni/detalji/{dto.NatjecajId}");
+        Navigation.NavigateTo($"/socijalni/detalji/{dto.Id}");
     }
 
 }
