@@ -1,22 +1,31 @@
 using System.ComponentModel.DataAnnotations;
 using DodjelaStanovaZG.Enums;
 
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
-
-public class SocijalniNatjecajDto
+namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 {
-    [Required(ErrorMessage = "Klasa predmeta je obavezna.")]
-    public int? KlasaPredmeta { get; set; } 
-    [Required(ErrorMessage = "Datum podnošenja zahtjeva je obavezan.")]
-    public DateOnly DatumPodnosenjaZahtjeva { get; set; }
-    [Required(ErrorMessage = "Adresa je obavezna.")]
-    public string Adresa { get; set; } = string.Empty;
-    [Required(ErrorMessage = "Ukupni prihod kućanstva je obavezan.")]
-    public decimal? UkupniPrihodKucanstva { get; set; }
-    [Required(ErrorMessage = "Stambeni status kućanstva je obavezan.")]
-    public StambeniStatusKucanstva? StambeniStatusKucanstva { get; set; }
-    [Required(ErrorMessage = "Sastav kućanstva je obavezan.")]
-    public SastavKucanstva? SastavKucanstva { get; set; }
-    public byte Aktivan { get; set; } = 1;
-    public long NatjecajId { get; set; }
+    public class SocijalniNatjecajDto
+    {
+        [Required(ErrorMessage = "Klasa predmeta je obavezna.")]
+        public int? KlasaPredmeta { get; set; }
+
+        [Required(ErrorMessage = "Datum podnošenja zahtjeva je obavezan.")]
+        public DateOnly DatumPodnosenjaZahtjeva { get; set; }
+
+        public string? Adresa { get; set; }
+
+        [Required(ErrorMessage = "Ime i prezime podnositelja su obavezni.")]
+        public string ImePrezime { get; set; } = string.Empty;
+
+        public string? Oib { get; set; }
+
+        [Required(ErrorMessage = "Rezultat obrade je obavezan.")]
+        public RezultatObrade? RezultatObrade { get; set; }
+
+        public string? NapomenaObrade { get; set; }
+
+        public long NatjecajId { get; set; }
+
+        [Required]
+        public SocijalniBodovniDto Bodovni { get; set; } = new();
+    }
 }

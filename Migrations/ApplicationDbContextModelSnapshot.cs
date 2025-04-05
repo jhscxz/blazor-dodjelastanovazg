@@ -177,7 +177,6 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Oib")
-                        .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
@@ -191,7 +190,7 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("PeriodStart");
 
-                    b.Property<int>("Srodstvo")
+                    b.Property<int?>("Srodstvo")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")

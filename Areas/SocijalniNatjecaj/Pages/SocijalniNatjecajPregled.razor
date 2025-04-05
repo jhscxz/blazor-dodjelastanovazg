@@ -17,9 +17,8 @@
                        StartIcon="@Icons.Material.Filled.Add">
                 Dodaj
             </MudButton>
-            
         </div>
-        
+
         <MudTable T="SocijalniNatjecajDto"
                   Items="Natjecaji"
                   Hover="true"
@@ -36,7 +35,6 @@
                 <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Ukupni prihod (€)</MudTh>
                 <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Stambeni status</MudTh>
                 <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Sastav kućanstva</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Aktivan</MudTh>
             </HeaderContent>
 
             <RowTemplate>
@@ -44,22 +42,14 @@
                 <MudTd DataLabel="Datum">@context.DatumPodnosenjaZahtjeva.ToString("dd.MM.yyyy.")</MudTd>
                 <MudTd DataLabel="Adresa">@context.Adresa</MudTd>
                 <MudTd DataLabel="Prihod">
-                    @($"{context.UkupniPrihodKucanstva?.ToString("N2") ?? ""} €")
+                    @($"{context.Bodovni?.UkupniPrihodKucanstva?.ToString("N2") ?? ""} €")
                 </MudTd>
-                <MudTd DataLabel="Stambeni">@context.StambeniStatusKucanstva</MudTd>
-                <MudTd DataLabel="Sastav">@context.SastavKucanstva</MudTd>
-                <MudTd DataLabel="Aktivan">
-                    <MudChip T="string"
-                             Variant="Variant.Text"
-                             Size="Size.Small"
-                             Color="@(context.Aktivan == 1 ? Color.Success : Color.Error)">
-                        @(context.Aktivan == 1 ? "Da" : "Ne")
-                    </MudChip>
-                </MudTd>
+                <MudTd DataLabel="Stambeni">@context.Bodovni?.StambeniStatusKucanstva</MudTd>
+                <MudTd DataLabel="Sastav">@context.Bodovni?.SastavKucanstva</MudTd>
             </RowTemplate>
 
             <PagerContent>
-                <MudTablePager/>
+                <MudTablePager />
             </PagerContent>
 
         </MudTable>
