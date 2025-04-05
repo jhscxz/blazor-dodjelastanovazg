@@ -1,27 +1,50 @@
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
 @using MudBlazor
-@using DodjelaStanovaZG.DTO
-@code {
-    [Parameter]
-    public List<SocijalniNatjecajClanDto> Clanovi { get; set; } = new();
-}
+@inject IDialogService DialogService
 
-@if (Clanovi.Any())
-{
-    <MudTable T="SocijalniNatjecajClanDto" Items="Clanovi">
+<MudPaper Outlined="true" Class="pa-4">
+    <div class="flex items-center gap-4 mb-4">
+        <MudButton OnClick="AddClan"
+                   Variant="Variant.Filled"
+                   Color="Color.Default"
+                   IconColor="Color.Success"
+                   DropShadow="false"
+                   StartIcon="@Icons.Material.Filled.Add">
+            Dodaj člana
+        </MudButton>
+    </div>
+
+    <MudTable T="SocijalniNatjecajClanDto"
+              Items="Clanovi"
+              Hover="true"
+              Striped="true"
+              RowsPerPage="10"
+              Dense="true"
+              Outlined="true">
+
         <HeaderContent>
-            <MudTh>Ime i prezime</MudTh>
-            <MudTh>OIB</MudTh>
-            <MudTh>Srodstvo</MudTh>
+            <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Ime i prezime</MudTh>
+            <MudTh Style="font-weight: bold; color: white; background-color: #163d73">OIB</MudTh>
+            <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Srodstvo</MudTh>
+            <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Akcija</MudTh>
         </HeaderContent>
+
         <RowTemplate>
             <MudTd DataLabel="Ime">@context.ImePrezime</MudTd>
             <MudTd DataLabel="OIB">@context.Oib</MudTd>
             <MudTd DataLabel="Srodstvo">@context.Srodstvo?.ToString()</MudTd>
+            <MudTd DataLabel="Akcija">
+                <MudButton OnClick="() => EditClan(context.Id)"
+                           Variant="Variant.Text"
+                           Class="p-2">
+                    <MudIcon Icon="@Icons.Material.Filled.Edit" Class="custom-icon-sm"/>
+                </MudButton>
+            </MudTd>
         </RowTemplate>
+
+        <PagerContent>
+            <MudTablePager/>
+        </PagerContent>
     </MudTable>
-}
-else
-{
-    <MudText>Nema unesenih članova kućanstva.</MudText>
-}
+</MudPaper>

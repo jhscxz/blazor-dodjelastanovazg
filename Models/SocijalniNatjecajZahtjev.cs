@@ -37,7 +37,7 @@ public class SocijalniNatjecajZahtjev
 
     public Natjecaj? Natjecaj { get; set; }
 
-    public ICollection<SocijalniNatjecajClan> Clanovi { get; set; } = [];
+    public ICollection<SocijalniNatjecajClan> Clanovi { get; set; } = new List<SocijalniNatjecajClan>();
 
     public SocijalniNatjecajBodovniPodaci? BodovniPodaci { get; set; }
 

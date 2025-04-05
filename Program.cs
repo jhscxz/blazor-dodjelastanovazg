@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using MudBlazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +69,13 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedCultures = new[] { culture };
     options.SupportedUICultures = new[] { culture };
 });
+
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
+});
+
+
 
 // =============================
 // KONFIGURACIJA APLIKACIJE

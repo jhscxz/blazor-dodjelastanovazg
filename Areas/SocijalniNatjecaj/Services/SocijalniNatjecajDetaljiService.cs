@@ -7,18 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
 {
-    public class SocijalniNatjecajDetaljiService : ISocijalniNatjecajDetaljiService
+    public class SocijalniNatjecajDetaljiService(ApplicationDbContext context) : ISocijalniNatjecajDetaljiService
     {
-        private readonly ApplicationDbContext _context;
-
-        public SocijalniNatjecajDetaljiService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<SocijalniNatjecajDto> GetDetaljiAsync(long id)
         {
-            var entity = await _context.SocijalniNatjecajZahtjevi
+            var entity = await context.SocijalniNatjecajZahtjevi
                 .Include(x => x.Clanovi)
                 .Include(x => x.BodovniPodaci)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -27,6 +20,12 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                 throw new Exception("Zahtjev nije pronađen.");
 
             var podnositelj = entity.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
+            var bodovniDto = entity.BodovniPodaci != null
+                ? new SocijalniBodovniDto()
+                {
+                    // mapiraj polja ako imaš
+                }
+                : new SocijalniBodovniDto();
 
             return new SocijalniNatjecajDto
             {
@@ -39,12 +38,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                 Oib = podnositelj?.Oib,
                 RezultatObrade = entity.RezultatObrade,
                 NapomenaObrade = entity.NapomenaObrade,
-                Bodovni = entity.BodovniPodaci != null
-                    ? new SocijalniBodovniDto
-                    {
-                        // mapiraj polja ako imaš
-                    }
-                    : new SocijalniBodovniDto(),
+                Bodovni = bodovniDto,
                 Clanovi = entity.Clanovi.Select(clan => new SocijalniNatjecajClanDto
                 {
                     Id = clan.Id,
@@ -55,5 +49,52 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
             };
         }
 
+        public async Task AddClanAsync(SocijalniNatjecajClan noviClanDto)
+        {
+            var zahtjev = await context.SocijalniNatjecajZahtjevi
+                .FirstOrDefaultAsync(z => z.Id == noviClanDto.ZahtjevId);
+
+            if (zahtjev == null)
+                throw new Exception($"Zahtjev s ID-om {noviClanDto.ZahtjevId} nije pronađen.");
+
+            var noviClan = new SocijalniNatjecajClan
+            {
+                ImePrezime = noviClanDto.ImePrezime,
+                Oib = noviClanDto.Oib,
+                Srodstvo = noviClanDto.Srodstvo,
+                ZahtjevId = zahtjev.Id,
+                Zahtjev = zahtjev
+            };
+
+            context.SocijalniNatjecajClanovi.Add(noviClan);
+            await context.SaveChangesAsync();
+        }
+
+
+        public SocijalniNatjecajClan ConvertToEntity(SocijalniNatjecajClanDto clanDto, SocijalniNatjecajZahtjev zahtjev)
+        {
+            return new SocijalniNatjecajClan
+            {
+                ImePrezime = clanDto.ImePrezime,
+                Oib = clanDto.Oib,
+                Srodstvo = clanDto.Srodstvo,
+                ZahtjevId = zahtjev.Id,
+                Zahtjev = zahtjev
+            };
+        }
+
+        public async Task<SocijalniNatjecajZahtjev> GetZahtjevByIdAsync(long zahtjevId)
+        {
+            var zahtjev = await context.SocijalniNatjecajZahtjevi
+                .Include(z => z.Clanovi)
+                .Include(z => z.Natjecaj)
+                .Include(z => z.BodovniPodaci)
+                .FirstOrDefaultAsync(z => z.Id == zahtjevId);
+
+            if (zahtjev == null)
+                throw new Exception($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
+
+            return zahtjev;
+        }
     }
 }

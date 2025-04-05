@@ -11,7 +11,6 @@ public class SocijalniNatjecajDetaljiBase : ComponentBase
     [Inject] public NavigationManager Navigation { get; set; } = null!;
     [Parameter] public long NatjecajId { get; set; }
 
-    // Detalji zahtjeva, uključujući i članove kućanstva i bodovne podatke
     protected SocijalniNatjecajDto Detalji { get; set; } = new();
 
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =

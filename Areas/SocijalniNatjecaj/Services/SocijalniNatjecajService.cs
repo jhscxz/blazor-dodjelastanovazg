@@ -8,25 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 
-public class SocijalniNatjecajService : ISocijalniNatjecajService
+public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+    : ISocijalniNatjecajService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public SocijalniNatjecajService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
-    {
-        _context = context;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
     private string GetCurrentUserId()
     {
-        return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Unknown";
+        return httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Unknown";
     }
 
     public async Task<List<SocijalniNatjecajDto>> GetAllAsync()
     {
-        return await _context.SocijalniNatjecajZahtjevi
+        return await context.SocijalniNatjecajZahtjevi
             .Select(x => new SocijalniNatjecajDto
             {
                 Id=x.Id,
@@ -42,8 +34,7 @@ public class SocijalniNatjecajService : ISocijalniNatjecajService
     {
         string currentUserId = GetCurrentUserId();
 
-        // Kreiramo novi zahtjev s osnovnim podacima
-        var entitet = new SocijalniNatjecajZahtjev
+        SocijalniNatjecajZahtjev entitet = new SocijalniNatjecajZahtjev
         {
             NatjecajId = dto.NatjecajId,
             KlasaPredmeta = dto.KlasaPredmeta.GetValueOrDefault(),
@@ -53,12 +44,11 @@ public class SocijalniNatjecajService : ISocijalniNatjecajService
             NapomenaObrade = dto.NapomenaObrade,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
-            CreatedBy = currentUserId, // Postavljamo CreatedBy na ID trenutno prijavljenog korisnika
+            CreatedBy = currentUserId,
             Clanovi = new List<SocijalniNatjecajClan>()
         };
 
-        // Kreiramo prvog člana – podnositelja zahtjeva – koristeći podatke iz DTO-a
-        var clan = new SocijalniNatjecajClan
+        SocijalniNatjecajClan clan = new SocijalniNatjecajClan
         {
             Zahtjev = entitet,
             ImePrezime = imePrezime,
@@ -68,11 +58,9 @@ public class SocijalniNatjecajService : ISocijalniNatjecajService
             UpdatedAt = DateTime.UtcNow
         };
 
-        // Dodajemo podnositelja kao prvog člana u kolekciju Clanovi
         entitet.Clanovi.Add(clan);
 
-        // Sprema se entitet s dodanim članom u bazu
-        await _context.SocijalniNatjecajZahtjevi.AddAsync(entitet);
-        await _context.SaveChangesAsync();
+        await context.SocijalniNatjecajZahtjevi.AddAsync(entitet);
+        await context.SaveChangesAsync();
     }
 }

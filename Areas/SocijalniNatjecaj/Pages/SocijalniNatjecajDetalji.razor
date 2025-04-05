@@ -27,7 +27,7 @@
                             </MudTabPanel>
 
                             <MudTabPanel Text="Članovi kućanstva">
-                                <ClanoviKucanstvaTab Clanovi="_detalji.Clanovi" />
+                                <ClanoviKucanstvaTab Clanovi="_detalji.Clanovi" Id="Id" />
                             </MudTabPanel>
 
                             @if (_detalji.Bodovni != null)
@@ -51,6 +51,7 @@
 
     private SocijalniNatjecajDto? _detalji;
 
+    
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } =
     [
         new() { Text = "Početna", Url = "/" },
@@ -63,6 +64,7 @@
         try
         {
             _detalji = await DetaljiService.GetDetaljiAsync(Id);
+            Console.WriteLine(_detalji.Id);
         }
         catch (Exception ex)
         {
