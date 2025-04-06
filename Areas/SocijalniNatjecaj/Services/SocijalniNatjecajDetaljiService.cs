@@ -44,7 +44,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                     Id = clan.Id,
                     ImePrezime = clan.ImePrezime,
                     Oib = clan.Oib,
-                    Srodstvo = clan.Srodstvo
+                    Srodstvo = clan.Srodstvo,
+                    DatumRodjenja = clan.DatumRodjenja
                 }).ToList()
             };
         }
@@ -62,6 +63,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                 ImePrezime = noviClanDto.ImePrezime,
                 Oib = noviClanDto.Oib,
                 Srodstvo = noviClanDto.Srodstvo,
+                DatumRodjenja = noviClanDto.DatumRodjenja,
                 ZahtjevId = zahtjev.Id,
                 Zahtjev = zahtjev
             };
@@ -78,6 +80,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                 ImePrezime = clanDto.ImePrezime,
                 Oib = clanDto.Oib,
                 Srodstvo = clanDto.Srodstvo,
+                DatumRodjenja = clanDto.DatumRodjenja,
                 ZahtjevId = zahtjev.Id,
                 Zahtjev = zahtjev
             };

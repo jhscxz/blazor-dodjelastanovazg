@@ -27,6 +27,7 @@
             <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Ime i prezime</MudTh>
             <MudTh Style="font-weight: bold; color: white; background-color: #163d73">OIB</MudTh>
             <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Srodstvo</MudTh>
+            <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Datum rođenja</MudTh>
             <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Akcija</MudTh>
         </HeaderContent>
 
@@ -34,6 +35,7 @@
             <MudTd DataLabel="Ime">@context.ImePrezime</MudTd>
             <MudTd DataLabel="OIB">@context.Oib</MudTd>
             <MudTd DataLabel="Srodstvo">@context.Srodstvo?.ToString()</MudTd>
+            <MudTd DataLabel="Datum rođenja">@context.DatumRodjenja.ToString("dd.MM.yyyy")</MudTd>
             <MudTd DataLabel="Akcija">
                 <MudButton OnClick="() => EditClan(context.Id)"
                            Variant="Variant.Text"
@@ -42,6 +44,7 @@
                 </MudButton>
             </MudTd>
         </RowTemplate>
+
 
         <PagerContent>
             <MudTablePager/>

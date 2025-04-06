@@ -1,3 +1,4 @@
+@using System.Globalization
 @using MudBlazor
 @using DodjelaStanovaZG.Enums
 
@@ -27,6 +28,18 @@
                 </MudItem>
 
                 <MudItem xs="12">
+                    <MudDatePicker ShrinkLabel T="DateOnly"
+                                   Label="Datum rođenja"
+                                   @bind-Date="_datumRodjenja"
+                                   Required="true"
+                                   DateFormat="dd.MM.yyyy"
+                                   Culture="@(new CultureInfo("hr-HR"))"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   Class="mb-4" />
+                </MudItem>
+
+                <MudItem xs="12">
                     <MudSelect T="Srodstvo?" Label="Srodstvo"
                                @bind-Value="NewClan.Srodstvo"
                                Variant="Variant.Outlined"
@@ -41,6 +54,7 @@
                     </MudSelect>
                 </MudItem>
             </MudGrid>
+
 
             <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
                 <MudButton OnClick="@Submit"

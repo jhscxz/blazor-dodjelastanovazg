@@ -3,6 +3,7 @@
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
 @using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Enums
 @using MudBlazor
 @inject ISocijalniNatjecajDetaljiService DetaljiService
 
@@ -26,11 +27,14 @@
                                 <OsnovniPodaciTab Detalji="_detalji" />
                             </MudTabPanel>
 
-                            <MudTabPanel Text="Članovi kućanstva">
-                                <ClanoviKucanstvaTab Clanovi="_detalji.Clanovi" Id="Id" />
-                            </MudTabPanel>
+                            @if (_detalji.RezultatObrade == RezultatObrade.Zadovoljava)
+                            {
+                                <MudTabPanel Text="Članovi kućanstva">
+                                    <ClanoviKucanstvaTab Clanovi="_detalji.Clanovi" Id="Id" />
+                                </MudTabPanel>
+                            }
 
-                            @if (_detalji.Bodovni != null)
+                            @if (_detalji.RezultatObrade == RezultatObrade.Zadovoljava)
                             {
                                 <MudTabPanel Text="Opcije bodovanja">
                                     <BodovanjeOpcijeTab BodovniPodaci="_detalji.Bodovni" />
