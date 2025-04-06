@@ -17,17 +17,6 @@ public class SocijalniNatjecajBodovniPodaci
 
     public SocijalniNatjecajZahtjev Zahtjev { get; set; } = null!;
 
-    [Precision(10, 2)]
-    public decimal? UkupniPrihodKucanstva { get; set; }
-
-    [Range(0, 10)]
-    public byte? BrojGodinaPrebivanja { get; set; }
-
-    public StambeniStatusKucanstva? StambeniStatusKucanstva { get; set; }
-
-    public SastavKucanstva? SastavKucanstva { get; set; }
-
-    public byte? BrojMaloljetneDjece { get; set; }
     public byte? BrojUzdrzavanePunoljetneDjece { get; set; }
 
     public byte? BrojMaloljetnihKorisnikaInvalidnine { get; set; }
@@ -47,8 +36,10 @@ public class SocijalniNatjecajBodovniPodaci
 
     [MaxLength(450)]
     public string? EditedBy { get; set; }
+
     public IdentityUser? EditedByUser { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
     public DateTime UpdatedAt { get; set; }
 }

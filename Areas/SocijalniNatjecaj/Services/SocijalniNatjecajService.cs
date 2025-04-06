@@ -21,7 +21,7 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
         return await context.SocijalniNatjecajZahtjevi
             .Select(x => new SocijalniNatjecajDto
             {
-                Id=x.Id,
+                Id = x.Id,
                 KlasaPredmeta = x.KlasaPredmeta,
                 DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
                 Adresa = x.Adresa!,
@@ -34,10 +34,11 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
     {
         string currentUserId = GetCurrentUserId();
 
-        SocijalniNatjecajZahtjev entitet = new SocijalniNatjecajZahtjev
+        // 1. Kreiraj novi zahtjev
+        var zahtjev = new SocijalniNatjecajZahtjev
         {
             NatjecajId = dto.NatjecajId,
-            KlasaPredmeta = dto.KlasaPredmeta.GetValueOrDefault(),
+            KlasaPredmeta = dto.KlasaPredmeta!.Value,
             DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva,
             Adresa = dto.Adresa,
             RezultatObrade = dto.RezultatObrade!.Value,
@@ -48,19 +49,36 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
             Clanovi = new List<SocijalniNatjecajClan>()
         };
 
-        SocijalniNatjecajClan clan = new SocijalniNatjecajClan
+        // 2. Dodaj podnositelja kao člana
+        var podnositelj = new SocijalniNatjecajClan
         {
-            Zahtjev = entitet,
+            Zahtjev = zahtjev,
             ImePrezime = imePrezime,
             Oib = string.IsNullOrWhiteSpace(oib) ? null : oib,
             Srodstvo = Srodstvo.PodnositeljZahtjeva,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
+        zahtjev.Clanovi.Add(podnositelj);
 
-        entitet.Clanovi.Add(clan);
+        // 3. Dodaj prazne podatke o kućanstvu
+        zahtjev.KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci
+        {
+            Zahtjev = zahtjev
+        };
 
-        await context.SocijalniNatjecajZahtjevi.AddAsync(entitet);
+        // 4. Dodaj prazne bodovne podatke
+        zahtjev.BodovniPodaci = new SocijalniNatjecajBodovniPodaci
+        {
+            Zahtjev = zahtjev,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            EditedBy = currentUserId
+        };
+
+        // 5. Spremi sve
+        await context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);
         await context.SaveChangesAsync();
     }
+
 }

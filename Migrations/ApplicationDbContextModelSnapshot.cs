@@ -73,12 +73,6 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<byte?>("BrojClanovaZrtavaSeksualnogNasiljaDomovinskiRat")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte?>("BrojGodinaPrebivanja")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("BrojMaloljetneDjece")
-                        .HasColumnType("tinyint");
-
                     b.Property<byte?>("BrojMaloljetnihKorisnikaInvalidnine")
                         .HasColumnType("tinyint");
 
@@ -119,16 +113,6 @@ namespace DodjelaStanovaZG.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("PeriodStart");
-
-                    b.Property<byte?>("SastavKucanstva")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("StambeniStatusKucanstva")
-                        .HasColumnType("tinyint");
-
-                    b.Property<decimal?>("UkupniPrihodKucanstva")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -211,6 +195,65 @@ namespace DodjelaStanovaZG.Migrations
                     b.ToTable(tb => tb.IsTemporal(ttb =>
                             {
                                 ttb.UseHistoryTable("SocijalniNatjecajClanoviHistory");
+                                ttb
+                                    .HasPeriodStart("PeriodStart")
+                                    .HasColumnName("PeriodStart");
+                                ttb
+                                    .HasPeriodEnd("PeriodEnd")
+                                    .HasColumnName("PeriodEnd");
+                            }));
+                });
+
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajKucanstvoPodaci", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("PeriodEnd")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("PeriodEnd");
+
+                    b.Property<DateTime>("PeriodStart")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("PeriodStart");
+
+                    b.Property<DateOnly>("PrebivanjeOd")
+                        .HasColumnType("date");
+
+                    b.Property<byte>("SastavKucanstva")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("StambeniStatusKucanstva")
+                        .HasColumnType("tinyint");
+
+                    b.Property<decimal>("UkupniPrihodKucanstva")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("ZahtjevId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ZahtjevId")
+                        .IsUnique();
+
+                    b.ToTable("SocijalniNatjecajKucanstvoPodaci", (string)null);
+
+                    b.ToTable(tb => tb.IsTemporal(ttb =>
+                            {
+                                ttb.UseHistoryTable("SocijalniNatjecajKucanstvoPodaciHistory");
                                 ttb
                                     .HasPeriodStart("PeriodStart")
                                     .HasColumnName("PeriodStart");
@@ -518,6 +561,17 @@ namespace DodjelaStanovaZG.Migrations
                     b.Navigation("Zahtjev");
                 });
 
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajKucanstvoPodaci", b =>
+                {
+                    b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", "Zahtjev")
+                        .WithOne("KucanstvoPodaci")
+                        .HasForeignKey("DodjelaStanovaZG.Models.SocijalniNatjecajKucanstvoPodaci", "ZahtjevId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Zahtjev");
+                });
+
             modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
@@ -591,6 +645,8 @@ namespace DodjelaStanovaZG.Migrations
                     b.Navigation("BodovniPodaci");
 
                     b.Navigation("Clanovi");
+
+                    b.Navigation("KucanstvoPodaci");
                 });
 #pragma warning restore 612, 618
         }

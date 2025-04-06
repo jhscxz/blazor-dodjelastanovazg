@@ -32,5 +32,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 
         // Dodani property za članove kućanstva
         public List<SocijalniNatjecajClanDto>? Clanovi { get; set; }
+        public SocijalniKucanstvoPodaciDto? KucanstvoPodaci { get; set; }
+
+
     }
 }

@@ -1,0 +1,41 @@
+@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using DodjelaStanovaZG.Enums
+@using MudBlazor
+@using System.Globalization
+
+@code {
+    [Parameter]
+    public SocijalniKucanstvoPodaciDto? Kucanstvo { get; set; }
+
+    private static readonly CultureInfo HrCulture = new("hr-HR");
+}
+
+@if (Kucanstvo is null)
+{
+    <MudText Color="Color.Error">Podaci o kućanstvu nisu dostupni.</MudText>
+}
+else
+{
+    <MudGrid Gutter="Size.Small">
+        <MudItem xs="12" sm="6">
+            <MudText Typo="Typo.subtitle1">Ukupni prihod kućanstva:</MudText>
+            <MudText>@Kucanstvo.UkupniPrihodKucanstva?.ToString("N2", HrCulture) €</MudText>
+        </MudItem>
+
+        <MudItem xs="12" sm="6">
+            <MudText Typo="Typo.subtitle1">Prebivanje od:</MudText>
+            <MudText>@($"{Kucanstvo.PrebivanjeOd:dd.MM.yyyy.}")</MudText>
+        </MudItem>
+
+
+        <MudItem xs="12" sm="6">
+            <MudText Typo="Typo.subtitle1">Stambeni status kućanstva:</MudText>
+            <MudText>@Kucanstvo.StambeniStatusKucanstva</MudText>
+        </MudItem>
+
+        <MudItem xs="12" sm="6">
+            <MudText Typo="Typo.subtitle1">Sastav kućanstva:</MudText>
+            <MudText>@Kucanstvo.SastavKucanstva</MudText>
+        </MudItem>
+    </MudGrid>
+}

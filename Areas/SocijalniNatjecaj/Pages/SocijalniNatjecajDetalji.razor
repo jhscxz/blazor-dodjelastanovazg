@@ -27,6 +27,10 @@
                                 <OsnovniPodaciTab Detalji="_detalji" />
                             </MudTabPanel>
 
+                            <MudTabPanel Text="Podaci o kućanstvu">
+                                <KucanstvoPodaciTab Kucanstvo="_detalji.KucanstvoPodaci" />
+                            </MudTabPanel>
+
                             @if (_detalji.RezultatObrade == RezultatObrade.Zadovoljava)
                             {
                                 <MudTabPanel Text="Članovi kućanstva">

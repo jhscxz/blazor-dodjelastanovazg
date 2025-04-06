@@ -14,6 +14,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
             var entity = await context.SocijalniNatjecajZahtjevi
                 .Include(x => x.Clanovi)
                 .Include(x => x.BodovniPodaci)
+                .Include(x => x.KucanstvoPodaci)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (entity == null)
@@ -39,6 +40,16 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                 RezultatObrade = entity.RezultatObrade,
                 NapomenaObrade = entity.NapomenaObrade,
                 Bodovni = bodovniDto,
+                KucanstvoPodaci = entity.KucanstvoPodaci is not null
+                    ? new SocijalniKucanstvoPodaciDto
+                    {
+                        UkupniPrihodKucanstva = entity.KucanstvoPodaci.UkupniPrihodKucanstva,
+                        PrebivanjeOd = entity.KucanstvoPodaci.PrebivanjeOd,
+                        StambeniStatusKucanstva = entity.KucanstvoPodaci.StambeniStatusKucanstva,
+                        SastavKucanstva = entity.KucanstvoPodaci.SastavKucanstva
+                    }
+                    : null,
+
                 Clanovi = entity.Clanovi.Select(clan => new SocijalniNatjecajClanDto
                 {
                     Id = clan.Id,
@@ -92,6 +103,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                 .Include(z => z.Clanovi)
                 .Include(z => z.Natjecaj)
                 .Include(z => z.BodovniPodaci)
+                .Include(x => x.KucanstvoPodaci)
                 .FirstOrDefaultAsync(z => z.Id == zahtjevId);
 
             if (zahtjev == null)
