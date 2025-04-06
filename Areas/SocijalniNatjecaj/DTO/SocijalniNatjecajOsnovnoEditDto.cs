@@ -11,7 +11,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
         public int? KlasaPredmeta { get; set; }
 
         [Required(ErrorMessage = "Datum podnošenja zahtjeva je obavezan.")]
-        public DateOnly DatumPodnosenjaZahtjeva { get; set; }
+        public DateOnly? DatumPodnosenjaZahtjeva { get; set; }
 
         public string? Adresa { get; set; }
 

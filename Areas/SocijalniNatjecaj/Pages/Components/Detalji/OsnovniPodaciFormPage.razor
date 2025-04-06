@@ -17,71 +17,98 @@
         {
             <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
-                    <MudForm @ref="_form" Model="@_socijalniNatjecajModel">
-                        <MudStack Spacing="3">
-                            
-                            <MudDatePicker ShrinkLabel T="DateTime?"
-                                           Label="Datum podnošenja zahtjeva"
-                                           @bind-Date="_datumPodnosenja"
-                                           Required="true"
-                                           DateFormat="dd.MM.yyyy"
-                                           Culture="@(new CultureInfo("hr-HR"))"
-                                           Variant="Variant.Outlined"
-                                           Margin="Margin.Dense"
-                                           Clearable="true"
-                                           AllowKeyboardInput="true" />
-
-                            <MudTextField ShrinkLabel T="string?"
-                                          Label="Adresa"
-                                          @bind-Value="_socijalniNatjecajModel.Adresa"
-                                          Variant="Variant.Outlined"
-                                          Margin="Margin.Dense" />
-
-                            <MudSelect ShrinkLabel T="RezultatObrade?"
-                                       Label="Rezultat obrade"
-                                       @bind-Value="_socijalniNatjecajModel.RezultatObrade"
-                                       Required="true"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense">
-                                <MudSelectItem T="RezultatObrade?" Value="null">Odaberi rezultat obrade</MudSelectItem>
-                                @foreach (var item in Enum.GetValues<RezultatObrade>())
+                    <!-- Display error messages -->
+                    @if (ErrorMessages?.Any() == true)
+                    {
+                        <MudAlert Severity="Severity.Error" Class="mb-4">
+                            <ul>
+                                @foreach (var msg in ErrorMessages)
                                 {
-                                    <MudSelectItem T="RezultatObrade?" Value="item">@item.ToString()</MudSelectItem>
+                                    <li>@msg</li>
                                 }
-                            </MudSelect>
+                            </ul>
+                        </MudAlert>
+                    }
 
+                    <!-- Form content -->
+                    <MudForm @ref="_form" Model="@_socijalniNatjecajModel" OnValidSubmit="OnValidSubmit">
+                        <MudGrid Gutter="Size.Small">
+                            <MudItem xs="12" sm="6">
+                                <MudTextField T="int?"
+                                              Label="Klasa predmeta"
+                                              @bind-Value="_socijalniNatjecajModel.KlasaPredmeta"
+                                              Required="true"
+                                              Variant="Variant.Outlined"
+                                              Margin="Margin.Dense"
+                                              ShrinkLabel="true"
+                                              Class="mb-4" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudDatePicker ShrinkLabel T="DateTime?"
+                                               Label="Datum podnošenja zahtjeva"
+                                               @bind-Date="_datumPodnosenja"
+                                               Required="true"
+                                               DateFormat="dd.MM.yyyy"
+                                               Culture="@(new CultureInfo("hr-HR"))"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Clearable="true"
+                                               Class="mb-4" />
+                            </MudItem>
+                        </MudGrid>
 
-                            <MudTextField ShrinkLabel T="string?"
+                        <MudTextField ShrinkLabel T="string?"
+                                      Label="Adresa"
+                                      @bind-Value="_socijalniNatjecajModel.Adresa"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Class="mb-4" />
+
+                        <MudStack Class="mt-4 mb-6">
+                            <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection"
+                                            @bind-Value="_toggleRezultat"
+                                            Color="Color.Dark"
+                                            CheckMark>
+                                <MudToggleItem Value="@((int?)RezultatObrade.Nepotpun)" Text="NEPOTPUN" />
+                                <MudToggleItem Value="@((int?)RezultatObrade.Neosnovan)" Text="NEOSNOVAN" />
+                                <MudToggleItem Value="@((int?)RezultatObrade.Zadovoljava)" Text="ZADOVOLJAVA" />
+                            </MudToggleGroup>
+                        </MudStack>
+
+                        <MudItem xs="12">
+                            <MudTextField ShrinkLabel T="string"
                                           Label="Napomena obrade"
                                           @bind-Value="_socijalniNatjecajModel.NapomenaObrade"
                                           Variant="Variant.Outlined"
-                                          Margin="Margin.Dense" />
+                                          Margin="Margin.Dense"
+                                          Class="mb-4"
+                                          Lines="3" />
+                        </MudItem>
 
-                            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
-                                <MudButton OnClick="@OnValidSubmit"
-                                           StartIcon="@Icons.Material.Filled.Save"
-                                           Size="Size.Small"
-                                           Variant="Variant.Filled"
-                                           Style="border: 1px solid #d3d3d3;"
-                                           DropShadow="false"
-                                           IconColor="Color.Success"
-                                           Color="Color.Default">
-                                    Spremi
-                                </MudButton>
+                        <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
+                            <MudButton OnClick="@OnValidSubmit"
+                                       StartIcon="@Icons.Material.Filled.Save"
+                                       Size="Size.Small"
+                                       Variant="Variant.Filled"
+                                       Style="border: 1px solid #d3d3d3;"
+                                       DropShadow="false"
+                                       IconColor="Color.Success"
+                                       Color="Color.Default">
+                                Spremi
+                            </MudButton>
 
-                                <MudButton OnClick="@OnCancel"
-                                           StartIcon="@Icons.Material.Filled.Cancel"
-                                           Size="Size.Small"
-                                           DropShadow="false"
-                                           Style="border: 1px solid #d3d3d3;"
-                                           Variant="Variant.Filled"
-                                           IconColor="Color.Error"
-                                           Color="Color.Default">
-                                    Odustani
-                                </MudButton>
-                            </MudStack>
-
+                            <MudButton OnClick="@OnCancel"
+                                       StartIcon="@Icons.Material.Filled.Cancel"
+                                       Size="Size.Small"
+                                       DropShadow="false"
+                                       Style="border: 1px solid #d3d3d3;"
+                                       Variant="Variant.Filled"
+                                       IconColor="Color.Error"
+                                       Color="Color.Default">
+                                Odustani
+                            </MudButton>
                         </MudStack>
+
                     </MudForm>
                 </MudCardContent>
             </MudCard>
