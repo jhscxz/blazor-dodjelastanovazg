@@ -40,19 +40,35 @@
                 </MudItem>
 
                 <MudItem xs="12">
-                    <MudSelect T="Srodstvo?" Label="Srodstvo"
-                               @bind-Value="NewClan.Srodstvo"
-                               Variant="Variant.Outlined"
-                               Margin="Margin.Dense"
-                               Class="mb-4"
-                               Required="true">
-                        <MudSelectItem T="Srodstvo?" Value="@null">Odaberi...</MudSelectItem>
-                        @foreach (var item in Enum.GetValues<Srodstvo>())
-                        {
-                            <MudSelectItem T="Srodstvo?" Value="(Srodstvo?)item">@item.ToString()</MudSelectItem>
-                        }
-                    </MudSelect>
+                    @if (IsPodnositelj)
+                    {
+                        <MudTextField T="string"
+                                      Label="Srodstvo"
+                                      Value="@("Podnositelj zahtjeva")"
+                                      ReadOnly="true"
+                                      Disabled="true"
+                                      Color="Color.Disabled"
+                                      Variant="Variant.Outlined"
+                                      Margin="Margin.Dense"
+                                      Class="mb-4" />
+                    }
+                    else
+                    {
+                        <MudSelect T="Srodstvo?" Label="Srodstvo"
+                                   @bind-Value="NewClan.Srodstvo"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   Class="mb-4"
+                                   Required="true">
+                            <MudSelectItem T="Srodstvo?" Value="@null">Odaberi...</MudSelectItem>
+                            @foreach (var item in Enum.GetValues<Srodstvo>())
+                            {
+                                <MudSelectItem T="Srodstvo?" Value="(Srodstvo?)item">@item.ToString()</MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
                 </MudItem>
+
             </MudGrid>
 
 

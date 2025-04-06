@@ -99,5 +99,11 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
 
             return zahtjev;
         }
+        
+        public async Task SaveChangesAsync()
+        {
+            await context.SaveChangesAsync();
+        }
+
     }
 }

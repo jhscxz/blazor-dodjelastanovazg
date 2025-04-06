@@ -9,5 +9,6 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
         Task AddClanAsync(SocijalniNatjecajClan noviClan);
         SocijalniNatjecajClan ConvertToEntity(SocijalniNatjecajClanDto clanDto, SocijalniNatjecajZahtjev zahtjev);
         Task<SocijalniNatjecajZahtjev> GetZahtjevByIdAsync(long zahtjevId);
+        Task SaveChangesAsync();
     }
 }

@@ -9,9 +9,24 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
         [CascadingParameter] public required IMudDialogInstance MudDialog { get; set; }
         [Parameter] public SocijalniNatjecajClanDto NewClan { get; set; } = new();
         [Parameter] public long ZahtjevId { get; set; }
+
         private MudForm _form = null!;
         private DateTime? _datumRodjenja;
-        
+        private bool IsPodnositelj => NewClan.Srodstvo == Enums.Srodstvo.PodnositeljZahtjeva;
+
+        protected override void OnInitialized()
+        {
+            if (NewClan.DatumRodjenja != default)
+            {
+                _datumRodjenja = NewClan.DatumRodjenja.ToDateTime(new TimeOnly(0, 0));
+            }
+            else
+            {
+                _datumRodjenja = null;
+            }
+        }
+
+
         private async Task Submit()
         {
             await _form.Validate();

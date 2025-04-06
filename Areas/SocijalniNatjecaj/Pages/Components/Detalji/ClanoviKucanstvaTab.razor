@@ -1,5 +1,6 @@
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
+@using DodjelaStanovaZG.Enums
 @using MudBlazor
 @inject IDialogService DialogService
 
@@ -42,7 +43,18 @@
                            Class="p-2">
                     <MudIcon Icon="@Icons.Material.Filled.Edit" Class="custom-icon-sm"/>
                 </MudButton>
+
+                @if (context.Srodstvo != Srodstvo.PodnositeljZahtjeva)
+                {
+                    <MudButton OnClick="() => DeleteClan(context.Id)"
+                               Variant="Variant.Text"
+                               Class="p-2"
+                               Color="Color.Error">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" Class="custom-icon-sm"/>
+                    </MudButton>
+                }
             </MudTd>
+
         </RowTemplate>
 
 
