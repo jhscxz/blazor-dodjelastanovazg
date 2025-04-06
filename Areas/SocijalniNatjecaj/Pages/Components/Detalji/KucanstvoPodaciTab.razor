@@ -25,31 +25,39 @@ else
 {
     <MudStack Spacing="2">
 
+        <!-- Ukupni prihod kućanstva -->
         <MudTextField ReadOnly="true"
-                      Variant="Variant.Outlined"
+                      Variant="Variant.Text"
                       Label="Ukupni prihod kućanstva"
                       Value="@($"{Kucanstvo.UkupniPrihodKucanstva:N2} €")"
+                      Typo="Typo.subtitle1"
                       Margin="Margin.Dense"
                       Class="mb-0" />
 
+        <!-- Prebivanje od -->
         <MudTextField ReadOnly="true"
-                      Variant="Variant.Outlined"
+                      Variant="Variant.Text"
                       Label="Prebivanje od"
                       Value="@((Kucanstvo.PrebivanjeOd.HasValue) ? Kucanstvo.PrebivanjeOd.Value.ToString("dd.MM.yyyy.") : string.Empty)"
+                      Typo="Typo.subtitle1"
                       Margin="Margin.Dense"
                       Class="mb-0" />
 
+        <!-- Stambeni status kućanstva -->
         <MudTextField ReadOnly="true"
-                      Variant="Variant.Outlined"
+                      Variant="Variant.Text"
                       Label="Stambeni status kućanstva"
                       Value="@GetDisplay(Kucanstvo.StambeniStatusKucanstva)"
+                      Typo="Typo.subtitle1"
                       Margin="Margin.Dense"
                       Class="mb-0" />
 
+        <!-- Sastav kućanstva -->
         <MudTextField ReadOnly="true"
-                      Variant="Variant.Outlined"
+                      Variant="Variant.Text"
                       Label="Sastav kućanstva"
                       Value="@GetDisplay(Kucanstvo.SastavKucanstva)"
+                      Typo="Typo.subtitle1"
                       Margin="Margin.Dense"
                       Class="mb-0" />
 

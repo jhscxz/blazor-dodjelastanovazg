@@ -225,7 +225,7 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("PeriodStart");
 
-                    b.Property<DateOnly>("PrebivanjeOd")
+                    b.Property<DateOnly?>("PrebivanjeOd")
                         .HasColumnType("date");
 
                     b.Property<byte>("SastavKucanstva")
@@ -284,6 +284,10 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.Property<DateOnly>("DatumPodnosenjaZahtjeva")
                         .HasColumnType("date");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("KlasaPredmeta")
                         .HasColumnType("int");

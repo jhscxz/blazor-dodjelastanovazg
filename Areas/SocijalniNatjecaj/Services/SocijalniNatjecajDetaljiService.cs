@@ -16,7 +16,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
             this.context = context;
         }
 
-        public async Task<SocijalniNatjecajDto> GetDetaljiAsync(long id)
+        public async Task<SocijalniNatjecajZahtjevDto> GetDetaljiAsync(long id)
         {
             var entity = await context.SocijalniNatjecajZahtjevi
                 .Include(x => x.Clanovi)
@@ -29,13 +29,14 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
 
             var podnositelj = entity.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
 
-            return new SocijalniNatjecajDto
+            return new SocijalniNatjecajZahtjevDto
             {
                 Id = entity.Id,
                 NatjecajId = entity.NatjecajId,
                 KlasaPredmeta = entity.KlasaPredmeta,
                 DatumPodnosenjaZahtjeva = entity.DatumPodnosenjaZahtjeva,
                 Adresa = entity.Adresa,
+                Email = entity.Email,
                 ImePrezime = podnositelj?.ImePrezime ?? string.Empty,
                 Oib = podnositelj?.Oib,
                 RezultatObrade = entity.RezultatObrade,
@@ -149,6 +150,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
 
             zahtjev.KlasaPredmeta = dto.KlasaPredmeta ?? 0;
             zahtjev.Adresa = dto.Adresa;
+            zahtjev.Email = dto.Email;
             zahtjev.DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva!.Value;
             zahtjev.NapomenaObrade = dto.NapomenaObrade;
             zahtjev.RezultatObrade = dto.RezultatObrade ?? RezultatObrade.Nepotpun;

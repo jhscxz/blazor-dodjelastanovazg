@@ -15,7 +15,7 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
 
     [Parameter] public long NatjecajId { get; set; }
 
-    protected SocijalniNatjecajDto ZahtjevModel { get; set; } = new()
+    protected SocijalniNatjecajZahtjevDto ZahtjevModel { get; set; } = new()
     {
         Bodovni = new SocijalniBodovniDto()
     };
@@ -74,6 +74,7 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
         // Mapiramo odabir iz toggle grupe u DTO
         ZahtjevModel.RezultatObrade = (RezultatObrade)_toggle_rezultat.Value;
         ZahtjevModel.DatumPodnosenjaZahtjeva = DateOnly.FromDateTime(_datumPodnosenja.Value);
+        //ZahtjevModel.Email = Email;
 
         try
         {

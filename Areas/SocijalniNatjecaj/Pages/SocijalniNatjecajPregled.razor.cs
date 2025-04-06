@@ -13,8 +13,8 @@ public class SocijalniNatjecajPregledBase : ComponentBase
     [Parameter]
     public long NatjecajId { get; set; }
 
-    protected MudTable<SocijalniNatjecajDto> Table = null!;
-    protected List<SocijalniNatjecajDto> Natjecaji { get; set; } = [];
+    protected MudTable<SocijalniNatjecajZahtjevDto> Table = null!;
+    protected List<SocijalniNatjecajZahtjevDto> Natjecaji { get; set; } = [];
 
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
@@ -35,10 +35,10 @@ public class SocijalniNatjecajPregledBase : ComponentBase
         Navigation.NavigateTo($"/socijalni/dodaj/{NatjecajId}");
     }
     
-    protected void NavigateToDetails(SocijalniNatjecajDto dto)
+    protected void NavigateToDetails(SocijalniNatjecajZahtjevDto zahtjevDto)
     {
         // Pretpostavljamo da je stranica detalja na /socijalni/detalji/{NatjecajId}
-        Navigation.NavigateTo($"/socijalni/detalji/{dto.Id}");
+        Navigation.NavigateTo($"/socijalni/detalji/{zahtjevDto.Id}");
     }
 
 }

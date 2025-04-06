@@ -1,36 +1,94 @@
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using DodjelaStanovaZG.Enums
 @using MudBlazor
 @inject NavigationManager Navigation
 
 @code {
     [Parameter]
-    public SocijalniNatjecajDto Detalji { get; set; } = new();
+    public SocijalniNatjecajZahtjevDto Detalji { get; set; } = new();
 }
 
-<MudStack Spacing="2">
+<MudStack Spacing="4">
 
-    <MudTextField ReadOnly="true"
-                  Variant="Variant.Outlined"
-                  Label="Klasa predmeta"
-                  Value="@Detalji.KlasaPredmeta.ToString()"
-                  Margin="Margin.Dense"
-                  Class="mb-0" />
+    <!-- Klasa predmeta i Datum podnošenja u gridu -->
+    <MudGrid Gutter="Size.Small">
+        <!-- Klasa predmeta -->
+        <MudItem xs="12" sm="6">
+            <MudTextField T="string"
+                          Value="@Detalji.KlasaPredmeta.ToString()"
+                          Label="Klasa predmeta"
+                          ReadOnly="true"
+                          Typo="Typo.subtitle1"
+                          Variant="Variant.Text"
+                          Margin="Margin.Dense"
+                          Class="mb-0" />
+        </MudItem>
 
-    <MudTextField ReadOnly="true"
-                  Variant="Variant.Outlined"
-                  Label="Datum podnošenja"
-                  Value="@($"{Detalji.DatumPodnosenjaZahtjeva:dd.MM.yyyy.}")"
-                  Margin="Margin.Dense"
-                  Class="mb-0" />
+        <!-- Datum podnošenja -->
+        <MudItem xs="12" sm="6">
+            <MudTextField T="string"
+                          Value="@($"{Detalji.DatumPodnosenjaZahtjeva:dd.MM.yyyy}")"
+                          Label="Datum podnošenja"
+                          ReadOnly="true"
+                          Typo="Typo.subtitle1"
+                          Variant="Variant.Text"
+                          Margin="Margin.Dense"
+                          Class="mb-0" />
+        </MudItem>
+    </MudGrid>
 
-    <MudTextField ReadOnly="true"
-                  Variant="Variant.Outlined"
-                  Label="Adresa"
+    <!-- Adresa -->
+    <MudTextField T="string"
                   Value="@Detalji.Adresa"
+                  Label="Adresa"
+                  ReadOnly="true"
+                  Typo="Typo.subtitle1"
+                  Variant="Variant.Text"
                   Margin="Margin.Dense"
                   Class="mb-0" />
 
-    <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-2">
+    <!-- Napomena obrade -->
+    <MudItem xs="12">
+        <MudTextField T="string"
+                      Label="Napomena"
+                      Value="@Detalji.NapomenaObrade"
+                      ReadOnly="true"
+                      Typo="Typo.subtitle1"
+                      Variant="Variant.Text" 
+                      Margin="Margin.Dense"
+                      Class="mb-4"
+                      Lines="3" />
+    </MudItem>
+
+    <!-- Status: Neosnovan, Nepotpuno, Zadovoljava -->
+
+
+    <!-- Gumb za Editiranje u istom redu -->
+    <MudStack Row="true" Justify="Justify.SpaceBetween" Spacing="2" Class="mt-2">
+        <MudStack Spacing="2">
+            @if (Detalji.RezultatObrade == RezultatObrade.Neosnovan)
+            {
+                <MudChip T="string" Color="Color.Error" Style="max-width: 200px; display: inline-flex; align-items: center; justify-content: center; padding: 2px 10px; border-radius: 0px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Dangerous" IconColor="Color.Error" />
+                    Neosnovan
+                </MudChip>
+            }
+            else if (Detalji.RezultatObrade == RezultatObrade.Nepotpun)
+            {
+                <MudChip T="string" Color="Color.Warning" Style="max-width: 200px; display: inline-flex; align-items: center; justify-content: center; padding: 2px 10px; border-radius: 0px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Warning" IconColor="Color.Warning" />
+                    Nepotpuno
+                </MudChip>
+            }
+            else if (Detalji.RezultatObrade == RezultatObrade.Zadovoljava)
+            {
+                <MudChip T="string" Variant="Variant.Outlined" Color="Color.Success" Style="max-width: 200px; display: inline-flex; align-items: center; justify-content: center; padding: 2px 10px; border-radius: 0px;">
+                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success" />
+                    Ispunjava uvjete
+                </MudChip>
+            }
+        </MudStack>
+
         <MudButton StartIcon="@Icons.Material.Filled.Edit"
                    Variant="Variant.Filled"
                    Size="Size.Small"
@@ -44,4 +102,3 @@
     </MudStack>
 
 </MudStack>
-

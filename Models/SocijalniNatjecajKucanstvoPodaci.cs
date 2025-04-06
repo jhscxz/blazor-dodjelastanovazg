@@ -20,7 +20,7 @@ namespace DodjelaStanovaZG.Models
         [Precision(10, 2)]
         public decimal UkupniPrihodKucanstva { get; set; }
 
-        [Required]
+        //[Required]
         public DateOnly? PrebivanjeOd { get; set; }
 
         [Required]

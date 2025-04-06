@@ -16,10 +16,10 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
         return httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Unknown";
     }
 
-    public async Task<List<SocijalniNatjecajDto>> GetAllAsync()
+    public async Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync()
     {
         return await context.SocijalniNatjecajZahtjevi
-            .Select(x => new SocijalniNatjecajDto
+            .Select(x => new SocijalniNatjecajZahtjevDto
             {
                 Id = x.Id,
                 KlasaPredmeta = x.KlasaPredmeta,
@@ -30,19 +30,19 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
             .ToListAsync();
     }
 
-    public async Task CreateAsync(SocijalniNatjecajDto dto, string imePrezime, string? oib)
+    public async Task CreateAsync(SocijalniNatjecajZahtjevDto zahtjevDto, string imePrezime, string? oib)
     {
         string currentUserId = GetCurrentUserId();
 
         // 1. Kreiraj novi zahtjev
         var zahtjev = new SocijalniNatjecajZahtjev
         {
-            NatjecajId = dto.NatjecajId,
-            KlasaPredmeta = dto.KlasaPredmeta!.Value,
-            DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva,
-            Adresa = dto.Adresa,
-            RezultatObrade = dto.RezultatObrade!.Value,
-            NapomenaObrade = dto.NapomenaObrade,
+            NatjecajId = zahtjevDto.NatjecajId,
+            KlasaPredmeta = zahtjevDto.KlasaPredmeta!.Value,
+            DatumPodnosenjaZahtjeva = zahtjevDto.DatumPodnosenjaZahtjeva,
+            Adresa = zahtjevDto.Adresa,
+            RezultatObrade = zahtjevDto.RezultatObrade!.Value,
+            NapomenaObrade = zahtjevDto.NapomenaObrade,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = currentUserId,

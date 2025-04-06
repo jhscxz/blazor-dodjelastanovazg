@@ -4,7 +4,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 
 public interface ISocijalniNatjecajService
 {
-    Task<List<SocijalniNatjecajDto>> GetAllAsync();
+    Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync();
 
-    Task CreateAsync(SocijalniNatjecajDto dto, string imePrezime, string? oib);
+    Task CreateAsync(SocijalniNatjecajZahtjevDto zahtjevDto, string imePrezime, string? oib);
 }

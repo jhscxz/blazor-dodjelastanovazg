@@ -13,7 +13,7 @@ public partial class SocijalniNatjecajDetalji
     [Inject] private ISocijalniNatjecajDetaljiService DetaljiService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
 
-    private SocijalniNatjecajDto? _detalji;
+    private SocijalniNatjecajZahtjevDto? _detalji;
     private int _selectedTabIndex;
     private string? _activeTab;
 

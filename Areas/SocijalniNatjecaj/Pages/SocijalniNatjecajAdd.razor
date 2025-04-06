@@ -34,7 +34,7 @@
                                               Variant="Variant.Outlined"
                                               Margin="Margin.Dense"
                                               Class="mb-4"
-                                              ShrinkLabel="true" />
+                                              ShrinkLabel="true"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
                                 <MudDatePicker ShrinkLabel T="DateTime?"
@@ -45,7 +45,7 @@
                                                Culture="@(new CultureInfo("hr-HR"))"
                                                Variant="Variant.Outlined"
                                                Margin="Margin.Dense"
-                                               Class="mb-4" />
+                                               Class="mb-4"/>
                             </MudItem>
                         </MudGrid>
 
@@ -59,7 +59,7 @@
                                               Variant="Variant.Outlined"
                                               Margin="Margin.Dense"
                                               Class="mb-4"
-                                              ShrinkLabel="true" />
+                                              ShrinkLabel="true"/>
                             </MudItem>
                             <MudItem xs="12">
                                 <MudTextField ShrinkLabel T="string"
@@ -67,7 +67,16 @@
                                               @bind-Value="ZahtjevModel.Adresa"
                                               Variant="Variant.Outlined"
                                               Margin="Margin.Dense"
-                                              Class="mb-4" />
+                                              Class="mb-4"/>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <MudTextField T="string"
+                                              Label="Email"
+                                              @bind-Value="ZahtjevModel.Email"
+                                              Variant="Variant.Outlined"
+                                              Margin="Margin.Dense"
+                                              Class="mb-0"/>
                             </MudItem>
                             <MudItem xs="12">
                                 <MudTextField T="string"
@@ -76,7 +85,7 @@
                                               Variant="Variant.Outlined"
                                               Margin="Margin.Dense"
                                               Class="mb-4"
-                                              ShrinkLabel="true" />
+                                              ShrinkLabel="true"/>
                             </MudItem>
                         </MudGrid>
 
@@ -85,9 +94,9 @@
                                             @bind-Value="_toggle_rezultat"
                                             CheckMark
                                             Color="Color.Dark">
-                                <MudToggleItem Value="@((int?)RezultatObrade.Nepotpun)" Text="NEPOTPUN" />
-                                <MudToggleItem Value="@((int?)RezultatObrade.Neosnovan)" Text="NEOSNOVAN" />
-                                <MudToggleItem Value="@((int?)RezultatObrade.Zadovoljava)" Text="ZADOVOLJAVA" />
+                                <MudToggleItem Value="@((int?)RezultatObrade.Nepotpun)" Text="NEPOTPUN"/>
+                                <MudToggleItem Value="@((int?)RezultatObrade.Neosnovan)" Text="NEOSNOVAN"/>
+                                <MudToggleItem Value="@((int?)RezultatObrade.Zadovoljava)" Text="ZADOVOLJAVA"/>
                             </MudToggleGroup>
                         </MudStack>
 
@@ -98,7 +107,7 @@
                                           Variant="Variant.Outlined"
                                           Margin="Margin.Dense"
                                           Class="mb-4"
-                                          Lines="3" />
+                                          Lines="3"/>
                         </MudItem>
 
                         <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
