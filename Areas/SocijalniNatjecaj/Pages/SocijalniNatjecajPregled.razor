@@ -19,6 +19,7 @@
             </MudButton>
         </div>
 
+        <!-- Tablica unutar MudPaper s prilagođenim stilovima -->
         <MudTable T="SocijalniNatjecajZahtjevDto"
                   Items="Natjecaji"
                   Hover="true"
@@ -26,39 +27,43 @@
                   RowsPerPage="10"
                   Dense="true"
                   Outlined="true"
-                  @ref="Table">
-            <HeaderContent>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Klasa predmeta</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Datum podnošenja</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Adresa</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Ukupni prihod (€)</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Stambeni status</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Sastav kućanstva</MudTh>
-                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Detalji</MudTh>
-            </HeaderContent>
+                  Bordered="false" 
+        Breakpoint="Breakpoint.Sm"
+        Class="only-horizontal-borders" 
+        @ref="Table">
 
-            <RowTemplate>
-                <MudTd DataLabel="Klasa">@context.KlasaPredmeta</MudTd>
-                <MudTd DataLabel="Datum">@context.DatumPodnosenjaZahtjeva.ToString("dd.MM.yyyy.")</MudTd>
-                <MudTd DataLabel="Adresa">@context.Adresa</MudTd>
-                <MudTd DataLabel="Prihod">
-                    @($"{context.Bodovni?.UkupniPrihodKucanstva?.ToString("N2") ?? ""} €")
-                </MudTd>
-                <MudTd DataLabel="Stambeni">@context.Bodovni?.StambeniStatusKucanstva</MudTd>
-                <MudTd DataLabel="Sastav">@context.Bodovni?.SastavKucanstva</MudTd>
-                <MudTd DataLabel="Detalji">
-                    <MudButton OnClick="() => NavigateToDetails(context)"
-                               Variant="Variant.Text"
-                               Class="p-2">
-                        <MudIcon Icon="@Icons.Material.Filled.Info" Class="custom-icon-sm"/>
-                    </MudButton>
-                </MudTd>
+        <HeaderContent>
+            <MudTh Style="font-weight: bold;">Klasa predmeta</MudTh>
+            <MudTh Style="font-weight: bold;">Datum podnošenja</MudTh>
+            <MudTh Style="font-weight: bold;">Adresa</MudTh>
+            <MudTh Style="font-weight: bold;">Ukupni prihod (€)</MudTh>
+            <MudTh Style="font-weight: bold;">Stambeni status</MudTh>
+            <MudTh Style="font-weight: bold;">Sastav kućanstva</MudTh>
+            <MudTh Style="font-weight: bold;">Akcija</MudTh>
+        </HeaderContent>
 
-            </RowTemplate>
+        <RowTemplate>
+            <MudTd DataLabel="Klasa">@context.KlasaPredmeta</MudTd>
+            <MudTd DataLabel="Datum">@context.DatumPodnosenjaZahtjeva.ToString("dd.MM.yyyy.")</MudTd>
+            <MudTd DataLabel="Adresa">@context.Adresa</MudTd>
+            <MudTd DataLabel="Prihod">
+                @($"{context.Bodovni?.UkupniPrihodKucanstva?.ToString("N2") ?? ""} €")
+            </MudTd>
+            <MudTd DataLabel="Stambeni">@context.Bodovni?.StambeniStatusKucanstva</MudTd>
+            <MudTd DataLabel="Sastav">@context.Bodovni?.SastavKucanstva</MudTd>
+            <MudTd DataLabel="Akcija">
+                <!-- Gumb za detalje, sličan akcijama u drugoj tablici -->
+                <MudIconButton Icon="@Icons.Material.Filled.Info"
+                               Size="Size.Small"
+                               OnClick="() => NavigateToDetails(context)" />
+            </MudTd>
+        </RowTemplate>
 
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+
         </MudTable>
+
     </MudPaper>
 </Container>
