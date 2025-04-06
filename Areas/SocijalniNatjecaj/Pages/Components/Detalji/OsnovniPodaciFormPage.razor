@@ -1,16 +1,15 @@
-@page "/socijalni/kucanstvo/edit/{ZahtjevId:long}"
-@using DodjelaStanovaZG.Enums
+@page "/socijalni/osnovno/edit/{ZahtjevId:long}"
 @using System.Globalization
-@using MudBlazor
-@using Microsoft.AspNetCore.Components.Web
 @using DodjelaStanovaZG.Components.UI
-@using DodjelaStanovaZG.Helpers
+@using MudBlazor
+@using DodjelaStanovaZG.Enums
+@using Microsoft.AspNetCore.Components.Web
 
-<PageTitle>Uredi kućanstvo</PageTitle>
+<PageTitle>Uredi osnovne podatke</PageTitle>
 
 <Container BreadcrumbItems="BreadcrumbItems">
-    <MudContainer MaxWidth="MaxWidth.Small" >
-        @if (_kucanstvoModel is null)
+    <MudContainer MaxWidth="MaxWidth.Small">
+        @if (_socijalniNatjecajModel is null)
         {
             <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
         }
@@ -18,21 +17,12 @@
         {
             <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
-                    <MudForm @ref="_form" Model="@_kucanstvoModel">
+                    <MudForm @ref="_form" Model="@_socijalniNatjecajModel">
                         <MudStack Spacing="3">
-
-                            <MudTextField ShrinkLabel T="decimal?"
-                                          Label="Ukupni prihod kućanstva"
-                                          @bind-Value="_kucanstvoModel.UkupniPrihodKucanstva"
-                                          Required="true"
-                                          Variant="Variant.Outlined"
-                                          Margin="Margin.Dense"
-                                          Adornment="Adornment.End"
-                                          AdornmentText="€" />
-
+                            
                             <MudDatePicker ShrinkLabel T="DateTime?"
-                                           Label="Prebivanje od"
-                                           @bind-Date="_prebivanjeOd"
+                                           Label="Datum podnošenja zahtjeva"
+                                           @bind-Date="_datumPodnosenja"
                                            Required="true"
                                            DateFormat="dd.MM.yyyy"
                                            Culture="@(new CultureInfo("hr-HR"))"
@@ -41,31 +31,31 @@
                                            Clearable="true"
                                            AllowKeyboardInput="true" />
 
-                            <MudSelect ShrinkLabel T="StambeniStatusKucanstva?"
-                                       Label="Stambeni status kućanstva"
-                                       @bind-Value="_kucanstvoModel.StambeniStatusKucanstva"
+                            <MudTextField ShrinkLabel T="string?"
+                                          Label="Adresa"
+                                          @bind-Value="_socijalniNatjecajModel.Adresa"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense" />
+
+                            <MudSelect ShrinkLabel T="RezultatObrade?"
+                                       Label="Rezultat obrade"
+                                       @bind-Value="_socijalniNatjecajModel.RezultatObrade"
                                        Required="true"
                                        Variant="Variant.Outlined"
                                        Margin="Margin.Dense">
-                                <MudSelectItem T="StambeniStatusKucanstva?" Value="null"></MudSelectItem>
-                                @foreach (var item in Enum.GetValues<StambeniStatusKucanstva>().Cast<StambeniStatusKucanstva>())
+                                <MudSelectItem T="RezultatObrade?" Value="null">Odaberi rezultat obrade</MudSelectItem>
+                                @foreach (var item in Enum.GetValues<RezultatObrade>())
                                 {
-                                    <MudSelectItem Value="(StambeniStatusKucanstva?)item">@item.GetDisplayName()</MudSelectItem>
+                                    <MudSelectItem T="RezultatObrade?" Value="item">@item.ToString()</MudSelectItem>
                                 }
                             </MudSelect>
 
-                            <MudSelect ShrinkLabel T="SastavKucanstva?"
-                                       Label="Sastav kućanstva"
-                                       @bind-Value="_kucanstvoModel.SastavKucanstva"
-                                       Required="true"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense">
-                                <MudSelectItem T="SastavKucanstva?" Value="null"></MudSelectItem>
-                                @foreach (var item in Enum.GetValues<SastavKucanstva>().Cast<SastavKucanstva>())
-                                {
-                                    <MudSelectItem Value="(SastavKucanstva?)item">@item.GetDisplayName()</MudSelectItem>
-                                }
-                            </MudSelect>
+
+                            <MudTextField ShrinkLabel T="string?"
+                                          Label="Napomena obrade"
+                                          @bind-Value="_socijalniNatjecajModel.NapomenaObrade"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense" />
 
                             <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
                                 <MudButton OnClick="@OnValidSubmit"

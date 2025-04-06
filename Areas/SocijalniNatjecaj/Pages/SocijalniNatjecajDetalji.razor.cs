@@ -1,27 +1,55 @@
+using System.Web;
+using Microsoft.AspNetCore.Components;
+using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
-using DodjelaStanovaZG.Components.UI;
-using Microsoft.AspNetCore.Components;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages;
 
-public class SocijalniNatjecajDetaljiBase : ComponentBase
+public partial class SocijalniNatjecajDetalji
 {
-    [Inject] public required ISocijalniNatjecajDetaljiService SocijalniNatjecajDetaljiService { get; set; }
-    [Inject] public NavigationManager Navigation { get; set; } = null!;
-    [Parameter] public long NatjecajId { get; set; }
+    [Parameter] public long Id { get; set; }
 
-    protected SocijalniNatjecajDto Detalji { get; set; } = new();
+    [Inject] private ISocijalniNatjecajDetaljiService DetaljiService { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
 
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
+    private SocijalniNatjecajDto? _detalji;
+    private int _selectedTabIndex;
+    private string? _activeTab;
+
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } =
     [
         new() { Text = "Početna", Url = "/" },
         new() { Text = "Socijalni natječaji", Url = "/socijalni-natjecaj" },
-        new() { Text = "Detalji zahtjeva", CssClass = "text-red-500 font-bold" }
+        new() { Text = "Detalji zahtjeva", CssClass = "text-red-500 font-bold" },
     ];
 
     protected override async Task OnInitializedAsync()
     {
-        Detalji = await SocijalniNatjecajDetaljiService.GetDetaljiAsync(NatjecajId);
+        try
+        {
+            ResolveTabIndexFromQuery();
+            _detalji = await DetaljiService.GetDetaljiAsync(Id);
+            Console.WriteLine(_detalji.Id);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Greška prilikom dohvaćanja detalja: {ex.Message}");
+        }
+    }
+
+    private void ResolveTabIndexFromQuery()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = HttpUtility.ParseQueryString(uri.Query);
+        _activeTab = query["tab"];
+
+        _selectedTabIndex = _activeTab switch
+        {
+            "Kucanstvo" => 1,
+            "Clanovi" => 2,
+            "Bodovi" => 3,
+            _ => 0
+        };
     }
 }

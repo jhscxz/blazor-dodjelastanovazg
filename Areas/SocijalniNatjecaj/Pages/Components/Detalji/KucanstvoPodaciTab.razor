@@ -1,8 +1,8 @@
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 @using DodjelaStanovaZG.Enums
+@using DodjelaStanovaZG.Helpers
 @using MudBlazor
 @using System.Globalization
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @inject NavigationManager Navigation
 
 @code {
@@ -13,6 +13,8 @@
     public EventCallback OnEdit { get; set; }
 
     private static readonly CultureInfo HrCulture = new("hr-HR");
+
+    private string GetDisplay(Enum? value) => value is null ? string.Empty : ((Enum)value).GetDisplayName();
 }
 
 @if (Kucanstvo is null)
@@ -21,37 +23,48 @@
 }
 else
 {
-    <MudGrid Gutter="Size.Small">
-        <MudItem xs="12" sm="6">
-            <MudText Typo="Typo.subtitle1">Ukupni prihod kućanstva:</MudText>
-            <MudText>@Kucanstvo.UkupniPrihodKucanstva?.ToString("N2", HrCulture) €</MudText>
-        </MudItem>
+    <MudStack Spacing="2">
 
-        <MudItem xs="12" sm="6">
-            <MudText Typo="Typo.subtitle1">Prebivanje od:</MudText>
-            <MudText>@($"{Kucanstvo.PrebivanjeOd:dd.MM.yyyy.}")</MudText>
-        </MudItem>
+        <MudTextField ReadOnly="true"
+                      Variant="Variant.Outlined"
+                      Label="Ukupni prihod kućanstva"
+                      Value="@($"{Kucanstvo.UkupniPrihodKucanstva:N2} €")"
+                      Margin="Margin.Dense"
+                      Class="mb-0" />
 
-        <MudItem xs="12" sm="6">
-            <MudText Typo="Typo.subtitle1">Stambeni status kućanstva:</MudText>
-            <MudText>@Kucanstvo.StambeniStatusKucanstva</MudText>
-        </MudItem>
+        <MudTextField ReadOnly="true"
+                      Variant="Variant.Outlined"
+                      Label="Prebivanje od"
+                      Value="@((Kucanstvo.PrebivanjeOd.HasValue) ? Kucanstvo.PrebivanjeOd.Value.ToString("dd.MM.yyyy.") : string.Empty)"
+                      Margin="Margin.Dense"
+                      Class="mb-0" />
 
-        <MudItem xs="12" sm="6">
-            <MudText Typo="Typo.subtitle1">Sastav kućanstva:</MudText>
-            <MudText>@Kucanstvo.SastavKucanstva</MudText>
-        </MudItem>
+        <MudTextField ReadOnly="true"
+                      Variant="Variant.Outlined"
+                      Label="Stambeni status kućanstva"
+                      Value="@GetDisplay(Kucanstvo.StambeniStatusKucanstva)"
+                      Margin="Margin.Dense"
+                      Class="mb-0" />
 
-        <MudItem xs="12">
-            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
-                <MudButton StartIcon="@Icons.Material.Filled.Edit"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           OnClick="@(() => Navigation.NavigateTo($"/socijalni/kucanstvo/edit/{Kucanstvo!.ZahtjevId}"))">
-                    Uredi podatke kućanstva
-                </MudButton>
-            </MudStack>
+        <MudTextField ReadOnly="true"
+                      Variant="Variant.Outlined"
+                      Label="Sastav kućanstva"
+                      Value="@GetDisplay(Kucanstvo.SastavKucanstva)"
+                      Margin="Margin.Dense"
+                      Class="mb-0" />
 
-        </MudItem>
-    </MudGrid>
+        <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-2">
+            <MudButton StartIcon="@Icons.Material.Filled.Edit"
+                       Variant="Variant.Filled"
+                       Size="Size.Small"
+                       Style="border: 1px solid #d3d3d3;"
+                       DropShadow="false"
+                       IconColor="Color.Info"
+                       Color="Color.Default"
+                       OnClick="@(() => Navigation.NavigateTo($"/socijalni/kucanstvo/edit/{Kucanstvo!.ZahtjevId}"))">
+                Uredi podatke kućanstva
+            </MudButton>
+        </MudStack>
+
+    </MudStack>
 }

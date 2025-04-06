@@ -1,82 +1,51 @@
 @page "/socijalni/detalji/{Id:long}"
-@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
-@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Enums
 @using MudBlazor
-@inject ISocijalniNatjecajDetaljiService DetaljiService
 
 <Container BreadcrumbItems="BreadcrumbItems">
-    <MudGrid Justify="Justify.Center">
-        <MudItem xs="12" sm="10" md="8" lg="6">
-            <MudCard Outlined="true" Rounded="true" Class="pa-6">
-                <MudCardContent>
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12" sm="10" md="8" lg="6">
+                <MudCard Outlined="true" Rounded="true" Class="pa-6">
+                    <MudCardContent>
 
-                    @if (_detalji is null)
-                    {
-                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-                    }
-                    else
-                    {
-                        <MudTabs Color="Color.Default"
-                                 Rounded="true"
-                                 PanelClass="pa-6">
+                        @if (_detalji is null)
+                        {
+                            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+                        }
+                        else
+                        {
+                            <MudTabs @bind-ActivePanelIndex="_selectedTabIndex"
+                                     Rounded="true"
+                                     PanelClass="pa-6">
 
-                            <MudTabPanel Text="Osnovni podaci">
-                                <OsnovniPodaciTab Detalji="_detalji" />
-                            </MudTabPanel>
-
-                            <MudTabPanel Text="Podaci o kućanstvu">
-                                <KucanstvoPodaciTab Kucanstvo="_detalji.KucanstvoPodaci" />
-                            </MudTabPanel>
-
-                            @if (_detalji.RezultatObrade == RezultatObrade.Zadovoljava)
-                            {
-                                <MudTabPanel Text="Članovi kućanstva">
-                                    <ClanoviKucanstvaTab Clanovi="_detalji.Clanovi" Id="Id" />
+                                <MudTabPanel Text="Osnovni podaci">
+                                    <OsnovniPodaciTab Detalji="_detalji"/>
                                 </MudTabPanel>
-                            }
 
-                            @if (_detalji.RezultatObrade == RezultatObrade.Zadovoljava)
-                            {
-                                <MudTabPanel Text="Opcije bodovanja">
-                                    <BodovanjeOpcijeTab BodovniPodaci="_detalji.Bodovni" />
+                                <MudTabPanel Text="Podaci o kućanstvu">
+                                    <KucanstvoPodaciTab Kucanstvo="_detalji.KucanstvoPodaci"/>
                                 </MudTabPanel>
-                            }
-                        </MudTabs>
-                    }
 
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-    </MudGrid>
+                                @if (_detalji.RezultatObrade == RezultatObrade.Zadovoljava)
+                                {
+                                    <MudTabPanel Text="Članovi kućanstva">
+                                        <ClanoviKucanstvaTab Clanovi="_detalji.Clanovi" Id="Id"/>
+                                    </MudTabPanel>
+                                }
+
+                                @if (_detalji.RezultatObrade == RezultatObrade.Zadovoljava)
+                                {
+                                    <MudTabPanel Text="Opcije bodovanja">
+                                        <BodovanjeOpcijeTab BodovniPodaci="_detalji.Bodovni"/>
+                                    </MudTabPanel>
+                                }
+                            </MudTabs>
+                        }
+
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
 </Container>
-
-@code {
-    [Parameter]
-    public long Id { get; set; }
-
-    private SocijalniNatjecajDto? _detalji;
-
-    
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Socijalni natječaji", Url = "/socijalni-natjecaj" },
-        new() { Text = "Detalji zahtjeva", CssClass = "text-red-500 font-bold" },
-    ];
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            _detalji = await DetaljiService.GetDetaljiAsync(Id);
-            Console.WriteLine(_detalji.Id);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Greška prilikom dohvaćanja detalja: {ex.Message}");
-        }
-    }
-}

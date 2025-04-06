@@ -1,22 +1,47 @@
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 @using MudBlazor
+@inject NavigationManager Navigation
 
 @code {
     [Parameter]
     public SocijalniNatjecajDto Detalji { get; set; } = new();
 }
 
-<MudGrid Gutter="Size.Small">
-    <MudItem xs="12" sm="6">
-        <MudText Typo="Typo.subtitle1">Klasa predmeta:</MudText>
-        <MudText>@Detalji.KlasaPredmeta</MudText>
-    </MudItem>
-    <MudItem xs="12" sm="6">
-        <MudText Typo="Typo.subtitle1">Datum podnošenja:</MudText>
-        <MudText>@Detalji.DatumPodnosenjaZahtjeva.ToString("dd.MM.yyyy.")</MudText>
-    </MudItem>
-    <MudItem xs="12">
-        <MudText Typo="Typo.subtitle1">Adresa:</MudText>
-        <MudText>@Detalji.Adresa</MudText>
-    </MudItem>
-</MudGrid>
+<MudStack Spacing="2">
+
+    <MudTextField ReadOnly="true"
+                  Variant="Variant.Outlined"
+                  Label="Klasa predmeta"
+                  Value="@Detalji.KlasaPredmeta.ToString()"
+                  Margin="Margin.Dense"
+                  Class="mb-0" />
+
+    <MudTextField ReadOnly="true"
+                  Variant="Variant.Outlined"
+                  Label="Datum podnošenja"
+                  Value="@($"{Detalji.DatumPodnosenjaZahtjeva:dd.MM.yyyy.}")"
+                  Margin="Margin.Dense"
+                  Class="mb-0" />
+
+    <MudTextField ReadOnly="true"
+                  Variant="Variant.Outlined"
+                  Label="Adresa"
+                  Value="@Detalji.Adresa"
+                  Margin="Margin.Dense"
+                  Class="mb-0" />
+
+    <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-2">
+        <MudButton StartIcon="@Icons.Material.Filled.Edit"
+                   Variant="Variant.Filled"
+                   Size="Size.Small"
+                   Style="border: 1px solid #d3d3d3;"
+                   DropShadow="false"
+                   IconColor="Color.Info"
+                   Color="Color.Default"
+                   OnClick="@(() => Navigation.NavigateTo($"/socijalni/osnovno/edit/{Detalji.Id}"))">
+            Uredi osnovne podatke
+        </MudButton>
+    </MudStack>
+
+</MudStack>
+

@@ -144,6 +144,25 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
 
             await context.SaveChangesAsync();
         }
+        public async Task UpdateOsnovniPodaciAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto)
+        {
+            var zahtjev = await context.SocijalniNatjecajZahtjevi
+                .FirstOrDefaultAsync(z => z.Id == zahtjevId);
+
+            if (zahtjev is null)
+                throw new Exception($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
+
+            zahtjev.KlasaPredmeta = dto.KlasaPredmeta ?? 0;
+            zahtjev.Adresa = dto.Adresa;
+            zahtjev.DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva;
+            zahtjev.NapomenaObrade = dto.NapomenaObrade;
+            zahtjev.RezultatObrade = dto.RezultatObrade ?? RezultatObrade.Nepotpun;
+
+            zahtjev.UpdatedAt = DateTime.UtcNow;
+
+            await context.SaveChangesAsync();
+        }
+
 
 
     }

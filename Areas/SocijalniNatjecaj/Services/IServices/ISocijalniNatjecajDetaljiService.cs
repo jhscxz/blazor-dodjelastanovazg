@@ -11,6 +11,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
         Task<SocijalniNatjecajZahtjev> GetZahtjevByIdAsync(long zahtjevId);
         Task SaveChangesAsync();
         Task UpdateKucanstvoPodaciAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto);
+        Task UpdateOsnovniPodaciAsync(long id, SocijalniNatjecajOsnovnoEditDto dto);
+
 
     }
 }
