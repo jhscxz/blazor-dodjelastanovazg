@@ -4,62 +4,67 @@
 @using MudBlazor
 @inject IDialogService DialogService
 
-<MudPaper Class="pa-4" Rounded="true" Elevation="0">
+<MudCard Outlined="true" Class="pa-4" Elevation="2">
 
-    <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Class="mb-4">
-        <MudButton OnClick="AddClan"
-                   Variant="Variant.Filled"
-                   Color="Color.Default"
-                   IconColor="Color.Success"
-                   DropShadow="false"
-                   StartIcon="@Icons.Material.Filled.Add">
-            Dodaj člana
-        </MudButton>
-    </MudStack>
+    <MudCardContent>
 
-    <MudTable T="SocijalniNatjecajClanDto"
-              Items="Clanovi"
-              Hover="true"
-              Dense="true"
-              Elevation="0"
-              Breakpoint="Breakpoint.Sm"
-              Bordered="false"
-              Outlined="true"
-              Class="only-horizontal-borders">
+        <!-- Gumb za dodavanje člana unutar MudCard -->
+        <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudButton OnClick="AddClan"
+                       Variant="Variant.Filled"
+                       Color="Color.Default"
+                       IconColor="Color.Success"
+                       DropShadow="false"
+                       StartIcon="@Icons.Material.Filled.Add">
+                Dodaj člana kućanstva
+            </MudButton>
+        </MudStack>
 
-        <HeaderContent>
-            <MudTh Style="font-weight: bold;">Ime i prezime</MudTh>
-            <MudTh Style="font-weight: bold;">OIB</MudTh>
-            <MudTh Style="font-weight: bold;">Srodstvo</MudTh>
-            <MudTh Style="font-weight: bold;">Datum rođenja</MudTh>
-            <MudTh Style="font-weight: bold;">Akcija</MudTh>
-        </HeaderContent>
+        <!-- Tablica unutar MudCard -->
+        <MudTable T="SocijalniNatjecajClanDto"
+                  Items="Clanovi"
+                  Hover="true"
+                  Dense="true"
+                  Elevation="0"
+                  Breakpoint="Breakpoint.Sm"
+                  Bordered="false"
+                  Outlined="true"
+                  Class="only-horizontal-borders">
 
-        <RowTemplate>
-            <MudTd DataLabel="Ime i prezime">@context.ImePrezime</MudTd>
-            <MudTd DataLabel="OIB">@context.Oib</MudTd>
-            <MudTd DataLabel="Srodstvo">@context.Srodstvo?.GetDisplayName()</MudTd>
-            <MudTd DataLabel="Datum rođenja">@context.DatumRodjenja.ToString("dd.MM.yyyy")</MudTd>
-            <MudTd DataLabel="Akcija">
-                <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                               Size="Size.Small"
-                               OnClick="() => EditClan(context.Id)" />
+            <HeaderContent>
+                <MudTh Style="font-weight: bold;">Ime i prezime</MudTh>
+                <MudTh Style="font-weight: bold;">OIB</MudTh>
+                <MudTh Style="font-weight: bold;">Srodstvo</MudTh>
+                <MudTh Style="font-weight: bold;">Datum rođenja</MudTh>
+                <MudTh Style="font-weight: bold;">Akcija</MudTh>
+            </HeaderContent>
 
-                @if (context.Srodstvo != Srodstvo.PodnositeljZahtjeva)
-                {
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+            <RowTemplate>
+                <MudTd DataLabel="Ime i prezime">@context.ImePrezime</MudTd>
+                <MudTd DataLabel="OIB">@context.Oib</MudTd>
+                <MudTd DataLabel="Srodstvo">@context.Srodstvo?.GetDisplayName()</MudTd>
+                <MudTd DataLabel="Datum rođenja">@context.DatumRodjenja.ToString("dd.MM.yyyy")</MudTd>
+                <MudTd DataLabel="Akcija">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                    Size="Size.Small"
-                                   Color="Color.Error"
-                                   OnClick="() => DeleteClan(context.Id)" />
-                }
-            </MudTd>
-        </RowTemplate>
+                                   OnClick="() => EditClan(context.Id)" />
 
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
+                    @if (context.Srodstvo != Srodstvo.PodnositeljZahtjeva)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Size="Size.Small"
+                                       Color="Color.Error"
+                                       OnClick="() => DeleteClan(context.Id)" />
+                    }
+                </MudTd>
+            </RowTemplate>
 
-    </MudTable>
-</MudPaper>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
 
+        </MudTable>
 
+    </MudCardContent>
+
+</MudCard>

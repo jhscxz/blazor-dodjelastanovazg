@@ -5,7 +5,7 @@
 <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
     <MudCardContent>
         <MudForm @ref="_form" Model="@NewClan">
-            <MudGrid Gutter="Size.Small">
+            <MudGrid>
                 <MudItem xs="12">
                     <MudTextField T="string"
                                   Label="Ime i prezime"
@@ -13,7 +13,7 @@
                                   Required="true"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
-                                  Class="mb-4"
+                                  Class="mb-1"
                                   ShrinkLabel="true"/>
                 </MudItem>
 
@@ -23,7 +23,7 @@
                                   @bind-Value="NewClan.Oib"
                                   Variant="Variant.Outlined"
                                   Margin="Margin.Dense"
-                                  Class="mb-4"
+                                  Class="mb-1"
                                   ShrinkLabel="true"/>
                 </MudItem>
 
@@ -36,7 +36,7 @@
                                    Culture="@(new CultureInfo("hr-HR"))"
                                    Variant="Variant.Outlined"
                                    Margin="Margin.Dense"
-                                   Class="mb-4" />
+                                   Class="mb-1" />
                 </MudItem>
 
                 <MudItem xs="12">
@@ -50,15 +50,15 @@
                                       Color="Color.Disabled"
                                       Variant="Variant.Outlined"
                                       Margin="Margin.Dense"
-                                      Class="mb-4" />
+                                      Class="mb-1" />
                     }
                     else
                     {
-                        <MudSelect T="Srodstvo?" Label="Srodstvo"
+                        <MudSelect ShrinkLabel T="Srodstvo?" Label="Srodstvo"
                                    @bind-Value="NewClan.Srodstvo"
                                    Variant="Variant.Outlined"
                                    Margin="Margin.Dense"
-                                   Class="mb-4"
+                                   Class="mb-1"
                                    Required="true">
                             <MudSelectItem T="Srodstvo?" Value="@null">Odaberi...</MudSelectItem>
                             @foreach (var item in Enum.GetValues<Srodstvo>())
@@ -68,9 +68,7 @@
                         </MudSelect>
                     }
                 </MudItem>
-
             </MudGrid>
-
 
             <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
                 <MudButton OnClick="@Submit"

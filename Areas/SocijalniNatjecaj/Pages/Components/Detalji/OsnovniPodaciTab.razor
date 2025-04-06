@@ -10,62 +10,64 @@
 
 <MudStack Spacing="4">
 
-    <!-- Klasa predmeta i Datum podnošenja u gridu -->
-    <MudGrid Gutter="Size.Small">
-        <!-- Klasa predmeta -->
-        <MudItem xs="12" sm="6">
-            <MudTextField T="string"
-                          Value="@Detalji.KlasaPredmeta.ToString()"
-                          Label="Klasa predmeta"
-                          ReadOnly="true"
-                          Typo="Typo.subtitle1"
-                          Variant="Variant.Text"
-                          Margin="Margin.Dense"
-                          Class="mb-0" />
-        </MudItem>
+    <!-- MudCard -->
+    <MudCard Outlined="true" Class="pa-4">
 
-        <!-- Datum podnošenja -->
-        <MudItem xs="12" sm="6">
-            <MudTextField T="string"
-                          Value="@($"{Detalji.DatumPodnosenjaZahtjeva:dd.MM.yyyy}")"
-                          Label="Datum podnošenja"
-                          ReadOnly="true"
-                          Typo="Typo.subtitle1"
-                          Variant="Variant.Text"
-                          Margin="Margin.Dense"
-                          Class="mb-0" />
-        </MudItem>
-    </MudGrid>
+        <!-- Klasa predmeta i Datum podnošenja u gridu -->
+        <MudGrid Gutter="Size.Small">
+            <!-- Klasa predmeta -->
+            <MudItem xs="12" sm="6">
+                <MudTextField ShrinkLabel T="string"
+                              Value="@Detalji.KlasaPredmeta.ToString()"
+                              Label="Klasa predmeta"
+                              ReadOnly="true"
+                              Typo="Typo.subtitle1"
+                              Variant="Variant.Text"
+                              Margin="Margin.Dense"
+                              Class="mb-0" />
+            </MudItem>
 
-    <!-- Adresa -->
-    <MudTextField T="string"
-                  Value="@Detalji.Adresa"
-                  Label="Adresa"
-                  ReadOnly="true"
-                  Typo="Typo.subtitle1"
-                  Variant="Variant.Text"
-                  Margin="Margin.Dense"
-                  Class="mb-0" />
+            <!-- Datum podnošenja -->
+            <MudItem xs="12" sm="6">
+                <MudTextField ShrinkLabel T="string"
+                              Value="@($"{Detalji.DatumPodnosenjaZahtjeva:dd.MM.yyyy}")"
+                              Label="Datum podnošenja"
+                              ReadOnly="true"
+                              Typo="Typo.subtitle1"
+                              Variant="Variant.Text"
+                              Margin="Margin.Dense"
+                              Class="mb-0" />
+            </MudItem>
+        </MudGrid>
 
-    <!-- Napomena obrade -->
-    <MudItem xs="12">
-        <MudTextField T="string"
-                      Label="Napomena"
-                      Value="@Detalji.NapomenaObrade"
+        <!-- Adresa -->
+        <MudTextField ShrinkLabel T="string"
+                      Value="@Detalji.Adresa"
+                      Label="Adresa"
                       ReadOnly="true"
                       Typo="Typo.subtitle1"
-                      Variant="Variant.Text" 
+                      Variant="Variant.Text"
                       Margin="Margin.Dense"
-                      Class="mb-4"
-                      Lines="3" />
-    </MudItem>
+                      Class="mb-0" />
 
-    <!-- Status: Neosnovan, Nepotpuno, Zadovoljava -->
+        <!-- Napomena obrade -->
+        <MudItem xs="12">
+            <MudTextField ShrinkLabel T="string"
+                          Label="Napomena"
+                          Value="@Detalji.NapomenaObrade"
+                          ReadOnly="true"
+                          Typo="Typo.subtitle1"
+                          Variant="Variant.Text" 
+                          Margin="Margin.Dense"
+                          Class="mb-4"
+                          Lines="3" />
+        </MudItem>
 
+    </MudCard>
 
-    <!-- Gumb za Editiranje u istom redu -->
-    <MudStack Row="true" Justify="Justify.SpaceBetween" Spacing="2" Class="mt-2">
-        <MudStack Spacing="2">
+    <!-- MudChip i Gumb za Editiranje u istom redu -->
+    <MudStack Spacing="2" Row="true" Justify="Justify.SpaceBetween">
+        <MudStack Spacing="2" Direction="Row">
             @if (Detalji.RezultatObrade == RezultatObrade.Neosnovan)
             {
                 <MudChip T="string" Color="Color.Error" Style="max-width: 200px; display: inline-flex; align-items: center; justify-content: center; padding: 2px 10px; border-radius: 0px;">
