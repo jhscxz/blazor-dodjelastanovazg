@@ -21,7 +21,7 @@ namespace DodjelaStanovaZG.Models
         public decimal UkupniPrihodKucanstva { get; set; }
 
         [Required]
-        public DateOnly PrebivanjeOd { get; set; }
+        public DateOnly? PrebivanjeOd { get; set; }
 
         [Required]
         public StambeniStatusKucanstva StambeniStatusKucanstva { get; set; }

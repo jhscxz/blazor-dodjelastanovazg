@@ -46,7 +46,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                         UkupniPrihodKucanstva = entity.KucanstvoPodaci.UkupniPrihodKucanstva,
                         PrebivanjeOd = entity.KucanstvoPodaci.PrebivanjeOd,
                         StambeniStatusKucanstva = entity.KucanstvoPodaci.StambeniStatusKucanstva,
-                        SastavKucanstva = entity.KucanstvoPodaci.SastavKucanstva
+                        SastavKucanstva = entity.KucanstvoPodaci.SastavKucanstva,
+                        ZahtjevId = entity.Id
                     }
                     : null,
 
@@ -116,6 +117,34 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
         {
             await context.SaveChangesAsync();
         }
+        
+        public async Task UpdateKucanstvoPodaciAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto)
+        {
+            var zahtjev = await context.SocijalniNatjecajZahtjevi
+                .Include(z => z.KucanstvoPodaci)
+                .FirstOrDefaultAsync(z => z.Id == zahtjevId);
+
+            if (zahtjev == null)
+                throw new Exception($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
+
+            if (zahtjev.KucanstvoPodaci == null)
+            {
+                zahtjev.KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci
+                {
+                    ZahtjevId = zahtjevId
+                };
+                context.SocijalniNatjecajKucanstvoPodaci.Add(zahtjev.KucanstvoPodaci);
+            }
+
+            zahtjev.KucanstvoPodaci.UkupniPrihodKucanstva = dto.UkupniPrihodKucanstva!.Value;
+            zahtjev.KucanstvoPodaci.PrebivanjeOd = dto.PrebivanjeOd!.Value;
+            zahtjev.KucanstvoPodaci.StambeniStatusKucanstva = dto.StambeniStatusKucanstva!.Value;
+            zahtjev.KucanstvoPodaci.SastavKucanstva = dto.SastavKucanstva!.Value;
+            zahtjev.UpdatedAt = DateTime.UtcNow;
+
+            await context.SaveChangesAsync();
+        }
+
 
     }
 }

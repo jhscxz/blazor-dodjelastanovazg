@@ -1,0 +1,53 @@
+@page "/socijalni/kucanstvo/edit/{ZahtjevId:long}"
+@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
+@using MudBlazor
+@using Microsoft.AspNetCore.Components.Web
+@inject ISocijalniNatjecajDetaljiService DetaljiService
+@inject NavigationManager Navigation
+
+<PageTitle>Uredi kućanstvo</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-6">
+    @if (KucanstvoModel is null)
+    {
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    }
+    else
+    {
+        <KucanstvoForm Model="KucanstvoModel"
+                       OnValidSubmitCallback="Save"
+                       OnCancelCallback="Cancel" />
+    }
+</MudContainer>
+
+@code {
+    [Parameter] public long ZahtjevId { get; set; }
+
+    private SocijalniKucanstvoPodaciDto? KucanstvoModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var zahtjev = await DetaljiService.GetZahtjevByIdAsync(ZahtjevId);
+        KucanstvoModel = new SocijalniKucanstvoPodaciDto
+        {
+            UkupniPrihodKucanstva = zahtjev.KucanstvoPodaci?.UkupniPrihodKucanstva,
+            PrebivanjeOd = zahtjev.KucanstvoPodaci?.PrebivanjeOd,
+            StambeniStatusKucanstva = zahtjev.KucanstvoPodaci?.StambeniStatusKucanstva,
+            SastavKucanstva = zahtjev.KucanstvoPodaci?.SastavKucanstva
+        };
+    }
+
+    private async Task Save()
+    {
+        if (KucanstvoModel is null) return;
+
+        await DetaljiService.UpdateKucanstvoPodaciAsync(ZahtjevId, KucanstvoModel);
+        Navigation.NavigateTo($"/socijalni/pregled/{ZahtjevId}");
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo($"/socijalni/pregled/{ZahtjevId}");
+    }
+}

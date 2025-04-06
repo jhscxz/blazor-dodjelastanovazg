@@ -2,10 +2,15 @@
 @using DodjelaStanovaZG.Enums
 @using MudBlazor
 @using System.Globalization
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@inject NavigationManager Navigation
 
 @code {
     [Parameter]
     public SocijalniKucanstvoPodaciDto? Kucanstvo { get; set; }
+
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
 
     private static readonly CultureInfo HrCulture = new("hr-HR");
 }
@@ -27,7 +32,6 @@ else
             <MudText>@($"{Kucanstvo.PrebivanjeOd:dd.MM.yyyy.}")</MudText>
         </MudItem>
 
-
         <MudItem xs="12" sm="6">
             <MudText Typo="Typo.subtitle1">Stambeni status kućanstva:</MudText>
             <MudText>@Kucanstvo.StambeniStatusKucanstva</MudText>
@@ -36,6 +40,18 @@ else
         <MudItem xs="12" sm="6">
             <MudText Typo="Typo.subtitle1">Sastav kućanstva:</MudText>
             <MudText>@Kucanstvo.SastavKucanstva</MudText>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
+                <MudButton StartIcon="@Icons.Material.Filled.Edit"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="@(() => Navigation.NavigateTo($"/socijalni/kucanstvo/edit/{Kucanstvo!.ZahtjevId}"))">
+                    Uredi podatke kućanstva
+                </MudButton>
+            </MudStack>
+
         </MudItem>
     </MudGrid>
 }
