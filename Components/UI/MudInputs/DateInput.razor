@@ -1,25 +1,37 @@
 @using MudBlazor
 @using System.Globalization
 
-<MudDatePicker T="DateTime?"
-               Value="@Value"
-               ValueChanged="@ValueChanged"
+<MudDatePicker ShrinkLabel T="DateTime?"
+               @bind-Value="CurrentValue"
                Label="@Label"
-               Required="@Required"
-               DateFormat="dd.MM.yyyy"
-               Culture="@(new CultureInfo("hr-HR"))"
+               Editable="true"
+               Immediate="true"
+               DateFormat="@DateFormat"
+               Culture="@Culture"
                Variant="Variant.Text"
-               Margin="Margin.None"
-               Dense="true"
-               Disabled="@ReadOnly"
-               @attributes="AdditionalAttributes" />
+               Margin="Margin.Dense"
+               Class="mb-2"
+               Required="@Required"
+/>
 
 @code {
+
+    [Parameter] public string Label { get; set; } = "Datum";
+    [Parameter] public bool Required { get; set; }
+    [Parameter] public string DateFormat { get; set; } = "dd.MM.yyyy";
+    [Parameter] public CultureInfo Culture { get; set; } = new CultureInfo("hr-HR");
     [Parameter] public DateTime? Value { get; set; }
     [Parameter] public EventCallback<DateTime?> ValueChanged { get; set; }
-    [Parameter] public string Label { get; set; } = string.Empty;
-    [Parameter] public bool Required { get; set; } = false;
-    [Parameter] public bool ReadOnly { get; set; } = false;
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private DateTime? CurrentValue
+    {
+        get => Value;
+        set
+        {
+            if (Value == value) return;
+            Value = value;
+            ValueChanged.InvokeAsync(value);
+        }
+    }
+
 }

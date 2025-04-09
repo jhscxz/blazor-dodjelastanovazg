@@ -16,9 +16,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
         private SocijalniNatjecajOsnovnoEditDto? _socijalniNatjecajModel;
         private MudForm _form = null!;
+        private List<string> ErrorMessages { get; set; } = new();
         private int? _toggleRezultat;
-        private List<string> ErrorMessages { get; set; } = new List<string>(); // List to store error messages
-
         private List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
         [
             new() { Text = "Početna", Url = "/" },
@@ -29,7 +28,9 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
         protected override async Task OnInitializedAsync()
         {
-            var zahtjev = await DetaljiService.GetZahtjevByIdAsync(ZahtjevId);
+            var zahtjev = await DetaljiService.GetDetaljiAsync(ZahtjevId);
+            
+            Console.WriteLine("⚠️ DEBUG: DatumPodnosenja = " + zahtjev.DatumPodnosenjaZahtjeva);
 
             _socijalniNatjecajModel = new SocijalniNatjecajOsnovnoEditDto
             {
@@ -39,56 +40,33 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
                 Adresa = zahtjev.Adresa,
                 RezultatObrade = zahtjev.RezultatObrade,
                 NapomenaObrade = zahtjev.NapomenaObrade,
+                Email = zahtjev.Email,
                 NatjecajId = zahtjev.NatjecajId,
             };
-
-            if (_socijalniNatjecajModel != null)
-                _toggleRezultat = (int?)_socijalniNatjecajModel.RezultatObrade;
-
+            _toggleRezultat = (int?)_socijalniNatjecajModel.RezultatObrade;
             BreadcrumbItems[2].Url = $"/socijalni/detalji/{ZahtjevId}";
         }
 
         private async Task OnValidSubmit()
         {
-            // Clear previous errors
             ErrorMessages.Clear();
 
-            // Validate the form manually
             await _form.Validate();
 
             if (!_form.IsValid || _socijalniNatjecajModel is null)
             {
-                // If form is invalid, add error message and do nothing
                 ErrorMessages.Add("Forma nije ispravno popunjena. Provjerite označena polja.");
-                return; // Prevent form submission
+                return;
             }
-            
 
-            // Prevent submission if no valid toggle selection is made
-            if (_toggleRezultat == null)
+            if (_socijalniNatjecajModel.RezultatObrade is null)
             {
                 ErrorMessages.Add("Morate odabrati jedan od rezultata obrade.");
-                return; // Prevent form submission
-            }
-            
-            if (_toggleRezultat.HasValue)
-            {
-                _socijalniNatjecajModel.RezultatObrade = (RezultatObrade)_toggleRezultat.Value;
+                return;
             }
 
-            var dto = new SocijalniNatjecajOsnovnoEditDto
-            {
-                Id = _socijalniNatjecajModel.Id,
-                KlasaPredmeta = _socijalniNatjecajModel.KlasaPredmeta,
-                DatumPodnosenjaZahtjeva = _socijalniNatjecajModel.DatumPodnosenjaZahtjeva,
-                Adresa = _socijalniNatjecajModel.Adresa,
-                RezultatObrade = _socijalniNatjecajModel.RezultatObrade,
-                NapomenaObrade = _socijalniNatjecajModel.NapomenaObrade,
-                NatjecajId = _socijalniNatjecajModel.NatjecajId,
-            };
-
-            // Proceed to save data if the form is valid
-            await DetaljiService.UpdateOsnovniPodaciAsync(ZahtjevId, dto);
+            if (_toggleRezultat != null) _socijalniNatjecajModel.RezultatObrade = (RezultatObrade)_toggleRezultat.Value;
+            await DetaljiService.UpdateOsnovniPodaciAsync(ZahtjevId, _socijalniNatjecajModel);
             Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=OsnovniPodaci");
         }
 

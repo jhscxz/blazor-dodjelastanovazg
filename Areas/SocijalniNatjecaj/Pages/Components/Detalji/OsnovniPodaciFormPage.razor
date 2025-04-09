@@ -4,6 +4,7 @@
 @using MudBlazor
 @using DodjelaStanovaZG.Enums
 @using Microsoft.AspNetCore.Components.Web
+@using DodjelaStanovaZG.Components.UI.MudInputs
 
 <PageTitle>Uredi osnovne podatke</PageTitle>
 
@@ -32,59 +33,61 @@
 
                     <!-- Form content -->
                     <MudForm @ref="_form" Model="@_socijalniNatjecajModel" OnValidSubmit="OnValidSubmit">
+                        <!-- 1. red: Klasa + Datum -->
                         <MudGrid Gutter="Size.Small">
                             <MudItem xs="12" sm="6">
-                                <MudTextField T="int?"
-                                              Label="Klasa predmeta"
-                                              @bind-Value="_socijalniNatjecajModel.KlasaPredmeta"
-                                              Required="true"
-                                              Variant="Variant.Outlined"
-                                              Margin="Margin.Dense"
-                                              ShrinkLabel="true"
-                                              Class="mb-4" />
+                                <TextInputInt T="int?" Label="Klasa predmeta" @bind-Value="_socijalniNatjecajModel.KlasaPredmeta"
+                                              Required="true" Class="mb-4" />
                             </MudItem>
                             <MudItem xs="12" sm="6">
-                                <MudDatePicker ShrinkLabel T="DateTime?"
+                                <MudDatePicker T="DateTime?"
                                                Label="Datum podnošenja zahtjeva"
                                                @bind-Date="_socijalniNatjecajModel.DatumPodnosenjaZahtjeva"
                                                Required="true"
                                                DateFormat="dd.MM.yyyy"
                                                Culture="@(new CultureInfo("hr-HR"))"
-                                               Variant="Variant.Outlined"
+                                               Variant="Variant.Text"
                                                Margin="Margin.Dense"
+                                               Class="mb-4"
                                                Clearable="true"
-                                               Class="mb-4" />
+                                               Editable="true"
+                                               Immediate="true"
+                                               TimeEdit="false" />
+
                             </MudItem>
                         </MudGrid>
 
-                        <MudTextField ShrinkLabel T="string?"
-                                      Label="Adresa"
-                                      @bind-Value="_socijalniNatjecajModel.Adresa"
-                                      Variant="Variant.Outlined"
-                                      Margin="Margin.Dense"
-                                      Class="mb-4" />
+                        <!-- 2. red: Adresa i Email -->
+                        <MudGrid Gutter="Size.Small">
+                            <MudItem xs="12" sm="6">
+                                <TextInput T="string?" Label="Adresa" @bind-Value="_socijalniNatjecajModel.Adresa"
+                                           Required="true" Class="mb-4" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <TextInput T="string?" Label="Email" @bind-Value="_socijalniNatjecajModel.Email"
+                                           Class="mb-4" />
+                            </MudItem>
+                        </MudGrid>
 
+                        <!-- 3. red: Rezultat obrade -->
                         <MudStack Class="mt-4 mb-6">
                             <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection"
                                             @bind-Value="_toggleRezultat"
-                                            Color="Color.Default"
-                                            CheckMark>
+                                            CheckMark
+                                            Color="Color.Dark">
                                 <MudToggleItem Value="@((int?)RezultatObrade.Nepotpun)" Text="NEPOTPUN" />
                                 <MudToggleItem Value="@((int?)RezultatObrade.Neosnovan)" Text="NEOSNOVAN" />
                                 <MudToggleItem Value="@((int?)RezultatObrade.Zadovoljava)" Text="ZADOVOLJAVA" />
                             </MudToggleGroup>
                         </MudStack>
 
-                        <MudItem xs="12">
-                            <MudTextField ShrinkLabel T="string"
-                                          Label="Napomena obrade"
-                                          @bind-Value="_socijalniNatjecajModel.NapomenaObrade"
-                                          Variant="Variant.Outlined"
-                                          Margin="Margin.Dense"
-                                          Class="mb-4"
-                                          Lines="3" />
-                        </MudItem>
 
+                        <!-- 4. red: Napomena -->
+                        <TextAreaInput T="string" Label="Napomena obrade"
+                                       @bind-Value="_socijalniNatjecajModel.NapomenaObrade"
+                                       Class="mb-4" />
+
+                        <!-- Gumbi -->
                         <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
                             <MudButton OnClick="@OnValidSubmit"
                                        StartIcon="@Icons.Material.Filled.Save"
@@ -108,8 +111,8 @@
                                 Odustani
                             </MudButton>
                         </MudStack>
-
                     </MudForm>
+
                 </MudCardContent>
             </MudCard>
         }

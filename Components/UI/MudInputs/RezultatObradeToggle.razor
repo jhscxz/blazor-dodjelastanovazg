@@ -1,17 +1,20 @@
-@using DodjelaStanovaZG.Enums
 @using MudBlazor
+@using DodjelaStanovaZG.Enums
 
-<MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection"
-                @bind-Value="Value"
-                @bind-Value:event="ValueChanged"
-                CheckMark
-                Color="Color.Dark">
-    <MudToggleItem Value="@( (int?)RezultatObrade.Nepotpun )" Text="NEPOTPUN" />
-    <MudToggleItem Value="@( (int?)RezultatObrade.Neosnovan )" Text="NEOSNOVAN" />
-    <MudToggleItem Value="@( (int?)RezultatObrade.Zadovoljava )" Text="ZADOVOLJAVA" />
-</MudToggleGroup>
+<!-- RezultatObradeToggle.razor -->
+<MudStack Row="true" Spacing="2" Class="mt-4 mb-6">
+    <MudToggleGroup T="RezultatObrade?"
+                    SelectionMode="SelectionMode.ToggleSelection"
+                    @bind-Value="Value"
+                    Color="Color.Dark"
+                    CheckMark>
+        <MudToggleItem Value="@RezultatObrade.Nepotpun" Text="NEPOTPUN" />
+        <MudToggleItem Value="@RezultatObrade.Neosnovan" Text="NEOSNOVAN" />
+        <MudToggleItem Value="@RezultatObrade.Zadovoljava" Text="ZADOVOLJAVA" />
+    </MudToggleGroup>
+</MudStack>
 
 @code {
-    [Parameter] public int? Value { get; set; }
-    [Parameter] public EventCallback<int?> ValueChanged { get; set; }
+    [Parameter] public RezultatObrade? Value { get; set; }
+    [Parameter] public EventCallback<RezultatObrade?> ValueChanged { get; set; }
 }

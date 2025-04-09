@@ -2,7 +2,7 @@
 @using DodjelaStanovaZG.Enums
 @using DodjelaStanovaZG.Helpers
 @using MudBlazor
-@using System.Globalization
+@using DodjelaStanovaZG.Components.UI.MudInputs
 @inject NavigationManager Navigation
 
 @code {
@@ -11,8 +11,6 @@
 
     [Parameter]
     public EventCallback OnEdit { get; set; }
-
-    private static readonly CultureInfo HrCulture = new("hr-HR");
 
     private string GetDisplay(Enum? value) => value is null ? string.Empty : ((Enum)value).GetDisplayName();
 }
@@ -27,45 +25,28 @@ else
         <MudStack Spacing="2">
 
             <!-- Ukupni prihod kućanstva -->
-            <MudTextField ShrinkLabel ReadOnly="true"
-                          Variant="Variant.Text"
-                          Label="Ukupni prihod kućanstva"
-                          Value="@($"{Kucanstvo.UkupniPrihodKucanstva:N2} €")"
-                          Typo="Typo.subtitle1"
-                          Margin="Margin.Dense"
-                          Class="mb-0" />
+            <TextInput T="string" Label="Ukupni prihod kućanstva"
+                       Value="@($"{Kucanstvo.UkupniPrihodKucanstva:N2} €")"
+                       ReadOnly="true" />
 
             <!-- Prebivanje od -->
-            <MudTextField ShrinkLabel ReadOnly="true"
-                          Variant="Variant.Text"
-                          Label="Prebivanje od"
-                          Value="@((Kucanstvo.PrebivanjeOd.HasValue) ? Kucanstvo.PrebivanjeOd.Value.ToString("dd.MM.yyyy.") : string.Empty)"
-                          Typo="Typo.subtitle1"
-                          Margin="Margin.Dense"
-                          Class="mb-0" />
+            <TextInput T="string" Label="Prebivanje od"
+                       Value="@((Kucanstvo.PrebivanjeOd.HasValue) ? Kucanstvo.PrebivanjeOd.Value.ToString("dd.MM.yyyy.") : string.Empty)"
+                       ReadOnly="true" />
 
             <!-- Stambeni status kućanstva -->
-            <MudTextField ShrinkLabel ReadOnly="true"
-                          Variant="Variant.Text"
-                          Label="Stambeni status kućanstva"
-                          Value="@GetDisplay(Kucanstvo.StambeniStatusKucanstva)"
-                          Typo="Typo.subtitle1"
-                          Margin="Margin.Dense"
-                          Class="mb-0" />
+            <TextInput T="string" Label="Stambeni status kućanstva"
+                       Value="@GetDisplay(Kucanstvo.StambeniStatusKucanstva)"
+                       ReadOnly="true" />
 
             <!-- Sastav kućanstva -->
-            <MudTextField ShrinkLabel ReadOnly="true"
-                          Variant="Variant.Text"
-                          Label="Sastav kućanstva"
-                          Value="@GetDisplay(Kucanstvo.SastavKucanstva)"
-                          Typo="Typo.subtitle1"
-                          Margin="Margin.Dense"
-                          Class="mb-4" />
+            <TextInput T="string" Label="Sastav kućanstva"
+                       Value="@GetDisplay(Kucanstvo.SastavKucanstva)"
+                       ReadOnly="true" />
 
         </MudStack>
     </MudCard>
 
-    <!-- Gumb za Editiranje izvan MudCard -->
     <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-2">
         <MudButton StartIcon="@Icons.Material.Filled.Edit"
                    Variant="Variant.Filled"
@@ -78,5 +59,4 @@ else
             Uredi podatke kućanstva
         </MudButton>
     </MudStack>
-
 }

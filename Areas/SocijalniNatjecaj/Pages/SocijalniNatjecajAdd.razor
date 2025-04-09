@@ -1,12 +1,12 @@
 @page "/socijalni/dodaj/{NatjecajId:long}"
 @using DodjelaStanovaZG.Components.UI
 @using MudBlazor
-@using System.Globalization
 @using DodjelaStanovaZG.Enums
 @using DodjelaStanovaZG.Components.UI.MudInputs
 
 <Container BreadcrumbItems="BreadcrumbItems">
-    <MudGrid Justify="Justify.Center" Spacing="2">
+    <MudGrid Justify="Justify.Center">
+        
         <MudItem xs="12" sm="6" md="4">
             <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
@@ -24,44 +24,41 @@
                     }
 
                     <MudForm @ref="_form" Model="@ZahtjevModel">
-
-                        <!-- Prvi red: Klasa predmeta i Datum podnošenja zahtjeva u dva stupca -->
-                        <MudGrid Gutter="Size.None" Spacing="2">
+                        <!-- Prvi red: Klasa predmeta i Datum podnošenja zahtjeva -->
+                        <MudGrid Gutter="Size.Small">
                             <MudItem xs="12" sm="6">
-                                <TextInput T="int?" Label="Klasa predmeta" @bind-Value="ZahtjevModel.KlasaPredmeta" Required="true"/>
+                                <TextInputInt T="int?" Label="Klasa predmeta" @bind-Value="ZahtjevModel.KlasaPredmeta"
+                                              Required="true" Class="mb-4"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
-                                <MudDatePicker T="DateTime?"
-                                               @bind-Value="ZahtjevModel.DatumPodnosenjaZahtjeva"
-                                               Label="Datum podnošenja"
-                                               Required="true"
-                                               DateFormat="dd.MM.yyyy"
-                                               Culture="@(new CultureInfo("hr-HR"))"
-                                               Variant="Variant.Text"
-                                               Margin="Margin.None"
-                                               Dense="true" />
+                                <DateInput Label="Datum podnošenja" @bind-Value="ZahtjevModel.DatumPodnosenjaZahtjeva"
+                                           Required="true"/>
                             </MudItem>
                         </MudGrid>
 
-                        <!-- Drugi red: Ime i prezime i Adresa u dva stupca -->
-                        <MudGrid Gutter="Size.None" Spacing="2">
+                        <!-- Drugi red: Ime i prezime i Adresa -->
+                        <MudGrid Gutter="Size.Small">
                             <MudItem xs="12" sm="6">
-                                <TextInput T="string" Label="Ime i prezime" @bind-Value="ZahtjevModel.ImePrezime" Required="true"/>
+                                <TextInput T="string" Label="Ime i prezime" @bind-Value="ZahtjevModel.ImePrezime"
+                                           Required="true" Class="mb-4"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
-                                <TextInput T="string" Label="Adresa" @bind-Value="ZahtjevModel.Adresa" Required="true"/>
+                                <TextInput T="string" Label="Adresa" @bind-Value="ZahtjevModel.Adresa" Required="true"
+                                           Class="mb-4"/>
                             </MudItem>
                         </MudGrid>
 
-                        <!-- Treći red: Email i OIB u dva stupca -->
-                        <MudGrid Gutter="Size.None" Spacing="2">
+                        <!-- Treći red: OIB i Email -->
+                        <MudGrid Gutter="Size.Small">
                             <MudItem xs="12" sm="6">
-                                <TextInput T="string" Label="Email" @bind-Value="ZahtjevModel.Email" Required="true"/>
+                                <TextInput T="string" Label="OIB" @bind-Value="ZahtjevModel.Oib" Class="mb-4"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
-                                <TextInput T="string" Label="OIB" @bind-Value="ZahtjevModel.Oib" Required="true"/>
+                                <TextInput T="string" Label="Email" @bind-Value="ZahtjevModel.Email" Required="true"
+                                           Class="mb-4"/>
                             </MudItem>
                         </MudGrid>
+
 
                         <MudStack Class="mt-4 mb-6">
                             <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection"
@@ -75,18 +72,11 @@
                         </MudStack>
 
                         <MudItem xs="12">
-                            <MudTextField ShrinkLabel T="string"
-                                          Label="Napomena obrade"
-                                          @bind-Value="ZahtjevModel.NapomenaObrade"
-                                          Variant="Variant.Outlined"
-                                          Margin="Margin.Dense"
-                                          Class="mb-4"
-                                          Lines="3"/>
+                            <TextAreaInput T="string" Label="Napomena" @bind-Value="ZahtjevModel.NapomenaObrade"
+                                           Class="mb-4"/>
                         </MudItem>
 
-
-                        <!-- Gumbi za Spremi i Odustani -->
-                        <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="3" Class="mt-4">
+                        <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
                             <MudButton OnClick="SubmitForm"
                                        StartIcon="@Icons.Material.Filled.Save"
                                        Size="Size.Small"

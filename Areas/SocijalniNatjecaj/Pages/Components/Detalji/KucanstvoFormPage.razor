@@ -25,7 +25,7 @@
                                           Label="Ukupni prihod kućanstva"
                                           @bind-Value="_kucanstvoModel.UkupniPrihodKucanstva"
                                           Required="true"
-                                          Variant="Variant.Outlined"
+                                          Variant="Variant.Text"
                                           Margin="Margin.Dense"
                                           Adornment="Adornment.End"
                                           AdornmentText="€" />
@@ -36,7 +36,7 @@
                                            Required="true"
                                            DateFormat="dd.MM.yyyy"
                                            Culture="@(new CultureInfo("hr-HR"))"
-                                           Variant="Variant.Outlined"
+                                           Variant="Variant.Text"
                                            Margin="Margin.Dense"
                                            Clearable="true"
                                            AllowKeyboardInput="true" />
@@ -45,10 +45,10 @@
                                        Label="Stambeni status kućanstva"
                                        @bind-Value="_kucanstvoModel.StambeniStatusKucanstva"
                                        Required="true"
-                                       Variant="Variant.Outlined"
+                                       Variant="Variant.Text"
                                        Margin="Margin.Dense">
                                 <MudSelectItem T="StambeniStatusKucanstva?" Value="null"></MudSelectItem>
-                                @foreach (var item in Enum.GetValues<StambeniStatusKucanstva>().Cast<StambeniStatusKucanstva>())
+                                @foreach (var item in Enum.GetValues<StambeniStatusKucanstva>())
                                 {
                                     <MudSelectItem Value="(StambeniStatusKucanstva?)item">@item.GetDisplayName()</MudSelectItem>
                                 }
@@ -58,10 +58,10 @@
                                        Label="Sastav kućanstva"
                                        @bind-Value="_kucanstvoModel.SastavKucanstva"
                                        Required="true"
-                                       Variant="Variant.Outlined"
+                                       Variant="Variant.Text"
                                        Margin="Margin.Dense">
                                 <MudSelectItem T="SastavKucanstva?" Value="null"></MudSelectItem>
-                                @foreach (var item in Enum.GetValues<SastavKucanstva>().Cast<SastavKucanstva>())
+                                @foreach (var item in Enum.GetValues<SastavKucanstva>())
                                 {
                                     <MudSelectItem Value="(SastavKucanstva?)item">@item.GetDisplayName()</MudSelectItem>
                                 }

@@ -1,22 +1,43 @@
+@typeparam T
+@using System.Linq.Expressions
 @using MudBlazor
 
-<MudNumericField T="int?"
-                 @bind-Value="Value"
-                 @bind-Value:event="ValueChanged"
-                 Label="@Label"
-                 Required="@Required"
-                 Variant="Variant.Text"
-                 Margin="Margin.Dense"
-                 Class="mb-0"
-                 ReadOnly="@ReadOnly"
-                 @attributes="AdditionalAttributes" />
+<MudTextField T="T"
+              @bind-Value="CurrentValue"
+              @bind-ValueExpression="ValueExpression"
+              Label="@Label"
+              Variant="@Variant"
+              Margin="@Margin"
+              Required="@Required"
+              InputType="InputType.Text"  
+              Lines="@Lines"
+              ShrinkLabel="@ShrinkLabel"
+              ReadOnly="@ReadOnly"
+              Class="@Class"
+              @attributes="AdditionalAttributes" />
 
 @code {
-    [Parameter] public int? Value { get; set; }
-    [Parameter] public EventCallback<int?> ValueChanged { get; set; }
+    [Parameter] public T? Value { get; set; }
+    [Parameter] public EventCallback<T?> ValueChanged { get; set; }
+    [Parameter] public Expression<Func<T?>>? ValueExpression { get; set; }
     [Parameter] public string Label { get; set; } = string.Empty;
     [Parameter] public bool Required { get; set; } = false;
+    [Parameter] public int Lines { get; set; } = 1;
+    [Parameter] public bool ShrinkLabel { get; set; } = true;
+    [Parameter] public Variant Variant { get; set; } = Variant.Text;
+    [Parameter] public Margin Margin { get; set; } = Margin.Dense;
     [Parameter] public bool ReadOnly { get; set; } = false;
+    [Parameter] public string Class { get; set; } = string.Empty;
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    private T? CurrentValue
+    {
+        get => Value;
+        set
+        {
+            if (EqualityComparer<T?>.Default.Equals(Value, value)) return;
+            Value = value;
+            ValueChanged.InvokeAsync(value);
+        }
+    }
 }

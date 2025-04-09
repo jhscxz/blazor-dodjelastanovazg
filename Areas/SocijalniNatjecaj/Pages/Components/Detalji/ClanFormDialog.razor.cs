@@ -11,28 +11,13 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
         [Parameter] public long ZahtjevId { get; set; }
 
         private MudForm _form = null!;
-        private DateTime? _datumRodjenja;
         private bool IsPodnositelj => NewClan.Srodstvo == Enums.Srodstvo.PodnositeljZahtjeva;
-
-        protected override void OnInitialized()
-        {
-            if (NewClan.DatumRodjenja != default)
-            {
-                _datumRodjenja = NewClan.DatumRodjenja.ToDateTime(new TimeOnly(0, 0));
-            }
-            else
-            {
-                _datumRodjenja = null;
-            }
-        }
-
 
         private async Task Submit()
         {
             await _form.Validate();
             if (_form.IsValid)
             {
-                NewClan.DatumRodjenja = DateOnly.FromDateTime(_datumRodjenja!.Value);
                 MudDialog.Close(DialogResult.Ok(NewClan)); 
             }
         }
@@ -41,5 +26,16 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
         {
             MudDialog.Cancel();
         }
+        private DateTime? DatumRodjenjaProxy
+        {
+            get => NewClan.DatumRodjenja != default ? NewClan.DatumRodjenja.ToDateTime(new TimeOnly(0, 0)) : null;
+            set
+            {
+                if (value.HasValue)
+                    NewClan.DatumRodjenja = DateOnly.FromDateTime(value.Value);
+            }
+        }
+
     }
+    
 }
