@@ -39,7 +39,7 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
         {
             NatjecajId = zahtjevDto.NatjecajId,
             KlasaPredmeta = zahtjevDto.KlasaPredmeta!.Value,
-            DatumPodnosenjaZahtjeva = zahtjevDto.DatumPodnosenjaZahtjeva,
+            DatumPodnosenjaZahtjeva = zahtjevDto.DatumPodnosenjaZahtjeva ?? DateTime.UtcNow,
             Adresa = zahtjevDto.Adresa,
             RezultatObrade = zahtjevDto.RezultatObrade!.Value,
             NapomenaObrade = zahtjevDto.NapomenaObrade,

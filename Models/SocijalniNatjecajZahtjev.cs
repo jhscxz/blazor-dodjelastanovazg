@@ -9,7 +9,7 @@ public class SocijalniNatjecajZahtjev
 {
     [Key] public long Id { get; set; }
     [Required] public int KlasaPredmeta { get; set; }
-    [Required] public DateOnly DatumPodnosenjaZahtjeva { get; set; }
+    [Required] public DateTime DatumPodnosenjaZahtjeva { get; set; }
     [StringLength(255)] public string? Adresa { get; set; }
     [StringLength(255)] [EmailAddress] public string? Email { get; set; }
     [Required] public RezultatObrade RezultatObrade { get; set; }

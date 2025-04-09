@@ -46,7 +46,7 @@
                             <MudItem xs="12" sm="6">
                                 <MudDatePicker ShrinkLabel T="DateTime?"
                                                Label="Datum podnošenja zahtjeva"
-                                               @bind-Date="_datumPodnosenja"
+                                               @bind-Date="_socijalniNatjecajModel.DatumPodnosenjaZahtjeva"
                                                Required="true"
                                                DateFormat="dd.MM.yyyy"
                                                Culture="@(new CultureInfo("hr-HR"))"

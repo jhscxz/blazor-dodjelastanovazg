@@ -16,7 +16,6 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
         private SocijalniNatjecajOsnovnoEditDto? _socijalniNatjecajModel;
         private MudForm _form = null!;
-        private DateTime? _datumPodnosenja;
         private int? _toggleRezultat;
         private List<string> ErrorMessages { get; set; } = new List<string>(); // List to store error messages
 
@@ -43,8 +42,6 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
                 NatjecajId = zahtjev.NatjecajId,
             };
 
-            _datumPodnosenja = _socijalniNatjecajModel?.DatumPodnosenjaZahtjeva?.ToDateTime(new TimeOnly(0));
-
             if (_socijalniNatjecajModel != null)
                 _toggleRezultat = (int?)_socijalniNatjecajModel.RezultatObrade;
 
@@ -65,11 +62,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
                 ErrorMessages.Add("Forma nije ispravno popunjena. Provjerite označena polja.");
                 return; // Prevent form submission
             }
-
-            // If valid, proceed with saving
-            _socijalniNatjecajModel.DatumPodnosenjaZahtjeva = _datumPodnosenja.HasValue
-                ? DateOnly.FromDateTime(_datumPodnosenja.Value)
-                : DateOnly.MinValue;
+            
 
             // Prevent submission if no valid toggle selection is made
             if (_toggleRezultat == null)

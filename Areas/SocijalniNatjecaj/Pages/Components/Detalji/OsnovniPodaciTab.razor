@@ -1,6 +1,7 @@
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 @using DodjelaStanovaZG.Enums
 @using MudBlazor
+@using DodjelaStanovaZG.Components.UI.MudInputs
 @inject NavigationManager Navigation
 
 @code {
@@ -16,15 +17,16 @@
         <!-- Klasa predmeta i Datum podnošenja u gridu -->
         <MudGrid Gutter="Size.Small">
             <!-- Klasa predmeta -->
+
             <MudItem xs="12" sm="6">
-                <MudTextField ShrinkLabel T="string"
-                              Value="@Detalji.KlasaPredmeta.ToString()"
-                              Label="Klasa predmeta"
-                              ReadOnly="true"
-                              Typo="Typo.subtitle1"
-                              Variant="Variant.Text"
-                              Margin="Margin.Dense"
-                              Class="mb-0" />
+                <TextInput T="string" Label="Klasa predmeta" Value="@Detalji.KlasaPredmeta.ToString()" ReadOnly="true"/>
+            </MudItem>
+            
+            <MudItem xs="12" sm="6">
+                <TextInput T="string"
+                           Label="Klasa predmeta"
+                           @bind-Value="KlasaPredmetaAsString"
+                           ReadOnly="true" />
             </MudItem>
 
             <!-- Datum podnošenja -->
@@ -68,27 +70,14 @@
     <!-- MudChip i Gumb za Editiranje u istom redu -->
     <MudStack Spacing="2" Row="true" Justify="Justify.SpaceBetween">
         <MudStack Spacing="2" Direction="Row">
-            @if (Detalji.RezultatObrade == RezultatObrade.Neosnovan)
-            {
-                <MudChip T="string" Color="Color.Error" Style="max-width: 200px; display: inline-flex; align-items: center; justify-content: center; padding: 2px 10px; border-radius: 0px;">
-                    <MudIcon Icon="@Icons.Material.Filled.Dangerous" IconColor="Color.Error" />
-                    Neosnovan
-                </MudChip>
-            }
-            else if (Detalji.RezultatObrade == RezultatObrade.Nepotpun)
-            {
-                <MudChip T="string" Color="Color.Warning" Style="max-width: 200px; display: inline-flex; align-items: center; justify-content: center; padding: 2px 10px; border-radius: 0px;">
-                    <MudIcon Icon="@Icons.Material.Filled.Warning" IconColor="Color.Warning" />
-                    Nepotpuno
-                </MudChip>
-            }
-            else if (Detalji.RezultatObrade == RezultatObrade.Zadovoljava)
-            {
-                <MudChip T="string" Variant="Variant.Outlined" Color="Color.Success" Style="max-width: 200px; display: inline-flex; align-items: center; justify-content: center; padding: 2px 10px; border-radius: 0px;">
-                    <MudIcon Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success" />
-                    Ispunjava uvjete
-                </MudChip>
-            }
+            <MudChip T="string"
+                     Variant="@ChipVariant"
+                     Color="@ChipColor"
+                     Size="Size.Small"
+                     StartIcon="@ChipIcon"
+                     Class="px-2 py-1 rounded-sm">
+                @ChipText
+            </MudChip>
         </MudStack>
 
         <MudButton StartIcon="@Icons.Material.Filled.Edit"
@@ -104,3 +93,39 @@
     </MudStack>
 
 </MudStack>
+@code {
+    private Color ChipColor => Detalji.RezultatObrade switch
+    {
+        RezultatObrade.Neosnovan => Color.Error,
+        RezultatObrade.Nepotpun => Color.Warning,
+        RezultatObrade.Zadovoljava => Color.Success,
+        _ => Color.Default
+    };
+
+    private string ChipIcon => Detalji.RezultatObrade switch
+    {
+        RezultatObrade.Neosnovan => Icons.Material.Filled.Dangerous,
+        RezultatObrade.Nepotpun => Icons.Material.Filled.Warning,
+        RezultatObrade.Zadovoljava => Icons.Material.Filled.CheckCircle,
+        _ => Icons.Material.Filled.Info
+    };
+
+    private string ChipText => Detalji.RezultatObrade switch
+    {
+        RezultatObrade.Neosnovan => "Neosnovan",
+        RezultatObrade.Nepotpun => "Nepotpuno",
+        RezultatObrade.Zadovoljava => "Ispunjava uvjete",
+        _ => "Nepoznato"
+    };
+
+    private Variant ChipVariant => Detalji.RezultatObrade == RezultatObrade.Zadovoljava
+        ? Variant.Outlined
+        : Variant.Text;
+    
+    private string? KlasaPredmetaAsString
+    {
+        get => Detalji.KlasaPredmeta.ToString();
+        set => throw new NotImplementedException();
+    }
+
+}

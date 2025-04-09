@@ -8,8 +8,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
         public long Id { get; set; }
         [Required(ErrorMessage = "Klasa predmeta je obavezna.")]
         public int? KlasaPredmeta { get; set; }
-        [Required(ErrorMessage = "Datum podnošenja zahtjeva je obavezan.")]
-        public DateOnly DatumPodnosenjaZahtjeva { get; set; }
+        [Required(ErrorMessage = "Datum podnošenja je obavezan.")]
+        public DateTime? DatumPodnosenjaZahtjeva { get; set; }
         public string? Adresa { get; set; }
         [EmailAddress(ErrorMessage = "Unesite važeći email.")]
         [StringLength(255, ErrorMessage = "Email adresa ne smije biti duža od 255 znakova.")]

@@ -31,22 +31,22 @@
                                 <TextInput T="int?" Label="Klasa predmeta" @bind-Value="ZahtjevModel.KlasaPredmeta" Required="true"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
-                                <MudDatePicker ShrinkLabel T="DateTime?"
-                                               Label="Datum podnošenja zahtjeva"
-                                               @bind-Date="_datumPodnosenja"
+                                <MudDatePicker T="DateTime?"
+                                               @bind-Value="ZahtjevModel.DatumPodnosenjaZahtjeva"
+                                               Label="Datum podnošenja"
                                                Required="true"
                                                DateFormat="dd.MM.yyyy"
                                                Culture="@(new CultureInfo("hr-HR"))"
                                                Variant="Variant.Text"
                                                Margin="Margin.None"
-                                               Dense="true"/>
+                                               Dense="true" />
                             </MudItem>
                         </MudGrid>
 
                         <!-- Drugi red: Ime i prezime i Adresa u dva stupca -->
                         <MudGrid Gutter="Size.None" Spacing="2">
                             <MudItem xs="12" sm="6">
-                                <TextInput T="string" Label="Ime i prezime" @bind-Value="ImePrezime" Required="true"/>
+                                <TextInput T="string" Label="Ime i prezime" @bind-Value="ZahtjevModel.ImePrezime" Required="true"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
                                 <TextInput T="string" Label="Adresa" @bind-Value="ZahtjevModel.Adresa" Required="true"/>
@@ -59,7 +59,7 @@
                                 <TextInput T="string" Label="Email" @bind-Value="ZahtjevModel.Email" Required="true"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
-                                <TextInput T="string" Label="OIB" @bind-Value="Oib" Required="true"/>
+                                <TextInput T="string" Label="OIB" @bind-Value="ZahtjevModel.Oib" Required="true"/>
                             </MudItem>
                         </MudGrid>
 

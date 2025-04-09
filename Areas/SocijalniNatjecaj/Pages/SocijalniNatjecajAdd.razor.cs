@@ -17,16 +17,13 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
 
     protected SocijalniNatjecajZahtjevDto ZahtjevModel { get; set; } = new()
     {
-        Bodovni = new SocijalniBodovniDto()
+        Bodovni = new SocijalniBodovniDto(),
+        DatumPodnosenjaZahtjeva = null,
+        ImePrezime = null,
+        Oib = null
     };
 
     private MudForm _form = null!;
-
-    [Required(ErrorMessage = "Ime i prezime su obavezni.")]
-    protected string? ImePrezime { get; set; }
-    protected string? Oib { get; set; }
-
-    private DateTime? _datumPodnosenja;
     protected List<string> ErrorMessages { get; } = new();
 
     private int? _toggle_rezultat;
@@ -43,7 +40,6 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
     protected override void OnInitialized()
     {
         ZahtjevModel.NatjecajId = NatjecajId;
-        _datumPodnosenja = null;
     }
 
     private async Task SubmitForm()
@@ -52,7 +48,7 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
 
         ErrorMessages.Clear();
 
-        // Provjeri je li forma validna
+        // Validacija forme
         await _form.Validate();
         if (!_form.IsValid)
         {
@@ -60,34 +56,24 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
             return;
         }
 
-        // Provjeri da datum nije null
-        if (_datumPodnosenja == null)
-        {
-            ErrorMessages.Add("Datum podnošenja zahtjeva je obavezan.");
-            return;
-        }
-
-        // Provjeri rezultat obrade
-        if (!_toggle_rezultat.HasValue)
-        {
+        // Validacija dodatnih polja
+        if (_toggle_rezultat == null)
             ErrorMessages.Add("Rezultat obrade je obavezan.");
-            return;
-        }
 
-        // Ako su svi podaci u redu, mapiraj podatke u DTO
+        if (!string.IsNullOrWhiteSpace(ErrorMessages.FirstOrDefault()))
+            return;
+
+        // Mapiraj rezultat u model
         ZahtjevModel.RezultatObrade = (RezultatObrade)_toggle_rezultat.Value;
-        ZahtjevModel.DatumPodnosenjaZahtjeva = DateOnly.FromDateTime(_datumPodnosenja.Value);
 
         try
         {
-            // Spremi podatke
-            await SocijalniNatjecajService.CreateAsync(ZahtjevModel, ImePrezime!, Oib!);
+            await SocijalniNatjecajService.CreateAsync(ZahtjevModel, ZahtjevModel.ImePrezime!, ZahtjevModel.Oib!);
             if (!_disposed)
                 Navigation.NavigateTo($"/socijalni/pregled/{NatjecajId}");
         }
         catch (Exception ex)
         {
-            // Ako se dogodi greška, dodaj je u ErrorMessages
             if (!_disposed)
                 ErrorMessages.Add("Greška prilikom spremanja: " + ex.Message);
         }
@@ -98,7 +84,6 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
         if (!_disposed)
             Navigation.NavigateTo($"/socijalni/pregled/{NatjecajId}");
     }
-
 
     public void Dispose()
     {

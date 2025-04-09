@@ -44,7 +44,11 @@
 
         <RowTemplate>
             <MudTd DataLabel="Klasa">@context.KlasaPredmeta</MudTd>
-            <MudTd DataLabel="Datum">@context.DatumPodnosenjaZahtjeva.ToString("dd.MM.yyyy.")</MudTd>
+            <MudTd DataLabel="Datum">
+                @context.DatumPodnosenjaZahtjeva?.ToString("dd.MM.yyyy")
+            </MudTd>
+
+
             <MudTd DataLabel="Adresa">@context.Adresa</MudTd>
             <MudTd DataLabel="Prihod">
                 @($"{context.Bodovni?.UkupniPrihodKucanstva?.ToString("N2") ?? ""} €")
