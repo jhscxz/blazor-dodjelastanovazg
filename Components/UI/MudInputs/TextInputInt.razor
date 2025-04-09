@@ -1,0 +1,22 @@
+@using MudBlazor
+
+<MudNumericField T="int?"
+                 @bind-Value="Value"
+                 @bind-Value:event="ValueChanged"
+                 Label="@Label"
+                 Required="@Required"
+                 Variant="Variant.Text"
+                 Margin="Margin.Dense"
+                 Class="mb-0"
+                 ReadOnly="@ReadOnly"
+                 @attributes="AdditionalAttributes" />
+
+@code {
+    [Parameter] public int? Value { get; set; }
+    [Parameter] public EventCallback<int?> ValueChanged { get; set; }
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public bool Required { get; set; } = false;
+    [Parameter] public bool ReadOnly { get; set; } = false;
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -1,33 +1,25 @@
 @using MudBlazor
 @using System.Globalization
-@typeparam T
 
-<MudDatePicker ShrinkLabel T="T"
-               Value="Value"
-               ValueChanged="OnValueChanged"
+<MudDatePicker T="DateTime?"
+               Value="@Value"
+               ValueChanged="@ValueChanged"
                Label="@Label"
                Required="@Required"
                DateFormat="dd.MM.yyyy"
-               Culture="@Culture"
+               Culture="@(new CultureInfo("hr-HR"))"
                Variant="Variant.Text"
                Margin="Margin.None"
                Dense="true"
-               Disabled="@Disabled"
+               Disabled="@ReadOnly"
                @attributes="AdditionalAttributes" />
 
 @code {
-    [Parameter] public T? Value { get; set; }
-    [Parameter] public EventCallback<T?> ValueChanged { get; set; }
+    [Parameter] public DateTime? Value { get; set; }
+    [Parameter] public EventCallback<DateTime?> ValueChanged { get; set; }
     [Parameter] public string Label { get; set; } = string.Empty;
-    [Parameter] public bool Required { get; set; }
-    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool Required { get; set; } = false;
+    [Parameter] public bool ReadOnly { get; set; } = false;
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? AdditionalAttributes { get; set; }
-    private CultureInfo Culture => new("hr-HR");
-
-    private async Task OnValueChanged(T? value)
-    {
-        Value = value;
-        await ValueChanged.InvokeAsync(value);
-    }
 }

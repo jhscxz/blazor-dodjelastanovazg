@@ -1,10 +1,14 @@
+@page "/socijalni/detalji/prikaz/{Id:long}"
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 @using DodjelaStanovaZG.Enums
-@using MudBlazor
 @using DodjelaStanovaZG.Components.UI.MudInputs
+@using MudBlazor
 @inject NavigationManager Navigation
 
 @code {
+    [Parameter]
+    public long Id { get; set; }
+
     [Parameter]
     public SocijalniNatjecajZahtjevDto Detalji { get; set; } = new();
 }
@@ -14,71 +18,51 @@
     <!-- MudCard -->
     <MudCard Outlined="true" Class="pa-4">
 
-        <!-- Klasa predmeta i Datum podnošenja u gridu -->
+        <!-- Klasa predmeta i Datum podnošenja -->
         <MudGrid Gutter="Size.Small">
-            <!-- Klasa predmeta -->
-
-            <MudItem xs="12" sm="6">
-                <TextInput T="string" Label="Klasa predmeta" Value="@Detalji.KlasaPredmeta.ToString()" ReadOnly="true"/>
-            </MudItem>
-            
             <MudItem xs="12" sm="6">
                 <TextInput T="string"
                            Label="Klasa predmeta"
-                           @bind-Value="KlasaPredmetaAsString"
+                           Value="@Detalji.KlasaPredmeta?.ToString()"
                            ReadOnly="true" />
             </MudItem>
-
-            <!-- Datum podnošenja -->
             <MudItem xs="12" sm="6">
-                <MudTextField ShrinkLabel T="string"
-                              Value="@($"{Detalji.DatumPodnosenjaZahtjeva:dd.MM.yyyy}")"
-                              Label="Datum podnošenja"
-                              ReadOnly="true"
-                              Typo="Typo.subtitle1"
-                              Variant="Variant.Text"
-                              Margin="Margin.Dense"
-                              Class="mb-0" />
+                <TextInput T="string"
+                           Label="Datum podnošenja zahtjeva"
+                           Value="@Detalji.DatumPodnosenjaZahtjeva?.ToString("dd.MM.yyyy")"
+                           ReadOnly="true" />
             </MudItem>
         </MudGrid>
 
         <!-- Adresa -->
-        <MudTextField ShrinkLabel T="string"
-                      Value="@Detalji.Adresa"
-                      Label="Adresa"
-                      ReadOnly="true"
-                      Typo="Typo.subtitle1"
-                      Variant="Variant.Text"
-                      Margin="Margin.Dense"
-                      Class="mb-0" />
+        <TextInput T="string"
+                   Label="Adresa"
+                   Value="@Detalji.Adresa"
+                   ReadOnly="true" />
+
+        <!-- E-mail -->
+        <TextInput T="string"
+                   Label="Email podnositelja"
+                   Value="@Detalji.Email"
+                   ReadOnly="true" />
 
         <!-- Napomena obrade -->
-        <MudItem xs="12">
-            <MudTextField ShrinkLabel T="string"
-                          Label="Napomena"
-                          Value="@Detalji.NapomenaObrade"
-                          ReadOnly="true"
-                          Typo="Typo.subtitle1"
-                          Variant="Variant.Text" 
-                          Margin="Margin.Dense"
-                          Class="mb-4"
-                          Lines="3" />
-        </MudItem>
-
+        <TextAreaInput Label="Napomena obrade"
+                       Value="@Detalji.NapomenaObrade"
+                       ReadOnly="true"
+                       Class="mb-4" />
     </MudCard>
 
-    <!-- MudChip i Gumb za Editiranje u istom redu -->
+    <!-- Chip + Uredi gumb -->
     <MudStack Spacing="2" Row="true" Justify="Justify.SpaceBetween">
-        <MudStack Spacing="2" Direction="Row">
-            <MudChip T="string"
-                     Variant="@ChipVariant"
-                     Color="@ChipColor"
-                     Size="Size.Small"
-                     StartIcon="@ChipIcon"
-                     Class="px-2 py-1 rounded-sm">
-                @ChipText
-            </MudChip>
-        </MudStack>
+        <MudChip T="string"
+                 Variant="@ChipVariant"
+                 Color="@ChipColor"
+                 Size="Size.Small"
+                 StartIcon="@ChipIcon"
+                 Class="px-2 py-1 rounded-sm">
+            @ChipText
+        </MudChip>
 
         <MudButton StartIcon="@Icons.Material.Filled.Edit"
                    Variant="Variant.Filled"
@@ -93,6 +77,7 @@
     </MudStack>
 
 </MudStack>
+
 @code {
     private Color ChipColor => Detalji.RezultatObrade switch
     {
@@ -121,11 +106,4 @@
     private Variant ChipVariant => Detalji.RezultatObrade == RezultatObrade.Zadovoljava
         ? Variant.Outlined
         : Variant.Text;
-    
-    private string? KlasaPredmetaAsString
-    {
-        get => Detalji.KlasaPredmeta.ToString();
-        set => throw new NotImplementedException();
-    }
-
 }

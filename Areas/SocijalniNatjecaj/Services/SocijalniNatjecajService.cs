@@ -41,6 +41,7 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
             KlasaPredmeta = zahtjevDto.KlasaPredmeta!.Value,
             DatumPodnosenjaZahtjeva = zahtjevDto.DatumPodnosenjaZahtjeva ?? DateTime.UtcNow,
             Adresa = zahtjevDto.Adresa,
+            Email = zahtjevDto.Email,
             RezultatObrade = zahtjevDto.RezultatObrade!.Value,
             NapomenaObrade = zahtjevDto.NapomenaObrade,
             CreatedAt = DateTime.UtcNow,
