@@ -52,6 +52,7 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
 
         ErrorMessages.Clear();
 
+        // Provjeri je li forma validna
         await _form.Validate();
         if (!_form.IsValid)
         {
@@ -59,31 +60,34 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
             return;
         }
 
+        // Provjeri da datum nije null
         if (_datumPodnosenja == null)
         {
             ErrorMessages.Add("Datum podnošenja zahtjeva je obavezan.");
             return;
         }
 
+        // Provjeri rezultat obrade
         if (!_toggle_rezultat.HasValue)
         {
             ErrorMessages.Add("Rezultat obrade je obavezan.");
             return;
         }
 
-        // Mapiramo odabir iz toggle grupe u DTO
+        // Ako su svi podaci u redu, mapiraj podatke u DTO
         ZahtjevModel.RezultatObrade = (RezultatObrade)_toggle_rezultat.Value;
         ZahtjevModel.DatumPodnosenjaZahtjeva = DateOnly.FromDateTime(_datumPodnosenja.Value);
-        //ZahtjevModel.Email = Email;
 
         try
         {
+            // Spremi podatke
             await SocijalniNatjecajService.CreateAsync(ZahtjevModel, ImePrezime!, Oib!);
             if (!_disposed)
                 Navigation.NavigateTo($"/socijalni/pregled/{NatjecajId}");
         }
         catch (Exception ex)
         {
+            // Ako se dogodi greška, dodaj je u ErrorMessages
             if (!_disposed)
                 ErrorMessages.Add("Greška prilikom spremanja: " + ex.Message);
         }
@@ -94,6 +98,7 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
         if (!_disposed)
             Navigation.NavigateTo($"/socijalni/pregled/{NatjecajId}");
     }
+
 
     public void Dispose()
     {
