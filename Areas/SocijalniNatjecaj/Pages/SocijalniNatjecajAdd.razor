@@ -31,15 +31,7 @@
                                 <TextInput T="int?" Label="Klasa predmeta" @bind-Value="ZahtjevModel.KlasaPredmeta" Required="true"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
-                                <MudDatePicker T="DateTime?"
-                                               @bind-Value="ZahtjevModel.DatumPodnosenjaZahtjeva"
-                                               Label="Datum podnošenja"
-                                               Required="true"
-                                               DateFormat="dd.MM.yyyy"
-                                               Culture="@(new CultureInfo("hr-HR"))"
-                                               Variant="Variant.Text"
-                                               Margin="Margin.None"
-                                               Dense="true" />
+                                <DateInput T="DateTime?" @bind-Value="ZahtjevModel.DatumPodnosenjaZahtjeva" Label="Datum podnošenja" Required="true" />
                             </MudItem>
                         </MudGrid>
 
@@ -64,26 +56,12 @@
                         </MudGrid>
 
                         <MudStack Class="mt-4 mb-6">
-                            <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection"
-                                            @bind-Value="_toggle_rezultat"
-                                            CheckMark
-                                            Color="Color.Dark">
-                                <MudToggleItem Value="@((int?)RezultatObrade.Nepotpun)" Text="NEPOTPUN"/>
-                                <MudToggleItem Value="@((int?)RezultatObrade.Neosnovan)" Text="NEOSNOVAN"/>
-                                <MudToggleItem Value="@((int?)RezultatObrade.Zadovoljava)" Text="ZADOVOLJAVA"/>
-                            </MudToggleGroup>
+                            <RezultatObradeToggle @bind-Value="_toggle_rezultat" />
                         </MudStack>
 
                         <MudItem xs="12">
-                            <MudTextField ShrinkLabel T="string"
-                                          Label="Napomena obrade"
-                                          @bind-Value="ZahtjevModel.NapomenaObrade"
-                                          Variant="Variant.Outlined"
-                                          Margin="Margin.Dense"
-                                          Class="mb-4"
-                                          Lines="3"/>
+                            <TextAreaInput @bind-Value="ZahtjevModel.NapomenaObrade" Label="Napomena obrade" Class="mb-4" />
                         </MudItem>
-
 
                         <!-- Gumbi za Spremi i Odustani -->
                         <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="3" Class="mt-4">
@@ -109,7 +87,6 @@
                             </MudButton>
                         </MudStack>
                     </MudForm>
-
                 </MudCardContent>
             </MudCard>
         </MudItem>

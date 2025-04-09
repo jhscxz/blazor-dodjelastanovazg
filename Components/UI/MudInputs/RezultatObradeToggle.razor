@@ -1,0 +1,27 @@
+@using DodjelaStanovaZG.Enums
+@using MudBlazor
+<MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection"
+                @bind-Value="InternalValue"
+                CheckMark
+                Color="Color.Dark">
+    <MudToggleItem Value="@( (int?)RezultatObrade.Nepotpun )" Text="NEPOTPUN" />
+    <MudToggleItem Value="@( (int?)RezultatObrade.Neosnovan )" Text="NEOSNOVAN" />
+    <MudToggleItem Value="@( (int?)RezultatObrade.Zadovoljava )" Text="ZADOVOLJAVA" />
+</MudToggleGroup>
+@code {
+    [Parameter] public int? Value { get; set; }
+    [Parameter] public EventCallback<int?> ValueChanged { get; set; }
+
+    private int? InternalValue
+    {
+        get => Value;
+        set
+        {
+            if (Value != value)
+            {
+                Value = value;
+                ValueChanged.InvokeAsync(value);
+            }
+        }
+    }
+}
