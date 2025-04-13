@@ -2,28 +2,28 @@
 @using System.Globalization
 
 <MudDatePicker ShrinkLabel T="DateTime?"
-               @bind-Value="CurrentValue"
+               @bind-Value="InternalValue"
+               @bind-Date="InternalValue"
                Label="@Label"
-               Editable="true"
                Immediate="true"
+               Editable="true"
                DateFormat="@DateFormat"
                Culture="@Culture"
                Variant="Variant.Text"
                Margin="Margin.Dense"
                Class="mb-2"
-               Required="@Required"
-/>
+               Required="@Required" />
 
 @code {
+    [Parameter] public DateTime? Value { get; set; }
+    [Parameter] public EventCallback<DateTime?> ValueChanged { get; set; }
 
     [Parameter] public string Label { get; set; } = "Datum";
     [Parameter] public bool Required { get; set; }
     [Parameter] public string DateFormat { get; set; } = "dd.MM.yyyy";
-    [Parameter] public CultureInfo Culture { get; set; } = new CultureInfo("hr-HR");
-    [Parameter] public DateTime? Value { get; set; }
-    [Parameter] public EventCallback<DateTime?> ValueChanged { get; set; }
+    [Parameter] public CultureInfo Culture { get; set; } = new("hr-HR");
 
-    private DateTime? CurrentValue
+    private DateTime? InternalValue
     {
         get => Value;
         set
@@ -33,5 +33,4 @@
             ValueChanged.InvokeAsync(value);
         }
     }
-
 }

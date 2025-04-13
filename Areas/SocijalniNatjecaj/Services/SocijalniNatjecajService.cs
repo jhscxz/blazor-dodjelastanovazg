@@ -30,11 +30,10 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
             .ToListAsync();
     }
 
-    public async Task CreateAsync(SocijalniNatjecajZahtjevDto zahtjevDto, string imePrezime, string? oib)
+    public async Task<long> CreateAsync(SocijalniNatjecajZahtjevDto zahtjevDto, string imePrezime, string? oib)
     {
         string currentUserId = GetCurrentUserId();
 
-        // 1. Kreiraj novi zahtjev
         var zahtjev = new SocijalniNatjecajZahtjev
         {
             NatjecajId = zahtjevDto.NatjecajId,
@@ -50,7 +49,6 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
             Clanovi = new List<SocijalniNatjecajClan>()
         };
 
-        // 2. Dodaj podnositelja kao člana
         var podnositelj = new SocijalniNatjecajClan
         {
             Zahtjev = zahtjev,
@@ -62,13 +60,11 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
         };
         zahtjev.Clanovi.Add(podnositelj);
 
-        // 3. Dodaj prazne podatke o kućanstvu
         zahtjev.KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci
         {
             Zahtjev = zahtjev
         };
 
-        // 4. Dodaj prazne bodovne podatke
         zahtjev.BodovniPodaci = new SocijalniNatjecajBodovniPodaci
         {
             Zahtjev = zahtjev,
@@ -77,9 +73,11 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
             EditedBy = currentUserId
         };
 
-        // 5. Spremi sve
         await context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);
         await context.SaveChangesAsync();
+
+        return zahtjev.Id;
     }
+
 
 }

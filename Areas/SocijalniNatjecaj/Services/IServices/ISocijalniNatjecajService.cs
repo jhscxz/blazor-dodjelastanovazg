@@ -6,5 +6,6 @@ public interface ISocijalniNatjecajService
 {
     Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync();
 
-    Task CreateAsync(SocijalniNatjecajZahtjevDto zahtjevDto, string imePrezime, string? oib);
+    Task<long> CreateAsync(SocijalniNatjecajZahtjevDto zahtjevDto, string imePrezime, string? oib);
+
 }

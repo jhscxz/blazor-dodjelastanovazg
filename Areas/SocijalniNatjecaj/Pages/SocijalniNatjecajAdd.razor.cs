@@ -68,9 +68,9 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
 
         try
         {
-            await SocijalniNatjecajService.CreateAsync(ZahtjevModel, ZahtjevModel.ImePrezime!, ZahtjevModel.Oib!);
+            var newId = await SocijalniNatjecajService.CreateAsync(ZahtjevModel, ZahtjevModel.ImePrezime, ZahtjevModel.Oib);
             if (!_disposed)
-                Navigation.NavigateTo($"/socijalni/pregled/{NatjecajId}");
+                Navigation.NavigateTo($"/socijalni/detalji/{newId}");
         }
         catch (Exception ex)
         {

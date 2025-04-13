@@ -30,8 +30,6 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
         {
             var zahtjev = await DetaljiService.GetDetaljiAsync(ZahtjevId);
             
-            Console.WriteLine("⚠️ DEBUG: DatumPodnosenja = " + zahtjev.DatumPodnosenjaZahtjeva);
-
             _socijalniNatjecajModel = new SocijalniNatjecajOsnovnoEditDto
             {
                 Id = zahtjev.Id,

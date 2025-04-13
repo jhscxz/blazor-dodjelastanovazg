@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Helpers
+@using DodjelaStanovaZG.Components.UI.MudInputs
 
 <PageTitle>Uredi kućanstvo</PageTitle>
 
@@ -29,17 +30,9 @@
                                           Margin="Margin.Dense"
                                           Adornment="Adornment.End"
                                           AdornmentText="€" />
-
-                            <MudDatePicker ShrinkLabel T="DateTime?"
-                                           Label="Prebivanje od"
-                                           @bind-Date="_prebivanjeOd"
-                                           Required="true"
-                                           DateFormat="dd.MM.yyyy"
-                                           Culture="@(new CultureInfo("hr-HR"))"
-                                           Variant="Variant.Text"
-                                           Margin="Margin.Dense"
-                                           Clearable="true"
-                                           AllowKeyboardInput="true" />
+                            
+                            <DateInput Label="Datum podnošenja" @bind-Value="_prebivanjeOd"
+                                       Required="true"/>
 
                             <MudSelect ShrinkLabel T="StambeniStatusKucanstva?"
                                        Label="Stambeni status kućanstva"
