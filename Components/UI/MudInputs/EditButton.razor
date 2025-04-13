@@ -1,0 +1,32 @@
+@using MudBlazor
+<MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="@Class">
+    <MudButton StartIcon="@Icon"
+               Variant="Variant.Filled"
+               Size="Size.Small"
+               Style="border: 1px solid #d3d3d3;"
+               DropShadow="false"
+               IconColor="Color.Info"
+               Color="Color.Default"
+               OnClick="HandleClick">
+        @Label
+    </MudButton>
+</MudStack>
+
+@code {
+    [Parameter] public string Label { get; set; } = "Uredi";
+    [Parameter] public string Icon { get; set; } = Icons.Material.Filled.Edit;
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public string Class { get; set; } = "mt-2";
+
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+
+    private Task HandleClick()
+    {
+        if (!string.IsNullOrWhiteSpace(Href))
+        {
+            Navigation.NavigateTo(Href);
+        }
+        return OnClick.InvokeAsync();
+    }
+}

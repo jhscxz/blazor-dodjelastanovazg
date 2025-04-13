@@ -1,0 +1,40 @@
+@using MudBlazor
+@using DodjelaStanovaZG.Helpers
+
+@typeparam T where T : struct, Enum
+
+<MudSelect T="T?" Label="@Label" @bind-Value="_value" Required="@Required"
+           ShrinkLabel="true" Variant="Variant.Text" Margin="Margin.Dense">
+    <MudSelectItem T="T?" Value="null">@Placeholder</MudSelectItem>
+    @foreach (var item in Enum.GetValues(typeof(T)).Cast<T>())
+    {
+        if (Filter is null || Filter(item))
+        {
+            <MudSelectItem Value="(T?)item">@item.GetDisplayName()</MudSelectItem>
+        }
+    }
+</MudSelect>
+
+@code {
+    [Parameter] public T? Value { get; set; }
+    [Parameter] public EventCallback<T?> ValueChanged { get; set; }
+
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public bool Required { get; set; } = false;
+    [Parameter] public string Placeholder { get; set; } = "Odaberi...";
+
+    [Parameter] public Func<T, bool>? Filter { get; set; }
+
+    private T? _value
+    {
+        get => Value;
+        set
+        {
+            if (!EqualityComparer<T?>.Default.Equals(Value, value))
+            {
+                Value = value;
+                ValueChanged.InvokeAsync(value);
+            }
+        }
+    }
+}

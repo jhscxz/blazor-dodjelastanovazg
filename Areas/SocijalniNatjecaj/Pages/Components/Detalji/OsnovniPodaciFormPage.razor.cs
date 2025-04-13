@@ -45,7 +45,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
             BreadcrumbItems[2].Url = $"/socijalni/detalji/{ZahtjevId}";
         }
 
-        private async Task OnValidSubmit()
+        private async Task Submit()
         {
             ErrorMessages.Clear();
 
@@ -68,7 +68,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
             Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=OsnovniPodaci");
         }
 
-        private void OnCancel()
+        private void Cancel()
         {
             Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=OsnovniPodaci");
         }

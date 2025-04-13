@@ -48,7 +48,7 @@ public partial class KucanstvoFormPage
         BreadcrumbItems[2].Url = $"/socijalni/detalji/{ZahtjevId}";
     }
 
-    private async Task OnValidSubmit()
+    private async Task Submit()
     {
         await _form.Validate();
 
@@ -63,7 +63,7 @@ public partial class KucanstvoFormPage
         Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=Kucanstvo");
     }
 
-    private void OnCancel()
+    private void Cancel()
     {
         Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=Kucanstvo");
     }

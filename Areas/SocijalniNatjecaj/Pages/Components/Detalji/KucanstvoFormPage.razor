@@ -6,85 +6,48 @@
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Helpers
 @using DodjelaStanovaZG.Components.UI.MudInputs
+@using DodjelaStanovaZG.Components.UI.Buttons
 
 <PageTitle>Uredi kućanstvo</PageTitle>
 
 <Container BreadcrumbItems="BreadcrumbItems">
-    <MudContainer MaxWidth="MaxWidth.Small" >
+    <MudContainer MaxWidth="MaxWidth.Small">
         @if (_kucanstvoModel is null)
         {
-            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
         }
         else
         {
             <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
                     <MudForm @ref="_form" Model="@_kucanstvoModel">
-                        <MudStack Spacing="3">
+                        <MudGrid GutterSpacing="3">
+                            <MudItem xs="12">
+                                <TextInputDecimal T="decimal?" Label="Ukupni prihod kućanstva"
+                                                  @bind-Value="_kucanstvoModel.UkupniPrihodKucanstva"
+                                                  Required="true"/>
+                            </MudItem>
 
-                            <MudTextField ShrinkLabel T="decimal?"
-                                          Label="Ukupni prihod kućanstva"
-                                          @bind-Value="_kucanstvoModel.UkupniPrihodKucanstva"
-                                          Required="true"
-                                          Variant="Variant.Text"
-                                          Margin="Margin.Dense"
-                                          Adornment="Adornment.End"
-                                          AdornmentText="€" />
-                            
-                            <DateInput Label="Datum podnošenja" @bind-Value="_prebivanjeOd"
-                                       Required="true"/>
 
-                            <MudSelect ShrinkLabel T="StambeniStatusKucanstva?"
-                                       Label="Stambeni status kućanstva"
-                                       @bind-Value="_kucanstvoModel.StambeniStatusKucanstva"
-                                       Required="true"
-                                       Variant="Variant.Text"
-                                       Margin="Margin.Dense">
-                                <MudSelectItem T="StambeniStatusKucanstva?" Value="null"></MudSelectItem>
-                                @foreach (var item in Enum.GetValues<StambeniStatusKucanstva>())
-                                {
-                                    <MudSelectItem Value="(StambeniStatusKucanstva?)item">@item.GetDisplayName()</MudSelectItem>
-                                }
-                            </MudSelect>
+                            <MudItem xs="12">
+                                <DateInput Label="Datum podnošenja" @bind-Value="_prebivanjeOd" Required="true"/>
+                            </MudItem>
 
-                            <MudSelect ShrinkLabel T="SastavKucanstva?"
-                                       Label="Sastav kućanstva"
-                                       @bind-Value="_kucanstvoModel.SastavKucanstva"
-                                       Required="true"
-                                       Variant="Variant.Text"
-                                       Margin="Margin.Dense">
-                                <MudSelectItem T="SastavKucanstva?" Value="null"></MudSelectItem>
-                                @foreach (var item in Enum.GetValues<SastavKucanstva>())
-                                {
-                                    <MudSelectItem Value="(SastavKucanstva?)item">@item.GetDisplayName()</MudSelectItem>
-                                }
-                            </MudSelect>
+                            <MudItem xs="12">
+                                <EnumSelect T="StambeniStatusKucanstva"
+                                            @bind-Value="_kucanstvoModel.StambeniStatusKucanstva"
+                                            Label="Stambeni status kućanstva" Required="true"/>
+                            </MudItem>
 
-                            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
-                                <MudButton OnClick="@OnValidSubmit"
-                                           StartIcon="@Icons.Material.Filled.Save"
-                                           Size="Size.Small"
-                                           Variant="Variant.Filled"
-                                           Style="border: 1px solid #d3d3d3;"
-                                           DropShadow="false"
-                                           IconColor="Color.Success"
-                                           Color="Color.Default">
-                                    Spremi
-                                </MudButton>
+                            <MudItem xs="12">
+                                <EnumSelect T="SastavKucanstva" @bind-Value="_kucanstvoModel.SastavKucanstva"
+                                            Label="Sastav kućanstva" Required="true"/>
+                            </MudItem>
 
-                                <MudButton OnClick="@OnCancel"
-                                           StartIcon="@Icons.Material.Filled.Cancel"
-                                           Size="Size.Small"
-                                           DropShadow="false"
-                                           Style="border: 1px solid #d3d3d3;"
-                                           Variant="Variant.Filled"
-                                           IconColor="Color.Error"
-                                           Color="Color.Default">
-                                    Odustani
-                                </MudButton>
-                            </MudStack>
-
-                        </MudStack>
+                            <MudItem xs="12">
+                                <FormButtons Submit="Submit" Cancel="Cancel"/>
+                            </MudItem>
+                        </MudGrid>
                     </MudForm>
                 </MudCardContent>
             </MudCard>

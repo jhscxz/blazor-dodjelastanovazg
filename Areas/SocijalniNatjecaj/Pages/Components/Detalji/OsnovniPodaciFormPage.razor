@@ -5,6 +5,7 @@
 @using DodjelaStanovaZG.Enums
 @using Microsoft.AspNetCore.Components.Web
 @using DodjelaStanovaZG.Components.UI.MudInputs
+@using DodjelaStanovaZG.Components.UI.Buttons
 
 <PageTitle>Uredi osnovne podatke</PageTitle>
 
@@ -71,36 +72,15 @@
                             </MudToggleGroup>
                         </MudStack>
 
-
                         <!-- 4. red: Napomena -->
                         <TextAreaInput T="string" Label="Napomena obrade"
                                        @bind-Value="_socijalniNatjecajModel.NapomenaObrade"
                                        Class="mb-4" />
 
                         <!-- Gumbi -->
-                        <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
-                            <MudButton OnClick="@OnValidSubmit"
-                                       StartIcon="@Icons.Material.Filled.Save"
-                                       Size="Size.Small"
-                                       Variant="Variant.Filled"
-                                       Style="border: 1px solid #d3d3d3;"
-                                       DropShadow="false"
-                                       IconColor="Color.Success"
-                                       Color="Color.Default">
-                                Spremi
-                            </MudButton>
+                        <FormButtons Submit="Submit"
+                                     Cancel="Cancel" />
 
-                            <MudButton OnClick="@OnCancel"
-                                       StartIcon="@Icons.Material.Filled.Cancel"
-                                       Size="Size.Small"
-                                       DropShadow="false"
-                                       Style="border: 1px solid #d3d3d3;"
-                                       Variant="Variant.Filled"
-                                       IconColor="Color.Error"
-                                       Color="Color.Default">
-                                Odustani
-                            </MudButton>
-                        </MudStack>
                     </MudForm>
 
                 </MudCardContent>

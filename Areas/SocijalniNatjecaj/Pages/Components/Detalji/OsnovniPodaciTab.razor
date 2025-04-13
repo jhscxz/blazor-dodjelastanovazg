@@ -1,79 +1,47 @@
 @page "/socijalni/detalji/prikaz/{Id:long}"
-@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
-@using DodjelaStanovaZG.Enums
 @using DodjelaStanovaZG.Components.UI.MudInputs
 @using MudBlazor
-@inject NavigationManager Navigation
-
-@code {
-    [Parameter] public long Id { get; set; }
-
-    [Parameter] public SocijalniNatjecajZahtjevDto Detalji { get; set; } = new();
-}
+@inherits PrikazBase
 
 <MudStack Spacing="4">
 
-    <!-- MudCard -->
     <MudCard Outlined="true" Class="pa-4">
 
-        <!-- 1. red: Klasa predmeta i Datum podnošenja -->
         <MudGrid Gutter="Size.Small">
             <MudItem xs="12" sm="6">
-                <TextInput T="string"
-                           Label="Klasa predmeta"
-                           Value="@Detalji.KlasaPredmeta?.ToString()"
+                <TextInput T="string" Label="Klasa predmeta" Value="@Detalji.KlasaPredmeta?.ToString()"
                            ReadOnly="true"/>
             </MudItem>
             <MudItem xs="12" sm="6">
-                <TextInput T="string"
-                           Label="Datum podnošenja zahtjeva"
-                           Value="@Detalji.DatumPodnosenjaZahtjeva?.ToString("dd.MM.yyyy")"
-                           ReadOnly="true"/>
+                <TextInput T="string" Label="Datum podnošenja zahtjeva"
+                           Value="@Detalji.DatumPodnosenjaZahtjeva?.ToString("dd.MM.yyyy")" ReadOnly="true"/>
             </MudItem>
         </MudGrid>
 
-        <!-- 2. red: Ime i prezime + Adresa -->
         <MudGrid Gutter="Size.Small">
             <MudItem xs="12" sm="6">
-                <TextInput T="string"
-                           Label="Ime i prezime"
-                           Value="@Detalji.ImePrezime"
-                           ReadOnly="true"/>
+                <TextInput T="string" Label="Ime i prezime" Value="@Detalji.ImePrezime" ReadOnly="true"/>
             </MudItem>
             <MudItem xs="12" sm="6">
-                <TextInput T="string"
-                           Label="Adresa"
-                           Value="@Detalji.Adresa"
-                           ReadOnly="true"/>
+                <TextInput T="string" Label="Adresa" Value="@Detalji.Adresa" ReadOnly="true"/>
             </MudItem>
         </MudGrid>
 
-        <!-- 3. red: OIB + Email -->
         <MudGrid Gutter="Size.Small">
             <MudItem xs="12" sm="6">
-                <TextInput T="string"
-                           Label="OIB podnositelja"
-                           Value="@Detalji.Oib"
-                           ReadOnly="true"/>
+                <TextInput T="string" Label="OIB podnositelja" Value="@Detalji.Oib" ReadOnly="true"/>
             </MudItem>
             <MudItem xs="12" sm="6">
-                <TextInput T="string"
-                           Label="Email podnositelja"
-                           Value="@Detalji.Email"
-                           ReadOnly="true"/>
+                <TextInput T="string" Label="Email podnositelja" Value="@Detalji.Email" ReadOnly="true"/>
             </MudItem>
         </MudGrid>
 
-        <!-- Napomena obrade (ostaje preko cijele širine) -->
         <TextAreaInput Label="Napomena obrade"
                        Value="@Detalji.NapomenaObrade"
                        ReadOnly="true"
                        Class="mb-4"/>
-
     </MudCard>
 
-
-    <!-- Chip + Uredi gumb -->
     <MudStack Spacing="2" Row="true" Justify="Justify.SpaceBetween">
         <MudChip T="string"
                  Variant="@ChipVariant"
@@ -84,48 +52,7 @@
             @ChipText
         </MudChip>
 
-        <MudButton StartIcon="@Icons.Material.Filled.Edit"
-                   Variant="Variant.Filled"
-                   Size="Size.Small"
-                   Style="border: 1px solid #d3d3d3;"
-                   DropShadow="false"
-                   IconColor="Color.Info"
-                   Color="Color.Default"
-                   OnClick="@(() => Navigation.NavigateTo($"/socijalni/osnovno/edit/{Detalji.Id}"))">
-            Uredi osnovne podatke
-        </MudButton>
+        <EditButton Href="@($"/socijalni/osnovno/edit/{Detalji.Id}")"/>
     </MudStack>
 
 </MudStack>
-
-@code {
-
-    private Color ChipColor => Detalji.RezultatObrade switch
-    {
-        RezultatObrade.Neosnovan => Color.Error,
-        RezultatObrade.Nepotpun => Color.Warning,
-        RezultatObrade.Zadovoljava => Color.Success,
-        _ => Color.Default
-    };
-
-    private string ChipIcon => Detalji.RezultatObrade switch
-    {
-        RezultatObrade.Neosnovan => Icons.Material.Filled.Dangerous,
-        RezultatObrade.Nepotpun => Icons.Material.Filled.Warning,
-        RezultatObrade.Zadovoljava => Icons.Material.Filled.CheckCircle,
-        _ => Icons.Material.Filled.Info
-    };
-
-    private string ChipText => Detalji.RezultatObrade switch
-    {
-        RezultatObrade.Neosnovan => "Neosnovan",
-        RezultatObrade.Nepotpun => "Nepotpuno",
-        RezultatObrade.Zadovoljava => "Ispunjava uvjete",
-        _ => "Nepoznato"
-    };
-
-    private Variant ChipVariant => Detalji.RezultatObrade == RezultatObrade.Zadovoljava
-        ? Variant.Outlined
-        : Variant.Text;
-
-}
