@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Models.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace DodjelaStanovaZG.Models;
 
-public class SocijalniNatjecajClan
+public class SocijalniNatjecajClan : AuditableEntity
 {
     [Key]
     public long Id { get; set; }
@@ -20,6 +22,4 @@ public class SocijalniNatjecajClan
     public Srodstvo? Srodstvo { get; set; }
     [Required]
     public DateOnly DatumRodjenja { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
 }

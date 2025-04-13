@@ -3,6 +3,7 @@
 @using DodjelaStanovaZG.Helpers
 @using MudBlazor
 @using DodjelaStanovaZG.Components.UI.MudInputs
+@using DodjelaStanovaZG.Components.UI
 @inject NavigationManager Navigation
 
 @code {
@@ -50,4 +51,13 @@ else
     <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-2">
         <EditButton Href="@($"/socijalni/kucanstvo/edit/{Kucanstvo!.ZahtjevId}")" />
     </MudStack>
+    
+    <AuditInfo 
+        CreatedBy="@Kucanstvo.CreatedBy"
+        CreatedByUserName="@Kucanstvo.CreatedByUserName"
+        CreatedAt="@Kucanstvo.CreatedAt"
+        UpdatedBy="@Kucanstvo.UpdatedBy"
+        UpdatedByUserName="@Kucanstvo.UpdatedByUserName"
+        UpdatedAt="@Kucanstvo.UpdatedAt" />
+
 }

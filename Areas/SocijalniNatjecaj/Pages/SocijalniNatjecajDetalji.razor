@@ -31,7 +31,16 @@
                                 @if (_detalji.RezultatObrade == RezultatObrade.Zadovoljava)
                                 {
                                     <MudTabPanel Text="Članovi kućanstva">
-                                        <ClanoviKucanstvaTab Clanovi="_detalji.Clanovi" Id="Id"/>
+                                        <ClanoviKucanstvaTab
+                                            Id="@_detalji.Id"
+                                            Clanovi="@_detalji.Clanovi"
+                                            CreatedBy="@_detalji.CreatedBy"
+                                            CreatedByUserName="@_detalji.CreatedByUserName"
+                                            CreatedAt="@_detalji.CreatedAt"
+                                            UpdatedBy="@_detalji.UpdatedBy"
+                                            UpdatedByUserName="@_detalji.UpdatedByUserName"
+                                            UpdatedAt="@_detalji.UpdatedAt" />
+
                                     </MudTabPanel>
                                 }
 

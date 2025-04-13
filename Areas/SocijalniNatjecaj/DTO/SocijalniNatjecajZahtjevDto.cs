@@ -25,5 +25,12 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
         public SocijalniBodovniDto Bodovni { get; set; } = new();
         public List<SocijalniNatjecajClanDto>? Clanovi { get; set; }
         public SocijalniKucanstvoPodaciDto? KucanstvoPodaci { get; set; }
+        
+        public string? CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string? UpdatedBy { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public string? CreatedByUserName { get; set; }
+        public string? UpdatedByUserName { get; set; }
     }
 }

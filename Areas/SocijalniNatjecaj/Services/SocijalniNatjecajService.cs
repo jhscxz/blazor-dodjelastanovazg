@@ -3,6 +3,7 @@ using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,9 +44,6 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
             Email = zahtjevDto.Email,
             RezultatObrade = zahtjevDto.RezultatObrade!.Value,
             NapomenaObrade = zahtjevDto.NapomenaObrade,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            CreatedBy = currentUserId,
             Clanovi = new List<SocijalniNatjecajClan>()
         };
 
@@ -54,9 +52,7 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
             Zahtjev = zahtjev,
             ImePrezime = imePrezime,
             Oib = string.IsNullOrWhiteSpace(oib) ? null : oib,
-            Srodstvo = Srodstvo.PodnositeljZahtjeva,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            Srodstvo = Srodstvo.PodnositeljZahtjeva
         };
         zahtjev.Clanovi.Add(podnositelj);
 
@@ -67,17 +63,18 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
 
         zahtjev.BodovniPodaci = new SocijalniNatjecajBodovniPodaci
         {
-            Zahtjev = zahtjev,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            EditedBy = currentUserId
+            Zahtjev = zahtjev
         };
+
+        // Audit
+        AuditHelper.ApplyAudit(zahtjev, currentUserId, true);
+        AuditHelper.ApplyAudit(podnositelj, currentUserId, true);
+        AuditHelper.ApplyAudit(zahtjev.KucanstvoPodaci, currentUserId, true);
+        AuditHelper.ApplyAudit(zahtjev.BodovniPodaci, currentUserId, true);
 
         await context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);
         await context.SaveChangesAsync();
 
         return zahtjev.Id;
     }
-
-
 }

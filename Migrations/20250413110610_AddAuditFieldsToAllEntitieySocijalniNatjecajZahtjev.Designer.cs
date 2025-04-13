@@ -4,6 +4,7 @@ using DodjelaStanovaZG.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DodjelaStanovaZG.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250413110610_AddAuditFieldsToAllEntitieySocijalniNatjecajZahtjev")]
+    partial class AddAuditFieldsToAllEntitieySocijalniNatjecajZahtjev
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,9 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateOnly>("DatumObjave")
@@ -56,7 +61,9 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<byte>("Zakljucen")
@@ -64,9 +71,9 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("CreatedByUserId");
 
-                    b.HasIndex("UpdatedBy");
+                    b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("Natjecaji");
                 });
@@ -104,7 +111,9 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<byte?>("ManjeOd35Godina")
@@ -127,7 +136,9 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<long>("ZahtjevId")
@@ -138,9 +149,9 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("CreatedByUserId");
 
-                    b.HasIndex("UpdatedBy");
+                    b.HasIndex("UpdatedByUserId");
 
                     b.HasIndex("ZahtjevId")
                         .IsUnique();
@@ -171,7 +182,9 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateOnly>("DatumRodjenja")
@@ -203,7 +216,9 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<long>("ZahtjevId")
@@ -211,9 +226,9 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("CreatedByUserId");
 
-                    b.HasIndex("UpdatedBy");
+                    b.HasIndex("UpdatedByUserId");
 
                     b.HasIndex("ZahtjevId");
 
@@ -243,7 +258,9 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("PeriodEnd")
@@ -273,7 +290,9 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<long>("ZahtjevId")
@@ -281,9 +300,9 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("CreatedByUserId");
 
-                    b.HasIndex("UpdatedBy");
+                    b.HasIndex("UpdatedByUserId");
 
                     b.HasIndex("ZahtjevId")
                         .IsUnique();
@@ -318,7 +337,9 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DatumPodnosenjaZahtjeva")
@@ -355,16 +376,18 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
-                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("NatjecajId");
 
-                    b.HasIndex("UpdatedBy");
+                    b.HasIndex("UpdatedByUserId");
 
                     b.ToTable("SocijalniNatjecajZahtjevi", (string)null);
 
@@ -586,11 +609,11 @@ namespace DodjelaStanovaZG.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
                         .WithMany()
-                        .HasForeignKey("CreatedBy");
+                        .HasForeignKey("CreatedByUserId");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UpdatedByUser")
                         .WithMany()
-                        .HasForeignKey("UpdatedBy");
+                        .HasForeignKey("UpdatedByUserId");
 
                     b.Navigation("CreatedByUser");
 
@@ -601,11 +624,11 @@ namespace DodjelaStanovaZG.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
                         .WithMany()
-                        .HasForeignKey("CreatedBy");
+                        .HasForeignKey("CreatedByUserId");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UpdatedByUser")
                         .WithMany()
-                        .HasForeignKey("UpdatedBy");
+                        .HasForeignKey("UpdatedByUserId");
 
                     b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", "Zahtjev")
                         .WithOne("BodovniPodaci")
@@ -624,11 +647,11 @@ namespace DodjelaStanovaZG.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
                         .WithMany()
-                        .HasForeignKey("CreatedBy");
+                        .HasForeignKey("CreatedByUserId");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UpdatedByUser")
                         .WithMany()
-                        .HasForeignKey("UpdatedBy");
+                        .HasForeignKey("UpdatedByUserId");
 
                     b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", "Zahtjev")
                         .WithMany("Clanovi")
@@ -647,11 +670,11 @@ namespace DodjelaStanovaZG.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
                         .WithMany()
-                        .HasForeignKey("CreatedBy");
+                        .HasForeignKey("CreatedByUserId");
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UpdatedByUser")
                         .WithMany()
-                        .HasForeignKey("UpdatedBy");
+                        .HasForeignKey("UpdatedByUserId");
 
                     b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", "Zahtjev")
                         .WithOne("KucanstvoPodaci")
@@ -670,7 +693,7 @@ namespace DodjelaStanovaZG.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
                         .WithMany()
-                        .HasForeignKey("CreatedBy");
+                        .HasForeignKey("CreatedByUserId");
 
                     b.HasOne("DodjelaStanovaZG.Models.Natjecaj", "Natjecaj")
                         .WithMany()
@@ -680,7 +703,7 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UpdatedByUser")
                         .WithMany()
-                        .HasForeignKey("UpdatedBy");
+                        .HasForeignKey("UpdatedByUserId");
 
                     b.Navigation("CreatedByUser");
 

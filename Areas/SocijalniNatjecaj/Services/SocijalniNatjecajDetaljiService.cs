@@ -2,6 +2,7 @@ using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +12,12 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
     {
         private readonly ApplicationDbContext context;
 
-        public SocijalniNatjecajDetaljiService(ApplicationDbContext context)
+        public SocijalniNatjecajDetaljiService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             this.context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
+
 
         public async Task<SocijalniNatjecajZahtjevDto> GetDetaljiAsync(long id)
         {
@@ -22,6 +25,10 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                 .Include(x => x.Clanovi)
                 .Include(x => x.BodovniPodaci)
                 .Include(x => x.KucanstvoPodaci)
+                .Include(x => x.KucanstvoPodaci!.CreatedByUser)
+                .Include(x => x.KucanstvoPodaci!.UpdatedByUser)
+                .Include(x => x.CreatedByUser)
+                .Include(x => x.UpdatedByUser)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (entity == null)
@@ -41,6 +48,12 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                 Oib = podnositelj?.Oib,
                 RezultatObrade = entity.RezultatObrade,
                 NapomenaObrade = entity.NapomenaObrade,
+                CreatedBy = entity.CreatedBy,
+                CreatedAt = entity.CreatedAt,
+                UpdatedBy = entity.UpdatedBy,
+                UpdatedAt = entity.UpdatedAt,
+                CreatedByUserName = entity.CreatedByUser?.UserName,
+                UpdatedByUserName = entity.UpdatedByUser?.UserName,
                 Bodovni = new SocijalniBodovniDto(),
                 KucanstvoPodaci = entity.KucanstvoPodaci is not null ? new SocijalniKucanstvoPodaciDto
                 {
@@ -48,7 +61,13 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                     PrebivanjeOd = entity.KucanstvoPodaci.PrebivanjeOd,
                     StambeniStatusKucanstva = entity.KucanstvoPodaci.StambeniStatusKucanstva,
                     SastavKucanstva = entity.KucanstvoPodaci.SastavKucanstva,
-                    ZahtjevId = entity.Id
+                    ZahtjevId = entity.Id,
+                    CreatedAt = entity.KucanstvoPodaci.CreatedAt,
+                    CreatedBy = entity.KucanstvoPodaci.CreatedBy,
+                    CreatedByUserName = entity.KucanstvoPodaci.CreatedByUser?.UserName,
+                    UpdatedAt = entity.KucanstvoPodaci.UpdatedAt,
+                    UpdatedBy = entity.KucanstvoPodaci.UpdatedBy,
+                    UpdatedByUserName = entity.KucanstvoPodaci.UpdatedByUser?.UserName
                 } : null,
                 Clanovi = entity.Clanovi.Select(clan => new SocijalniNatjecajClanDto
                 {
@@ -78,6 +97,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
             };
 
             context.SocijalniNatjecajClanovi.Add(noviClan);
+            AuditHelper.ApplyAudit(zahtjev, GetCurrentUserId(), false);
             await SaveChangesAsync(); // Spremi promjene nakon dodavanja
         }
 
@@ -137,8 +157,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
             zahtjev.KucanstvoPodaci.PrebivanjeOd = dto.PrebivanjeOd!.Value;
             zahtjev.KucanstvoPodaci.StambeniStatusKucanstva = dto.StambeniStatusKucanstva!.Value;
             zahtjev.KucanstvoPodaci.SastavKucanstva = dto.SastavKucanstva!.Value;
-            zahtjev.UpdatedAt = DateTime.UtcNow;
-
+            AuditHelper.ApplyAudit(zahtjev.KucanstvoPodaci, GetCurrentUserId(), isCreate: false);
             await SaveChangesAsync(); // Spremi promjene nakon ažuriranja
         }
 
@@ -158,5 +177,16 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
 
             await SaveChangesAsync(); // Spremi promjene nakon ažuriranja
         }
+        
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        
+        public string GetCurrentUserId()
+        {
+            return _httpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                   ?? throw new Exception("Korisnik nije prijavljen.");
+        }
+
+
+
     }
 }

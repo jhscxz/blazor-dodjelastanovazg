@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Models.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Models;
 
-public class SocijalniNatjecajBodovniPodaci
+public class SocijalniNatjecajBodovniPodaci : AuditableEntity
 {
     [Key]
     public long Id { get; set; }
@@ -33,13 +34,4 @@ public class SocijalniNatjecajBodovniPodaci
 
     public byte? ManjeOd35Godina { get; set; }
     public byte? ObrazovanjeBaccMaster { get; set; }
-
-    [MaxLength(450)]
-    public string? EditedBy { get; set; }
-
-    public IdentityUser? EditedByUser { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime UpdatedAt { get; set; }
 }

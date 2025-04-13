@@ -1,6 +1,7 @@
 @page "/socijalni/detalji/prikaz/{Id:long}"
 @using DodjelaStanovaZG.Components.UI.MudInputs
 @using MudBlazor
+@using DodjelaStanovaZG.Components.UI
 @inherits PrikazBase
 
 <MudStack Spacing="4">
@@ -54,5 +55,13 @@
 
         <EditButton Href="@($"/socijalni/osnovno/edit/{Detalji.Id}")"/>
     </MudStack>
+
+    <AuditInfo
+        CreatedBy="@Detalji.CreatedBy"
+        CreatedByUserName="@Detalji.CreatedByUserName"
+        CreatedAt="@Detalji.CreatedAt"
+        UpdatedBy="@Detalji.UpdatedBy"
+        UpdatedByUserName="@Detalji.UpdatedByUserName"
+        UpdatedAt="@Detalji.UpdatedAt" />
 
 </MudStack>

@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
+using DodjelaStanovaZG.Helpers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -12,6 +13,15 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
         [Parameter] public List<SocijalniNatjecajClanDto> Clanovi { get; set; } = [];
         [Parameter] public long Id { get; set; }
+        
+        [Parameter] public string? CreatedBy { get; set; }
+        [Parameter] public string? CreatedByUserName { get; set; }
+        [Parameter] public DateTime CreatedAt { get; set; }
+
+        [Parameter] public string? UpdatedBy { get; set; }
+        [Parameter] public string? UpdatedByUserName { get; set; }
+        [Parameter] public DateTime? UpdatedAt { get; set; }
+
 
         private async Task AddClan()
         {
@@ -88,6 +98,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
                     entitet.DatumRodjenja = azuriraniClan.DatumRodjenja;
                 }
 
+                AuditHelper.ApplyAudit(zahtjev, SocijalniNatjecajService.GetCurrentUserId(), false);
                 await SocijalniNatjecajService.SaveChangesAsync();
 
                 var index = Clanovi.FindIndex(c => c.Id == azuriraniClan.Id);
@@ -120,6 +131,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
             }
 
             zahtjev.Clanovi.Remove(clanZaBrisanje);
+            AuditHelper.ApplyAudit(zahtjev, SocijalniNatjecajService.GetCurrentUserId(), false);
             await SocijalniNatjecajService.SaveChangesAsync();
 
             Clanovi.RemoveAll(c => c.Id == id);

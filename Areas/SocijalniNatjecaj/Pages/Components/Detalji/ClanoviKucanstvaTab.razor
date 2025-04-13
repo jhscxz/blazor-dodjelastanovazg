@@ -2,6 +2,7 @@
 @using DodjelaStanovaZG.Enums
 @using DodjelaStanovaZG.Helpers
 @using MudBlazor
+@using DodjelaStanovaZG.Components.UI
 @inject IDialogService DialogService
 
 <MudCard Outlined="true" Class="pa-4" Elevation="2">
@@ -66,5 +67,13 @@
         </MudTable>
 
     </MudCardContent>
+
+    <AuditInfo
+        CreatedBy="@CreatedBy"
+        CreatedByUserName="@CreatedByUserName"
+        CreatedAt="@CreatedAt"
+        UpdatedBy="@UpdatedBy"
+        UpdatedByUserName="@UpdatedByUserName"
+        UpdatedAt="@UpdatedAt" />
 
 </MudCard>
