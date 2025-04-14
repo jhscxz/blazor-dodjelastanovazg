@@ -38,7 +38,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
                 FullWidth = true
             };
 
-            var dialogReference = await DialogService.ShowAsync<ClanFormDialog>("Dodaj člana", parameters, options);
+            var dialogReference = await DialogService.ShowAsync<ClanEditFormDialog>("Dodaj člana", parameters, options);
             var result = await dialogReference.Result;
 
             if (result is { Canceled: false, Data: SocijalniNatjecajClanDto noviClanDto })
@@ -82,7 +82,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
                 FullWidth = true
             };
 
-            var dialogReference = await DialogService.ShowAsync<ClanFormDialog>("Uredi člana", parameters, options);
+            var dialogReference = await DialogService.ShowAsync<ClanEditFormDialog>("Uredi člana", parameters, options);
             var result = await dialogReference.Result;
 
             if (result is { Canceled: false, Data: SocijalniNatjecajClanDto azuriraniClan })

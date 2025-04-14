@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 {
-    public partial class ClanFormDialog
+    public partial class ClanEditFormDialog
     {
         [CascadingParameter] public required IMudDialogInstance MudDialog { get; set; }
         [Parameter] public SocijalniNatjecajClanDto NewClan { get; set; } = new();

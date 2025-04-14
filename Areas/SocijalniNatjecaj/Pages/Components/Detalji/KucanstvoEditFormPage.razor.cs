@@ -6,7 +6,7 @@ using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji;
 
-public partial class KucanstvoFormPage
+public partial class KucanstvoEditFormPage
 {
     [Parameter] public long ZahtjevId { get; set; }
 

@@ -1,7 +1,147 @@
 @page "/admin/users"
 @using Microsoft.AspNetCore.Authorization
-@using DodjelaStanovaZG.Areas.Admin.Korisnici.Components
+@using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO
+@using DodjelaStanovaZG.Areas.Admin.Korisnici.Services
+@using DodjelaStanovaZG.Components.UI
+@using Microsoft.AspNetCore.Identity
+@using MudBlazor
+@inject UserManager<IdentityUser> UserManager
+@inject IUserService UserService
+@inject NavigationManager Navigation
 @attribute [Authorize(Roles = "Admin,SuperAdmin")]
 
-<!-- Ovdje samo pozovemo UsersTable komponentu -->
-<UsersTable />
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudPaper Outlined="true" Class="pa-4">
+
+        <div class="flex items-center gap-4 mb-4">
+            <MudButton OnClick="@AddUser"
+                       Variant="Variant.Filled"
+                       Color="Color.Default"
+                       IconColor="Color.Success"
+                       DropShadow="false"
+                       StartIcon="@Icons.Material.Filled.Add">
+                Dodaj
+            </MudButton>
+
+            <div class="flex-1">
+                <MudTextField Label="Pretraga korisnika"
+                              Value="@SearchText"
+                              ValueChanged="@(EventCallback.Factory.Create<string>(this, OnValueChanged))"
+                              Immediate="true"
+                              DebounceInterval="300"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Class="w-full" />
+            </div>
+
+            <div class="flex-none w-[120px]">
+                <MudSelect T="string"
+                           Label="Role:"
+                           Value="@FilterRole"
+                           ValueChanged="@(EventCallback.Factory.Create<string>(this, OnFilterRoleChanged))"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Dense="true"
+                           Class="w-full">
+                    <MudSelectItem Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
+                    <MudSelectItem Value="@RoleNames.User">@RoleNames.User</MudSelectItem>
+                    <MudSelectItem Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
+                    <MudSelectItem Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
+                </MudSelect>
+            </div>
+        </div>
+
+        <MudTable T="UserDto"
+                  ServerData="LoadUsers"
+                  Hover="true"
+                  Striped="true"
+                  RowsPerPage="@RowsPerPage"
+                  Dense="true"
+                  Outlined="true"
+                  @ref="_table">
+
+            <HeaderContent>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Korisničko ime</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Email</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Role</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Status</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Akcija</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Username">@context.UserName</MudTd>
+                <MudTd DataLabel="Email">@context.Email</MudTd>
+                <MudTd DataLabel="Roles">@context.Roles</MudTd>
+                <MudTd DataLabel="Status">
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@(context.IsLocked ? Color.Error : Color.Success)">
+                        @(context.IsLocked ? "Zaključan" : "Otključan")
+                    </MudChip>
+                </MudTd>
+
+                <MudTd DataLabel="Actions">
+                    <MudButton OnClick="() => EditUser(context.Id)"
+                               Variant="Variant.Text"
+                               Class="p-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Edit" Class="custom-icon-sm"/>
+                    </MudButton>
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+</Container>
+
+@code {
+    private MudTable<UserDto> _table = null!;
+    private string SearchText { get; set; } = "";
+    private string FilterRole { get; set; } = RoleNames.All;
+    private static int RowsPerPage => 10;
+
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
+    [
+        new() { Text = "Početna", Url = "/" },
+        new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
+        new(text: "Korisnici", cssClass: "text-red-500 font-bold"),
+    ];
+
+    private async Task OnValueChanged(string newValue)
+    {
+        SearchText = newValue;
+        await _table.ReloadServerData();
+    }
+
+    private async Task OnFilterRoleChanged(string newRole)
+    {
+        FilterRole = newRole;
+        await _table.ReloadServerData();
+    }
+
+    protected async Task<TableData<UserDto>> LoadUsers(TableState state, CancellationToken cancellationToken)
+    {
+        var result = await UserService.GetUsersAsync(UserManager, SearchText, FilterRole, state, cancellationToken);
+
+        return new TableData<UserDto>
+        {
+            Items = result.Items,
+            TotalItems = result.TotalItems
+        };
+    }
+
+    private void EditUser(string userId)
+    {
+        Navigation.NavigateTo($"/admin/users/edit/{userId}");
+    }
+
+    private void AddUser()
+    {
+        Navigation.NavigateTo("/admin/users/add");
+    }
+}
