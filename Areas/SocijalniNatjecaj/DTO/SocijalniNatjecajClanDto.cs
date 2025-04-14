@@ -6,6 +6,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
     public class SocijalniNatjecajClanDto
     {
         public long Id { get; init; }
+        public long ZahtjevId { get; set; }
         public string ImePrezime { get; set; } = string.Empty;
         public string? Oib { get; set; }
         [Required(ErrorMessage = "Srodstvo je obavezno.")]

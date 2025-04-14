@@ -1,6 +1,5 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
-using DodjelaStanovaZG.Helpers;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -9,8 +8,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
     public partial class ClanoviKucanstvaTab : ComponentBase
     {
         [Inject] public ISnackbar Snackbar { get; set; } = null!;
-        [Inject] public ISocijalniNatjecajDetaljiService SocijalniNatjecajService { get; set; } = null!;
-
+        [Inject] public IUnitOfWork UnitOfWork { get; set; } = null!;
         [Parameter] public List<SocijalniNatjecajClanDto> Clanovi { get; set; } = [];
         [Parameter] public long Id { get; set; }
         
@@ -43,9 +41,10 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
             if (result is { Canceled: false, Data: SocijalniNatjecajClanDto noviClanDto })
             {
-                var zahtjev = await SocijalniNatjecajService.GetZahtjevByIdAsync(Id);
-                var noviClan = SocijalniNatjecajService.ConvertToEntity(noviClanDto, zahtjev);
-                await SocijalniNatjecajService.AddClanAsync(noviClan);
+                var zahtjev = await UnitOfWork.SocijalniNatjecajDetaljiService.GetZahtjevByIdAsync(Id);
+                var noviClan = UnitOfWork.SocijalniNatjecajDetaljiService.ConvertToEntity(noviClanDto, zahtjev);
+                await UnitOfWork.SocijalniNatjecajDetaljiService.AddClanAsync(noviClan);
+                await UnitOfWork.SaveChangesAsync();
 
                 Clanovi.Add(noviClanDto);
                 Snackbar.Add("Član kućanstva je uspješno dodan!", Severity.Success);
@@ -69,7 +68,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
                         ImePrezime = clanZaUrediti.ImePrezime,
                         Oib = clanZaUrediti.Oib,
                         Srodstvo = clanZaUrediti.Srodstvo,
-                        DatumRodjenja = clanZaUrediti.DatumRodjenja
+                        DatumRodjenja = clanZaUrediti.DatumRodjenja,
+                        ZahtjevId = Id
                     }
                 },
                 { "ZahtjevId", Id }
@@ -87,21 +87,10 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
             if (result is { Canceled: false, Data: SocijalniNatjecajClanDto azuriraniClan })
             {
-                var zahtjev = await SocijalniNatjecajService.GetZahtjevByIdAsync(Id);
+                await UnitOfWork.SocijalniNatjecajDetaljiService.EditClanAsync(azuriraniClan);
+                await UnitOfWork.SaveChangesAsync();
 
-                var entitet = zahtjev.Clanovi.FirstOrDefault(c => c.Id == azuriraniClan.Id);
-                if (entitet != null)
-                {
-                    entitet.ImePrezime = azuriraniClan.ImePrezime;
-                    entitet.Oib = azuriraniClan.Oib;
-                    entitet.Srodstvo = azuriraniClan.Srodstvo;
-                    entitet.DatumRodjenja = azuriraniClan.DatumRodjenja;
-                }
-
-                AuditHelper.ApplyAudit(zahtjev, SocijalniNatjecajService.GetCurrentUserId(), false);
-                await SocijalniNatjecajService.SaveChangesAsync();
-
-                var index = Clanovi.FindIndex(c => c.Id == azuriraniClan.Id);
+                var index = Clanovi.FindIndex(c => c.Id == azuriraniClan.ZahtjevId);
                 if (index >= 0)
                     Clanovi[index] = azuriraniClan;
 
@@ -114,28 +103,26 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
             bool? confirmed = await DialogService.ShowMessageBox(
                 "Brisanje člana",
                 "Jeste li sigurni da želite obrisati ovog člana?",
-                "Da", // yesText
-                "Odustani", // noText
+                "Da",
+                "Odustani",
                 options: new DialogOptions { CloseButton = true });
-
 
             if (confirmed != true)
                 return;
 
-            var zahtjev = await SocijalniNatjecajService.GetZahtjevByIdAsync(Id);
-            var clanZaBrisanje = zahtjev.Clanovi.FirstOrDefault(c => c.Id == id);
-            if (clanZaBrisanje is null)
+            try
             {
-                Snackbar.Add("Član nije pronađen.", Severity.Error);
-                return;
+                await UnitOfWork.SocijalniNatjecajDetaljiService.RemoveClanAsync(Id, id);
+                await UnitOfWork.SaveChangesAsync();
+
+                Clanovi.RemoveAll(c => c.Id == id);
+                Snackbar.Add("Član kućanstva je obrisan.", Severity.Success);
             }
-
-            zahtjev.Clanovi.Remove(clanZaBrisanje);
-            AuditHelper.ApplyAudit(zahtjev, SocijalniNatjecajService.GetCurrentUserId(), false);
-            await SocijalniNatjecajService.SaveChangesAsync();
-
-            Clanovi.RemoveAll(c => c.Id == id);
-            Snackbar.Add("Član kućanstva je obrisan.", Severity.Success);
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
+            }
         }
+
     }
 }

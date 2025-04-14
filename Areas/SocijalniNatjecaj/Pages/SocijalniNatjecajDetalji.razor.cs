@@ -2,7 +2,7 @@ using System.Web;
 using Microsoft.AspNetCore.Components;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages;
 
@@ -10,7 +10,7 @@ public partial class SocijalniNatjecajDetalji
 {
     [Parameter] public long Id { get; set; }
 
-    [Inject] private ISocijalniNatjecajDetaljiService DetaljiService { get; set; } = default!;
+    [Inject] private IUnitOfWork UnitOfWork { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
 
     private SocijalniNatjecajZahtjevDto? _detalji;
@@ -29,7 +29,7 @@ public partial class SocijalniNatjecajDetalji
         try
         {
             ResolveTabIndexFromQuery();
-            _detalji = await DetaljiService.GetDetaljiAsync(Id);
+            _detalji = await UnitOfWork.SocijalniNatjecajDetaljiService.GetDetaljiAsync(Id);
             Console.WriteLine(_detalji.Id);
         }
         catch (Exception ex)

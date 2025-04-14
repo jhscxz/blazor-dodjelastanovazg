@@ -1,16 +1,16 @@
-using System.ComponentModel.DataAnnotations;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages;
 
-public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
+public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
 {
-    [Inject] public required ISocijalniNatjecajService SocijalniNatjecajService { get; set; }
+    [Inject] public required IUnitOfWork UnitOfWork { get; set; }
+
     [Inject] public required NavigationManager Navigation { get; set; }
 
     [Parameter] public long NatjecajId { get; set; }
@@ -26,7 +26,7 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
     private MudForm _form = null!;
     protected List<string> ErrorMessages { get; } = new();
 
-    private int? _toggle_rezultat;
+    private int? _toggleRezultat;
 
     private bool _disposed;
 
@@ -57,18 +57,18 @@ public partial class SocijalniNatjecajAdd : ComponentBase, IDisposable
         }
 
         // Validacija dodatnih polja
-        if (_toggle_rezultat == null)
+        if (_toggleRezultat == null)
             ErrorMessages.Add("Rezultat obrade je obavezan.");
 
         if (!string.IsNullOrWhiteSpace(ErrorMessages.FirstOrDefault()))
             return;
 
-        // Mapiraj rezultat u model
-        ZahtjevModel.RezultatObrade = (RezultatObrade)_toggle_rezultat.Value;
+        if (_toggleRezultat != null) ZahtjevModel.RezultatObrade = (RezultatObrade)_toggleRezultat.Value;
 
         try
         {
-            var newId = await SocijalniNatjecajService.CreateAsync(ZahtjevModel, ZahtjevModel.ImePrezime, ZahtjevModel.Oib);
+            var newId = await UnitOfWork.SocijalniNatjecajService.CreateAsync(ZahtjevModel, ZahtjevModel.ImePrezime, ZahtjevModel.Oib);
+
             if (!_disposed)
                 Navigation.NavigateTo($"/socijalni/detalji/{newId}");
         }

@@ -1,6 +1,6 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -8,10 +8,10 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages;
 
 public class SocijalniNatjecajPregledBase : ComponentBase
 {
-    [Inject] public required ISocijalniNatjecajService SocijalniNatjecajService { get; set; }
+    [Inject] public required IUnitOfWork UnitOfWork { get; set; }
     [Inject] public NavigationManager Navigation { get; set; } = null!;
-    [Parameter]
-    public long NatjecajId { get; set; }
+
+    [Parameter] public long NatjecajId { get; set; }
 
     protected MudTable<SocijalniNatjecajZahtjevDto> Table = null!;
     protected List<SocijalniNatjecajZahtjevDto> Natjecaji { get; set; } = [];
@@ -25,20 +25,18 @@ public class SocijalniNatjecajPregledBase : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        Natjecaji = (await SocijalniNatjecajService.GetAllAsync())
+        Natjecaji = (await UnitOfWork.SocijalniNatjecajService.GetAllAsync())
             .Where(x => x.NatjecajId == NatjecajId)
             .ToList();
     }
-    
+
     protected void AddZahtjev()
     {
         Navigation.NavigateTo($"/socijalni/dodaj/{NatjecajId}");
     }
-    
+
     protected void NavigateToDetails(SocijalniNatjecajZahtjevDto zahtjevDto)
     {
-        // Pretpostavljamo da je stranica detalja na /socijalni/detalji/{NatjecajId}
         Navigation.NavigateTo($"/socijalni/detalji/{zahtjevDto.Id}");
     }
-
 }

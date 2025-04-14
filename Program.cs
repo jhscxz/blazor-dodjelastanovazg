@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using System.Globalization;
+using DodjelaStanovaZG.Infrastructure;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Localization;
 using MudBlazor;
 
@@ -56,6 +58,7 @@ builder.Services.AddScoped<SeedService>();
 builder.Services.AddScoped<INatjecajOdabirService, NatjecajOdabirService>();
 builder.Services.AddScoped<ISocijalniNatjecajService, SocijalniNatjecajService>();
 builder.Services.AddScoped<ISocijalniNatjecajDetaljiService, SocijalniNatjecajDetaljiService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 // Dodaj hrvatski jezik kao default

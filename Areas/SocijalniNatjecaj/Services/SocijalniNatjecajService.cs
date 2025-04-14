@@ -66,7 +66,6 @@ public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContext
             Zahtjev = zahtjev
         };
 
-        // Audit
         AuditHelper.ApplyAudit(zahtjev, currentUserId, true);
         AuditHelper.ApplyAudit(podnositelj, currentUserId, true);
         AuditHelper.ApplyAudit(zahtjev.KucanstvoPodaci, currentUserId, true);
