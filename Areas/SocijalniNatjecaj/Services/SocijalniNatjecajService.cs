@@ -9,71 +9,87 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 
-public class SocijalniNatjecajService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+public class SocijalniNatjecajService(
+    ApplicationDbContext context,
+    IHttpContextAccessor httpContextAccessor)
     : ISocijalniNatjecajService
 {
-    private string GetCurrentUserId()
-    {
-        return httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Unknown";
-    }
+    private string CurrentUserId =>
+        httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Unknown";
 
-    public async Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync()
-    {
-        return await context.SocijalniNatjecajZahtjevi
-            .Select(x => new SocijalniNatjecajZahtjevDto
-            {
-                Id = x.Id,
-                KlasaPredmeta = x.KlasaPredmeta,
-                DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
-                Adresa = x.Adresa!,
-                NatjecajId = x.NatjecajId
-            })
-            .ToListAsync();
-    }
+    public Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync() =>
+        context.SocijalniNatjecajZahtjevi
+               .Select(x => new SocijalniNatjecajZahtjevDto
+               {
+                   Id = x.Id,
+                   KlasaPredmeta = x.KlasaPredmeta,
+                   DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
+                   Adresa = x.Adresa!,
+                   NatjecajId = x.NatjecajId
+               })
+               .ToListAsync();
 
-    public async Task<long> CreateAsync(SocijalniNatjecajZahtjevDto zahtjevDto, string imePrezime, string? oib)
+    public async Task<SocijalniNatjecajZahtjev> CreateAsync(
+        SocijalniNatjecajZahtjevDto dto,
+        string? imePrezime,
+        string? oib)
     {
-        string currentUserId = GetCurrentUserId();
-
         var zahtjev = new SocijalniNatjecajZahtjev
         {
-            NatjecajId = zahtjevDto.NatjecajId,
-            KlasaPredmeta = zahtjevDto.KlasaPredmeta!.Value,
-            DatumPodnosenjaZahtjeva = zahtjevDto.DatumPodnosenjaZahtjeva ?? DateTime.UtcNow,
-            Adresa = zahtjevDto.Adresa,
-            Email = zahtjevDto.Email,
-            RezultatObrade = zahtjevDto.RezultatObrade!.Value,
-            NapomenaObrade = zahtjevDto.NapomenaObrade,
-            Clanovi = new List<SocijalniNatjecajClan>()
+            NatjecajId = dto.NatjecajId,
+            KlasaPredmeta = dto.KlasaPredmeta!.Value,
+            DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva ?? DateTime.UtcNow,
+            Adresa = dto.Adresa,
+            Email = dto.Email,
+            RezultatObrade = dto.RezultatObrade!.Value,
+            NapomenaObrade = dto.NapomenaObrade
         };
 
-        var podnositelj = new SocijalniNatjecajClan
-        {
-            Zahtjev = zahtjev,
-            ImePrezime = imePrezime,
-            Oib = string.IsNullOrWhiteSpace(oib) ? null : oib,
-            Srodstvo = Srodstvo.PodnositeljZahtjeva
-        };
-        zahtjev.Clanovi.Add(podnositelj);
+        zahtjev.Clanovi =
+        [
+            new SocijalniNatjecajClan
+            {
+                Zahtjev = zahtjev,
+                ImePrezime = imePrezime,
+                Oib = string.IsNullOrWhiteSpace(oib) ? null : oib,
+                Srodstvo = Srodstvo.PodnositeljZahtjeva
+            }
+        ];
 
-        zahtjev.KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci
-        {
-            Zahtjev = zahtjev
-        };
+        zahtjev.KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci { Zahtjev = zahtjev };
+        zahtjev.BodovniPodaci = new SocijalniNatjecajBodovniPodaci   { Zahtjev = zahtjev };
 
-        zahtjev.BodovniPodaci = new SocijalniNatjecajBodovniPodaci
-        {
-            Zahtjev = zahtjev
-        };
-
-        AuditHelper.ApplyAudit(zahtjev, currentUserId, true);
-        AuditHelper.ApplyAudit(podnositelj, currentUserId, true);
-        AuditHelper.ApplyAudit(zahtjev.KucanstvoPodaci, currentUserId, true);
-        AuditHelper.ApplyAudit(zahtjev.BodovniPodaci, currentUserId, true);
+        // audit
+        AuditHelper.ApplyAudit(zahtjev, CurrentUserId, true);
+        AuditHelper.ApplyAudit(zahtjev.Clanovi.Single(), CurrentUserId, true);
+        AuditHelper.ApplyAudit(zahtjev.KucanstvoPodaci, CurrentUserId, true);
+        AuditHelper.ApplyAudit(zahtjev.BodovniPodaci, CurrentUserId, true);
 
         await context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);
-        await context.SaveChangesAsync();
 
-        return zahtjev.Id;
+        // Vraćamo *tracked* entitet – SaveChanges će biti pozvan u UnitOfWork.
+        return zahtjev;
+    }
+
+    public async Task<SocijalniNatjecajZahtjevDto> GetByIdAsync(long id)
+    {
+        var entity = await context.SocijalniNatjecajZahtjevi
+                                  .AsNoTracking()
+                                  .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (entity is null)
+            throw new($"Zahtjev s ID-jem {id} nije pronađen.");
+
+        return new SocijalniNatjecajZahtjevDto
+        {
+            Id = entity.Id,
+            KlasaPredmeta = entity.KlasaPredmeta,
+            DatumPodnosenjaZahtjeva = entity.DatumPodnosenjaZahtjeva,
+            Adresa = entity.Adresa!,
+            NatjecajId = entity.NatjecajId,
+            Email = entity.Email,
+            RezultatObrade = entity.RezultatObrade,
+            NapomenaObrade = entity.NapomenaObrade
+        };
     }
 }

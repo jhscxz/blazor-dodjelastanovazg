@@ -1,11 +1,12 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Models;
 
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
-
-public interface ISocijalniNatjecajService
+namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices
 {
-    Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync();
-
-    Task<long> CreateAsync(SocijalniNatjecajZahtjevDto zahtjevDto, string imePrezime, string? oib);
-
+    public interface ISocijalniNatjecajService
+    {
+        Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync();
+        Task<SocijalniNatjecajZahtjev> CreateAsync(SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib);
+        Task<SocijalniNatjecajZahtjevDto> GetByIdAsync(long id);
+    }
 }

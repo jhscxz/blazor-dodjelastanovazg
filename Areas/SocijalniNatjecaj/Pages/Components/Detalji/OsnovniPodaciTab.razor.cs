@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -9,7 +10,14 @@ public class PrikazBase : ComponentBase
 {
     [Parameter] public long Id { get; set; }
 
-    [Parameter] public SocijalniNatjecajZahtjevDto Detalji { get; set; } = new();
+    [Inject] protected IUnitOfWork UnitOfWork { get; set; } = default!;
+
+    protected SocijalniNatjecajZahtjevDto Detalji { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Detalji = await UnitOfWork.SocijalniNatjecajDetaljiService.GetDetaljiAsync(Id);
+    }
 
     protected Color ChipColor => Detalji.RezultatObrade switch
     {

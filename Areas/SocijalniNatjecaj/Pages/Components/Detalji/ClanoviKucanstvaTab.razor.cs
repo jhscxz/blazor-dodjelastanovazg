@@ -9,9 +9,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
     {
         [Inject] public ISnackbar Snackbar { get; set; } = null!;
         [Inject] public IUnitOfWork UnitOfWork { get; set; } = null!;
-        [Parameter] public List<SocijalniNatjecajClanDto> Clanovi { get; set; } = [];
+        protected List<SocijalniNatjecajClanDto> Clanovi { get; set; } = new();
         [Parameter] public long Id { get; set; }
-        
         [Parameter] public string? CreatedBy { get; set; }
         [Parameter] public string? CreatedByUserName { get; set; }
         [Parameter] public DateTime CreatedAt { get; set; }
@@ -123,6 +122,17 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
                 Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
             }
         }
+        protected override async Task OnInitializedAsync()
+        {
+            var detalji = await UnitOfWork.SocijalniNatjecajDetaljiService.GetDetaljiAsync(Id);
 
+            Clanovi = detalji.Clanovi;
+            CreatedBy = detalji.CreatedBy;
+            CreatedByUserName = detalji.CreatedByUserName;
+            CreatedAt = detalji.CreatedAt;
+            UpdatedBy = detalji.UpdatedBy;
+            UpdatedByUserName = detalji.UpdatedByUserName;
+            UpdatedAt = detalji.UpdatedAt;
+        }
     }
 }

@@ -1,3 +1,4 @@
+using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
@@ -12,17 +13,20 @@ public class UnitOfWork : IUnitOfWork
         ApplicationDbContext context,
         ISocijalniNatjecajService socijalniNatjecajService,
         ISocijalniNatjecajDetaljiService socijalniNatjecajDetaljiService,
-        INatjecajOdabirService natjecajOdabirService)
+        INatjecajOdabirService natjecajOdabirService, INatjecajService natjecajiService)
     {
         _context = context;
         SocijalniNatjecajService = socijalniNatjecajService;
         SocijalniNatjecajDetaljiService = socijalniNatjecajDetaljiService;
         NatjecajOdabirService = natjecajOdabirService;
+        NatjecajiService = natjecajiService;
     }
 
     public ISocijalniNatjecajService SocijalniNatjecajService { get; }
     public ISocijalniNatjecajDetaljiService SocijalniNatjecajDetaljiService { get; }
+
     public INatjecajOdabirService NatjecajOdabirService { get; }
+    public INatjecajService NatjecajiService { get; }
 
     public async Task SaveChangesAsync()
     {

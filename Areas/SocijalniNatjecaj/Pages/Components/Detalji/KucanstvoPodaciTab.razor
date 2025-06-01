@@ -1,20 +1,7 @@
-@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
-@using DodjelaStanovaZG.Enums
-@using DodjelaStanovaZG.Helpers
-@using MudBlazor
 @using DodjelaStanovaZG.Components.UI.MudInputs
 @using DodjelaStanovaZG.Components.UI
-@inject NavigationManager Navigation
-
-@code {
-    [Parameter]
-    public SocijalniKucanstvoPodaciDto? Kucanstvo { get; set; }
-
-    [Parameter]
-    public EventCallback OnEdit { get; set; }
-
-    private string GetDisplay(Enum? value) => value is null ? string.Empty : ((Enum)value).GetDisplayName();
-}
+@using MudBlazor
+@inherits KucanstvoPodaciTabBase
 
 @if (Kucanstvo is null)
 {
@@ -25,22 +12,18 @@ else
     <MudCard Outlined="true" Class="pa-4">
         <MudStack Spacing="2">
 
-            <!-- Ukupni prihod kućanstva -->
             <TextInput T="string" Label="Ukupni prihod kućanstva"
                        Value="@($"{Kucanstvo.UkupniPrihodKucanstva:N2} €")"
                        ReadOnly="true" />
 
-            <!-- Prebivanje od -->
             <TextInput T="string" Label="Prebivanje od"
-                       Value="@((Kucanstvo.PrebivanjeOd.HasValue) ? Kucanstvo.PrebivanjeOd.Value.ToString("dd.MM.yyyy.") : string.Empty)"
+                       Value="@Kucanstvo.PrebivanjeOd?.ToString("dd.MM.yyyy.")"
                        ReadOnly="true" />
 
-            <!-- Stambeni status kućanstva -->
             <TextInput T="string" Label="Stambeni status kućanstva"
                        Value="@GetDisplay(Kucanstvo.StambeniStatusKucanstva)"
                        ReadOnly="true" />
 
-            <!-- Sastav kućanstva -->
             <TextInput T="string" Label="Sastav kućanstva"
                        Value="@GetDisplay(Kucanstvo.SastavKucanstva)"
                        ReadOnly="true" />
@@ -49,9 +32,9 @@ else
     </MudCard>
 
     <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-2">
-        <EditButton Href="@($"/socijalni/kucanstvo/edit/{Kucanstvo!.ZahtjevId}")" />
+        <EditButton Href="@($"/socijalni/kucanstvo/edit/{Kucanstvo.ZahtjevId}")" />
     </MudStack>
-    
+
     <AuditInfo 
         CreatedBy="@Kucanstvo.CreatedBy"
         CreatedByUserName="@Kucanstvo.CreatedByUserName"
@@ -59,5 +42,4 @@ else
         UpdatedBy="@Kucanstvo.UpdatedBy"
         UpdatedByUserName="@Kucanstvo.UpdatedByUserName"
         UpdatedAt="@Kucanstvo.UpdatedAt" />
-
 }

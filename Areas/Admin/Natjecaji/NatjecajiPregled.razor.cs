@@ -1,6 +1,7 @@
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO;
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -9,8 +10,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Natjecaji;
 public class NatjecajiPregledBase : ComponentBase
 {
     [Inject] public required NavigationManager Navigation { get; set; }
-    [Inject] public required INatjecajService NatjecajService { get; set; }
-
+    [Inject] public required IUnitOfWork UnitOfWork { get; set; }
     protected MudTable<NatjecajDto> _table = null!;
     protected string? OdabranaVrsta;
     protected static int RowsPerPage => 10;
@@ -30,7 +30,8 @@ public class NatjecajiPregledBase : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var all = await NatjecajService.GetAllAsync();
+        var all = await UnitOfWork.NatjecajiService.GetAllAsync();
+
         Natjecaji = all.ToList();
     }
 
@@ -44,13 +45,17 @@ public class NatjecajiPregledBase : ComponentBase
         Navigation.NavigateTo($"/admin/natjecaji/edit/{natjecaj.Klasa}");
     }
 
-    protected void Zakljucaj(NatjecajDto natjecaj)
+    protected async Task Zakljucaj(NatjecajDto natjecaj)
     {
         natjecaj.Status = "Zaključen";
+        await UnitOfWork.NatjecajiService.UpdateAsync(natjecaj.Klasa, natjecaj);
+        await UnitOfWork.SaveChangesAsync();
     }
 
-    protected void Otkljucaj(NatjecajDto natjecaj)
+    protected async Task  Otkljucaj(NatjecajDto natjecaj)
     {
         natjecaj.Status = "Aktivan";
+        await UnitOfWork.NatjecajiService.UpdateAsync(natjecaj.Klasa, natjecaj);
+        await UnitOfWork.SaveChangesAsync();
     }
 }

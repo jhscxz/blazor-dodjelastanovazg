@@ -1,7 +1,6 @@
 using System.Web;
 using Microsoft.AspNetCore.Components;
 using DodjelaStanovaZG.Components.UI;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages;
@@ -13,7 +12,6 @@ public partial class SocijalniNatjecajDetalji
     [Inject] private IUnitOfWork UnitOfWork { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
 
-    private SocijalniNatjecajZahtjevDto? _detalji;
     private int _selectedTabIndex;
     private string? _activeTab;
 
@@ -29,8 +27,6 @@ public partial class SocijalniNatjecajDetalji
         try
         {
             ResolveTabIndexFromQuery();
-            _detalji = await UnitOfWork.SocijalniNatjecajDetaljiService.GetDetaljiAsync(Id);
-            Console.WriteLine(_detalji.Id);
         }
         catch (Exception ex)
         {

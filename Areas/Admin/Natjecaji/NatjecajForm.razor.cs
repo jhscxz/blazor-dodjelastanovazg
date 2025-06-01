@@ -1,6 +1,7 @@
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO;
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,7 +12,8 @@ public partial class NatjecajForm : ComponentBase
     [Parameter] public int? Klasa { get; set; }
 
     [Inject] public required NavigationManager Navigation { get; set; }
-    [Inject] public required INatjecajService NatjecajService { get; set; }
+    [Inject] public required IUnitOfWork UnitOfWork { get; set; }
+
 
     protected MudForm _form = null!;
     protected NatjecajDto Natjecaj { get; set; } = new();
@@ -31,7 +33,8 @@ public partial class NatjecajForm : ComponentBase
     {
         if (Klasa is not null)
         {
-            var existing = await NatjecajService.GetByKlasaAsync(Klasa.Value);
+            var existing = await UnitOfWork.NatjecajiService.GetByKlasaAsync(Klasa.Value);
+
             if (existing is not null)
                 Natjecaj = existing;
         }
@@ -49,8 +52,8 @@ public partial class NatjecajForm : ComponentBase
         }
 
         bool result = Klasa is null
-            ? await NatjecajService.CreateAsync(Natjecaj)
-            : await NatjecajService.UpdateAsync(Klasa.Value, Natjecaj);
+            ? await UnitOfWork.NatjecajiService.CreateAsync(Natjecaj)
+            : await UnitOfWork.NatjecajiService.UpdateAsync(Klasa.Value, Natjecaj);
 
         if (!result)
         {

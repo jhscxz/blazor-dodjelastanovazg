@@ -10,7 +10,6 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages;
 public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
 {
     [Inject] public required IUnitOfWork UnitOfWork { get; set; }
-
     [Inject] public required NavigationManager Navigation { get; set; }
 
     [Parameter] public long NatjecajId { get; set; }
@@ -25,9 +24,7 @@ public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
 
     private MudForm _form = null!;
     protected List<string> ErrorMessages { get; } = new();
-
     private int? _toggleRezultat;
-
     private bool _disposed;
 
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
@@ -48,7 +45,6 @@ public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
 
         ErrorMessages.Clear();
 
-        // Validacija forme
         await _form.Validate();
         if (!_form.IsValid)
         {
@@ -56,26 +52,30 @@ public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
             return;
         }
 
-        // Validacija dodatnih polja
-        if (_toggleRezultat == null)
+        if (_toggleRezultat is null)
+        {
             ErrorMessages.Add("Rezultat obrade je obavezan.");
-
-        if (!string.IsNullOrWhiteSpace(ErrorMessages.FirstOrDefault()))
             return;
+        }
 
-        if (_toggleRezultat != null) ZahtjevModel.RezultatObrade = (RezultatObrade)_toggleRezultat.Value;
+        ZahtjevModel.RezultatObrade = (RezultatObrade)_toggleRezultat;
 
         try
         {
-            var newId = await UnitOfWork.SocijalniNatjecajService.CreateAsync(ZahtjevModel, ZahtjevModel.ImePrezime, ZahtjevModel.Oib);
+            var zahtjev = await UnitOfWork.SocijalniNatjecajService.CreateAsync(
+                ZahtjevModel,
+                ZahtjevModel.ImePrezime,
+                ZahtjevModel.Oib);
+
+            await UnitOfWork.SaveChangesAsync();
 
             if (!_disposed)
-                Navigation.NavigateTo($"/socijalni/detalji/{newId}");
+                Navigation.NavigateTo($"/socijalni/detalji/{zahtjev.Id}");
         }
         catch (Exception ex)
         {
             if (!_disposed)
-                ErrorMessages.Add("Greška prilikom spremanja: " + ex.Message);
+                ErrorMessages.Add($"Greška prilikom spremanja: {ex.Message}");
         }
     }
 
@@ -85,8 +85,5 @@ public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
             Navigation.NavigateTo($"/socijalni/pregled/{NatjecajId}");
     }
 
-    public void Dispose()
-    {
-        _disposed = true;
-    }
+    public void Dispose() => _disposed = true;
 }

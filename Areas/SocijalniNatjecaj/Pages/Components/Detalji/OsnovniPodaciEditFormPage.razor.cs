@@ -2,6 +2,7 @@ using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,8 +12,9 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
     {
         [Parameter] public long ZahtjevId { get; set; }
 
-        [Inject] private ISocijalniNatjecajDetaljiService DetaljiService { get; set; } = default!;
         [Inject] private NavigationManager Navigation { get; set; } = default!;
+        
+        [Inject] private IUnitOfWork UnitOfWork { get; set; } = default!;
 
         private SocijalniNatjecajOsnovnoEditDto? _socijalniNatjecajModel;
         private MudForm _form = null!;
@@ -28,7 +30,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
         protected override async Task OnInitializedAsync()
         {
-            var zahtjev = await DetaljiService.GetDetaljiAsync(ZahtjevId);
+            var zahtjev = await UnitOfWork.SocijalniNatjecajDetaljiService.GetDetaljiAsync(ZahtjevId);
             
             _socijalniNatjecajModel = new SocijalniNatjecajOsnovnoEditDto
             {
@@ -64,7 +66,10 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
             }
 
             if (_toggleRezultat != null) _socijalniNatjecajModel.RezultatObrade = (RezultatObrade)_toggleRezultat.Value;
-            await DetaljiService.UpdateOsnovniPodaciAsync(ZahtjevId, _socijalniNatjecajModel);
+
+            await UnitOfWork.SocijalniNatjecajDetaljiService.UpdateOsnovniPodaciAsync(ZahtjevId, _socijalniNatjecajModel);
+            await UnitOfWork.SaveChangesAsync();
+            
             Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=OsnovniPodaci");
         }
 

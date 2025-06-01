@@ -1,6 +1,7 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -10,7 +11,7 @@ public partial class KucanstvoEditFormPage
 {
     [Parameter] public long ZahtjevId { get; set; }
 
-    [Inject] private ISocijalniNatjecajDetaljiService DetaljiService { get; set; } = default!;
+    [Inject] private IUnitOfWork UnitOfWork { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
 
     private SocijalniKucanstvoPodaciDto? _kucanstvoModel;
@@ -27,7 +28,7 @@ public partial class KucanstvoEditFormPage
 
     protected override async Task OnInitializedAsync()
     {
-        var zahtjev = await DetaljiService.GetZahtjevByIdAsync(ZahtjevId);
+        var zahtjev = await UnitOfWork.SocijalniNatjecajDetaljiService.GetZahtjevByIdAsync(ZahtjevId);
 
         _kucanstvoModel = zahtjev.KucanstvoPodaci is null
             ? new SocijalniKucanstvoPodaciDto()
@@ -59,7 +60,9 @@ public partial class KucanstvoEditFormPage
             ? DateOnly.FromDateTime(_prebivanjeOd.Value)
             : null;
 
-        await DetaljiService.UpdateKucanstvoPodaciAsync(ZahtjevId, _kucanstvoModel);
+        await UnitOfWork.SocijalniNatjecajDetaljiService.UpdateKucanstvoPodaciAsync(ZahtjevId, _kucanstvoModel);
+        await UnitOfWork.SaveChangesAsync();
+        
         Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=Kucanstvo");
     }
 
