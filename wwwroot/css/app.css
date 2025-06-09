@@ -137,3 +137,8 @@ a {
     color: white;
     background-color: #163d73;
 }
+
+.multiline-label label {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+}

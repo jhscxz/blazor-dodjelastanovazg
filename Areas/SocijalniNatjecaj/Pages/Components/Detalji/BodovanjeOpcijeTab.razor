@@ -1,9 +1,110 @@
-@using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 @using MudBlazor
-@code {
-    [Parameter]
-    public SocijalniBodovniDto? BodovniPodaci { get; set; }
-}
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Components.UI.MudInputs
 
-<MudText>Odaberi opcije koje utječu na bodovanje:</MudText>
-<!-- Dodaj kontrole kao što su MudSelect, MudCheckbox, MudNumericField, itd. -->
+<MudCard Outlined="true" Rounded="true">
+    <MudCardContent>
+        <MudTabs Rounded="true" PanelClass="pa-0" Elevation="0">
+
+            <!-- TAB 1 -->
+            <MudTabPanel Text="Sastav kućanstva">
+                <MudCard Outlined="true" Class="pa-4">
+                    <MudStack Spacing="1">
+                        <MudNumericField T="byte"
+                                         Label="Broj uzdržavanih punoljetnih na redovnom školovanju"
+                                         @bind-Value="BrojUzdrzavanihPunoljetnih"
+                                         ReadOnly="true"
+                                         Dense="true" />
+                    </MudStack>
+                </MudCard>
+
+                <MudStack Spacing="2" Row="true" Justify="Justify.FlexEnd" Class="mt-2">
+                    <EditButton Href="@($"/socijalni/bodovi/sastav/edit/{Id}")" />
+                </MudStack>
+            </MudTabPanel>
+
+            <!-- TAB 2 -->
+            <MudTabPanel Text="Socijalno-zdravstveni status">
+                <MudCard Outlined="true" Class="pa-4">
+                    <MudStack Spacing="1">
+                        <MudSelect T="bool" Label="Primatelj zajamčene minimalne naknade"
+                                   @bind-Value="PrimateljZMN" ReadOnly="true" Dense="true">
+                            <MudSelectItem Value="true">Da</MudSelectItem>
+                            <MudSelectItem Value="false">Ne</MudSelectItem>
+                        </MudSelect>
+
+                        <MudSelect T="bool" Label="Status roditelja njegovatelja / njegovatelja"
+                                   @bind-Value="StatusNjegovatelja" ReadOnly="true" Dense="true">
+                            <MudSelectItem Value="true">Da</MudSelectItem>
+                            <MudSelectItem Value="false">Ne</MudSelectItem>
+                        </MudSelect>
+
+                        <MudSelect T="bool" Label="Korisnik doplatka za pomoć i njegu / inkluzivnog dodatka III. razine"
+                                   @bind-Value="KorisnikDoplatka" ReadOnly="true" Dense="true">
+                            <MudSelectItem Value="true">Da</MudSelectItem>
+                            <MudSelectItem Value="false">Ne</MudSelectItem>
+                        </MudSelect>
+
+                        <MudNumericField T="byte"
+                                         Label="Odrasli korisnici osobne invalidnine / dodatka I./II. razine"
+                                         @bind-Value="BrojOdraslihInvalidnina"
+                                         ReadOnly="true"
+                                         Dense="true" />
+
+                        <MudNumericField T="byte"
+                                         Label="Maloljetni korisnici osobne invalidnine / dodatka I./II. razine"
+                                         @bind-Value="BrojMaloljetnihInvalidnina"
+                                         ReadOnly="true"
+                                         Dense="true" />
+                    </MudStack>
+                </MudCard>
+
+                <MudStack Spacing="2" Row="true" Justify="Justify.FlexEnd" Class="mt-2">
+                    <EditButton Href="@($"/socijalni/bodovi/socijalno-zdravstveni/edit/{Id}")" />
+                </MudStack>
+            </MudTabPanel>
+
+            <!-- TAB 3 -->
+            <MudTabPanel Text="Posebne okolnosti">
+                <MudCard Outlined="true" Class="pa-4">
+                    <MudStack Spacing="1">
+                        <MudSelect T="bool" Label="Žrtva obiteljskog nasilja (pravomoćna presuda)"
+                                   @bind-Value="ZrtvaObiteljskogNasilja" ReadOnly="true" Dense="true">
+                            <MudSelectItem Value="true">Da</MudSelectItem>
+                            <MudSelectItem Value="false">Ne</MudSelectItem>
+                        </MudSelect>
+
+                        <MudNumericField T="byte"
+                                         Label="Broj članova (18–29) koji su bili u alternativnoj skrbi"
+                                         @bind-Value="BrojAlternativnaSkrb1829"
+                                         ReadOnly="true"
+                                         Dense="true" />
+
+                        <MudNumericField T="byte"
+                                         Label="Broj mjeseci obrane suvereniteta RH (maks. 40)"
+                                         @bind-Value="BrojMjeseciObrana"
+                                         ReadOnly="true"
+                                         Dense="true" />
+
+                        <MudNumericField T="byte"
+                                         Label="Broj članova koji su žrtve seksualnog nasilja u DR"
+                                         @bind-Value="BrojZrtavaSeksualnogNasilja"
+                                         ReadOnly="true"
+                                         Dense="true" />
+
+                        <MudNumericField T="byte"
+                                         Label="Broj članova civilnih stradalnika iz DR"
+                                         @bind-Value="BrojCivilnihStradalnika"
+                                         ReadOnly="true"
+                                         Dense="true" />
+                    </MudStack>
+                </MudCard>
+
+                <MudStack Spacing="2" Row="true" Justify="Justify.FlexEnd" Class="mt-2">
+                    <EditButton Href="@($"/socijalni/bodovi/posebne/edit/{Id}")" />
+                </MudStack>
+            </MudTabPanel>
+
+        </MudTabs>
+    </MudCardContent>
+</MudCard>

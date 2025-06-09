@@ -6,7 +6,7 @@
 
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudGrid Justify="Justify.Center">
-        <MudItem xs="12" sm="10" md="8" lg="6">
+        <MudItem xs="12" sm="10" md="8" lg="7">
             <MudCard Outlined="true" Rounded="true" Class="pa-6">
                 <MudCardContent>
                     <MudTabs @bind-ActivePanelIndex="_selectedTabIndex"
@@ -27,6 +27,10 @@
 
                         <MudTabPanel Text="Opcije bodovanja">
                             <BodovanjeOpcijeTab Id="@Id" />
+                        </MudTabPanel>
+                        
+                        <MudTabPanel Text="Bodovi">
+                            <BodoviPregledTab Id="@Id" />
                         </MudTabPanel>
 
                     </MudTabs>
