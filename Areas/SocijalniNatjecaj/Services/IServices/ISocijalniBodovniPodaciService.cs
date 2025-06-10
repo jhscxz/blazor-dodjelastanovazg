@@ -5,5 +5,5 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 public interface ISocijalniBodovniPodaciService
 {
     Task<SocijalniNatjecajBodovniPodaciDto> GetAsync(long zahtjevId);
-    Task UpdateAsync(long zahtjevId, SocijalniNatjecajBodovniPodaciDto dto);
+    Task<SocijalniNatjecajBodovniPodaciDto> UpdateAsync(long zahtjevId, SocijalniNatjecajBodovniPodaciDto dto);
 }

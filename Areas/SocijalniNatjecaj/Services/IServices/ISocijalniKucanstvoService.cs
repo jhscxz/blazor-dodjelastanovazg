@@ -4,5 +4,5 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 
 public interface ISocijalniKucanstvoService
 {
-    Task UpdateKucanstvoPodaciAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto);
+    Task<SocijalniKucanstvoPodaciDto> UpdateKucanstvoPodaciAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto);
 }

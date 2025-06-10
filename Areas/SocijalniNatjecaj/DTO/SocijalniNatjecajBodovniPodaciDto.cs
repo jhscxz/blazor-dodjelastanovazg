@@ -1,6 +1,8 @@
+using DodjelaStanovaZG.DTO;
+
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 
-public class SocijalniNatjecajBodovniPodaciDto
+public class SocijalniNatjecajBodovniPodaciDto : AuditableDto
 {
     public long ZahtjevId { get; set; }
 

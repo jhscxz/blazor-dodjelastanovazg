@@ -5,37 +5,25 @@ using DodjelaStanovaZG.Infrastructure.Interfaces;
 
 namespace DodjelaStanovaZG.Infrastructure;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(
+    ApplicationDbContext context,
+    ISocijalniClanService socijalniClanService,
+    ISocijalniKucanstvoService socijalniKucanstvoService,
+    ISocijalniBodovniPodaciService socijalniBodovniPodaciService,
+    INatjecajOdabirService natjecajOdabirService,
+    ISocijalniZahtjevService socijalniZahtjevService,
+    INatjecajService natjecajiService)
+    : IUnitOfWork
 {
-    private readonly ApplicationDbContext _context;
-
-    public UnitOfWork(
-        ApplicationDbContext context,
-        ISocijalniClanService socijalniClanService,
-        ISocijalniKucanstvoService socijalniKucanstvoService,
-        ISocijalniBodovniPodaciService socijalniBodovniPodaciService,
-        INatjecajOdabirService natjecajOdabirService,
-        ISocijalniZahtjevService socijalniZahtjevService,
-        INatjecajService natjecajiService)
-    {
-        _context = context;
-        SocijalniClanService = socijalniClanService;
-        SocijalniKucanstvoService = socijalniKucanstvoService;
-        SocijalniBodovniPodaciService = socijalniBodovniPodaciService;
-        NatjecajOdabirService = natjecajOdabirService;
-        SocijalniZahtjevService = socijalniZahtjevService;
-        NatjecajiService = natjecajiService;
-    }
-
-    public ISocijalniClanService SocijalniClanService { get; }
-    public ISocijalniKucanstvoService SocijalniKucanstvoService { get; }
-    public ISocijalniBodovniPodaciService SocijalniBodovniPodaciService { get; }
-    public INatjecajOdabirService NatjecajOdabirService { get; }
-    public INatjecajService NatjecajiService { get; }
-    public ISocijalniZahtjevService SocijalniZahtjevService { get; }
+    public ISocijalniClanService SocijalniClanService { get; } = socijalniClanService;
+    public ISocijalniKucanstvoService SocijalniKucanstvoService { get; } = socijalniKucanstvoService;
+    public ISocijalniBodovniPodaciService SocijalniBodovniPodaciService { get; } = socijalniBodovniPodaciService;
+    public INatjecajOdabirService NatjecajOdabirService { get; } = natjecajOdabirService;
+    public INatjecajService NatjecajiService { get; } = natjecajiService;
+    public ISocijalniZahtjevService SocijalniZahtjevService { get; } = socijalniZahtjevService;
 
     public async Task SaveChangesAsync()
     {
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 }

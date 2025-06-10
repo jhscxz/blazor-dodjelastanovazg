@@ -1,43 +1,54 @@
-using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Helpers.IHelpers;
 using DodjelaStanovaZG.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
-
-public class SocijalniKucanstvoService : ISocijalniKucanstvoService
+namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IUserContextService _userContext;
-
-    public SocijalniKucanstvoService(ApplicationDbContext context, IUserContextService userContext)
+    public class SocijalniKucanstvoService : ISocijalniKucanstvoService
     {
-        _context = context;
-        _userContext = userContext;
-    }
-    
-    public async Task UpdateKucanstvoPodaciAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto)
-    {
-        var zahtjev = await _context.SocijalniNatjecajZahtjevi
-                          .Include(z => z.KucanstvoPodaci)
-                          .FirstOrDefaultAsync(z => z.Id == zahtjevId)
-                      ?? throw new Exception($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
+        private readonly ApplicationDbContext _context;
+        private readonly IUserContextService _userContext;
 
-        if (zahtjev.KucanstvoPodaci == null)
+        public SocijalniKucanstvoService(ApplicationDbContext context, IUserContextService userContext)
         {
-            zahtjev.KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci { ZahtjevId = zahtjevId };
-            _context.SocijalniNatjecajKucanstvoPodaci.Add(zahtjev.KucanstvoPodaci);
+            _context = context;
+            _userContext = userContext;
         }
 
-        zahtjev.KucanstvoPodaci.UkupniPrihodKucanstva = dto.UkupniPrihodKucanstva!.Value;
-        zahtjev.KucanstvoPodaci.PrebivanjeOd = dto.PrebivanjeOd!.Value;
-        zahtjev.KucanstvoPodaci.StambeniStatusKucanstva = dto.StambeniStatusKucanstva!.Value;
-        zahtjev.KucanstvoPodaci.SastavKucanstva = dto.SastavKucanstva!.Value;
+        private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery()
+            => _context.SocijalniNatjecajZahtjevi
+                       .Include(z => z.KucanstvoPodaci);
 
-        AuditHelper.ApplyAudit(zahtjev, _userContext.GetCurrentUserId(), isCreate: false);
+        public async Task<SocijalniKucanstvoPodaciDto> UpdateKucanstvoPodaciAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto)
+        {
+            var zahtjev = await BaseZahtjevQuery()
+                .FirstOrDefaultAsync(z => z.Id == zahtjevId)
+                ?? throw new NotFoundException($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
+
+            var podaci = zahtjev.KucanstvoPodaci;
+            if (podaci == null)
+            {
+                podaci = new SocijalniNatjecajKucanstvoPodaci { ZahtjevId = zahtjevId };
+                _context.SocijalniNatjecajKucanstvoPodaci.Add(podaci);
+            }
+
+            // mapiramo nove vrijednosti
+            podaci.UkupniPrihodKucanstva   = dto.UkupniPrihodKucanstva!.Value;
+            podaci.PrebivanjeOd            = dto.PrebivanjeOd!.Value;
+            podaci.StambeniStatusKucanstva = dto.StambeniStatusKucanstva!.Value;
+            podaci.SastavKucanstva         = dto.SastavKucanstva!.Value;
+
+            // audit samo na entitetu kućanstva
+            AuditHelper.ApplyAudit(podaci, _userContext.GetCurrentUserId(), isCreate: false);
+
+            await _context.SaveChangesAsync();
+
+            // vratimo osvježeni DTO
+            return podaci.ToDto();
+        }
     }
 }
