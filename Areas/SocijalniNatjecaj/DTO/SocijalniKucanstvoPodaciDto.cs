@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using DodjelaStanovaZG.DTO;
 using DodjelaStanovaZG.Enums;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 {
-    public class SocijalniKucanstvoPodaciDto
+    public class SocijalniKucanstvoPodaciDto : AuditableDto
     {
         public long ZahtjevId { get; set; }
 
@@ -21,12 +22,5 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
         [Required(ErrorMessage = "Sastav kućanstva je obavezan.")]
         public SastavKucanstva? SastavKucanstva { get; set; }
         
-        public string? CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public string? CreatedByUserName { get; set; }
-        public string? UpdatedByUserName { get; set; }
-
     }
 }

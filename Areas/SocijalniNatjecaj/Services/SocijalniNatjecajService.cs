@@ -19,6 +19,7 @@ public class SocijalniNatjecajService(
 
     public Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync() =>
         context.SocijalniNatjecajZahtjevi
+               .AsNoTracking()
                .Select(x => new SocijalniNatjecajZahtjevDto
                {
                    Id = x.Id,
@@ -45,35 +46,33 @@ public class SocijalniNatjecajService(
             NapomenaObrade = dto.NapomenaObrade
         };
 
-        zahtjev.Clanovi =
-        [
-            new SocijalniNatjecajClan
-            {
-                Zahtjev = zahtjev,
-                ImePrezime = imePrezime,
-                Oib = string.IsNullOrWhiteSpace(oib) ? null : oib,
-                Srodstvo = Srodstvo.PodnositeljZahtjeva
-            }
-        ];
+        var podnositelj = new SocijalniNatjecajClan
+        {
+            Zahtjev = zahtjev,
+            ImePrezime = imePrezime,
+            Oib = string.IsNullOrWhiteSpace(oib) ? null : oib,
+            Srodstvo = Srodstvo.PodnositeljZahtjeva
+        };
 
-        zahtjev.KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci { Zahtjev = zahtjev };
-        zahtjev.BodovniPodaci = new SocijalniNatjecajBodovniPodaci   { Zahtjev = zahtjev };
+        zahtjev.Clanovi = [podnositelj];
+        zahtjev.KucanstvoPodaci = new() { Zahtjev = zahtjev };
+        zahtjev.BodovniPodaci = new()   { Zahtjev = zahtjev };
 
         // audit
-        AuditHelper.ApplyAudit(zahtjev, CurrentUserId, true);
-        AuditHelper.ApplyAudit(zahtjev.Clanovi.Single(), CurrentUserId, true);
-        AuditHelper.ApplyAudit(zahtjev.KucanstvoPodaci, CurrentUserId, true);
-        AuditHelper.ApplyAudit(zahtjev.BodovniPodaci, CurrentUserId, true);
+        foreach (var entitet in new AuditableEntity[] { zahtjev, podnositelj, zahtjev.KucanstvoPodaci, zahtjev.BodovniPodaci })
+        {
+            AuditHelper.ApplyAudit(entitet, CurrentUserId, isCreate: true);
+        }
 
         await context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);
-
-        // Vraćamo *tracked* entitet – SaveChanges će biti pozvan u UnitOfWork.
         return zahtjev;
     }
 
     public async Task<SocijalniNatjecajZahtjevDto> GetByIdAsync(long id)
     {
         var entity = await context.SocijalniNatjecajZahtjevi
+                                  .Include(z => z.CreatedByUser)
+                                  .Include(z => z.UpdatedByUser)
                                   .AsNoTracking()
                                   .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -90,6 +89,6 @@ public class SocijalniNatjecajService(
             Email = entity.Email,
             RezultatObrade = entity.RezultatObrade,
             NapomenaObrade = entity.NapomenaObrade
-        };
+        }.WithAuditFrom(entity);
     }
 }

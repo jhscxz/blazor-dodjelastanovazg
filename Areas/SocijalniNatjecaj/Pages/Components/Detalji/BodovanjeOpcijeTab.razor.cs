@@ -11,6 +11,13 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
         [Inject] private ISocijalniBodovniPodaciService BodovniService { get; set; } = default!;
 
+        private DateTime CreatedAt { get; set; }
+        private string? CreatedBy { get; set; }
+        private string? CreatedByUserName { get; set; }
+        private DateTime? UpdatedAt { get; set; }
+        private string? UpdatedBy { get; set; }
+        private string? UpdatedByUserName { get; set; }
+        
         // Sastav
         private byte BrojUzdrzavanihPunoljetnih;
 
@@ -45,6 +52,13 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
             BrojMjeseciObrana = dto.BrojMjeseciObranaSuvereniteta;
             BrojZrtavaSeksualnogNasilja = dto.BrojClanovaZrtavaSeksualnogNasilja;
             BrojCivilnihStradalnika = dto.BrojCivilnihStradalnika;
+            
+            CreatedAt = dto.CreatedAt;
+            CreatedBy = dto.CreatedBy;
+            CreatedByUserName = dto.CreatedByUserName;
+            UpdatedAt = dto.UpdatedAt;
+            UpdatedBy = dto.UpdatedBy;
+            UpdatedByUserName = dto.UpdatedByUserName;
         }
     }
 }

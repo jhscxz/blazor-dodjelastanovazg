@@ -56,12 +56,6 @@
         <EditButton Href="@($"/socijalni/osnovno/edit/{Detalji.Id}")"/>
     </MudStack>
 
-    <AuditInfo
-        CreatedBy="@Detalji.CreatedBy"
-        CreatedByUserName="@Detalji.CreatedByUserName"
-        CreatedAt="@Detalji.CreatedAt"
-        UpdatedBy="@Detalji.UpdatedBy"
-        UpdatedByUserName="@Detalji.UpdatedByUserName"
-        UpdatedAt="@Detalji.UpdatedAt" />
+    <AuditInfo Model="Detalji" />
 
 </MudStack>

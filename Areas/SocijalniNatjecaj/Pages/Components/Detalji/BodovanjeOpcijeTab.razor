@@ -17,10 +17,6 @@
                                          Dense="true" />
                     </MudStack>
                 </MudCard>
-
-                <MudStack Spacing="2" Row="true" Justify="Justify.FlexEnd" Class="mt-2">
-                    <EditButton Href="@($"/socijalni/bodovi/sastav/edit/{Id}")" />
-                </MudStack>
             </MudTabPanel>
 
             <!-- TAB 2 -->
@@ -58,10 +54,6 @@
                                          Dense="true" />
                     </MudStack>
                 </MudCard>
-
-                <MudStack Spacing="2" Row="true" Justify="Justify.FlexEnd" Class="mt-2">
-                    <EditButton Href="@($"/socijalni/bodovi/socijalno-zdravstveni/edit/{Id}")" />
-                </MudStack>
             </MudTabPanel>
 
             <!-- TAB 3 -->
@@ -99,12 +91,11 @@
                                          Dense="true" />
                     </MudStack>
                 </MudCard>
-
-                <MudStack Spacing="2" Row="true" Justify="Justify.FlexEnd" Class="mt-2">
-                    <EditButton Href="@($"/socijalni/bodovi/posebne/edit/{Id}")" />
-                </MudStack>
             </MudTabPanel>
 
         </MudTabs>
     </MudCardContent>
+    <MudCardActions Class="pa-4 d-flex justify-end">
+        <EditButton Href="@($"/socijalni/bodovi/edit/{Id}")" />
+    </MudCardActions>
 </MudCard>

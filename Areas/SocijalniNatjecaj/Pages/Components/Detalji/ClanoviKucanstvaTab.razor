@@ -9,7 +9,7 @@
 
     <MudCardContent>
 
-        <!-- Gumb za dodavanje člana unutar MudCard -->
+        <!-- Gumb za dodavanje člana -->
         <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Class="mb-4">
             <MudButton OnClick="AddClan"
                        Variant="Variant.Filled"
@@ -21,7 +21,7 @@
             </MudButton>
         </MudStack>
 
-        <!-- Tablica unutar MudCard -->
+        <!-- Tablica članova -->
         <MudTable T="SocijalniNatjecajClanDto"
                   Items="Clanovi"
                   Hover="true"
@@ -67,13 +67,5 @@
         </MudTable>
 
     </MudCardContent>
-
-    <AuditInfo
-        CreatedBy="@CreatedBy"
-        CreatedByUserName="@CreatedByUserName"
-        CreatedAt="@CreatedAt"
-        UpdatedBy="@UpdatedBy"
-        UpdatedByUserName="@UpdatedByUserName"
-        UpdatedAt="@UpdatedAt" />
 
 </MudCard>

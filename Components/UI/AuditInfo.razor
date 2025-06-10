@@ -1,29 +1,25 @@
 @using System.Globalization
+@using DodjelaStanovaZG.DTO
 @using MudBlazor
 
-@if (CreatedAt != default)
+@if (Model is not null && Model.CreatedAt != default)
 {
     <MudDivider Class="my-2" />
 
     <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.overline">
-            Stvorio: <b>@(CreatedByUserName ?? CreatedBy ?? "-")</b>
-            (@CreatedAt.ToLocalTime().ToString("dd.MM.yyyy. HH:mm:ss", CultureInfo.CurrentCulture))
+            Stvorio: <b>@(Model.CreatedByUserName ?? Model.CreatedBy ?? "-")</b>
+            (@Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy. HH:mm:ss", CultureInfo.CurrentCulture))
         </MudText>
 
         <MudText Typo="Typo.overline">
-            | Zadnje uređivao: <b>@(UpdatedByUserName ?? UpdatedBy ?? "-")</b>
-            (@(UpdatedAt?.ToLocalTime().ToString("dd.MM.yyyy. HH:mm:ss", CultureInfo.CurrentCulture) ?? "-"))
+            | Zadnje uređivao: <b>@(Model.UpdatedByUserName ?? Model.UpdatedBy ?? "-")</b>
+            (@(Model.UpdatedAt?.ToLocalTime().ToString("dd.MM.yyyy. HH:mm:ss", CultureInfo.CurrentCulture) ?? "-"))
         </MudText>
     </MudStack>
 }
 
 @code {
-    [Parameter] public string? CreatedBy { get; set; }
-    [Parameter] public string? CreatedByUserName { get; set; }
-    [Parameter] public DateTime CreatedAt { get; set; }
-
-    [Parameter] public string? UpdatedBy { get; set; }
-    [Parameter] public string? UpdatedByUserName { get; set; }
-    [Parameter] public DateTime? UpdatedAt { get; set; }
+    [Parameter]
+    public AuditableDto? Model { get; set; }
 }

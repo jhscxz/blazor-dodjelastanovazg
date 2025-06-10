@@ -9,15 +9,14 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
     {
         [Inject] public ISnackbar Snackbar { get; set; } = null!;
         [Inject] public IUnitOfWork UnitOfWork { get; set; } = null!;
-        protected List<SocijalniNatjecajClanDto> Clanovi { get; set; } = new();
         [Parameter] public long Id { get; set; }
-        [Parameter] public string? CreatedBy { get; set; }
-        [Parameter] public string? CreatedByUserName { get; set; }
-        [Parameter] public DateTime CreatedAt { get; set; }
 
-        [Parameter] public string? UpdatedBy { get; set; }
-        [Parameter] public string? UpdatedByUserName { get; set; }
-        [Parameter] public DateTime? UpdatedAt { get; set; }
+        protected SocijalniNatjecajZahtjevDto Zahtjev { get; set; } = null!;
+        protected List<SocijalniNatjecajClanDto> Clanovi { get; set; } = new();
+
+        protected DateTime? ZadnjaPromjenaClanova => Clanovi.Count == 0
+            ? null
+            : Clanovi.Max(c => c.UpdatedAt ?? c.CreatedAt);
 
 
         private async Task AddClan()
@@ -42,7 +41,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
             {
                 var zahtjev = await UnitOfWork.SocijalniNatjecajDetaljiService.GetZahtjevByIdAsync(Id);
                 var noviClan = UnitOfWork.SocijalniNatjecajDetaljiService.ConvertToEntity(noviClanDto, zahtjev);
-                await UnitOfWork.SocijalniNatjecajDetaljiService.AddClanAsync(noviClan);
+                await UnitOfWork.SocijalniClanService.AddClanAsync(noviClan);
                 await UnitOfWork.SaveChangesAsync();
 
                 Clanovi.Add(noviClanDto);
@@ -61,7 +60,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
             var parameters = new DialogParameters
             {
-                { "NewClan", new SocijalniNatjecajClanDto
+                {
+                    "NewClan", new SocijalniNatjecajClanDto
                     {
                         Id = clanZaUrediti.Id,
                         ImePrezime = clanZaUrediti.ImePrezime,
@@ -86,10 +86,10 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
             if (result is { Canceled: false, Data: SocijalniNatjecajClanDto azuriraniClan })
             {
-                await UnitOfWork.SocijalniNatjecajDetaljiService.EditClanAsync(azuriraniClan);
+                await UnitOfWork.SocijalniClanService.EditClanAsync(azuriraniClan);
                 await UnitOfWork.SaveChangesAsync();
 
-                var index = Clanovi.FindIndex(c => c.Id == azuriraniClan.ZahtjevId);
+                var index = Clanovi.FindIndex(c => c.Id == azuriraniClan.Id);
                 if (index >= 0)
                     Clanovi[index] = azuriraniClan;
 
@@ -111,7 +111,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
             try
             {
-                await UnitOfWork.SocijalniNatjecajDetaljiService.RemoveClanAsync(Id, id);
+                await UnitOfWork.SocijalniClanService.RemoveClanAsync(Id, id);
                 await UnitOfWork.SaveChangesAsync();
 
                 Clanovi.RemoveAll(c => c.Id == id);
@@ -122,17 +122,11 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
                 Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
             }
         }
+
         protected override async Task OnInitializedAsync()
         {
-            var detalji = await UnitOfWork.SocijalniNatjecajDetaljiService.GetDetaljiAsync(Id);
-
-            Clanovi = detalji.Clanovi;
-            CreatedBy = detalji.CreatedBy;
-            CreatedByUserName = detalji.CreatedByUserName;
-            CreatedAt = detalji.CreatedAt;
-            UpdatedBy = detalji.UpdatedBy;
-            UpdatedByUserName = detalji.UpdatedByUserName;
-            UpdatedAt = detalji.UpdatedAt;
+            Zahtjev = await UnitOfWork.SocijalniNatjecajDetaljiService.GetDetaljiAsync(Id);
+            Clanovi = Zahtjev.Clanovi;
         }
     }
 }

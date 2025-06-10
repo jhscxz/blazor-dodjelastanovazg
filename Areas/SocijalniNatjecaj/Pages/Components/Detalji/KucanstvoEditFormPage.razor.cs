@@ -1,5 +1,4 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
@@ -60,7 +59,7 @@ public partial class KucanstvoEditFormPage
             ? DateOnly.FromDateTime(_prebivanjeOd.Value)
             : null;
 
-        await UnitOfWork.SocijalniNatjecajDetaljiService.UpdateKucanstvoPodaciAsync(ZahtjevId, _kucanstvoModel);
+        await UnitOfWork.SocijalniKucanstvoService.UpdateKucanstvoPodaciAsync(ZahtjevId, _kucanstvoModel);
         await UnitOfWork.SaveChangesAsync();
         
         Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=Kucanstvo");

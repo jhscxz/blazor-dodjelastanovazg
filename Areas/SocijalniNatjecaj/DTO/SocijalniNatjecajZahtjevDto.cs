@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using DodjelaStanovaZG.DTO;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Models;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 {
-    public class SocijalniNatjecajZahtjevDto
+    public class SocijalniNatjecajZahtjevDto : AuditableDto
     {
         public long Id { get; set; }
         [Required(ErrorMessage = "Klasa predmeta je obavezna.")]
@@ -25,12 +27,5 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
         public SocijalniBodovniDto Bodovni { get; set; } = new();
         public List<SocijalniNatjecajClanDto>? Clanovi { get; set; }
         public SocijalniKucanstvoPodaciDto? KucanstvoPodaci { get; set; }
-        
-        public string? CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public string? CreatedByUserName { get; set; }
-        public string? UpdatedByUserName { get; set; }
-    }
+        }
 }

@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using DodjelaStanovaZG.DTO;
 using DodjelaStanovaZG.Enums;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 {
-    public class SocijalniNatjecajClanDto
+    public class SocijalniNatjecajClanDto : AuditableDto
     {
         public long Id { get; init; }
         public long ZahtjevId { get; set; }

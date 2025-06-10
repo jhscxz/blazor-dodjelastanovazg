@@ -3,6 +3,7 @@ using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Helpers;
+using DodjelaStanovaZG.Helpers.IHelpers;
 using DodjelaStanovaZG.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,21 +12,23 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 public class SocijalniBodovniPodaciService : ISocijalniBodovniPodaciService
 {
     private readonly ApplicationDbContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserContextService _userContext;
 
-    public SocijalniBodovniPodaciService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+    public SocijalniBodovniPodaciService(ApplicationDbContext context, IUserContextService userContext)
     {
         _context = context;
-        _httpContextAccessor = httpContextAccessor;
+        _userContext = userContext;
     }
 
     public async Task<SocijalniNatjecajBodovniPodaciDto> GetAsync(long zahtjevId)
     {
         var entity = await _context.SocijalniNatjecajBodovniPodaci
-            .FirstOrDefaultAsync(x => x.ZahtjevId == zahtjevId)
-            ?? throw new Exception("Bodovni podaci nisu pronađeni.");
+                         .Include(x => x.CreatedByUser)
+                         .Include(x => x.UpdatedByUser)
+                         .FirstOrDefaultAsync(x => x.ZahtjevId == zahtjevId)
+                     ?? throw new Exception("Bodovni podaci nisu pronađeni.");
 
-        return new SocijalniNatjecajBodovniPodaciDto()
+        return new SocijalniNatjecajBodovniPodaciDto
         {
             ZahtjevId = entity.ZahtjevId,
             BrojUzdrzavanePunoljetneDjece = entity.BrojUzdrzavanePunoljetneDjece,
@@ -38,45 +41,39 @@ public class SocijalniBodovniPodaciService : ISocijalniBodovniPodaciService
             BrojOsobaUAlternativnojSkrbi = entity.BrojOsobaUAlternativnojSkrbi,
             BrojMjeseciObranaSuvereniteta = entity.BrojMjeseciObranaSuvereniteta,
             BrojClanovaZrtavaSeksualnogNasilja = entity.BrojClanovaZrtavaSeksualnogNasilja,
-            BrojCivilnihStradalnika = entity.BrojCivilnihStradalnika
+            BrojCivilnihStradalnika = entity.BrojCivilnihStradalnika,
+
+            CreatedAt = entity.CreatedAt,
+            CreatedBy = entity.CreatedBy,
+            CreatedByUserName = entity.CreatedByUser?.UserName,
+            UpdatedAt = entity.UpdatedAt,
+            UpdatedBy = entity.UpdatedBy,
+            UpdatedByUserName = entity.UpdatedByUser?.UserName,
         };
     }
 
     public async Task UpdateAsync(long zahtjevId, SocijalniNatjecajBodovniPodaciDto dto)
     {
-        var entity = await _context.SocijalniNatjecajBodovniPodaci
-            .FirstOrDefaultAsync(x => x.ZahtjevId == zahtjevId);
+        var zahtjev = await _context.SocijalniNatjecajZahtjevi
+            .Include(z => z.BodovniPodaci)
+            .FirstOrDefaultAsync(z => z.Id == zahtjevId)
+            ?? throw new Exception($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
 
-        var isCreate = entity == null;
+        var b = zahtjev.BodovniPodaci ?? throw new Exception("Bodovni podaci nisu definirani.");
 
-        if (isCreate)
-        {
-            entity = new SocijalniNatjecajBodovniPodaci
-            {
-                ZahtjevId = zahtjevId
-            };
-            _context.SocijalniNatjecajBodovniPodaci.Add(entity);
-        }
+        b.BrojUzdrzavanePunoljetneDjece = dto.BrojUzdrzavanePunoljetneDjece;
+        b.PrimateljZajamceneMinimalneNaknade = dto.PrimateljZajamceneMinimalneNaknade;
+        b.StatusRoditeljaNjegovatelja = dto.StatusRoditeljaNjegovatelja;
+        b.KorisnikDoplatkaZaPomoc = dto.KorisnikDoplatkaZaPomoc;
+        b.BrojOdraslihKorisnikaInvalidnine = dto.BrojOdraslihKorisnikaInvalidnine;
+        b.BrojMaloljetnihKorisnikaInvalidnine = dto.BrojMaloljetnihKorisnikaInvalidnine;
+        b.ZrtvaObiteljskogNasilja = dto.ZrtvaObiteljskogNasilja;
+        b.BrojOsobaUAlternativnojSkrbi = dto.BrojOsobaUAlternativnojSkrbi;
+        b.BrojMjeseciObranaSuvereniteta = dto.BrojMjeseciObranaSuvereniteta;
+        b.BrojClanovaZrtavaSeksualnogNasilja = dto.BrojClanovaZrtavaSeksualnogNasilja;
+        b.BrojCivilnihStradalnika = dto.BrojCivilnihStradalnika;
 
-        entity.BrojUzdrzavanePunoljetneDjece = dto.BrojUzdrzavanePunoljetneDjece;
-        entity.PrimateljZajamceneMinimalneNaknade = dto.PrimateljZajamceneMinimalneNaknade;
-        entity.StatusRoditeljaNjegovatelja = dto.StatusRoditeljaNjegovatelja;
-        entity.KorisnikDoplatkaZaPomoc = dto.KorisnikDoplatkaZaPomoc;
-        entity.BrojOdraslihKorisnikaInvalidnine = dto.BrojOdraslihKorisnikaInvalidnine;
-        entity.BrojMaloljetnihKorisnikaInvalidnine = dto.BrojMaloljetnihKorisnikaInvalidnine;
-        entity.ZrtvaObiteljskogNasilja = dto.ZrtvaObiteljskogNasilja;
-        entity.BrojOsobaUAlternativnojSkrbi = dto.BrojOsobaUAlternativnojSkrbi;
-        entity.BrojMjeseciObranaSuvereniteta = dto.BrojMjeseciObranaSuvereniteta;
-        entity.BrojClanovaZrtavaSeksualnogNasilja = dto.BrojClanovaZrtavaSeksualnogNasilja;
-        entity.BrojCivilnihStradalnika = dto.BrojCivilnihStradalnika;
-
-        AuditHelper.ApplyAudit(entity, GetCurrentUserId(), isCreate);
-        await _context.SaveChangesAsync();
-    }
-
-    private string GetCurrentUserId()
-    {
-        return _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-               ?? throw new Exception("Korisnik nije prijavljen.");
+        // ✅ Audit samo na zahtjevu
+        AuditHelper.ApplyAudit(zahtjev, _userContext.GetCurrentUserId(), isCreate: false);
     }
 }
