@@ -27,7 +27,7 @@ public partial class KucanstvoEditFormPage
 
     protected override async Task OnInitializedAsync()
     {
-        var zahtjev = await UnitOfWork.SocijalniNatjecajDetaljiService.GetZahtjevByIdAsync(ZahtjevId);
+        var zahtjev = await UnitOfWork.SocijalniZahtjevService.GetZahtjevByIdAsync(ZahtjevId);
 
         _kucanstvoModel = zahtjev.KucanstvoPodaci is null
             ? new SocijalniKucanstvoPodaciDto()

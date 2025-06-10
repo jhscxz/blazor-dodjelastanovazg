@@ -62,7 +62,7 @@ public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
 
         try
         {
-            var zahtjev = await UnitOfWork.SocijalniNatjecajService.CreateAsync(
+            var zahtjev = await UnitOfWork.SocijalniZahtjevService.CreateAsync(
                 ZahtjevModel,
                 ZahtjevModel.ImePrezime,
                 ZahtjevModel.Oib);

@@ -24,6 +24,55 @@ public class SocijalniZahtjevService : ISocijalniZahtjevService
         _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier)
         ?? throw new Exception("Korisnik nije prijavljen.");
 
+    public async Task<SocijalniNatjecajZahtjevDto> GetDetaljiAsync(long id)
+    {
+        var entity = await _context.SocijalniNatjecajZahtjevi
+            .Include(x => x.Clanovi).ThenInclude(c => c.CreatedByUser)
+            .Include(x => x.Clanovi).ThenInclude(c => c.UpdatedByUser)
+            .Include(x => x.BodovniPodaci)
+            .Include(x => x.KucanstvoPodaci).ThenInclude(k => k!.CreatedByUser)
+            .Include(x => x.KucanstvoPodaci).ThenInclude(k => k!.UpdatedByUser)
+            .Include(x => x.CreatedByUser)
+            .Include(x => x.UpdatedByUser)
+            .FirstOrDefaultAsync(x => x.Id == id)
+            ?? throw new Exception("Zahtjev nije pronađen.");
+
+        var podnositelj = entity.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
+
+        return new SocijalniNatjecajZahtjevDto
+        {
+            Id = entity.Id,
+            NatjecajId = entity.NatjecajId,
+            KlasaPredmeta = entity.KlasaPredmeta,
+            DatumPodnosenjaZahtjeva = entity.DatumPodnosenjaZahtjeva,
+            Adresa = entity.Adresa,
+            Email = entity.Email,
+            ImePrezime = podnositelj?.ImePrezime ?? string.Empty,
+            Oib = podnositelj?.Oib,
+            RezultatObrade = entity.RezultatObrade,
+            NapomenaObrade = entity.NapomenaObrade,
+            Bodovni = new SocijalniBodovniDto(),
+            KucanstvoPodaci = entity.KucanstvoPodaci is not null
+                ? new SocijalniKucanstvoPodaciDto
+                {
+                    UkupniPrihodKucanstva = entity.KucanstvoPodaci.UkupniPrihodKucanstva,
+                    PrebivanjeOd = entity.KucanstvoPodaci.PrebivanjeOd,
+                    StambeniStatusKucanstva = entity.KucanstvoPodaci.StambeniStatusKucanstva,
+                    SastavKucanstva = entity.KucanstvoPodaci.SastavKucanstva,
+                    ZahtjevId = entity.Id
+                }.WithAuditFrom(entity.KucanstvoPodaci)
+                : null,
+            Clanovi = entity.Clanovi.Select(clan => new SocijalniNatjecajClanDto
+            {
+                Id = clan.Id,
+                ZahtjevId = entity.Id,
+                ImePrezime = clan.ImePrezime,
+                Oib = clan.Oib,
+                Srodstvo = clan.Srodstvo,
+                DatumRodjenja = clan.DatumRodjenja
+            }.WithAuditFrom(clan)).ToList()
+        }.WithAuditFrom(entity);
+    }
     public Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync() =>
         _context.SocijalniNatjecajZahtjevi
             .AsNoTracking()
@@ -152,6 +201,19 @@ public class SocijalniZahtjevService : ISocijalniZahtjevService
                    .Include(z => z.KucanstvoPodaci)
                    .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                ?? throw new Exception($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
+    }
+    
+    public SocijalniNatjecajClan ConvertToEntity(SocijalniNatjecajClanDto clanDto, SocijalniNatjecajZahtjev zahtjev)
+    {
+        return new SocijalniNatjecajClan
+        {
+            ImePrezime = clanDto.ImePrezime,
+            Oib = clanDto.Oib,
+            Srodstvo = clanDto.Srodstvo,
+            DatumRodjenja = clanDto.DatumRodjenja,
+            ZahtjevId = zahtjev.Id,
+            Zahtjev = zahtjev
+        };
     }
 
 

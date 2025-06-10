@@ -21,7 +21,7 @@ public class KucanstvoPodaciTabBase : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var detalji = await UnitOfWork.SocijalniNatjecajDetaljiService.GetDetaljiAsync(Id);
+        var detalji = await UnitOfWork.SocijalniZahtjevService.GetDetaljiAsync(Id);
         Kucanstvo = detalji.KucanstvoPodaci;
     }
 

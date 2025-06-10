@@ -25,7 +25,7 @@ public class SocijalniNatjecajPregledBase : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        Natjecaji = (await UnitOfWork.SocijalniNatjecajService.GetAllAsync())
+        Natjecaji = (await UnitOfWork.SocijalniZahtjevService.GetAllAsync())
             .Where(x => x.NatjecajId == NatjecajId)
             .ToList();
     }

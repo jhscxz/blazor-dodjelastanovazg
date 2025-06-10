@@ -39,8 +39,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
             if (result is { Canceled: false, Data: SocijalniNatjecajClanDto noviClanDto })
             {
-                var zahtjev = await UnitOfWork.SocijalniNatjecajDetaljiService.GetZahtjevByIdAsync(Id);
-                var noviClan = UnitOfWork.SocijalniNatjecajDetaljiService.ConvertToEntity(noviClanDto, zahtjev);
+                var zahtjev = await UnitOfWork.SocijalniZahtjevService.GetZahtjevByIdAsync(Id);
+                var noviClan = UnitOfWork.SocijalniZahtjevService.ConvertToEntity(noviClanDto, zahtjev);
                 await UnitOfWork.SocijalniClanService.AddClanAsync(noviClan);
                 await UnitOfWork.SaveChangesAsync();
 
@@ -125,7 +125,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
         protected override async Task OnInitializedAsync()
         {
-            Zahtjev = await UnitOfWork.SocijalniNatjecajDetaljiService.GetDetaljiAsync(Id);
+            Zahtjev = await UnitOfWork.SocijalniZahtjevService.GetDetaljiAsync(Id);
             Clanovi = Zahtjev.Clanovi;
         }
     }

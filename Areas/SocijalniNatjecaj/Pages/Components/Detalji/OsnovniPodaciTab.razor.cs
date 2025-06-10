@@ -16,7 +16,7 @@ public class PrikazBase : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        Detalji = await UnitOfWork.SocijalniNatjecajDetaljiService.GetDetaljiAsync(Id);
+        Detalji = await UnitOfWork.SocijalniZahtjevService.GetDetaljiAsync(Id);
     }
 
     protected Color ChipColor => Detalji.RezultatObrade switch
