@@ -58,8 +58,8 @@ builder.Services.AddScoped<SeedService>();
 builder.Services.AddScoped<INatjecajOdabirService, NatjecajOdabirService>();
 builder.Services.AddScoped<ISocijalniNatjecajService, SocijalniNatjecajService>();
 builder.Services.AddScoped<ISocijalniNatjecajDetaljiService, SocijalniNatjecajDetaljiService>();
+builder.Services.AddScoped<ISocijalniBodovniPodaciService, SocijalniBodovniPodaciService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
 
 // Dodaj hrvatski jezik kao default
 var culture = new CultureInfo("hr-HR");

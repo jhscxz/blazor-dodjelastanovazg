@@ -1,3 +1,6 @@
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using Microsoft.AspNetCore.Components;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
@@ -6,21 +9,42 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
     {
         [Parameter] public long Id { get; set; }
 
+        [Inject] private ISocijalniBodovniPodaciService BodovniService { get; set; } = default!;
+
         // Sastav
-        private byte BrojUzdrzavanihPunoljetnih { get; set; } = 1;
+        private byte BrojUzdrzavanihPunoljetnih;
 
         // Socijalno-zdravstveni status
-        private bool PrimateljZMN { get; set; } = true;
-        private bool StatusNjegovatelja { get; set; } = false;
-        private bool KorisnikDoplatka { get; set; } = true;
-        private byte BrojOdraslihInvalidnina { get; set; } = 2;
-        private byte BrojMaloljetnihInvalidnina { get; set; } = 1;
+        private bool PrimateljZMN;
+        private bool StatusNjegovatelja;
+        private bool KorisnikDoplatka;
+        private byte BrojOdraslihInvalidnina;
+        private byte BrojMaloljetnihInvalidnina;
 
         // Posebne okolnosti
-        private bool ZrtvaObiteljskogNasilja { get; set; } = false;
-        private byte BrojAlternativnaSkrb1829 { get; set; } = 1;
-        private byte BrojMjeseciObrana { get; set; } = 12;
-        private byte BrojZrtavaSeksualnogNasilja { get; set; } = 0;
-        private byte BrojCivilnihStradalnika { get; set; } = 1;
+        private bool ZrtvaObiteljskogNasilja;
+        private byte BrojAlternativnaSkrb1829;
+        private byte BrojMjeseciObrana;
+        private byte BrojZrtavaSeksualnogNasilja;
+        private byte BrojCivilnihStradalnika;
+
+        protected override async Task OnInitializedAsync()
+        {
+            var dto = await BodovniService.GetAsync(Id);
+
+            BrojUzdrzavanihPunoljetnih = dto.BrojUzdrzavanePunoljetneDjece;
+
+            PrimateljZMN = dto.PrimateljZajamceneMinimalneNaknade;
+            StatusNjegovatelja = dto.StatusRoditeljaNjegovatelja;
+            KorisnikDoplatka = dto.KorisnikDoplatkaZaPomoc;
+            BrojOdraslihInvalidnina = dto.BrojOdraslihKorisnikaInvalidnine;
+            BrojMaloljetnihInvalidnina = dto.BrojMaloljetnihKorisnikaInvalidnine;
+
+            ZrtvaObiteljskogNasilja = dto.ZrtvaObiteljskogNasilja;
+            BrojAlternativnaSkrb1829 = dto.BrojOsobaUAlternativnojSkrbi;
+            BrojMjeseciObrana = dto.BrojMjeseciObranaSuvereniteta;
+            BrojZrtavaSeksualnogNasilja = dto.BrojClanovaZrtavaSeksualnogNasilja;
+            BrojCivilnihStradalnika = dto.BrojCivilnihStradalnika;
+        }
     }
 }

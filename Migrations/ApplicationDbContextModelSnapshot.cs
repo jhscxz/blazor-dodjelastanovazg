@@ -79,25 +79,25 @@ namespace DodjelaStanovaZG.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<byte?>("BrojCivilnihStradalnika")
+                    b.Property<byte>("BrojCivilnihStradalnika")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte?>("BrojClanovaZrtavaSeksualnogNasiljaDomovinskiRat")
+                    b.Property<byte>("BrojClanovaZrtavaSeksualnogNasilja")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte?>("BrojMaloljetnihKorisnikaInvalidnine")
+                    b.Property<byte>("BrojMaloljetnihKorisnikaInvalidnine")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte?>("BrojMjeseciObranaSuvereniteta")
+                    b.Property<byte>("BrojMjeseciObranaSuvereniteta")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte?>("BrojOdraslihKorisnikaInvalidnine")
+                    b.Property<byte>("BrojOdraslihKorisnikaInvalidnine")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte?>("BrojOsobaUAlternativnojSkrbi")
+                    b.Property<byte>("BrojOsobaUAlternativnojSkrbi")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte?>("BrojUzdrzavanePunoljetneDjece")
+                    b.Property<byte>("BrojUzdrzavanePunoljetneDjece")
                         .HasColumnType("tinyint");
 
                     b.Property<DateTime>("CreatedAt")
@@ -107,11 +107,8 @@ namespace DodjelaStanovaZG.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<byte?>("ManjeOd35Godina")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte?>("ObrazovanjeBaccMaster")
-                        .HasColumnType("tinyint");
+                    b.Property<bool>("KorisnikDoplatkaZaPomoc")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("PeriodEnd")
                         .ValueGeneratedOnAddOrUpdate()
@@ -123,6 +120,12 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("PeriodStart");
 
+                    b.Property<bool>("PrimateljZajamceneMinimalneNaknade")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("StatusRoditeljaNjegovatelja")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -133,8 +136,8 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<long>("ZahtjevId")
                         .HasColumnType("bigint");
 
-                    b.Property<byte?>("ZrtvaObiteljskogNasilja")
-                        .HasColumnType("tinyint");
+                    b.Property<bool>("ZrtvaObiteljskogNasilja")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
