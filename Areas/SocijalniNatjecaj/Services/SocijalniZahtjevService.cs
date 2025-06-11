@@ -27,6 +27,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
+        
+
         private string CurrentUserId =>
             _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? throw new Exception("Korisnik nije prijavljen.");
@@ -75,9 +77,9 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
             return entity.ToDto();
         }
 
-        public async Task<SocijalniNatjecajZahtjev> CreateAsync(SocijalniNatjecajZahtjevDto dto, string? imePrezime,
-            string? oib)
+        public async Task<SocijalniNatjecajZahtjev> CreateAsync(SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib)
         {
+            // 1. Kreiraj entitete bez veza
             var zahtjev = new SocijalniNatjecajZahtjev
             {
                 NatjecajId = dto.NatjecajId,
@@ -97,15 +99,26 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                 Zahtjev = zahtjev
             };
 
-            zahtjev.Clanovi = new List<SocijalniNatjecajClan> { podnositelj };
-            zahtjev.KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci() { Zahtjev = zahtjev };
-            zahtjev.BodovniPodaci = new SocijalniNatjecajBodovniPodaci() { Zahtjev = zahtjev };
+            var kucanstvo = new SocijalniNatjecajKucanstvoPodaci();
+            var bodovni = new SocijalniNatjecajBodovniPodaci();
 
+            // 2. Primijeni audit PRIJE nego povežeš entitete
             AuditHelper.ApplyAudit(
-                new AuditableEntity[] { zahtjev, podnositelj, zahtjev.KucanstvoPodaci!, zahtjev.BodovniPodaci! },
+                new AuditableEntity[] { zahtjev, podnositelj, kucanstvo, bodovni },
                 CurrentUserId, isCreate: true);
 
+            // 3. Poveži entitete
+            zahtjev.Clanovi = new List<SocijalniNatjecajClan> { podnositelj };
+            zahtjev.KucanstvoPodaci = kucanstvo;
+            zahtjev.BodovniPodaci = bodovni;
+
+            podnositelj.Zahtjev = zahtjev;
+            kucanstvo.Zahtjev = zahtjev;
+            bodovni.Zahtjev = zahtjev;
+
+            // 4. Dodaj u kontekst
             await _context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);
+
             return zahtjev;
         }
 

@@ -35,6 +35,7 @@
   <ItemGroup>
     <Folder Include="Areas\Izracun\" />
     <Folder Include="Areas\Natjecaji\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

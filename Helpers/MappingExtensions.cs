@@ -49,23 +49,22 @@ public static class MappingExtensions
             SastavKucanstva = k.SastavKucanstva,
             ZahtjevId = k.ZahtjevId
         }.WithAuditFrom(k);
-    
+
     public static SocijalniNatjecajBodovniPodaciDto ToDto(this SocijalniNatjecajBodovniPodaci b)
         => new SocijalniNatjecajBodovniPodaciDto
             {
-                ZahtjevId                            = b.ZahtjevId,
-                BrojUzdrzavanePunoljetneDjece       = b.BrojUzdrzavanePunoljetneDjece,
-                PrimateljZajamceneMinimalneNaknade  = b.PrimateljZajamceneMinimalneNaknade,
-                StatusRoditeljaNjegovatelja         = b.StatusRoditeljaNjegovatelja,
-                KorisnikDoplatkaZaPomoc             = b.KorisnikDoplatkaZaPomoc,
-                BrojOdraslihKorisnikaInvalidnine    = b.BrojOdraslihKorisnikaInvalidnine,
+                ZahtjevId = b.ZahtjevId,
+                BrojUzdrzavanePunoljetneDjece = b.BrojUzdrzavanePunoljetneDjece,
+                PrimateljZajamceneMinimalneNaknade = b.PrimateljZajamceneMinimalneNaknade,
+                StatusRoditeljaNjegovatelja = b.StatusRoditeljaNjegovatelja,
+                KorisnikDoplatkaZaPomoc = b.KorisnikDoplatkaZaPomoc,
+                BrojOdraslihKorisnikaInvalidnine = b.BrojOdraslihKorisnikaInvalidnine,
                 BrojMaloljetnihKorisnikaInvalidnine = b.BrojMaloljetnihKorisnikaInvalidnine,
-                ZrtvaObiteljskogNasilja             = b.ZrtvaObiteljskogNasilja,
-                BrojOsobaUAlternativnojSkrbi        = b.BrojOsobaUAlternativnojSkrbi,
-                BrojMjeseciObranaSuvereniteta       = b.BrojMjeseciObranaSuvereniteta,
-                BrojClanovaZrtavaSeksualnogNasilja  = b.BrojClanovaZrtavaSeksualnogNasilja,
-                BrojCivilnihStradalnika             = b.BrojCivilnihStradalnika,
+                ZrtvaObiteljskogNasilja = b.ZrtvaObiteljskogNasilja,
+                BrojOsobaUAlternativnojSkrbi = b.BrojOsobaUAlternativnojSkrbi,
+                BrojMjeseciObranaSuvereniteta = b.BrojMjeseciObranaSuvereniteta,
+                BrojClanovaZrtavaSeksualnogNasilja = b.BrojClanovaZrtavaSeksualnogNasilja,
+                BrojCivilnihStradalnika = b.BrojCivilnihStradalnika,
             }
             .WithAuditFrom(b);
-
 }

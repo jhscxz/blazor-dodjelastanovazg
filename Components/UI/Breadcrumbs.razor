@@ -8,10 +8,8 @@
     {
         @for (int i = 0; i < Items.Count; i++)
         {
-            // Uhvati trenutni element u lokalnu varijablu
             var currentItem = Items[i];
 
-            <!-- Separator: strelica se prikazuje ispred svake stavke osim prve -->
             if (i > 0)
             {
                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -26,14 +24,12 @@
                 </svg>
             }
 
-            <!-- Ako stavka ima URL, prikazujemo je kao button s hover efektom -->
             if (!string.IsNullOrEmpty(currentItem.Url))
             {
                 <button type="button"
                         class=@($"flex items-center px-2 py-1 rounded transition-all duration-200 hover:border hover:border-gray-400 hover:text-blue-600 {currentItem.CssClass}")
                         @onclick="(() => Navigation.NavigateTo(currentItem.Url))">
                     
-                    @* Za prvu stavku uvijek prikazujemo kućicu *@
                     @if (i == 0)
                     {
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +48,6 @@
             }
             else
             {
-                <!-- Ako stavka nema URL, prikazujemo je kao običan tekst -->
                 <span class=@($"text-gray-400 px-2 py-1 {currentItem.CssClass}")>
                     @currentItem.Text
                 </span>
@@ -60,25 +55,3 @@
         }
     }
 </nav>
-
-@code {
-    [Parameter]
-    public List<BreadcrumbItem>? Items { get; set; }
-
-    public class BreadcrumbItem
-    {
-        public BreadcrumbItem()
-        {
-        }
-
-        public BreadcrumbItem(string? text, string? cssClass)
-        {
-            Text = text;
-            CssClass = cssClass;
-        }
-
-        public string? Text { get; set; }
-        public string? Url { get; set; }
-        public string? CssClass { get; set; }
-    }
-}

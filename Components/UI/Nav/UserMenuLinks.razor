@@ -1,14 +1,11 @@
 @using Microsoft.AspNetCore.Components.Authorization
-@inject AuthenticationStateProvider AuthStateProvider
 
-@* Navigacijski link za korisnički profil *@
 <AuthorizeView>
     <Authorized>
-        @if (!string.IsNullOrEmpty(currentUserId))
+        @if (!string.IsNullOrEmpty(_currentUserId))
         {
-            <!-- NavItem s linkom na profil i prikazom "Username (UserId)" -->
-            <NavItem Href="@($"/profile/{currentUserId}")"
-                     Text="@($"{currentUserName}")" />
+            <NavItem Href="@($"/profile/{_currentUserId}")"
+                     Text="@($"{_currentUserName}")" />
         }
         else
         {
@@ -20,32 +17,10 @@
     </NotAuthorized>
 </AuthorizeView>
 
-@* Navigacijski link za admin panel s prilagođenom bojom teksta *@
 <NavItem Href="/admin" Text="ADMIN PANEL" TextColor="#ef4444" />
 
-@* Prikaz linka "ODJAVI SE" samo ako je korisnik autentificiran *@
 <AuthorizeView>
     <Authorized>
-        @* Gumb za odjavu s blago sivom bojom *@
         <NavItem Href="/Identity/Account/Logout" Text="ODJAVI SE" TextColor="#9CA3AF" UseLogoutIcon="true" />
     </Authorized>
 </AuthorizeView>
-
-@code {
-    private string currentUserId = "";
-    private string currentUserName = "";
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (user.Identity?.IsAuthenticated ?? false)
-        {
-            // Dohvaćamo UserId iz claima NameIdentifier
-            currentUserId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "";
-            
-            // Dohvaćamo UserName iz user.Identity.Name (ili iz nekog drugog claima)
-            currentUserName = user.Identity.Name ?? "";
-        }
-    }
-}

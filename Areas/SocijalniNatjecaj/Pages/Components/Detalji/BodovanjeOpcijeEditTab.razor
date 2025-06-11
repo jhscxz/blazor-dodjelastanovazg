@@ -2,6 +2,7 @@
 @using MudBlazor
 @using DodjelaStanovaZG.Components.UI
 @using Microsoft.AspNetCore.Components.Web
+@using DodjelaStanovaZG.Components.UI.Buttons
 @inherits BodovanjeOpcijeEditTabBase
 
 <PageTitle>Uredi bodovne podatke</PageTitle>
@@ -99,10 +100,12 @@
                     </MudTabs>
                 </MudCardContent>
 
-                <MudCardActions Class="d-flex justify-end">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveChanges">
-                        <MudIcon Icon="@Icons.Material.Filled.Save" Class="me-2" /> Spremi promjene
-                    </MudButton>
+                <MudCardActions Class="mt-4">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <FormButtons Submit="SaveChanges" Cancel="Cancel" />
+                        </MudItem>
+                    </MudGrid>
                 </MudCardActions>
             </MudCard>
         }

@@ -6,22 +6,14 @@ using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji;
 
-public partial class BodovanjeOpcijeEditTabBase : ComponentBase
+public class BodovanjeOpcijeEditTabBase : ComponentBase
 {
     [Parameter] public long Id { get; set; }
-
-    [Inject] protected IUnitOfWork UnitOfWork { get; set; } = default!;
-    [Inject] protected ISnackbar Snackbar { get; set; } = default!;
-    [Inject] protected NavigationManager Navigation { get; set; } = default!;
+    [Inject] protected IUnitOfWork UnitOfWork { get; set; } = null!;
+    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+    [Inject] protected NavigationManager Navigation { get; set; } = null!;
 
     protected SocijalniNatjecajBodovniPodaciDto? Model { get; set; }
-
-    private DateTime CreatedAt { get; set; }
-    private string? CreatedBy { get; set; }
-    private string? CreatedByUserName { get; set; }
-    private DateTime? UpdatedAt { get; set; }
-    private string? UpdatedBy { get; set; }
-    private string? UpdatedByUserName { get; set; }
     
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
@@ -45,6 +37,11 @@ public partial class BodovanjeOpcijeEditTabBase : ComponentBase
         await UnitOfWork.SaveChangesAsync();
 
         Snackbar.Add("Podaci uspješno spremljeni.", Severity.Success);
+        Navigation.NavigateTo($"/socijalni/detalji/{Id}?tab=Bodovi");
+    }
+    
+    protected void Cancel()
+    {
         Navigation.NavigateTo($"/socijalni/detalji/{Id}?tab=Bodovi");
     }
 }

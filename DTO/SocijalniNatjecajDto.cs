@@ -4,7 +4,7 @@ namespace DodjelaStanovaZG.DTO;
 
 public class SocijalniNatjecajDto
 {
-    public long? Id { get; set; } // Ako je null → Create
+    public long? Id { get; set; }
 
     [Required]
     public int KlasaPredmeta { get; set; }

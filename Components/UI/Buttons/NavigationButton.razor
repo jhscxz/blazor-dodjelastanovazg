@@ -1,21 +1,3 @@
-@using Microsoft.AspNetCore.Components.Routing
-
 <button @onclick="Navigate" class="@ButtonClass">
     @ChildContent
 </button>
-
-@code {
-    [Parameter] public string NavigateTo { get; set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
-    [Parameter] public string ButtonClass { get; set; }
-
-    [Inject] NavigationManager NavigationManager { get; set; }
-
-    private void Navigate()
-    {
-        if (!string.IsNullOrEmpty(NavigateTo))
-        {
-            NavigationManager.NavigateTo(NavigateTo);
-        }
-    }
-}

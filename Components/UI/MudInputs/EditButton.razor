@@ -11,22 +11,3 @@
         @Label
     </MudButton>
 </MudStack>
-
-@code {
-    [Parameter] public string Label { get; set; } = "Uredi";
-    [Parameter] public string Icon { get; set; } = Icons.Material.Filled.Edit;
-    [Parameter] public string? Href { get; set; }
-    [Parameter] public EventCallback OnClick { get; set; }
-    [Parameter] public string Class { get; set; } = "mt-2";
-
-    [Inject] private NavigationManager Navigation { get; set; } = default!;
-
-    private Task HandleClick()
-    {
-        if (!string.IsNullOrWhiteSpace(Href))
-        {
-            Navigation.NavigateTo(Href);
-        }
-        return OnClick.InvokeAsync();
-    }
-}

@@ -1,7 +1,6 @@
 @using MudBlazor
 @using DodjelaStanovaZG.Enums
 
-<!-- RezultatObradeToggle.razor -->
 <MudStack Row="true" Spacing="2" Class="mt-4 mb-6">
     <MudToggleGroup T="RezultatObrade?"
                     SelectionMode="SelectionMode.ToggleSelection"
@@ -13,8 +12,3 @@
         <MudToggleItem Value="@RezultatObrade.Zadovoljava" Text="ZADOVOLJAVA" />
     </MudToggleGroup>
 </MudStack>
-
-@code {
-    [Parameter] public RezultatObrade? Value { get; set; }
-    [Parameter] public EventCallback<RezultatObrade?> ValueChanged { get; set; }
-}

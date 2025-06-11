@@ -10,8 +10,8 @@ public partial class KucanstvoEditFormPage
 {
     [Parameter] public long ZahtjevId { get; set; }
 
-    [Inject] private IUnitOfWork UnitOfWork { get; set; } = default!;
-    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    [Inject] private IUnitOfWork UnitOfWork { get; set; } = null!;
+    [Inject] private NavigationManager Navigation { get; set; } = null!;
 
     private SocijalniKucanstvoPodaciDto? _kucanstvoModel;
     private MudForm _form = null!;

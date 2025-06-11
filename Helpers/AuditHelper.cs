@@ -21,4 +21,10 @@ public static class AuditHelper
             auditable.UpdatedBy = userId;
         }
     }
+    public static void ApplyAudit(IEnumerable<AuditableEntity> entities, string userId, bool isCreate)
+    {
+        foreach (var e in entities)
+            ApplyAudit(e, userId, isCreate);
+    }
+
 }

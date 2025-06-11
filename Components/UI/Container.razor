@@ -1,32 +1,14 @@
-@code {
-
-    /// <summary>
-    /// Lista breadcrumb stavki za navigaciju.
-    /// </summary>
-    [Parameter]
-    public List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = new();
-
-    /// <summary>
-    /// RenderFragment za glavni sadržaj kartice.
-    /// </summary>
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
-
-}
-
 <div class="px-4">
     <div class="w-full max-w-[115rem] mx-auto bg-white rounded shadow-sm border border-gray-300 pt-3 pb-4 px-4 h-fit">
-        <!-- Header sekcija - Breadcrumbs se prikazuju s lijeve strane -->
+
         <div class="flex justify-start items-center h-fit">
             <div class="text-xs">
                 <Breadcrumbs Items="BreadcrumbItems"/>
             </div>
         </div>
 
-        <!-- Horizontalna linija ispod headera s razmakom (my-4 dodaje vertikalne margine) -->
         <div class="my-5 border-t border-gray-300"></div>
 
-        <!-- Glavni sadržaj -->
         <div>
             @ChildContent
         </div>
