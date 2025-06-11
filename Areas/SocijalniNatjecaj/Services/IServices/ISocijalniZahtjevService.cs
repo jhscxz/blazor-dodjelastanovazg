@@ -1,5 +1,7 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Models;
+using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 
@@ -12,4 +14,11 @@ public interface ISocijalniZahtjevService
     Task UpdateOsnovniPodaciAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto);
     Task<SocijalniNatjecajZahtjev> GetZahtjevByIdAsync(long zahtjevId);
     public SocijalniNatjecajClan ConvertToEntity(SocijalniNatjecajClanDto clanDto, SocijalniNatjecajZahtjev zahtjev);
+    
+    Task<PagedResult<SocijalniNatjecajZahtjevDto>> GetPagedAsync(
+        long natjecajId,
+        int page,
+        int pageSize,
+        string? sortBy,
+        SortDirection sortDirection);
 }

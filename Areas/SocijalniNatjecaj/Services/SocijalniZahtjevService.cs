@@ -6,6 +6,7 @@ using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Models;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
 {
@@ -156,5 +157,50 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
                 ZahtjevId = zahtjev.Id,
                 Zahtjev = zahtjev
             };
+        
+        public async Task<PagedResult<SocijalniNatjecajZahtjevDto>> GetPagedAsync(
+            long natjecajId,
+            int page,
+            int pageSize,
+            string? sortBy,
+            SortDirection sortDirection)
+        {
+            var query = BaseQuery(asNoTracking: true)
+                .Where(x => x.NatjecajId == natjecajId);
+
+            // Primijeni sortiranje (ako postoji labela)
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                query = query.OrderByDynamic(sortBy, sortDirection == SortDirection.Descending);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .Select(x => new SocijalniNatjecajZahtjevDto
+                {
+                    Id = x.Id,
+                    KlasaPredmeta = x.KlasaPredmeta,
+                    DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
+                    Adresa = x.Adresa!,
+                    NatjecajId = x.NatjecajId,
+                    Bodovni = x.KucanstvoPodaci == null ? null : new SocijalniBodovniDto()
+                    {
+                        UkupniPrihodKucanstva = x.KucanstvoPodaci.UkupniPrihodKucanstva,
+                        StambeniStatusKucanstva = x.KucanstvoPodaci.StambeniStatusKucanstva,
+                        SastavKucanstva = x.KucanstvoPodaci.SastavKucanstva
+                    }
+                })
+                .ToListAsync();
+
+            return new PagedResult<SocijalniNatjecajZahtjevDto>
+            {
+                Items = items,
+                TotalCount = totalCount
+            };
+        }
+
     }
 }

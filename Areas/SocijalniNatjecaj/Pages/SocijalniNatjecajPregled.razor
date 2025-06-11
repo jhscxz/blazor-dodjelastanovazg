@@ -1,7 +1,6 @@
 @page "/socijalni/pregled/{NatjecajId:long}"
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @using MudBlazor
 @inherits SocijalniNatjecajPregledBase
 
@@ -19,53 +18,49 @@
             </MudButton>
         </div>
 
-        <!-- Tablica unutar MudPaper s prilagođenim stilovima -->
         <MudTable T="SocijalniNatjecajZahtjevDto"
-                  Items="Natjecaji"
+                  ServerData="LoadServerData"
                   Hover="true"
                   Striped="true"
                   RowsPerPage="10"
                   Dense="true"
                   Outlined="true"
-                  Bordered="false" 
-        Breakpoint="Breakpoint.Sm"
-        Class="only-horizontal-borders" 
-        @ref="Table">
+                  Bordered="false"
+                  Breakpoint="Breakpoint.Sm"
+                  Class="only-horizontal-borders"
+                  @ref="Table">
 
-        <HeaderContent>
-            <MudTh Style="font-weight: bold;">Klasa predmeta</MudTh>
-            <MudTh Style="font-weight: bold;">Datum podnošenja</MudTh>
-            <MudTh Style="font-weight: bold;">Adresa</MudTh>
-            <MudTh Style="font-weight: bold;">Ukupni prihod (€)</MudTh>
-            <MudTh Style="font-weight: bold;">Stambeni status</MudTh>
-            <MudTh Style="font-weight: bold;">Sastav kućanstva</MudTh>
-            <MudTh Style="font-weight: bold;">Akcija</MudTh>
-        </HeaderContent>
+            <HeaderContent>
+                <MudTh Style="font-weight: bold;">Klasa predmeta</MudTh>
+                <MudTh Style="font-weight: bold;">Datum podnošenja</MudTh>
+                <MudTh Style="font-weight: bold;">Adresa</MudTh>
+                <MudTh Style="font-weight: bold;">Ukupni prihod (€)</MudTh>
+                <MudTh Style="font-weight: bold;">Stambeni status</MudTh>
+                <MudTh Style="font-weight: bold;">Sastav kućanstva</MudTh>
+                <MudTh Style="font-weight: bold;">Akcija</MudTh>
+            </HeaderContent>
 
-        <RowTemplate>
-            <MudTd DataLabel="Klasa">@context.KlasaPredmeta</MudTd>
-            <MudTd DataLabel="Datum">
-                @context.DatumPodnosenjaZahtjeva?.ToString("dd.MM.yyyy")
-            </MudTd>
+            <RowTemplate>
+                <MudTd DataLabel="Klasa">@context.KlasaPredmeta</MudTd>
+                <MudTd DataLabel="Datum">
+                    @context.DatumPodnosenjaZahtjeva?.ToString("dd.MM.yyyy")
+                </MudTd>
+                <MudTd DataLabel="Adresa">@context.Adresa</MudTd>
+                <MudTd DataLabel="Prihod">
+                    @($"{context.Bodovni?.UkupniPrihodKucanstva?.ToString("N2") ?? ""} €")
+                </MudTd>
+                <MudTd DataLabel="Stambeni">@context.Bodovni?.StambeniStatusKucanstva</MudTd>
+                <MudTd DataLabel="Sastav">@context.Bodovni?.SastavKucanstva</MudTd>
+                <MudTd DataLabel="Akcija">
+                    <MudIconButton Icon="@Icons.Material.Filled.Info"
+                                   Size="Size.Small"
+                                   OnClick="() => NavigateToDetails(context)" />
+                </MudTd>
+            </RowTemplate>
 
-
-            <MudTd DataLabel="Adresa">@context.Adresa</MudTd>
-            <MudTd DataLabel="Prihod">
-                @($"{context.Bodovni?.UkupniPrihodKucanstva?.ToString("N2") ?? ""} €")
-            </MudTd>
-            <MudTd DataLabel="Stambeni">@context.Bodovni?.StambeniStatusKucanstva</MudTd>
-            <MudTd DataLabel="Sastav">@context.Bodovni?.SastavKucanstva</MudTd>
-            <MudTd DataLabel="Akcija">
-                <!-- Gumb za detalje, sličan akcijama u drugoj tablici -->
-                <MudIconButton Icon="@Icons.Material.Filled.Info"
-                               Size="Size.Small"
-                               OnClick="() => NavigateToDetails(context)" />
-            </MudTd>
-        </RowTemplate>
-
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
 
         </MudTable>
 

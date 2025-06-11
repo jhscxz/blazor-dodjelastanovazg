@@ -39,4 +39,22 @@ public class SocijalniNatjecajPregledBase : ComponentBase
     {
         Navigation.NavigateTo($"/socijalni/detalji/{zahtjevDto.Id}");
     }
+    
+    protected async Task<TableData<SocijalniNatjecajZahtjevDto>> LoadServerData(TableState state, CancellationToken cancellationToken)
+    {
+        var result = await UnitOfWork.SocijalniZahtjevService.GetPagedAsync(
+            natjecajId: NatjecajId,
+            page: state.Page,
+            pageSize: state.PageSize,
+            sortBy: state.SortLabel,
+            sortDirection: state.SortDirection
+        );
+
+        return new TableData<SocijalniNatjecajZahtjevDto>
+        {
+            Items = result.Items,
+            TotalItems = result.TotalCount
+        };
+    }
+
 }
