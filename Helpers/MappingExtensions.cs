@@ -24,7 +24,7 @@ public static class MappingExtensions
             Bodovni = new SocijalniBodovniDto(),
             KucanstvoPodaci = x.KucanstvoPodaci?.ToDto(),
             Clanovi = x.Clanovi
-                .Select(c => MappingExtensions.ToDto(c))
+                .Select(c => c.ToDto())
                 .ToList()
         }.WithAuditFrom(x);
     }
@@ -67,4 +67,20 @@ public static class MappingExtensions
                 BrojCivilnihStradalnika = b.BrojCivilnihStradalnika,
             }
             .WithAuditFrom(b);
+    
+    public static void MapOnto(this SocijalniNatjecajBodovniPodaciDto dto, SocijalniNatjecajBodovniPodaci entity)
+    {
+        entity.BrojUzdrzavanePunoljetneDjece = dto.BrojUzdrzavanePunoljetneDjece;
+        entity.PrimateljZajamceneMinimalneNaknade = dto.PrimateljZajamceneMinimalneNaknade;
+        entity.StatusRoditeljaNjegovatelja = dto.StatusRoditeljaNjegovatelja;
+        entity.KorisnikDoplatkaZaPomoc = dto.KorisnikDoplatkaZaPomoc;
+        entity.BrojOdraslihKorisnikaInvalidnine = dto.BrojOdraslihKorisnikaInvalidnine;
+        entity.BrojMaloljetnihKorisnikaInvalidnine = dto.BrojMaloljetnihKorisnikaInvalidnine;
+        entity.ZrtvaObiteljskogNasilja = dto.ZrtvaObiteljskogNasilja;
+        entity.BrojOsobaUAlternativnojSkrbi = dto.BrojOsobaUAlternativnojSkrbi;
+        entity.BrojMjeseciObranaSuvereniteta = dto.BrojMjeseciObranaSuvereniteta;
+        entity.BrojClanovaZrtavaSeksualnogNasilja = dto.BrojClanovaZrtavaSeksualnogNasilja;
+        entity.BrojCivilnihStradalnika = dto.BrojCivilnihStradalnika;
+    }
 }
+

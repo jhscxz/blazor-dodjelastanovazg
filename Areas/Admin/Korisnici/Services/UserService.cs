@@ -20,26 +20,20 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
             TableState state,
             CancellationToken cancellationToken)
         {
-            // Krenemo od svih korisnika
             var query = userManager.Users.AsQueryable();
 
-            // Filtriranje po searchText (UserName ili Email)
             if (!string.IsNullOrWhiteSpace(searchText))
             {
                 query = query.Where(u => u.UserName != null && u.Email != null && (u.UserName.Contains(searchText) || u.Email.Contains(searchText)));
             }
 
-            // Filtriranje po roli, ako nije "All"
             if (!string.IsNullOrWhiteSpace(filterRole) && filterRole != RoleNames.All)
             {
-                // Dohvat korisnika koji su u traženoj roli
                 var usersInRole = await userManager.GetUsersInRoleAsync(filterRole);
                 var userIds = usersInRole.Select(u => u.Id).ToList();
-                // Ograničimo query samo na korisnike iz tog ID skupa
                 query = query.Where(u => userIds.Contains(u.Id));
             }
 
-            // Ukupan broj zapisa (za pager)
             int totalItems = await query.CountAsync(cancellationToken);
 
             // Paginacija i dohvat
@@ -77,12 +71,9 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
         public async Task<bool> DeleteUserAsync(UserManager<IdentityUser> userManager, string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
-            if (user != null)
-            {
-                var result = await userManager.DeleteAsync(user);
-                return result.Succeeded;
-            }
-            return false;
+            if (user == null) return false;
+            var result = await userManager.DeleteAsync(user);
+            return result.Succeeded;
         }
     }
 }

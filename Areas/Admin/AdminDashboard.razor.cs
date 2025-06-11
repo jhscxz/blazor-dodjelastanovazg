@@ -1,5 +1,4 @@
 using DodjelaStanovaZG.Components.UI;
-using DodjelaStanovaZG.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 
@@ -8,13 +7,12 @@ namespace DodjelaStanovaZG.Areas.Admin;
 [Authorize(Roles = "Admin")]
 public partial class AdminDashboard : ComponentBase
 {
-    [Inject] private BreadcrumbService BreadcrumbService { get; set; } = null!;
     protected List<AdminCard> AdminCards = [];
 
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
-        new Breadcrumbs.BreadcrumbItem { Text = "Početna", Url = "/" },
-        new Breadcrumbs.BreadcrumbItem { Text = "Admin Nadzorna ploča", CssClass = "text-red-500 font-bold" },
+        new() { Text = "Početna", Url = "/" },
+        new() { Text = "Admin Nadzorna ploča", CssClass = "text-red-500 font-bold" },
     ];
     
     protected override void OnInitialized()
@@ -95,6 +93,6 @@ public partial class AdminDashboard : ComponentBase
         public string Description { get; init; } = "";
         public string NavigateTo { get; init; } = "";
         public string ButtonText { get; init; } = "";
-        public RenderFragment IconSvg { get; init; } = default!;
+        public RenderFragment IconSvg { get; init; } = null!;
     }
 }

@@ -8,12 +8,12 @@ namespace DodjelaStanovaZG.Models;
 public class Natjecaj : AuditableEntity
 {
     [Key]
-    public long Id { get; set; }
+    public long Id { get; init; }
     [Required]
     [Range(1, 2)]
     public byte PriustiviIliSocijalni { get; set; } // 1 = priustivi, 2 = socijalni
     [Required]
-    public int Klasa { get; set; }
+    public int Klasa { get; init; }
     [Required]
     [Column(TypeName = "decimal(10,2)")]
     public decimal ProsjekPlace { get; set; }

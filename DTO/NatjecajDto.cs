@@ -4,7 +4,7 @@ namespace DodjelaStanovaZG.DTO;
 
 public class NatjecajDto
 {
-    public long? Id { get; set; } // null kod kreiranja, postavljen kod ažuriranja
+    public long? Id { get; set; }
 
     [Required]
     [Range(1, 2)]

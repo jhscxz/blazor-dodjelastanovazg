@@ -1,5 +1,4 @@
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO;
-using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
@@ -10,16 +9,13 @@ namespace DodjelaStanovaZG.Areas.Admin.Natjecaji;
 public partial class NatjecajForm : ComponentBase
 {
     [Parameter] public int? Klasa { get; set; }
-
     [Inject] public required NavigationManager Navigation { get; set; }
     [Inject] public required IUnitOfWork UnitOfWork { get; set; }
-
-
-    protected MudForm _form = null!;
+    private MudForm _form = null!;
     protected NatjecajDto Natjecaj { get; set; } = new();
-    protected List<string> ErrorMessages { get; set; } = [];
+    private List<string> ErrorMessages { get; } = [];
 
-    protected string FormTitle => Klasa == null ? "Dodaj natječaj" : $"Uredi natječaj ({Klasa})";
+    private string FormTitle => Klasa == null ? "Dodaj natječaj" : $"Uredi natječaj ({Klasa})";
 
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems =>
     [

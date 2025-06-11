@@ -19,7 +19,7 @@ public class NatjecajSeedService
 
         var lista = new List<Natjecaj>
         {
-            new Natjecaj
+            new()
             {
                 PriustiviIliSocijalni = 2, // Socijalni
                 Klasa = 1,

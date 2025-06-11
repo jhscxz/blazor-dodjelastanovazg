@@ -10,11 +10,11 @@ namespace DodjelaStanovaZG.Models;
 public class SocijalniNatjecajBodovniPodaci : AuditableEntity
 {
     [Key]
-    public long Id { get; set; }
+    public long Id { get; init; }
 
     [Required]
     [ForeignKey(nameof(Zahtjev))]
-    public long ZahtjevId { get; set; }
+    public long ZahtjevId { get; init; }
 
     public SocijalniNatjecajZahtjev Zahtjev { get; set; } = null!;
 

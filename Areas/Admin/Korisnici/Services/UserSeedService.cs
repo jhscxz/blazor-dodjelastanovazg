@@ -2,29 +2,20 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services;
 
-public class UserSeedService
+public class UserSeedService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-
-    public UserSeedService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+    private async Task SeedSuperAdminUser()
     {
-        _userManager = userManager;
-        _roleManager = roleManager;
-    }
+        const string superAdminEmail = "superadmin@example.com";
+        const string superAdminPassword = "SuperAdmin@123";
+        const string superAdminRole = "SuperAdmin";
 
-    public async Task SeedSuperAdminUser()
-    {
-        string superAdminEmail = "superadmin@example.com";
-        string superAdminPassword = "SuperAdmin@123";
-        string superAdminRole = "SuperAdmin";
-
-        if (!await _roleManager.RoleExistsAsync(superAdminRole))
+        if (!await roleManager.RoleExistsAsync(superAdminRole))
         {
-            await _roleManager.CreateAsync(new IdentityRole(superAdminRole));
+            await roleManager.CreateAsync(new IdentityRole(superAdminRole));
         }
 
-        var superAdminUser = await _userManager.FindByEmailAsync(superAdminEmail);
+        var superAdminUser = await userManager.FindByEmailAsync(superAdminEmail);
         if (superAdminUser == null)
         {
             superAdminUser = new IdentityUser
@@ -34,30 +25,30 @@ public class UserSeedService
                 EmailConfirmed = true
             };
 
-            var result = await _userManager.CreateAsync(superAdminUser, superAdminPassword);
+            var result = await userManager.CreateAsync(superAdminUser, superAdminPassword);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(superAdminUser, superAdminRole);
+                await userManager.AddToRoleAsync(superAdminUser, superAdminRole);
             }
         }
-        else if (!await _userManager.IsInRoleAsync(superAdminUser, superAdminRole))
+        else if (!await userManager.IsInRoleAsync(superAdminUser, superAdminRole))
         {
-            await _userManager.AddToRoleAsync(superAdminUser, superAdminRole);
+            await userManager.AddToRoleAsync(superAdminUser, superAdminRole);
         }
     }
 
-    public async Task SeedAdminUser()
+    private async Task SeedAdminUser()
     {
-        string adminEmail = "jhsc.xz@gmail.com";
-        string adminPassword = "Admin@123";
-        string adminRole = "Admin";
+        const string adminEmail = "jhsc.xz@gmail.com";
+        const string adminPassword = "Admin@123";
+        const string adminRole = "Admin";
 
-        if (!await _roleManager.RoleExistsAsync(adminRole))
+        if (!await roleManager.RoleExistsAsync(adminRole))
         {
-            await _roleManager.CreateAsync(new IdentityRole(adminRole));
+            await roleManager.CreateAsync(new IdentityRole(adminRole));
         }
 
-        var adminUser = await _userManager.FindByEmailAsync(adminEmail);
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
         {
             adminUser = new IdentityUser
@@ -67,31 +58,31 @@ public class UserSeedService
                 EmailConfirmed = true
             };
 
-            var result = await _userManager.CreateAsync(adminUser, adminPassword);
+            var result = await userManager.CreateAsync(adminUser, adminPassword);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(adminUser, adminRole);
+                await userManager.AddToRoleAsync(adminUser, adminRole);
             }
         }
-        else if (!await _userManager.IsInRoleAsync(adminUser, adminRole))
+        else if (!await userManager.IsInRoleAsync(adminUser, adminRole))
         {
-            await _userManager.AddToRoleAsync(adminUser, adminRole);
+            await userManager.AddToRoleAsync(adminUser, adminRole);
         }
     }
 
-    public async Task SeedUsers(IEnumerable<SeedUserModel> seedUsers)
+    private async Task SeedUsers(IEnumerable<SeedUserModel> seedUsers)
     {
         foreach (var user in seedUsers)
         {
             foreach (var role in user.Roles)
             {
-                if (!await _roleManager.RoleExistsAsync(role))
+                if (!await roleManager.RoleExistsAsync(role))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
+                    await roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
 
-            var identityUser = await _userManager.FindByEmailAsync(user.Email);
+            var identityUser = await userManager.FindByEmailAsync(user.Email);
             if (identityUser == null)
             {
                 identityUser = new IdentityUser
@@ -101,22 +92,20 @@ public class UserSeedService
                     EmailConfirmed = true
                 };
 
-                var result = await _userManager.CreateAsync(identityUser, user.Password);
-                if (result.Succeeded)
+                var result = await userManager.CreateAsync(identityUser, user.Password);
+                if (!result.Succeeded) continue;
+                foreach (var role in user.Roles)
                 {
-                    foreach (var role in user.Roles)
-                    {
-                        await _userManager.AddToRoleAsync(identityUser, role);
-                    }
+                    await userManager.AddToRoleAsync(identityUser, role);
                 }
             }
             else
             {
                 foreach (var role in user.Roles)
                 {
-                    if (!await _userManager.IsInRoleAsync(identityUser, role))
+                    if (!await userManager.IsInRoleAsync(identityUser, role))
                     {
-                        await _userManager.AddToRoleAsync(identityUser, role);
+                        await userManager.AddToRoleAsync(identityUser, role);
                     }
                 }
             }
