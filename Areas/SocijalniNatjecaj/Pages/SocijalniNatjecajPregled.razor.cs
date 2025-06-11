@@ -10,12 +10,9 @@ public class SocijalniNatjecajPregledBase : ComponentBase
 {
     [Inject] public required IUnitOfWork UnitOfWork { get; set; }
     [Inject] public NavigationManager Navigation { get; set; } = null!;
-
     [Parameter] public long NatjecajId { get; set; }
-
     protected MudTable<SocijalniNatjecajZahtjevDto> Table = null!;
     protected List<SocijalniNatjecajZahtjevDto> Natjecaji { get; set; } = [];
-
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
         new() { Text = "Početna", Url = "/" },
