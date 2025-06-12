@@ -1,4 +1,5 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
@@ -11,6 +12,7 @@ public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
 {
     [Inject] public required IUnitOfWork UnitOfWork { get; set; }
     [Inject] public required NavigationManager Navigation { get; set; }
+    [Inject] private ISocijalniBodoviService BodoviService { get; set; } = null!;
 
     [Parameter] public long NatjecajId { get; set; }
 
@@ -68,6 +70,7 @@ public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
                 ZahtjevModel.Oib);
 
             await UnitOfWork.SaveChangesAsync();
+            await BodoviService.IzracunajIBodujAsync(zahtjev.Id);
 
             if (!_disposed)
                 Navigation.NavigateTo($"/socijalni/detalji/{zahtjev.Id}");

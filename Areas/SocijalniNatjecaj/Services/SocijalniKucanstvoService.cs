@@ -43,7 +43,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
             podaci.SastavKucanstva         = dto.SastavKucanstva!.Value;
 
             // audit samo na entitetu kućanstva
-            AuditHelper.ApplyAudit(podaci, _userContext.GetCurrentUserId(), isCreate: false);
+            //AuditHelper.ApplyAudit(podaci, _userContext.GetCurrentUserId(), isCreate: false);
 
             await _context.SaveChangesAsync();
 

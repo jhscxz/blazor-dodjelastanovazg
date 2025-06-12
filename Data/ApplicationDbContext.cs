@@ -68,4 +68,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<SocijalniNatjecajClan> SocijalniNatjecajClanovi { get; set; }
     public DbSet<SocijalniNatjecajBodovniPodaci> SocijalniNatjecajBodovniPodaci { get; set; }
     public DbSet<SocijalniNatjecajKucanstvoPodaci> SocijalniNatjecajKucanstvoPodaci { get; set; }
+    public DbSet<SocijalniNatjecajBodovi> SocijalniNatjecajBodovi { get; set; }
+
 }

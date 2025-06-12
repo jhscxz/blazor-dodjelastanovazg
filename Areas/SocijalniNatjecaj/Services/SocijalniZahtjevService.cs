@@ -102,20 +102,23 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
 
             var kucanstvo = new SocijalniNatjecajKucanstvoPodaci();
             var bodovni = new SocijalniNatjecajBodovniPodaci();
-
+            var bodovi = new SocijalniNatjecajBodovi();
+            
             // 2. Primijeni audit PRIJE nego povežeš entitete
             AuditHelper.ApplyAudit(
-                new AuditableEntity[] { zahtjev, podnositelj, kucanstvo, bodovni },
+                new AuditableEntity[] { zahtjev, podnositelj, kucanstvo, bodovni, bodovi },
                 CurrentUserId, isCreate: true);
 
             // 3. Poveži entitete
             zahtjev.Clanovi = new List<SocijalniNatjecajClan> { podnositelj };
             zahtjev.KucanstvoPodaci = kucanstvo;
             zahtjev.BodovniPodaci = bodovni;
-
+            zahtjev.Bodovi = bodovi;
+            
             podnositelj.Zahtjev = zahtjev;
             kucanstvo.Zahtjev = zahtjev;
             bodovni.Zahtjev = zahtjev;
+            bodovi.Zahtjev = zahtjev;
 
             // 4. Dodaj u kontekst
             await _context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);

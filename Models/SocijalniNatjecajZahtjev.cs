@@ -20,4 +20,5 @@ public class SocijalniNatjecajZahtjev : AuditableEntity
     public ICollection<SocijalniNatjecajClan> Clanovi { get; set; } = new List<SocijalniNatjecajClan>();
     public SocijalniNatjecajKucanstvoPodaci? KucanstvoPodaci { get; set; }
     public SocijalniNatjecajBodovniPodaci? BodovniPodaci { get; set; }
+    public SocijalniNatjecajBodovi? Bodovi { get; set; }
 }

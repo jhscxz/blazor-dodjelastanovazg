@@ -1,4 +1,5 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -9,6 +10,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
     {
         [Inject] public ISnackbar Snackbar { get; set; } = null!;
         [Inject] public IUnitOfWork UnitOfWork { get; set; } = null!;
+        [Inject] private ISocijalniZahtjevObradaService ObradaService { get; set; } = null!;
         [Parameter] public long Id { get; set; }
 
         protected SocijalniNatjecajZahtjevDto Zahtjev { get; set; } = null!;
@@ -39,10 +41,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
             if (result is { Canceled: false, Data: SocijalniNatjecajClanDto noviClanDto })
             {
-                var zahtjev = await UnitOfWork.SocijalniZahtjevService.GetZahtjevByIdAsync(Id);
-                var noviClan = UnitOfWork.SocijalniZahtjevService.ConvertToEntity(noviClanDto, zahtjev);
-                await UnitOfWork.SocijalniClanService.AddClanAsync(noviClan);
-                await UnitOfWork.SaveChangesAsync();
+                await ObradaService.DodajClanaIObracunajAsync(Id, noviClanDto); 
 
                 Clanovi.Add(noviClanDto);
                 Snackbar.Add("Član kućanstva je uspješno dodan!", Severity.Success);
@@ -86,9 +85,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
             if (result is { Canceled: false, Data: SocijalniNatjecajClanDto azuriraniClan })
             {
-                await UnitOfWork.SocijalniClanService.EditClanAsync(azuriraniClan);
-                await UnitOfWork.SaveChangesAsync();
-
+                await ObradaService.EditClanIObracunajAsync(azuriraniClan);
+                
                 var index = Clanovi.FindIndex(c => c.Id == azuriraniClan.Id);
                 if (index >= 0)
                     Clanovi[index] = azuriraniClan;
@@ -111,8 +109,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
             try
             {
-                await UnitOfWork.SocijalniClanService.RemoveClanAsync(Id, id);
-                await UnitOfWork.SaveChangesAsync();
+                await ObradaService.ObrisiClanaIObracunajAsync(Id, id);
 
                 Clanovi.RemoveAll(c => c.Id == id);
                 Snackbar.Add("Član kućanstva je obrisan.", Severity.Success);

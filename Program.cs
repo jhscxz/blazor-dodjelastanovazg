@@ -63,6 +63,8 @@ builder.Services.AddScoped<ISocijalniClanService, SocijalniClanService>();
 builder.Services.AddScoped<ISocijalniKucanstvoService, SocijalniKucanstvoService>();
 builder.Services.AddScoped<ISocijalniZahtjevService, SocijalniZahtjevService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddScoped<ISocijalniBodoviService, SocijalniBodoviService>();
+builder.Services.AddScoped<ISocijalniZahtjevObradaService, SocijalniZahtjevObradaService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Dodaj hrvatski jezik kao default

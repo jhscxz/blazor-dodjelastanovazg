@@ -11,11 +11,9 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
     public partial class OsnovniPodaciEditFormPage
     {
         [Parameter] public long ZahtjevId { get; set; }
-
         [Inject] private NavigationManager Navigation { get; set; } = default!;
-        
         [Inject] private IUnitOfWork UnitOfWork { get; set; } = default!;
-
+        [Inject] private ISocijalniZahtjevObradaService ObradaService { get; set; } = default!;
         private SocijalniNatjecajOsnovnoEditDto? _socijalniNatjecajModel;
         private MudForm _form = null!;
         private List<string> ErrorMessages { get; set; } = new();
@@ -67,8 +65,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 
             if (_toggleRezultat != null) _socijalniNatjecajModel.RezultatObrade = (RezultatObrade)_toggleRezultat.Value;
 
-            await UnitOfWork.SocijalniZahtjevService.UpdateOsnovniPodaciAsync(ZahtjevId, _socijalniNatjecajModel);
-            await UnitOfWork.SaveChangesAsync();
+            await ObradaService.AzurirajOsnovnoIObracunajAkoTrebaAsync(ZahtjevId, _socijalniNatjecajModel);
+
             
             Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=OsnovniPodaci");
         }
