@@ -9,7 +9,7 @@ public interface ISocijalniZahtjevService
 {
     Task<SocijalniNatjecajZahtjevDto> GetDetaljiAsync(long id);
     Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync();
-    Task<SocijalniNatjecajZahtjevDto> GetByIdAsync(long id);
+    //Task<SocijalniNatjecajZahtjevDto> GetByIdAsync(long id);
     Task<SocijalniNatjecajZahtjev> CreateAsync(SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib);
     Task UpdateOsnovniPodaciAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto);
     Task<SocijalniNatjecajZahtjev> GetZahtjevByIdAsync(long zahtjevId);

@@ -1,7 +1,6 @@
 @page "/socijalni/detalji/{Id:long}"
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji
 @using DodjelaStanovaZG.Components.UI
-@using DodjelaStanovaZG.Enums
 @using MudBlazor
 
 <Container BreadcrumbItems="BreadcrumbItems">
@@ -11,7 +10,10 @@
                 <MudCardContent>
                     <MudTabs @bind-ActivePanelIndex="_selectedTabIndex"
                              Rounded="true"
-                             PanelClass="pa-6">
+                             Elevation="1"
+                             PanelClass="pa-2"
+                             Centered="true"
+                             ActiveTabClass="border-solid border-1 mud-border-primary">
 
                         <MudTabPanel Text="Osnovni podaci">
                             <OsnovniPodaciTab Id="@Id" />
@@ -29,7 +31,7 @@
                             <BodovanjeOpcijeTab Id="@Id" />
                         </MudTabPanel>
                         
-                        <MudTabPanel Text="Bodovi">
+                        <MudTabPanel Text="Pregled bodova">
                             <BodovanjeTab Id="@Id" />
                         </MudTabPanel>
 

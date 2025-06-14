@@ -6,7 +6,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 {
     public class SocijalniKucanstvoPodaciDto : AuditableDto
     {
-        public long ZahtjevId { get; set; }
+        public long ZahtjevId { get; init; }
 
         [Required(ErrorMessage = "Ukupni prihod kućanstva je obavezan.")]
         [Range(0.01, 9999999.99, ErrorMessage = "Iznos mora biti veći od 0.")]

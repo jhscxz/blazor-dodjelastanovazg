@@ -7,7 +7,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 {
     public class SocijalniNatjecajZahtjevDto : AuditableDto
     {
-        public long Id { get; set; }
+        public long Id { get; init; }
         [Required(ErrorMessage = "Klasa predmeta je obavezna.")]
         public int? KlasaPredmeta { get; set; }
         [Required(ErrorMessage = "Datum podnošenja je obavezan.")]
@@ -24,8 +24,8 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
         public string? NapomenaObrade { get; set; }
         public long NatjecajId { get; set; }
         [Required]
-        public SocijalniBodovniDto? Bodovni { get; set; } = new();
-        public List<SocijalniNatjecajClanDto>? Clanovi { get; set; }
-        public SocijalniKucanstvoPodaciDto? KucanstvoPodaci { get; set; }
+        public SocijalniBodovniDto? Bodovni { get; init; } = new();
+        public List<SocijalniNatjecajClanDto>? Clanovi { get; init; }
+        public SocijalniKucanstvoPodaciDto? KucanstvoPodaci { get; init; }
         }
 }

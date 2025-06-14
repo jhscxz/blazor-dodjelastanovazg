@@ -4,11 +4,17 @@
 
 <MudCard Outlined="true" Rounded="true">
     <MudCardContent>
-        <MudTabs Rounded="true" PanelClass="pa-0" Elevation="0">
+        <MudTabs 
+            Rounded="true" 
+            PanelClass="pa-6" 
+            Elevation="1"
+            Color="Color.Default"
+            Centered="true"
+            ActiveTabClass="border-solid border-1 mud-border-primary">
 
             <!-- TAB 1 -->
             <MudTabPanel Text="Sastav kućanstva">
-                <MudCard Outlined="true" Class="pa-4">
+                <MudCard Outlined="true" Class="pa-2">
                     <MudStack Spacing="1">
                         <MudNumericField T="byte"
                                          Label="Broj uzdržavanih punoljetnih na redovnom školovanju"

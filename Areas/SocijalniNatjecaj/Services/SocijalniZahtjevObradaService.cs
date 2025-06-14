@@ -4,11 +4,9 @@ using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Helpers.IHelpers;
-using DodjelaStanovaZG.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
-
 
 public class SocijalniZahtjevObradaService(
     ApplicationDbContext context,
@@ -19,114 +17,92 @@ public class SocijalniZahtjevObradaService(
     IUserContextService currentUserService)
     : ISocijalniZahtjevObradaService
 {
-    private readonly ApplicationDbContext _context = context;
-    private readonly ISocijalniKucanstvoService _kucanstvoService = kucanstvoService;
-    private readonly ISocijalniBodoviService _bodoviService = bodoviService;
-    private readonly ISocijalniBodovniPodaciService _bodovniPodaciService = bodovniPodaciService;
-    private readonly ISocijalniClanService _clanService = clanService;
-    private readonly IUserContextService _currentUserService = currentUserService;
+    private void ApplyAudit(object entity, bool isCreate)
+        => AuditHelper.ApplyAudit(entity, currentUserService.GetCurrentUserId(), isCreate);
 
     private async Task ApplyAuditAsync(long zahtjevId)
     {
-        var zahtjev = await _context.SocijalniNatjecajZahtjevi.FirstOrDefaultAsync(x => x.Id == zahtjevId);
+        var zahtjev = await context.SocijalniNatjecajZahtjevi
+            .FirstOrDefaultAsync(x => x.Id == zahtjevId);
+
         if (zahtjev is not null)
-        {
-            AuditHelper.ApplyAudit(zahtjev, _currentUserService.GetCurrentUserId(), isCreate: false);
-        }
+            ApplyAudit(zahtjev, false);
+    }
+
+    private async Task ObradiAsync(
+        long zahtjevId,
+        object? entity,
+        bool isCreate = false,
+        Func<Task>? dodatnaAkcija = null)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+
+        if (entity is not null)
+            ApplyAudit(entity, isCreate);
+
+        await ApplyAuditAsync(zahtjevId);
+        await context.SaveChangesAsync();
+
+        if (dodatnaAkcija is not null)
+            await dodatnaAkcija();
+
+        await transaction.CommitAsync();
     }
 
     public async Task SpremiKucanstvoIObracunajAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync();
+        await kucanstvoService.UpdateKucanstvoPodaciAsync(zahtjevId, dto);
+        var kucanstvo = await context.SocijalniNatjecajKucanstvoPodaci
+            .FirstOrDefaultAsync(x => x.ZahtjevId == zahtjevId);
 
-        await _kucanstvoService.UpdateKucanstvoPodaciAsync(zahtjevId, dto);
-        await ApplyAuditAsync(zahtjevId);
-        await _context.SaveChangesAsync();
-
-        await _bodoviService.IzracunajIBodujAsync(zahtjevId);
-        await transaction.CommitAsync();
+        await ObradiAsync(zahtjevId, kucanstvo, false, () => bodoviService.IzracunajIBodujAsync(zahtjevId));
     }
 
     public async Task SpremiBodovnePodatkeIObracunajAsync(long zahtjevId, SocijalniNatjecajBodovniPodaciDto dto)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync();
+        await bodovniPodaciService.UpdateAsync(zahtjevId, dto);
+        var bodovni = await context.SocijalniNatjecajBodovniPodaci
+            .FirstOrDefaultAsync(x => x.ZahtjevId == zahtjevId);
 
-        await _bodovniPodaciService.UpdateAsync(zahtjevId, dto);
-        await ApplyAuditAsync(zahtjevId);
-        await _context.SaveChangesAsync();
-
-        await _bodoviService.IzracunajIBodujAsync(zahtjevId);
-        await transaction.CommitAsync();
+        await ObradiAsync(zahtjevId, bodovni, false, () => bodoviService.IzracunajIBodujAsync(zahtjevId));
     }
 
     public async Task DodajClanaIObracunajAsync(long zahtjevId, SocijalniNatjecajClanDto clanDto)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync();
+        var noviClan = clanDto.ToEntity(zahtjevId);
+        await clanService.AddClanAsync(noviClan);
 
-        var noviClan = new SocijalniNatjecajClan
-        {
-            ZahtjevId = zahtjevId,
-            ImePrezime = clanDto.ImePrezime,
-            Oib = clanDto.Oib,
-            DatumRodjenja = clanDto.DatumRodjenja,
-            Srodstvo = clanDto.Srodstvo,
-            Zahtjev = null!
-        };
-
-        await _clanService.AddClanAsync(noviClan);
-        await ApplyAuditAsync(zahtjevId);
-        await _context.SaveChangesAsync();
-
-        await _bodoviService.IzracunajIBodujAsync(zahtjevId);
-        await transaction.CommitAsync();
+        await ObradiAsync(zahtjevId, noviClan, true, () => bodoviService.IzracunajIBodujAsync(zahtjevId));
     }
 
     public async Task ObrisiClanaIObracunajAsync(long zahtjevId, long clanId)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync();
+        var clan = await context.SocijalniNatjecajClanovi
+            .FirstOrDefaultAsync(c => c.Id == clanId && c.ZahtjevId == zahtjevId);
 
-        await _clanService.RemoveClanAsync(zahtjevId, clanId);
-        await ApplyAuditAsync(zahtjevId);
-        await _context.SaveChangesAsync();
+        await clanService.RemoveClanAsync(zahtjevId, clanId);
 
-        await _bodoviService.IzracunajIBodujAsync(zahtjevId);
-        await transaction.CommitAsync();
+        await ObradiAsync(zahtjevId, clan, false, () => bodoviService.IzracunajIBodujAsync(zahtjevId));
     }
 
     public async Task EditClanIObracunajAsync(SocijalniNatjecajClanDto azurirani)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync();
+        var clan = await context.SocijalniNatjecajClanovi.FirstAsync(c => c.Id == azurirani.Id);
+        azurirani.MapOnto(clan);
 
-        await _clanService.EditClanAsync(azurirani);
-        await ApplyAuditAsync(azurirani.ZahtjevId);
-        await _context.SaveChangesAsync();
-
-        await _bodoviService.IzracunajIBodujAsync(azurirani.ZahtjevId);
-        await transaction.CommitAsync();
+        await ObradiAsync(azurirani.ZahtjevId, clan, false,
+            () => bodoviService.IzracunajIBodujAsync(azurirani.ZahtjevId));
     }
 
     public async Task AzurirajOsnovnoIObracunajAkoTrebaAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync();
+        var zahtjev = await context.SocijalniNatjecajZahtjevi.FirstAsync(z => z.Id == zahtjevId);
+        dto.MapOnto(zahtjev);
 
-        var zahtjev = await _context.SocijalniNatjecajZahtjevi.FirstAsync(z => z.Id == zahtjevId);
-
-        zahtjev.KlasaPredmeta = dto.KlasaPredmeta ?? 0;
-        zahtjev.DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva ?? default;
-        zahtjev.Adresa = dto.Adresa;
-        zahtjev.RezultatObrade = dto.RezultatObrade ?? 0;
-        zahtjev.NapomenaObrade = dto.NapomenaObrade;
-        zahtjev.Email = dto.Email;
-
-        //AuditHelper.ApplyAudit(zahtjev, _currentUserService.GetCurrentUserId(), isCreate: false);
-        await ApplyAuditAsync(zahtjev.Id);
-        await _context.SaveChangesAsync();
-
-        if (dto.RezultatObrade == RezultatObrade.Zadovoljava)
+        await ObradiAsync(zahtjevId, zahtjev, false, async () =>
         {
-            await _bodoviService.IzracunajIBodujAsync(zahtjevId);
-        }
-
-        await transaction.CommitAsync();
+            if (dto.RezultatObrade == RezultatObrade.Zadovoljava)
+                await bodoviService.IzracunajIBodujAsync(zahtjevId);
+        });
     }
 }
