@@ -13,6 +13,7 @@ using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Helpers.IHelpers;
 using DodjelaStanovaZG.Infrastructure;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
+using DodjelaStanovaZG.Services.IServices;
 using Microsoft.AspNetCore.Localization;
 using MudBlazor;
 
@@ -66,6 +67,7 @@ builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<ISocijalniBodoviService, SocijalniBodoviService>();
 builder.Services.AddScoped<ISocijalniZahtjevObradaService, SocijalniZahtjevObradaService>();
 builder.Services.AddScoped<ISocijalniBodovnaGreskaService, SocijalniBodovnaGreskaService>();
+builder.Services.AddScoped<IWordExportService, WordExportService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Dodaj hrvatski jezik kao default
@@ -125,4 +127,5 @@ using (var scope = app.Services.CreateScope())
     await natjecajSeeder.SeedNatjecajiAsync();
 }
 
+app.MapControllers();
 app.Run();

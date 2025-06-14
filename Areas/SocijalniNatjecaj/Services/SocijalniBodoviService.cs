@@ -114,7 +114,10 @@ public class SocijalniBodoviService(
     {
         return await context.SocijalniNatjecajBodovi
             .AsNoTracking()
+            .Include(b => b.Zahtjev)
+            .ThenInclude(z => z.Clanovi)
+            .Include(b => b.Zahtjev)
+            .ThenInclude(z => z.KucanstvoPodaci)
             .FirstOrDefaultAsync(b => b.ZahtjevId == zahtjevId);
     }
-
 }

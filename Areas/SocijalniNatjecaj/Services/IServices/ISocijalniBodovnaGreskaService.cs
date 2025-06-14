@@ -5,4 +5,5 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 public interface ISocijalniBodovnaGreskaService
 {
     Task<List<SocijalniNatjecajBodovnaGreska>> PronadiGreskeAsync(SocijalniNatjecajZahtjev zahtjev);
+    Task<List<SocijalniNatjecajBodovnaGreska>> GetByZahtjevIdAsync(long zahtjevId);
 }

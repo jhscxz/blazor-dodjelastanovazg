@@ -134,9 +134,13 @@ public class SocijalniZahtjevService(
     {
         return await BaseQuery(asNoTracking: true)
                    .Include(z => z.Natjecaj)
+                   .Include(z => z.Bodovi) // ← OVO DODAJ
+                   .Include(z => z.Clanovi) // preporučeno ako koristiš u WordExportService
+                   .Include(z => z.KucanstvoPodaci) // isto
                    .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                ?? throw new NotFoundException($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
     }
+
 
     public SocijalniNatjecajClan ConvertToEntity(SocijalniNatjecajClanDto clanDto, SocijalniNatjecajZahtjev zahtjev)
         => new()

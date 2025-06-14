@@ -1,11 +1,20 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
+using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 
-public class SocijalniBodovnaGreskaService : ISocijalniBodovnaGreskaService
+public class SocijalniBodovnaGreskaService(ApplicationDbContext context) : ISocijalniBodovnaGreskaService
 {
+    public async Task<List<SocijalniNatjecajBodovnaGreska>> GetByZahtjevIdAsync(long zahtjevId)
+    {
+        return await context.SocijalniNatjecajBodovnaGreske
+            .Where(g => g.ZahtjevId == zahtjevId)
+            .ToListAsync();
+    }
+
     public Task<List<SocijalniNatjecajBodovnaGreska>> PronadiGreskeAsync(SocijalniNatjecajZahtjev zahtjev)
     {
         var greske = new List<SocijalniNatjecajBodovnaGreska>();
