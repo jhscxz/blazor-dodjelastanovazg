@@ -12,11 +12,15 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 
 public class NotFoundException(string message) : Exception(message);
 
-public class SocijalniZahtjevService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+public class SocijalniZahtjevService(
+    ApplicationDbContext context,
+    IHttpContextAccessor httpContextAccessor,
+    ISocijalniBodovnaGreskaService greskaService)
     : ISocijalniZahtjevService
 {
     private readonly ApplicationDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+    private readonly ISocijalniBodovnaGreskaService _greskaService = greskaService ?? throw new ArgumentNullException(nameof(greskaService));
 
     private string CurrentUserId => _httpContextAccessor.HttpContext?.User
                                         ?.FindFirstValue(ClaimTypes.NameIdentifier)
@@ -86,6 +90,13 @@ public class SocijalniZahtjevService(ApplicationDbContext context, IHttpContextA
         var bodovni = new SocijalniNatjecajBodovniPodaci { Zahtjev = zahtjev };
         var bodovi = new SocijalniNatjecajBodovi { Zahtjev = zahtjev };
 
+        // Generiraj greške
+        var greske = await _greskaService.PronadiGreskeAsync(zahtjev);
+        foreach (var g in greske)
+        {
+            AuditHelper.ApplyAudit(g, CurrentUserId, isCreate: true);
+        }
+
         AuditHelper.ApplyAudit(
             new object[] { zahtjev, podnositelj, kucanstvo, bodovni, bodovi },
             CurrentUserId,
@@ -95,6 +106,7 @@ public class SocijalniZahtjevService(ApplicationDbContext context, IHttpContextA
         zahtjev.KucanstvoPodaci = kucanstvo;
         zahtjev.BodovniPodaci = bodovni;
         zahtjev.Bodovi = bodovi;
+        zahtjev.Greske = greske;
 
         await _context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);
         await _context.SaveChangesAsync();

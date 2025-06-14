@@ -69,5 +69,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<SocijalniNatjecajBodovniPodaci> SocijalniNatjecajBodovniPodaci { get; set; }
     public DbSet<SocijalniNatjecajKucanstvoPodaci> SocijalniNatjecajKucanstvoPodaci { get; set; }
     public DbSet<SocijalniNatjecajBodovi> SocijalniNatjecajBodovi { get; set; }
-
+    public DbSet<SocijalniNatjecajBodovnaGreska> SocijalniNatjecajBodovnaGreske { get; set; } = default!;
 }

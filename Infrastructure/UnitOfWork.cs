@@ -13,6 +13,8 @@ public class UnitOfWork(
     INatjecajOdabirService natjecajOdabirService,
     ISocijalniZahtjevService socijalniZahtjevService,
     ISocijalniBodoviService socijalniBodoviService,
+    ISocijalniBodovnaGreskaService  socijalniBodovnaGreskaService,
+    ISocijalniZahtjevObradaService socijalniZahtjevObradaService,
     INatjecajService natjecajiService)
     : IUnitOfWork
 {
@@ -23,6 +25,8 @@ public class UnitOfWork(
     public INatjecajService NatjecajiService { get; } = natjecajiService;
     public ISocijalniZahtjevService SocijalniZahtjevService { get; } = socijalniZahtjevService;
     public ISocijalniBodoviService SocijalniBodoviService { get; } = socijalniBodoviService;
+    public ISocijalniBodovnaGreskaService SocijalniBodovnaGreskaService { get; } = socijalniBodovnaGreskaService;
+    public ISocijalniZahtjevObradaService SocijalniZahtjevObradaService { get; } = socijalniZahtjevObradaService;
 
     public async Task SaveChangesAsync()
     {

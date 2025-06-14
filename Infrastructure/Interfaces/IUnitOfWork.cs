@@ -12,6 +12,9 @@ namespace DodjelaStanovaZG.Infrastructure.Interfaces
         INatjecajService NatjecajiService { get; }
         ISocijalniZahtjevService SocijalniZahtjevService { get; }
         ISocijalniBodoviService SocijalniBodoviService { get; }
+        ISocijalniBodovnaGreskaService SocijalniBodovnaGreskaService { get; }
+        ISocijalniZahtjevObradaService SocijalniZahtjevObradaService { get; }
+
         Task SaveChangesAsync();
     }
 }

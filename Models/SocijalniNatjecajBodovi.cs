@@ -30,6 +30,5 @@ public class SocijalniNatjecajBodovi : AuditableEntity
     public float BodoviObrana { get; set; }
     public byte BodoviSeksualnoNasilje { get; set; }
     public byte BodoviCivilniStradalnici { get; set; }
-
     public ushort UkupnoBodova { get; set; }
 }

@@ -1,4 +1,5 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Enums;
@@ -64,7 +65,7 @@ public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
 
         try
         {
-            var zahtjev = await UnitOfWork.SocijalniZahtjevService.CreateAsync(
+            var zahtjev = await UnitOfWork.SocijalniZahtjevObradaService.KreirajZahtjevAsync(
                 ZahtjevModel,
                 ZahtjevModel.ImePrezime,
                 ZahtjevModel.Oib);

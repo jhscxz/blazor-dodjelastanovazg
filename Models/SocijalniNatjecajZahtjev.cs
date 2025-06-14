@@ -21,4 +21,5 @@ public class SocijalniNatjecajZahtjev : AuditableEntity
     public SocijalniNatjecajKucanstvoPodaci? KucanstvoPodaci { get; set; }
     public SocijalniNatjecajBodovniPodaci? BodovniPodaci { get; set; }
     public SocijalniNatjecajBodovi? Bodovi { get; set; }
+    public ICollection<SocijalniNatjecajBodovnaGreska> Greske { get; set; } = new List<SocijalniNatjecajBodovnaGreska>();
 }
