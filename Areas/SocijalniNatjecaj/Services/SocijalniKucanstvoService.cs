@@ -7,17 +7,10 @@ using DodjelaStanovaZG.Models;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
 {
-    public class SocijalniKucanstvoService : ISocijalniKucanstvoService
+    public class SocijalniKucanstvoService(ApplicationDbContext context) : ISocijalniKucanstvoService
     {
-        private readonly ApplicationDbContext _context;
-
-        public SocijalniKucanstvoService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery()
-            => _context.SocijalniNatjecajZahtjevi.Include(z => z.KucanstvoPodaci);
+            => context.SocijalniNatjecajZahtjevi.Include(z => z.KucanstvoPodaci);
 
         public async Task<SocijalniKucanstvoPodaciDto> UpdateKucanstvoPodaciAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto)
         {
@@ -33,9 +26,9 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services
             podaci.SastavKucanstva = dto.SastavKucanstva!.Value;
 
             if (zahtjev.KucanstvoPodaci == null)
-                _context.SocijalniNatjecajKucanstvoPodaci.Add(podaci);
+                context.SocijalniNatjecajKucanstvoPodaci.Add(podaci);
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return podaci.ToDto();
         }
     }
