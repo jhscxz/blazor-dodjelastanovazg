@@ -31,7 +31,7 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
 
         public string? NapomenaObrade { get; set; }
         public long NatjecajId { get; set; }
-        [Required] public SocijalniBodovniDto? Bodovni { get; init; } = new();
+        [Required] public SocijalniBodovniDto? Bodovni { get; set; }
         public SocijalniNatjecajBodovi? Bodovi { get; set; }
         public List<SocijalniNatjecajClanDto>? Clanovi { get; init; }
         public SocijalniKucanstvoPodaciDto? KucanstvoPodaci { get; init; }
