@@ -149,4 +149,13 @@ public class SocijalniBodoviService(
                     .ThenInclude(k => k!.Prihod)
             .FirstOrDefaultAsync(b => b.ZahtjevId == zahtjevId);
     }
+    
+    public async Task<List<SocijalniNatjecajBodovi>> GetForZahtjeviAsync(List<long> zahtjevIds)
+    {
+        return await context.SocijalniNatjecajBodovi
+            .Where(b => zahtjevIds.Contains(b.ZahtjevId))
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
 }

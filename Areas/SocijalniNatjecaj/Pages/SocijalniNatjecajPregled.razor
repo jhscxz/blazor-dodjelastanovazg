@@ -1,6 +1,7 @@
 @page "/socijalni/pregled/{NatjecajId:long}"
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+@using DodjelaStanovaZG.Enums
 @using MudBlazor
 @inherits SocijalniNatjecajPregledBase
 
@@ -14,55 +15,112 @@
                        IconColor="Color.Success"
                        DropShadow="false"
                        StartIcon="@Icons.Material.Filled.Add">
-                Dodaj
+                DODAJ
             </MudButton>
+
+            <div class="flex-1">
+                <MudTextField Label="Pretraga zahtjeva"
+                              Value="@SearchText"
+                              ValueChanged="@(EventCallback.Factory.Create<string>(this, OnSearchChanged))"
+                              Immediate="true"
+                              DebounceInterval="300"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Class="w-full" />
+            </div>
+
+            <div class="flex-none w-[160px]">
+                <MudSelect T="RezultatObrade?" Label="Osnovanost"
+                           Value="@SelectedOsnovanost"
+                           ValueChanged="@(EventCallback.Factory.Create<RezultatObrade?>(this, OnOsnovanostChanged))"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Dense="true"
+                           Class="w-[200px]">
+                    <MudSelectItem T="RezultatObrade?" Value="null">Svi</MudSelectItem>
+                    <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Nepotpun">Nepotpun</MudSelectItem>
+                    <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Neosnovan">Neosnovan</MudSelectItem>
+                    <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Osnovan">Osnovan</MudSelectItem>
+                    <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Greška">Greška</MudSelectItem>
+                </MudSelect>
+
+            </div>
         </div>
 
         <MudTable T="SocijalniNatjecajZahtjevDto"
                   ServerData="LoadServerData"
+                  TableLayout="TableLayout.Fixed"
                   Hover="true"
                   Striped="true"
-                  RowsPerPage="10"
                   Dense="true"
+                  RowsPerPage="10"
                   Outlined="true"
-                  Bordered="false"
                   Breakpoint="Breakpoint.Sm"
-                  Class="only-horizontal-borders"
                   @ref="Table">
 
             <HeaderContent>
-                <MudTh Style="font-weight: bold;">Klasa predmeta</MudTh>
-                <MudTh Style="font-weight: bold;">Datum podnošenja</MudTh>
-                <MudTh Style="font-weight: bold;">Adresa</MudTh>
-                <MudTh Style="font-weight: bold;">Ukupni prihod (€)</MudTh>
-                <MudTh Style="font-weight: bold;">Stambeni status</MudTh>
-                <MudTh Style="font-weight: bold;">Sastav kućanstva</MudTh>
-                <MudTh Style="font-weight: bold;">Akcija</MudTh>
+                <MudTh></MudTh>
+                <MudTh>Klasa predmeta</MudTh>
+                <MudTh>Prezime i ime</MudTh>
+                <MudTh>OIB</MudTh>
+                <MudTh>Ukupno bodova</MudTh>
+                <MudTh>Osnovanost</MudTh>
+                <MudTh>Akcija</MudTh>
             </HeaderContent>
 
+
             <RowTemplate>
-                <MudTd DataLabel="Klasa">@context.KlasaPredmeta</MudTd>
-                <MudTd DataLabel="Datum">
-                    @context.DatumPodnosenjaZahtjeva?.ToString("dd.MM.yyyy")
+                <MudTd>
+                    <MudIconButton Icon="@GetExpandIcon(context)"
+                                   OnClick="@(() => ToggleExpand(context.Id))"
+                                   Size="Size.Small" />
                 </MudTd>
-                <MudTd DataLabel="Adresa">@context.Adresa</MudTd>
-                <MudTd DataLabel="Prihod">
-                    @($"{context.Bodovni?.UkupniPrihodKucanstva?.ToString("N2") ?? ""} €")
-                </MudTd>
-                <MudTd DataLabel="Stambeni">@context.Bodovni?.StambeniStatusKucanstva</MudTd>
-                <MudTd DataLabel="Sastav">@context.Bodovni?.SastavKucanstva</MudTd>
-                <MudTd DataLabel="Akcija">
+                <MudTd>@context.KlasaPredmeta</MudTd>
+                <MudTd>@FormatString(context.ImePrezime)</MudTd>
+                <MudTd>@FormatString(context.Oib)</MudTd>
+                <MudTd>@FormatInt(context.Bodovi?.UkupnoBodova)</MudTd>
+                <MudTd>@FormatOsnovanost(context.RezultatObrade)</MudTd>
+                <MudTd>
                     <MudIconButton Icon="@Icons.Material.Filled.Info"
                                    Size="Size.Small"
-                                   OnClick="() => NavigateToDetails(context)" />
+                                   OnClick="@(() => NavigateToDetails(context))" />
                 </MudTd>
             </RowTemplate>
+
+
+            <ChildRowContent>
+                @if (IsRowExpanded(context))
+                {
+                    <MudTd ColSpan="@TotalColumns">
+                        <MudPaper Class="pa-3 rounded-lg" Elevation="1">
+                            <MudText Typo="Typo.subtitle2" Class="mb-2">Detalji bodovanja</MudText>
+
+                            <MudText Typo="Typo.body2">
+                                ✔ <b>Ukupni prihod kućanstva:</b> @FormatPrihod(context.Bodovni?.UkupniPrihodKucanstva)
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                ✔ <b>Stambeni status:</b> @FormatString(context.Bodovni?.StambeniStatusKucanstva?.ToString())
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                ✔ <b>Sastav kućanstva:</b> @FormatString(context.Bodovni?.SastavKucanstva?.ToString())
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                ✔ <b>Bodovi po članu:</b> @FormatInt(context.Bodovi?.BodoviPoClanu)
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                ✔ <b>Ukupno bodova:</b> @FormatInt(context.Bodovi?.UkupnoBodova)
+                            </MudText>
+                        </MudPaper>
+                    </MudTd>
+                }
+            </ChildRowContent>
 
             <PagerContent>
                 <MudTablePager />
             </PagerContent>
 
         </MudTable>
-
     </MudPaper>
 </Container>

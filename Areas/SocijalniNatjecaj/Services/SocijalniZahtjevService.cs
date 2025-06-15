@@ -190,45 +190,87 @@ public class SocijalniZahtjevService(
         };
 
     public async Task<PagedResult<SocijalniNatjecajZahtjevDto>> GetPagedAsync(
-        long natjecajId,
-        int page,
-        int pageSize,
-        string? sortBy,
-        SortDirection sortDirection)
+    long natjecajId,
+    int page,
+    int pageSize,
+    string? sortBy,
+    SortDirection sortDirection,
+    string? search = null,
+    RezultatObrade? osnovanost = null)
+{
+    var query = BaseQuery(asNoTracking: true)
+        .Where(x => x.NatjecajId == natjecajId);
+
+    if (!string.IsNullOrWhiteSpace(search))
     {
-        var query = BaseQuery(asNoTracking: true)
-            .Where(x => x.NatjecajId == natjecajId);
+        var lowered = search.ToLower();
 
-        if (!string.IsNullOrEmpty(sortBy))
-            query = query.OrderByDynamic(sortBy, sortDirection == SortDirection.Descending);
-
-        var totalCount = await query.CountAsync();
-
-        var items = await query
-            .Skip(page * pageSize)
-            .Take(pageSize)
-            .Select(x => new SocijalniNatjecajZahtjevDto
-            {
-                Id = x.Id,
-                KlasaPredmeta = x.KlasaPredmeta,
-                DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
-                Adresa = x.Adresa!,
-                NatjecajId = x.NatjecajId,
-                Bodovni = x.KucanstvoPodaci == null
-                    ? null
-                    : new SocijalniBodovniDto
-                    {
-                        UkupniPrihodKucanstva = x.KucanstvoPodaci.Prihod!.UkupniPrihodKucanstva,
-                        StambeniStatusKucanstva = x.KucanstvoPodaci.StambeniStatusKucanstva,
-                        SastavKucanstva = x.KucanstvoPodaci.SastavKucanstva
-                    }
-            })
-            .ToListAsync();
-
-        return new PagedResult<SocijalniNatjecajZahtjevDto>
-        {
-            Items = items,
-            TotalCount = totalCount
-        };
+        query = query.Where(x =>
+            x.KlasaPredmeta.ToString().Contains(lowered) ||
+            x.Clanovi.Any(c =>
+                c.Srodstvo == Srodstvo.PodnositeljZahtjeva &&
+                (
+                    c.ImePrezime.ToLower().Contains(lowered) ||
+                    c.Oib.ToLower().Contains(lowered)
+                )
+            ) ||
+            x.RezultatObrade.ToString().ToLower().Contains(lowered)
+        );
     }
+
+    if (osnovanost.HasValue)
+    {
+        query = query.Where(x => x.RezultatObrade == osnovanost.Value);
+    }
+
+    if (!string.IsNullOrEmpty(sortBy))
+    {
+        query = query.OrderByDynamic(sortBy, sortDirection == SortDirection.Descending);
+    }
+
+    var totalCount = await query.CountAsync();
+
+    var items = await query
+        .Skip(page * pageSize)
+        .Take(pageSize)
+        .Select(x => new SocijalniNatjecajZahtjevDto
+        {
+            Id = x.Id,
+            KlasaPredmeta = x.KlasaPredmeta,
+            DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
+            Adresa = x.Adresa!,
+            NatjecajId = x.NatjecajId,
+
+            ImePrezime = x.Clanovi
+                .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
+                .Select(c => c.ImePrezime)
+                .FirstOrDefault() ?? string.Empty,
+
+            Oib = x.Clanovi
+                .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
+                .Select(c => c.Oib)
+                .FirstOrDefault(),
+
+            RezultatObrade = x.RezultatObrade,
+
+            Bodovni = x.KucanstvoPodaci == null
+                ? null
+                : new SocijalniBodovniDto
+                {
+                    UkupniPrihodKucanstva = x.KucanstvoPodaci.Prihod!.UkupniPrihodKucanstva,
+                    StambeniStatusKucanstva = x.KucanstvoPodaci.StambeniStatusKucanstva,
+                    SastavKucanstva = x.KucanstvoPodaci.SastavKucanstva
+                },
+
+            Bodovi = x.Bodovi
+        })
+        .ToListAsync();
+
+    return new PagedResult<SocijalniNatjecajZahtjevDto>
+    {
+        Items = items,
+        TotalCount = totalCount
+    };
+}
+
 }

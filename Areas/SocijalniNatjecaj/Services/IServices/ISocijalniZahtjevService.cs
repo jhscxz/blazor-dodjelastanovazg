@@ -1,4 +1,5 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Models;
 using MudBlazor;
@@ -20,5 +21,7 @@ public interface ISocijalniZahtjevService
         int page,
         int pageSize,
         string? sortBy,
-        SortDirection sortDirection);
+        SortDirection sortDirection,
+        string? search,
+        RezultatObrade? osnovanost);
 }
