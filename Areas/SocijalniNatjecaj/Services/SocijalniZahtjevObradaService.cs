@@ -26,7 +26,6 @@ public class SocijalniZahtjevObradaService(
     {
         var zahtjev = await context.SocijalniNatjecajZahtjevi
             .FirstOrDefaultAsync(x => x.Id == zahtjevId);
-
         if (zahtjev is not null)
             ApplyAudit(zahtjev, false);
     }
@@ -66,31 +65,39 @@ public class SocijalniZahtjevObradaService(
             NapomenaObrade = dto.NapomenaObrade
         };
 
+        // Kreiraj povezane entitete
         var podnositelj = new SocijalniNatjecajClan
         {
             ImePrezime = imePrezime!,
-            Oib = string.IsNullOrWhiteSpace(oib) ? null : oib,
+            Oib = string.IsNullOrWhiteSpace(oib)
+                ? null
+                : oib,
             Srodstvo = Srodstvo.PodnositeljZahtjeva,
-            Zahtjev = zahtjev
+            Zahtjev = null,
         };
+        var kucanstvo = new SocijalniNatjecajKucanstvoPodaci();
+        var bodovni = new SocijalniNatjecajBodovniPodaci();
+        var bodovi = new SocijalniNatjecajBodovi();
 
-        var kucanstvo = new SocijalniNatjecajKucanstvoPodaci { Zahtjev = zahtjev };
-        var bodovni = new SocijalniNatjecajBodovniPodaci { Zahtjev = zahtjev };
-        var bodovi = new SocijalniNatjecajBodovi { Zahtjev = zahtjev };
-
-        AuditHelper.ApplyAudit(
-            new object[] { zahtjev, podnositelj, kucanstvo, bodovni, bodovi },
-            currentUserService.GetCurrentUserId(),
-            isCreate: true);
-
+        // Sastavi graph
         zahtjev.Clanovi = new List<SocijalniNatjecajClan> { podnositelj };
         zahtjev.KucanstvoPodaci = kucanstvo;
         zahtjev.BodovniPodaci = bodovni;
         zahtjev.Bodovi = bodovi;
 
+        // Dodaj graph u kontekst
         await context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);
+
+        // Primijeni audit na sve entitete nakon što su attachani
+        ApplyAudit(zahtjev, true);
+        ApplyAudit(podnositelj, true);
+        ApplyAudit(kucanstvo, true);
+        ApplyAudit(bodovni, true);
+        ApplyAudit(bodovi, true);
+
         await context.SaveChangesAsync();
 
+        // Daljnja logika
         await bodoviService.IzracunajIBodujAsync(zahtjev.Id);
         await ObradiGreskeAsync(zahtjev.Id);
 

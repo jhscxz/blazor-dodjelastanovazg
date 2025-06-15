@@ -11,7 +11,7 @@ public class SocijalniNatjecajClan : AuditableEntity
     [Required]
     [ForeignKey(nameof(Zahtjev))]
     public long ZahtjevId { get; set; }
-    public required SocijalniNatjecajZahtjev Zahtjev { get; set; } = null!;
+    public required SocijalniNatjecajZahtjev? Zahtjev { get; set; } = null!;
     [Required]
     [StringLength(255)]
     public string ImePrezime { get; set; } = string.Empty;
