@@ -19,15 +19,14 @@ public class SocijalniZahtjevObradaService(
     IUserContextService currentUserService)
     : ISocijalniZahtjevObradaService
 {
-    private void ApplyAudit(object entity, bool isCreate)
-        => AuditHelper.ApplyAudit(entity, currentUserService.GetCurrentUserId(), isCreate);
+    // Pomoćne metode za audit i transakcije
+    private void ApplyAudit(object entity, bool isCreate) =>
+        AuditHelper.ApplyAudit(entity, currentUserService.GetCurrentUserId(), isCreate);
 
     private async Task ApplyAuditAsync(long zahtjevId)
     {
-        var zahtjev = await context.SocijalniNatjecajZahtjevi
-            .FirstOrDefaultAsync(x => x.Id == zahtjevId);
-        if (zahtjev is not null)
-            ApplyAudit(zahtjev, false);
+        var z = await context.SocijalniNatjecajZahtjevi.FindAsync(zahtjevId);
+        if (z != null) ApplyAudit(z, false);
     }
 
     private async Task ObradiAsync(
@@ -36,23 +35,23 @@ public class SocijalniZahtjevObradaService(
         bool isCreate = false,
         Func<Task>? dodatnaAkcija = null)
     {
-        await using var transaction = await context.Database.BeginTransactionAsync();
+        await using var tx = await context.Database.BeginTransactionAsync();
 
-        if (entity is not null)
-            ApplyAudit(entity, isCreate);
-
+        if (entity != null) ApplyAudit(entity, isCreate);
         await ApplyAuditAsync(zahtjevId);
         await context.SaveChangesAsync();
 
-        if (dodatnaAkcija is not null)
+        if (dodatnaAkcija != null) 
             await dodatnaAkcija();
 
-        await transaction.CommitAsync();
+        await tx.CommitAsync();
     }
 
-    public async Task<SocijalniNatjecajZahtjev> KreirajZahtjevAsync(SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib)
+    // 1) Kreiranje novog zahtjeva
+    public async Task<SocijalniNatjecajZahtjev> KreirajZahtjevAsync(
+        SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib)
     {
-        await using var transaction = await context.Database.BeginTransactionAsync();
+        await using var tx = await context.Database.BeginTransactionAsync();
 
         var zahtjev = new SocijalniNatjecajZahtjev
         {
@@ -62,10 +61,10 @@ public class SocijalniZahtjevObradaService(
             Adresa = dto.Adresa,
             Email = dto.Email,
             RezultatObrade = dto.RezultatObrade!.Value,
+            ManualniRezultatObrade = dto.RezultatObrade!.Value, // inicijaliziramo manualni
             NapomenaObrade = dto.NapomenaObrade
         };
 
-        // Kreiraj povezane entitete
         var podnositelj = new SocijalniNatjecajClan
         {
             ImePrezime = imePrezime!,
@@ -73,53 +72,79 @@ public class SocijalniZahtjevObradaService(
                 ? null
                 : oib,
             Srodstvo = Srodstvo.PodnositeljZahtjeva,
-            Zahtjev = null,
+            Zahtjev = null
         };
+
         var kucanstvo = new SocijalniNatjecajKucanstvoPodaci();
         var bodovni = new SocijalniNatjecajBodovniPodaci();
         var bodovi = new SocijalniNatjecajBodovi();
 
-        // Sastavi graph
+        // Sastavimo object graph i dodamo u kontekst
         zahtjev.Clanovi = new List<SocijalniNatjecajClan> { podnositelj };
         zahtjev.KucanstvoPodaci = kucanstvo;
         zahtjev.BodovniPodaci = bodovni;
         zahtjev.Bodovi = bodovi;
 
-        // Dodaj graph u kontekst
         await context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);
-
-        // Primijeni audit na sve entitete nakon što su attachani
         ApplyAudit(zahtjev, true);
         ApplyAudit(podnositelj, true);
         ApplyAudit(kucanstvo, true);
         ApplyAudit(bodovni, true);
         ApplyAudit(bodovi, true);
 
+        // Spremimo da dobijemo Id za kucanstvo
         await context.SaveChangesAsync();
 
-        // Daljnja logika
+        // Kreiramo pripadajući zapis o prihodima (shared PK)
+        var prihod = new SocijalniPrihodi
+        {
+            Id = kucanstvo.Id,
+            UkupniPrihodKucanstva = 0,
+            PrihodPoClanu = 0,
+            IspunjavaUvjetPrihoda = true
+        };
+        await context.SocijalniPrihodi.AddAsync(prihod);
+        ApplyAudit(prihod, true);
+        await context.SaveChangesAsync();
+
+        // Izračunaj bodove i greške
         await bodoviService.IzracunajIBodujAsync(zahtjev.Id);
         await ObradiGreskeAsync(zahtjev.Id);
 
         await context.SaveChangesAsync();
-        await transaction.CommitAsync();
+        await tx.CommitAsync();
 
         return zahtjev;
     }
 
-    public async Task SpremiKucanstvoIObracunajAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto)
+    // 2) Uređivanje kućanstva
+    public async Task SpremiKucanstvoIObracunajAsync(
+        long zahtjevId,
+        SocijalniKucanstvoPodaciDto dto)
     {
+        // Update kucanstva i prihoda
         await kucanstvoService.UpdateKucanstvoPodaciAsync(zahtjevId, dto);
-        var kucanstvo = await context.SocijalniNatjecajKucanstvoPodaci
-            .FirstOrDefaultAsync(x => x.ZahtjevId == zahtjevId);
 
-        await ObradiAsync(zahtjevId, kucanstvo, false, async () =>
-        {
-            await bodoviService.IzracunajIBodujAsync(zahtjevId);
-            await ObradiGreskeAsync(zahtjevId);
-        });
+        // Osiguraj da je prihod “attachan” u EF Core
+        var kuc = await context.SocijalniNatjecajKucanstvoPodaci
+            .Include(k => k.Prihod)
+            .FirstAsync(k => k.ZahtjevId == zahtjevId);
+
+        if (kuc.Prihod != null)
+            context.Entry(kuc.Prihod).State = EntityState.Modified;
+
+        await ObradiAsync(
+            zahtjevId,
+            kuc,
+            isCreate: false,
+            dodatnaAkcija: async () =>
+            {
+                await bodoviService.IzracunajIBodujAsync(zahtjevId);
+                await ObradiGreskeAsync(zahtjevId);
+            });
     }
 
+    // 3) Obrada grešaka i vraćanje manualnog rezultata
     public async Task ObradiGreskeAsync(long zahtjevId)
     {
         var zahtjev = await context.SocijalniNatjecajZahtjevi
@@ -130,80 +155,127 @@ public class SocijalniZahtjevObradaService(
 
         var greske = await greskaService.PronadiGreskeAsync(zahtjev);
 
+        // Zamijeni stare greške novima
         var stare = await context.SocijalniNatjecajBodovnaGreske
-            .Where(x => x.ZahtjevId == zahtjevId)
+            .Where(g => g.ZahtjevId == zahtjevId)
             .ToListAsync();
-
         context.SocijalniNatjecajBodovnaGreske.RemoveRange(stare);
-
         if (greske.Count > 0)
             await context.SocijalniNatjecajBodovnaGreske.AddRangeAsync(greske);
-        
+
+        // Postavi RezultatObrade
+        if (greske.Any())
+        {
+            zahtjev.RezultatObrade = RezultatObrade.Greška;
+        }
+        else
+        {
+            // vraćamo točno ono što je referent zadnji unio
+            zahtjev.RezultatObrade = zahtjev.ManualniRezultatObrade;
+        }
+
+        ApplyAudit(zahtjev, isCreate: false);
         await context.SaveChangesAsync();
     }
 
-    public async Task SpremiBodovnePodatkeIObracunajAsync(long zahtjevId, SocijalniNatjecajBodovniPodaciDto dto)
+    // 4) Uređivanje bodovnih podataka
+    public async Task SpremiBodovnePodatkeIObracunajAsync(
+        long zahtjevId,
+        SocijalniNatjecajBodovniPodaciDto dto)
     {
         await bodovniPodaciService.UpdateAsync(zahtjevId, dto);
+
         var bodovni = await context.SocijalniNatjecajBodovniPodaci
-            .FirstOrDefaultAsync(x => x.ZahtjevId == zahtjevId);
+            .FirstAsync(x => x.ZahtjevId == zahtjevId);
 
-        await ObradiAsync(zahtjevId, bodovni, false, async () =>
-        {
-            await bodoviService.IzracunajIBodujAsync(zahtjevId);
-            await ObradiGreskeAsync(zahtjevId);
-        });
+        await ObradiAsync(
+            zahtjevId,
+            bodovni,
+            isCreate: false,
+            dodatnaAkcija: async () =>
+            {
+                await bodoviService.IzracunajIBodujAsync(zahtjevId);
+                await ObradiGreskeAsync(zahtjevId);
+            });
     }
 
-    public async Task DodajClanaIObracunajAsync(long zahtjevId, SocijalniNatjecajClanDto clanDto)
+    // 5) Dodavanje člana
+    public async Task DodajClanaIObracunajAsync(
+        long zahtjevId,
+        SocijalniNatjecajClanDto clanDto)
     {
-        var noviClan = clanDto.ToEntity(zahtjevId);
-        await clanService.AddClanAsync(noviClan);
+        var novi = clanDto.ToEntity(zahtjevId);
+        await clanService.AddClanAsync(novi);
 
-        await ObradiAsync(zahtjevId, noviClan, true, async () =>
-        {
-            await bodoviService.IzracunajIBodujAsync(zahtjevId);
-            await ObradiGreskeAsync(zahtjevId);
-        });
+        // Nakon dodavanja, samo proslijedi u ObradiAsync
+        await ObradiAsync(
+            zahtjevId,
+            novi,
+            isCreate: true,
+            dodatnaAkcija: async () =>
+            {
+                await bodoviService.IzracunajIBodujAsync(zahtjevId);
+                await ObradiGreskeAsync(zahtjevId);
+            });
     }
 
+    // 6) Brisanje člana
     public async Task ObrisiClanaIObracunajAsync(long zahtjevId, long clanId)
     {
-        var clan = await context.SocijalniNatjecajClanovi
-            .FirstOrDefaultAsync(c => c.Id == clanId && c.ZahtjevId == zahtjevId);
-
         await clanService.RemoveClanAsync(zahtjevId, clanId);
 
-        await ObradiAsync(zahtjevId, clan, false, async () =>
-        {
-            await bodoviService.IzracunajIBodujAsync(zahtjevId);
-            await ObradiGreskeAsync(zahtjevId);
-        });
+        // entity za audit možemo dohvatiti prije ili poslije brisanja
+        await ObradiAsync(
+            zahtjevId,
+            entity: null,
+            isCreate: false,
+            dodatnaAkcija: async () =>
+            {
+                await bodoviService.IzracunajIBodujAsync(zahtjevId);
+                await ObradiGreskeAsync(zahtjevId);
+            });
     }
 
+    // 7) Edit postojećeg člana
     public async Task EditClanIObracunajAsync(SocijalniNatjecajClanDto azurirani)
     {
-        var clan = await context.SocijalniNatjecajClanovi.FirstAsync(c => c.Id == azurirani.Id);
+        var clan = await context.SocijalniNatjecajClanovi
+            .FirstAsync(c => c.Id == azurirani.Id);
         azurirani.MapOnto(clan);
 
-        await ObradiAsync(azurirani.ZahtjevId, clan, false, async () =>
-        {
-            await bodoviService.IzracunajIBodujAsync(azurirani.ZahtjevId);
-            await ObradiGreskeAsync(azurirani.ZahtjevId);
-        });
+        await ObradiAsync(
+            azurirani.ZahtjevId,
+            clan,
+            isCreate: false,
+            dodatnaAkcija: async () =>
+            {
+                await bodoviService.IzracunajIBodujAsync(azurirani.ZahtjevId);
+                await ObradiGreskeAsync(azurirani.ZahtjevId);
+            });
     }
 
-    public async Task AzurirajOsnovnoIObracunajAkoTrebaAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto)
+    // 8) Ažuriranje osnovnih podataka
+    public async Task AzurirajOsnovnoIObracunajAkoTrebaAsync(
+        long zahtjevId,
+        SocijalniNatjecajOsnovnoEditDto dto)
     {
-        var zahtjev = await context.SocijalniNatjecajZahtjevi.FirstAsync(z => z.Id == zahtjevId);
+        var zahtjev = await context.SocijalniNatjecajZahtjevi
+            .FirstAsync(z => z.Id == zahtjevId);
+
         dto.MapOnto(zahtjev);
+        // Čuvamo referentov izbor
+        zahtjev.ManualniRezultatObrade = dto.RezultatObrade!.Value;
 
-        await ObradiAsync(zahtjevId, zahtjev, false, async () =>
-        {
-            if (dto.RezultatObrade == RezultatObrade.Zadovoljava)
-                await bodoviService.IzracunajIBodujAsync(zahtjevId);
-
-            await ObradiGreskeAsync(zahtjevId);
-        });
+        await ObradiAsync(
+            zahtjevId,
+            zahtjev,
+            isCreate: false,
+            dodatnaAkcija: async () =>
+            {
+                // Ako je referent izabrao Zadovoljava, preracunaj bodove
+                if (dto.RezultatObrade == RezultatObrade.Osnovan)
+                    await bodoviService.IzracunajIBodujAsync(zahtjevId);
+                await ObradiGreskeAsync(zahtjevId);
+            });
     }
 }

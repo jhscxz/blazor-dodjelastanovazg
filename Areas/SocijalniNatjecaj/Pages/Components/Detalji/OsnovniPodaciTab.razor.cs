@@ -6,7 +6,7 @@ using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji;
 
-public class PrikazBase : ComponentBase
+public partial class OsnovniPodaciTab : ComponentBase
 {
     [Parameter] public long Id { get; set; }
 
@@ -22,16 +22,18 @@ public class PrikazBase : ComponentBase
     protected Color ChipColor => Detalji.RezultatObrade switch
     {
         RezultatObrade.Neosnovan => Color.Error,
+        RezultatObrade.Greška => Color.Error,
         RezultatObrade.Nepotpun => Color.Warning,
-        RezultatObrade.Zadovoljava => Color.Success,
+        RezultatObrade.Osnovan => Color.Success,
         _ => Color.Default
     };
 
     protected string ChipIcon => Detalji.RezultatObrade switch
     {
         RezultatObrade.Neosnovan => Icons.Material.Filled.Dangerous,
+        RezultatObrade.Greška => Icons.Material.Filled.Dangerous,
         RezultatObrade.Nepotpun => Icons.Material.Filled.Warning,
-        RezultatObrade.Zadovoljava => Icons.Material.Filled.CheckCircle,
+        RezultatObrade.Osnovan => Icons.Material.Filled.CheckCircle,
         _ => Icons.Material.Filled.Info
     };
 
@@ -39,11 +41,12 @@ public class PrikazBase : ComponentBase
     {
         RezultatObrade.Neosnovan => "Neosnovan",
         RezultatObrade.Nepotpun => "Nepotpuno",
-        RezultatObrade.Zadovoljava => "Osnovan",
+        RezultatObrade.Osnovan => "Osnovan",
+        RezultatObrade.Greška =>"Greška",
         _ => "Nepoznato"
     };
 
-    protected Variant ChipVariant => Detalji.RezultatObrade == RezultatObrade.Zadovoljava
+    protected Variant ChipVariant => Detalji.RezultatObrade == RezultatObrade.Osnovan
         ? Variant.Outlined
         : Variant.Text;
 }

@@ -73,7 +73,7 @@ public partial class BodovanjeTab(ISocijalniZahtjevService zahtjevService) : Com
         {
             RezultatObrade.Nepotpun => "Nepotpun",
             RezultatObrade.Neosnovan => "Neosnovan",
-            RezultatObrade.Zadovoljava => "Zadovoljava",
+            RezultatObrade.Osnovan => "Osnovan",
             null => "Nepoznato",
             _ => "Nepoznato"
         };

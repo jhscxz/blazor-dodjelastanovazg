@@ -38,14 +38,16 @@ public static class MappingExtensions
             DatumRodjenja = c.DatumRodjenja
         }.WithAuditFrom(c);
 
-    public static SocijalniKucanstvoPodaciDto ToDto(this SocijalniNatjecajKucanstvoPodaci k)
-        => new SocijalniKucanstvoPodaciDto
-        {
-            UkupniPrihodKucanstva = k.UkupniPrihodKucanstva,
-            PrebivanjeOd = k.PrebivanjeOd,
+    public static SocijalniKucanstvoPodaciDto ToDto(this SocijalniNatjecajKucanstvoPodaci k) =>
+        new SocijalniKucanstvoPodaciDto {
+            UkupniPrihodKucanstva = k.Prihod?.UkupniPrihodKucanstva,
+            PrihodPoClanu          = k.Prihod?.PrihodPoClanu,
+            PostotakProsjeka       = k.Prihod?.PostotakProsjeka,
+            IspunjavaUvjetPrihoda  = k.Prihod?.IspunjavaUvjetPrihoda,
+            PrebivanjeOd           = k.PrebivanjeOd,
             StambeniStatusKucanstva = k.StambeniStatusKucanstva,
-            SastavKucanstva = k.SastavKucanstva,
-            ZahtjevId = k.ZahtjevId
+            SastavKucanstva         = k.SastavKucanstva,
+            ZahtjevId               = k.ZahtjevId
         }.WithAuditFrom(k);
 
     public static SocijalniNatjecajBodovniPodaciDto ToDto(this SocijalniNatjecajBodovniPodaci b)

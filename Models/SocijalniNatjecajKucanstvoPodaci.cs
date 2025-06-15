@@ -13,13 +13,11 @@ namespace DodjelaStanovaZG.Models
         [ForeignKey(nameof(Zahtjev))]
         public long ZahtjevId { get; init; }
         public SocijalniNatjecajZahtjev Zahtjev { get; set; } = null!;
-        [Required]
-        [Precision(10, 2)]
-        public decimal UkupniPrihodKucanstva { get; set; }
         public DateOnly? PrebivanjeOd { get; set; }
         [Required]
         public StambeniStatusKucanstva StambeniStatusKucanstva { get; set; }
         [Required]
         public SastavKucanstva SastavKucanstva { get; set; }
+        public SocijalniPrihodi Prihod { get; set; }
     }
 }

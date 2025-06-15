@@ -402,10 +402,6 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<byte>("StambeniStatusKucanstva")
                         .HasColumnType("tinyint");
 
-                    b.Property<decimal>("UkupniPrihodKucanstva")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -468,6 +464,9 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<int>("KlasaPredmeta")
                         .HasColumnType("int");
 
+                    b.Property<byte>("ManualniRezultatObrade")
+                        .HasColumnType("tinyint");
+
                     b.Property<string>("NapomenaObrade")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
@@ -515,6 +514,49 @@ namespace DodjelaStanovaZG.Migrations
                                     .HasPeriodEnd("PeriodEnd")
                                     .HasColumnName("PeriodEnd");
                             }));
+                });
+
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniPrihodi", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IspunjavaUvjetPrihoda")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("PostotakProsjeka")
+                        .HasPrecision(7, 2)
+                        .HasColumnType("decimal(7,2)");
+
+                    b.Property<decimal>("PrihodPoClanu")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("UkupniPrihodKucanstva")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.ToTable("SocijalniPrihodi");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -872,6 +914,29 @@ namespace DodjelaStanovaZG.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniPrihodi", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajKucanstvoPodaci", "KucanstvoPodaci")
+                        .WithOne("Prihod")
+                        .HasForeignKey("DodjelaStanovaZG.Models.SocijalniPrihodi", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UpdatedByUser")
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("KucanstvoPodaci");
+
+                    b.Navigation("UpdatedByUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -920,6 +985,12 @@ namespace DodjelaStanovaZG.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajKucanstvoPodaci", b =>
+                {
+                    b.Navigation("Prihod")
                         .IsRequired();
                 });
 

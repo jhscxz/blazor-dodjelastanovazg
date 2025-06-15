@@ -25,9 +25,34 @@
                 <MudText Typo="Typo.body2">@GetStatusText(Bodovi?.Zahtjev.RezultatObrade)</MudText>
             </MudItem>
 
-            <MudItem xs="12">
-                <MudText Typo="Typo.body2">Ukupni prihod kućanstva: <b>@Bodovi?.Zahtjev.KucanstvoPodaci?.UkupniPrihodKucanstva €</b></MudText>
+            <MudItem xs="12" sm="3">
+                <MudText Typo="Typo.body2">Ukupni prihod kućanstva:</MudText>
+                <MudText Typo="Typo.body2">
+                    <b>@Bodovi?.Zahtjev.KucanstvoPodaci?.Prihod?.UkupniPrihodKucanstva.ToString("F2")</b> €
+                </MudText>
             </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudText Typo="Typo.body2">Mjesečni prihod po članu:</MudText>
+                <MudText Typo="Typo.body2">
+                    <b>@Bodovi?.Zahtjev.KucanstvoPodaci?.Prihod?.PrihodPoClanu.ToString("F2")</b> €
+                </MudText>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudText Typo="Typo.body2">Postotak prosjeka:</MudText>
+                <MudText Typo="Typo.body2">
+                    <b>@(Bodovi?.Zahtjev.KucanstvoPodaci?.Prihod?.PostotakProsjeka?.ToString("F2") ?? "0.00")</b> %
+                </MudText>
+            </MudItem>
+
+            <MudItem xs="12" sm="3">
+                <MudText Typo="Typo.body2">Ispunjava uvjet prihoda:</MudText>
+                <MudText Typo="Typo.body2">
+                    <b>@(Bodovi?.Zahtjev.KucanstvoPodaci?.Prihod?.IspunjavaUvjetPrihoda == true ? "Da" : "Ne")</b>
+                </MudText>
+            </MudItem>
+
         </MudGrid>
 
         <MudTabs Rounded="true"

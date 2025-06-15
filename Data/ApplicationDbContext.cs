@@ -60,6 +60,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 temporal.UseHistoryTable("SocijalniNatjecajKucanstvoPodaciHistory");
             }));
         });
+
+        // 🔧 Veza 1:1 između SocijalniPrihodi i SocijalniNatjecajKucanstvoPodaci (shared primary key)
+        builder.Entity<SocijalniPrihodi>()
+            .HasOne(p => p.KucanstvoPodaci)
+            .WithOne(k => k.Prihod)
+            .HasForeignKey<SocijalniPrihodi>(p => p.Id)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     // DbSet-ovi
@@ -68,6 +75,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<SocijalniNatjecajClan> SocijalniNatjecajClanovi { get; set; }
     public DbSet<SocijalniNatjecajBodovniPodaci> SocijalniNatjecajBodovniPodaci { get; set; }
     public DbSet<SocijalniNatjecajKucanstvoPodaci> SocijalniNatjecajKucanstvoPodaci { get; set; }
+    public DbSet<SocijalniPrihodi> SocijalniPrihodi { get; set; }
     public DbSet<SocijalniNatjecajBodovi> SocijalniNatjecajBodovi { get; set; }
-    public DbSet<SocijalniNatjecajBodovnaGreska> SocijalniNatjecajBodovnaGreske { get; set; } = default!;
+    public DbSet<SocijalniNatjecajBodovnaGreska> SocijalniNatjecajBodovnaGreske { get; set; }
 }

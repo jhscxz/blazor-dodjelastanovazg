@@ -1,5 +1,4 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
@@ -36,7 +35,8 @@ public partial class KucanstvoEditFormPage
             ? new SocijalniKucanstvoPodaciDto()
             : new SocijalniKucanstvoPodaciDto
             {
-                UkupniPrihodKucanstva = zahtjev.KucanstvoPodaci.UkupniPrihodKucanstva,
+                
+                UkupniPrihodKucanstva = zahtjev.KucanstvoPodaci.Prihod?.UkupniPrihodKucanstva,
                 PrebivanjeOd = zahtjev.KucanstvoPodaci.PrebivanjeOd,
                 StambeniStatusKucanstva = zahtjev.KucanstvoPodaci.StambeniStatusKucanstva == 0
                     ? null

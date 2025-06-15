@@ -4,5 +4,6 @@ public enum RezultatObrade : byte
 {
     Nepotpun = 1,
     Neosnovan = 2,
-    Zadovoljava = 3
+    Osnovan = 3,
+    Greška = 4
 }

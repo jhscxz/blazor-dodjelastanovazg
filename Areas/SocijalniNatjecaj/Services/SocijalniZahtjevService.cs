@@ -19,8 +19,12 @@ public class SocijalniZahtjevService(
     : ISocijalniZahtjevService
 {
     private readonly ApplicationDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-    private readonly ISocijalniBodovnaGreskaService _greskaService = greskaService ?? throw new ArgumentNullException(nameof(greskaService));
+
+    private readonly IHttpContextAccessor _httpContextAccessor =
+        httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+
+    private readonly ISocijalniBodovnaGreskaService _greskaService =
+        greskaService ?? throw new ArgumentNullException(nameof(greskaService));
 
     private string CurrentUserId => _httpContextAccessor.HttpContext?.User
                                         ?.FindFirstValue(ClaimTypes.NameIdentifier)
@@ -35,7 +39,11 @@ public class SocijalniZahtjevService(
             .ThenInclude(c => c.UpdatedByUser)
             .Include(z => z.BodovniPodaci)
             .Include(z => z.KucanstvoPodaci)
-            .ThenInclude(k => k!.CreatedByUser)
+            .ThenInclude(k => k!.Prihod)
+            .ThenInclude(p => p!.CreatedByUser)
+            .Include(z => z.KucanstvoPodaci)
+            .ThenInclude(k => k!.Prihod)
+            .ThenInclude(p => p!.UpdatedByUser)
             .Include(z => z.KucanstvoPodaci)
             .ThenInclude(k => k!.UpdatedByUser)
             .Include(z => z.CreatedByUser)
@@ -65,7 +73,8 @@ public class SocijalniZahtjevService(
             })
             .ToListAsync();
 
-    public async Task<SocijalniNatjecajZahtjev> CreateAsync(SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib)
+    public async Task<SocijalniNatjecajZahtjev> CreateAsync(SocijalniNatjecajZahtjevDto dto, string? imePrezime,
+        string? oib)
     {
         var zahtjev = new SocijalniNatjecajZahtjev
         {
@@ -75,6 +84,7 @@ public class SocijalniZahtjevService(
             Adresa = dto.Adresa,
             Email = dto.Email,
             RezultatObrade = dto.RezultatObrade!.Value,
+            ManualniRezultatObrade = dto.RezultatObrade!.Value,
             NapomenaObrade = dto.NapomenaObrade
         };
 
@@ -86,7 +96,11 @@ public class SocijalniZahtjevService(
             Zahtjev = zahtjev
         };
 
-        var kucanstvo = new SocijalniNatjecajKucanstvoPodaci { Zahtjev = zahtjev };
+        var kucanstvo = new SocijalniNatjecajKucanstvoPodaci
+        {
+            Zahtjev = zahtjev
+        };
+
         var bodovni = new SocijalniNatjecajBodovniPodaci { Zahtjev = zahtjev };
         var bodovi = new SocijalniNatjecajBodovi { Zahtjev = zahtjev };
 
@@ -97,6 +111,7 @@ public class SocijalniZahtjevService(
             AuditHelper.ApplyAudit(g, CurrentUserId, isCreate: true);
         }
 
+        // Audit svih entiteta osim prihoda
         AuditHelper.ApplyAudit(
             new object[] { zahtjev, podnositelj, kucanstvo, bodovni, bodovi },
             CurrentUserId,
@@ -108,11 +123,31 @@ public class SocijalniZahtjevService(
         zahtjev.Bodovi = bodovi;
         zahtjev.Greske = greske;
 
+        // 1. Spremi zahtjev i sve vezane entitete (uključuje kucanstvo)
         await _context.SocijalniNatjecajZahtjevi.AddAsync(zahtjev);
+        await _context.SaveChangesAsync();
+
+        // 2. Dohvati ID kućanstva iz baze (jer Id još nije bio generiran prije)
+        var kucanstvoId = zahtjev.KucanstvoPodaci.Id;
+
+        // 3. Kreiraj prihod s točnim ID-om
+        var prihod = new SocijalniPrihodi
+        {
+            Id = kucanstvoId, // shared primary key
+            UkupniPrihodKucanstva = 0,
+            PrihodPoClanu = 0,
+            IspunjavaUvjetPrihoda = true
+        };
+
+        AuditHelper.ApplyAudit(prihod, CurrentUserId, isCreate: true);
+
+        // 4. Spremi prihod
+        await _context.SocijalniPrihodi.AddAsync(prihod);
         await _context.SaveChangesAsync();
 
         return zahtjev;
     }
+
 
     public async Task UpdateOsnovniPodaciAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto)
     {
@@ -136,7 +171,8 @@ public class SocijalniZahtjevService(
                    .Include(z => z.Natjecaj)
                    .Include(z => z.Bodovi) // ← OVO DODAJ
                    .Include(z => z.Clanovi) // preporučeno ako koristiš u WordExportService
-                   .Include(z => z.KucanstvoPodaci) // isto
+                   .Include(z => z.KucanstvoPodaci)
+                   .Include(z => z.KucanstvoPodaci!.Prihod)
                    .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                ?? throw new NotFoundException($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
     }
@@ -178,12 +214,14 @@ public class SocijalniZahtjevService(
                 DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
                 Adresa = x.Adresa!,
                 NatjecajId = x.NatjecajId,
-                Bodovni = x.KucanstvoPodaci == null ? null : new SocijalniBodovniDto
-                {
-                    UkupniPrihodKucanstva = x.KucanstvoPodaci.UkupniPrihodKucanstva,
-                    StambeniStatusKucanstva = x.KucanstvoPodaci.StambeniStatusKucanstva,
-                    SastavKucanstva = x.KucanstvoPodaci.SastavKucanstva
-                }
+                Bodovni = x.KucanstvoPodaci == null
+                    ? null
+                    : new SocijalniBodovniDto
+                    {
+                        UkupniPrihodKucanstva = x.KucanstvoPodaci.Prihod!.UkupniPrihodKucanstva,
+                        StambeniStatusKucanstva = x.KucanstvoPodaci.StambeniStatusKucanstva,
+                        SastavKucanstva = x.KucanstvoPodaci.SastavKucanstva
+                    }
             })
             .ToListAsync();
 

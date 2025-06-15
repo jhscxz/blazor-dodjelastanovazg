@@ -11,7 +11,10 @@ public class SocijalniNatjecajZahtjev : AuditableEntity
     [Required] public DateTime DatumPodnosenjaZahtjeva { get; set; }
     [StringLength(255)] public string? Adresa { get; set; }
     [StringLength(255)] [EmailAddress] public string? Email { get; set; }
-    [Required] public RezultatObrade RezultatObrade { get; set; }
+    [Required]
+    public RezultatObrade RezultatObrade { get; set; }
+    [Required]
+    public RezultatObrade ManualniRezultatObrade { get; set; }
     [StringLength(1000)] public string? NapomenaObrade { get; set; }
     [Required]
     [ForeignKey(nameof(Natjecaj))]
