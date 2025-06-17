@@ -1,5 +1,7 @@
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
+using DodjelaStanovaZG.Helpers.IServices;
 
 namespace DodjelaStanovaZG.Infrastructure.Interfaces
 {
@@ -10,10 +12,13 @@ namespace DodjelaStanovaZG.Infrastructure.Interfaces
         ISocijalniBodovniPodaciService SocijalniBodovniPodaciService { get; }
         INatjecajOdabirService NatjecajOdabirService { get; }
         INatjecajService NatjecajiService { get; }
-        ISocijalniZahtjevService SocijalniZahtjevService { get; }
         ISocijalniBodoviService SocijalniBodoviService { get; }
         ISocijalniBodovnaGreskaService SocijalniBodovnaGreskaService { get; }
-        ISocijalniZahtjevObradaService SocijalniZahtjevObradaService { get; }
+        ISocijalniZahtjevReadService SocijalniZahtjevRead { get; }
+        ISocijalniZahtjevWriteService SocijalniZahtjevWrite { get; }
+        ISocijalniZahtjevProcessor SocijalniZahtjevProcessor { get; }
+
+
 
         Task SaveChangesAsync();
     }

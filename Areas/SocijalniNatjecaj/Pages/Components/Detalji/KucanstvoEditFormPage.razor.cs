@@ -13,7 +13,6 @@ public partial class KucanstvoEditFormPage
 
     [Inject] private IUnitOfWork UnitOfWork { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
-    [Inject] private ISocijalniZahtjevObradaService ObradaService { get; set; } = null!;
 
     private SocijalniKucanstvoPodaciDto? _kucanstvoModel;
     private MudForm _form = null!;
@@ -29,7 +28,7 @@ public partial class KucanstvoEditFormPage
 
     protected override async Task OnInitializedAsync()
     {
-        var zahtjev = await UnitOfWork.SocijalniZahtjevService.GetZahtjevByIdAsync(ZahtjevId);
+        var zahtjev = await UnitOfWork.SocijalniZahtjevRead.GetZahtjevByIdAsync(ZahtjevId);
 
         _kucanstvoModel = zahtjev.KucanstvoPodaci is null
             ? new SocijalniKucanstvoPodaciDto()
@@ -62,8 +61,7 @@ public partial class KucanstvoEditFormPage
             ? DateOnly.FromDateTime(_prebivanjeOd.Value)
             : null;
 
-        await ObradaService.SpremiKucanstvoIObracunajAsync(ZahtjevId, _kucanstvoModel);
-
+        await UnitOfWork.SocijalniZahtjevProcessor.SpremiKucanstvoIObradiAsync(ZahtjevId, _kucanstvoModel);
         Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=Kucanstvo");
     }
 

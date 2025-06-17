@@ -16,7 +16,7 @@ public partial class OsnovniPodaciTab : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        Detalji = await UnitOfWork.SocijalniZahtjevService.GetDetaljiAsync(Id);
+        Detalji = await UnitOfWork.SocijalniZahtjevRead.GetDetaljiAsync(Id);
     }
 
     protected Color ChipColor => Detalji.RezultatObrade switch

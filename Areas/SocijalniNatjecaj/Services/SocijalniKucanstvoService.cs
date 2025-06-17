@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.SocijalniZahtjev;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Helpers;
+using DodjelaStanovaZG.Helpers.Exceptions;
 using DodjelaStanovaZG.Models;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services

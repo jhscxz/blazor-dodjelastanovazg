@@ -47,7 +47,7 @@ public class SocijalniNatjecajPregledBase : ComponentBase
 
     protected async Task<TableData<SocijalniNatjecajZahtjevDto>> LoadServerData(TableState state, CancellationToken cancellationToken)
     {
-        var result = await UnitOfWork.SocijalniZahtjevService.GetPagedAsync(
+        var result = await UnitOfWork.SocijalniZahtjevRead.GetPagedAsync(
             natjecajId: NatjecajId,
             page: state.Page,
             pageSize: state.PageSize,

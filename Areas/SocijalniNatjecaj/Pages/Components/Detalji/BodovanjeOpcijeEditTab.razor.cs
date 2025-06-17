@@ -13,7 +13,6 @@ public class BodovanjeOpcijeEditTabBase : ComponentBase
     [Inject] protected IUnitOfWork UnitOfWork { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
-    [Inject] private ISocijalniZahtjevObradaService ObradaService { get; set; } = null!;
     protected SocijalniNatjecajBodovniPodaciDto? Model { get; set; }
     
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
@@ -34,7 +33,7 @@ public class BodovanjeOpcijeEditTabBase : ComponentBase
     {
         if (Model is null) return;
 
-        await ObradaService.SpremiBodovnePodatkeIObracunajAsync(Id, Model);
+        await UnitOfWork.SocijalniZahtjevProcessor.SpremiBodovnePodatkeIObradiAsync(Id, Model);
 
         Snackbar.Add("Podaci uspješno spremljeni.", Severity.Success);
         Navigation.NavigateTo($"/socijalni/detalji/{Id}?tab=Bodovi");

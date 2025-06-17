@@ -10,8 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using System.Globalization;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.SocijalniZahtjev;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
 using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Helpers.IHelpers;
+using DodjelaStanovaZG.Helpers.IServices;
 using DodjelaStanovaZG.Infrastructure;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Services.IServices;
@@ -63,14 +66,20 @@ builder.Services.AddScoped<INatjecajOdabirService, NatjecajOdabirService>();
 builder.Services.AddScoped<ISocijalniBodovniPodaciService, SocijalniBodovniPodaciService>();
 builder.Services.AddScoped<ISocijalniClanService, SocijalniClanService>();
 builder.Services.AddScoped<ISocijalniKucanstvoService, SocijalniKucanstvoService>();
-builder.Services.AddScoped<ISocijalniZahtjevService, SocijalniZahtjevService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<ISocijalniBodoviService, SocijalniBodoviService>();
-builder.Services.AddScoped<ISocijalniZahtjevObradaService, SocijalniZahtjevObradaService>();
 builder.Services.AddScoped<ISocijalniBodovnaGreskaService, SocijalniBodovnaGreskaService>();
 builder.Services.AddScoped<IWordExportService, WordExportService>();
 builder.Services.AddScoped<SocijalniZahtjevFactory>();
+builder.Services.AddScoped<ISocijalniZahtjevFactory, SocijalniZahtjevFactory>();
+builder.Services.AddScoped<ISocijalniZahtjevReadService, SocijalniZahtjevReadService>();
+builder.Services.AddScoped<ISocijalniZahtjevWriteService, SocijalniZahtjevWriteService>();
+builder.Services.AddScoped<ISocijalniZahtjevProcessor, SocijalniZahtjevProcessor>();
+builder.Services.AddScoped<ISocijalniZahtjevGreskaService, SocijalniZahtjevGreskaService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<ISocijalniZahtjevFormHandler, SocijalniZahtjevFormHandler>();
+
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Dodaj hrvatski jezik kao default

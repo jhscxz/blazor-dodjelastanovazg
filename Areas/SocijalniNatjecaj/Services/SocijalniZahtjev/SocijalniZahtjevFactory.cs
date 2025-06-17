@@ -3,7 +3,7 @@ using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj;
+namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
 public class SocijalniZahtjevFactory : ISocijalniZahtjevFactory
 {

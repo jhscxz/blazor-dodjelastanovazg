@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.IServices;
@@ -9,7 +10,7 @@ using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Pages.Components.Detalji;
 
-public partial class BodovanjeTab(ISocijalniZahtjevService zahtjevService) : ComponentBase
+public partial class BodovanjeTab : ComponentBase
 {
     [Inject] public ISocijalniBodoviService BodoviService { get; set; } = default!;
     [Inject] public ISocijalniBodovnaGreskaService GreskaService { get; set; } = default!;

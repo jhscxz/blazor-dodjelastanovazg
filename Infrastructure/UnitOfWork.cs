@@ -1,6 +1,8 @@
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
+using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
 using DodjelaStanovaZG.Data;
+using DodjelaStanovaZG.Helpers.IServices;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 
 namespace DodjelaStanovaZG.Infrastructure;
@@ -11,10 +13,11 @@ public class UnitOfWork(
     ISocijalniKucanstvoService socijalniKucanstvoService,
     ISocijalniBodovniPodaciService socijalniBodovniPodaciService,
     INatjecajOdabirService natjecajOdabirService,
-    ISocijalniZahtjevService socijalniZahtjevService,
     ISocijalniBodoviService socijalniBodoviService,
-    ISocijalniBodovnaGreskaService  socijalniBodovnaGreskaService,
-    ISocijalniZahtjevObradaService socijalniZahtjevObradaService,
+    ISocijalniBodovnaGreskaService socijalniBodovnaGreskaService,
+    ISocijalniZahtjevReadService socijalniZahtjevReadService,
+    ISocijalniZahtjevWriteService socijalniZahtjevWriteService,
+    ISocijalniZahtjevProcessor socijalniZahtjevProcessor,
     INatjecajService natjecajiService)
     : IUnitOfWork
 {
@@ -23,10 +26,11 @@ public class UnitOfWork(
     public ISocijalniBodovniPodaciService SocijalniBodovniPodaciService { get; } = socijalniBodovniPodaciService;
     public INatjecajOdabirService NatjecajOdabirService { get; } = natjecajOdabirService;
     public INatjecajService NatjecajiService { get; } = natjecajiService;
-    public ISocijalniZahtjevService SocijalniZahtjevService { get; } = socijalniZahtjevService;
     public ISocijalniBodoviService SocijalniBodoviService { get; } = socijalniBodoviService;
     public ISocijalniBodovnaGreskaService SocijalniBodovnaGreskaService { get; } = socijalniBodovnaGreskaService;
-    public ISocijalniZahtjevObradaService SocijalniZahtjevObradaService { get; } = socijalniZahtjevObradaService;
+    public ISocijalniZahtjevReadService SocijalniZahtjevRead { get; } = socijalniZahtjevReadService;
+    public ISocijalniZahtjevWriteService SocijalniZahtjevWrite { get; } = socijalniZahtjevWriteService;
+    public ISocijalniZahtjevProcessor SocijalniZahtjevProcessor { get; } = socijalniZahtjevProcessor;
 
     public async Task SaveChangesAsync()
     {

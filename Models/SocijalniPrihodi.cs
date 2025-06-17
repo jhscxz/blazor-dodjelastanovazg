@@ -8,7 +8,7 @@ namespace DodjelaStanovaZG.Models
     {
         [Key, ForeignKey(nameof(KucanstvoPodaci))]
         public long Id { get; set; }
-        public SocijalniNatjecajKucanstvoPodaci KucanstvoPodaci { get; set; } = null!;
+        public SocijalniNatjecajKucanstvoPodaci? KucanstvoPodaci { get; set; } = null!;
         [Required]
         [Precision(10, 2)]
         public decimal UkupniPrihodKucanstva { get; set; }

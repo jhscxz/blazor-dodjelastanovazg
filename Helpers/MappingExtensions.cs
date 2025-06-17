@@ -6,6 +6,8 @@ namespace DodjelaStanovaZG.Helpers;
 
 public static class MappingExtensions
 {
+    #region ToDto
+
     public static SocijalniNatjecajZahtjevDto ToDto(this SocijalniNatjecajZahtjev x)
     {
         var pod = x.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
@@ -24,7 +26,7 @@ public static class MappingExtensions
             Bodovni = new SocijalniBodovniDto(),
             KucanstvoPodaci = x.KucanstvoPodaci?.ToDto(),
             Clanovi = x.Clanovi.Select(c => c.ToDto()).ToList()
-        }.WithAuditFrom(x);
+        };
     }
 
     public static SocijalniNatjecajClanDto ToDto(this SocijalniNatjecajClan c)
@@ -36,19 +38,20 @@ public static class MappingExtensions
             Oib = c.Oib,
             Srodstvo = c.Srodstvo,
             DatumRodjenja = c.DatumRodjenja
-        }.WithAuditFrom(c);
+        };
 
     public static SocijalniKucanstvoPodaciDto ToDto(this SocijalniNatjecajKucanstvoPodaci k) =>
-        new SocijalniKucanstvoPodaciDto {
+        new SocijalniKucanstvoPodaciDto
+        {
             UkupniPrihodKucanstva = k.Prihod?.UkupniPrihodKucanstva,
-            PrihodPoClanu          = k.Prihod?.PrihodPoClanu,
-            PostotakProsjeka       = k.Prihod?.PostotakProsjeka,
-            IspunjavaUvjetPrihoda  = k.Prihod?.IspunjavaUvjetPrihoda,
-            PrebivanjeOd           = k.PrebivanjeOd,
+            PrihodPoClanu = k.Prihod?.PrihodPoClanu,
+            PostotakProsjeka = k.Prihod?.PostotakProsjeka,
+            IspunjavaUvjetPrihoda = k.Prihod?.IspunjavaUvjetPrihoda,
+            PrebivanjeOd = k.PrebivanjeOd,
             StambeniStatusKucanstva = k.StambeniStatusKucanstva,
-            SastavKucanstva         = k.SastavKucanstva,
-            ZahtjevId               = k.ZahtjevId
-        }.WithAuditFrom(k);
+            SastavKucanstva = k.SastavKucanstva,
+            ZahtjevId = k.ZahtjevId
+        };
 
     public static SocijalniNatjecajBodovniPodaciDto ToDto(this SocijalniNatjecajBodovniPodaci b)
         => new SocijalniNatjecajBodovniPodaciDto
@@ -65,7 +68,11 @@ public static class MappingExtensions
             BrojMjeseciObranaSuvereniteta = b.BrojMjeseciObranaSuvereniteta,
             BrojClanovaZrtavaSeksualnogNasilja = b.BrojClanovaZrtavaSeksualnogNasilja,
             BrojCivilnihStradalnika = b.BrojCivilnihStradalnika
-        }.WithAuditFrom(b);
+        };
+
+    #endregion
+
+    #region MapOnto
 
     public static void MapOnto(this SocijalniNatjecajBodovniPodaciDto dto, SocijalniNatjecajBodovniPodaci entity)
     {
@@ -99,7 +106,11 @@ public static class MappingExtensions
         entity.NapomenaObrade = dto.NapomenaObrade;
         entity.Email = dto.Email;
     }
-    
+
+    #endregion
+
+    #region ToEntity
+
     public static SocijalniNatjecajClan ToEntity(this SocijalniNatjecajClanDto dto, long zahtjevId)
         => new()
         {
@@ -110,4 +121,6 @@ public static class MappingExtensions
             Srodstvo = dto.Srodstvo,
             Zahtjev = null!
         };
+
+    #endregion
 }
