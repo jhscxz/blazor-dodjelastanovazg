@@ -1,4 +1,4 @@
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;

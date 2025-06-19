@@ -1,4 +1,4 @@
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 
 public class BodovniRed(string kategorija, string kriterij, string vrijednost)
 {

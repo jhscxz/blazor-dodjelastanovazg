@@ -1,6 +1,6 @@
 using DodjelaStanovaZG.DTO;
 
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 
 public class SocijalniNatjecajBodovniPodaciDto : AuditableDto
 {

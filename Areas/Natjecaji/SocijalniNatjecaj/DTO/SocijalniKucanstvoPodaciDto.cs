@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using DodjelaStanovaZG.DTO;
 using DodjelaStanovaZG.Enums;
 
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
 {
     public class SocijalniKucanstvoPodaciDto : AuditableDto
     {

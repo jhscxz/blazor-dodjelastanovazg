@@ -1,4 +1,4 @@
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Helpers;

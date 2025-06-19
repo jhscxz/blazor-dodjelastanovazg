@@ -3,7 +3,7 @@ using DodjelaStanovaZG.DTO;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
+namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
 {
     public class SocijalniNatjecajZahtjevDto : AuditableDto
     {
@@ -36,5 +36,6 @@ namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO
         public List<SocijalniNatjecajClanDto>? Clanovi { get; init; }
         public SocijalniKucanstvoPodaciDto? KucanstvoPodaci { get; init; }
         public List<SocijalniNatjecajBodovnaGreska> Greske { get; set; } = [];
+        
     }
 }

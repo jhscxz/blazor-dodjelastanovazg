@@ -1,3 +1,4 @@
+using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
@@ -18,25 +19,23 @@ public class SocijalniZahtjevGreskaService(
     private readonly IAuditService _auditService = auditService;
     public async Task ObradiGreskeAsync(SocijalniNatjecajZahtjev zahtjev)
     {
-        var greske = await greskaService.PronadiGreskeAsync(zahtjev);
+        var manualniOsnovan = zahtjev.ManualniRezultatObrade == RezultatObrade.Osnovan;
 
-        var stare = await context.SocijalniNatjecajBodovnaGreske
+        var noveGreske = await greskaService.PronadiGreskeAsync(zahtjev);
+
+        var stareGreske = await context.SocijalniNatjecajBodovnaGreske
             .Where(g => g.ZahtjevId == zahtjev.Id)
             .ToListAsync();
 
-        context.SocijalniNatjecajBodovnaGreske.RemoveRange(stare);
+        context.SocijalniNatjecajBodovnaGreske.RemoveRange(stareGreske);
 
-        if (greske.Any())
-        {
-            await context.SocijalniNatjecajBodovnaGreske.AddRangeAsync(greske);
-            zahtjev.RezultatObrade = RezultatObrade.Greška;
-        }
-        else
-        {
-            zahtjev.RezultatObrade = zahtjev.ManualniRezultatObrade;
-        }
-        
-        
+        if (noveGreske.Any())
+            await context.SocijalniNatjecajBodovnaGreske.AddRangeAsync(noveGreske);
+
+        zahtjev.RezultatObrade = manualniOsnovan && noveGreske.Any()
+            ? RezultatObrade.Greška
+            : zahtjev.ManualniRezultatObrade;
+
         _auditService.ApplyAudit(zahtjev, false);
     }
 }

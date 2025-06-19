@@ -1,4 +1,4 @@
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Models;
 
 namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices

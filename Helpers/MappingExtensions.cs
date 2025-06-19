@@ -1,4 +1,4 @@
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 
@@ -25,7 +25,12 @@ public static class MappingExtensions
             NapomenaObrade = x.NapomenaObrade,
             Bodovni = new SocijalniBodovniDto(),
             KucanstvoPodaci = x.KucanstvoPodaci?.ToDto(),
-            Clanovi = x.Clanovi.Select(c => c.ToDto()).ToList()
+            Clanovi = x.Clanovi.Select(c => c.ToDto()).ToList(),
+            
+            CreatedAt = x.CreatedAt,
+            CreatedBy = x.CreatedByUser?.UserName ?? string.Empty,
+            UpdatedAt = x.UpdatedAt,
+            UpdatedBy = x.UpdatedByUser?.UserName ?? string.Empty,
         };
     }
 
@@ -99,12 +104,14 @@ public static class MappingExtensions
 
     public static void MapOnto(this SocijalniNatjecajOsnovnoEditDto dto, SocijalniNatjecajZahtjev entity)
     {
-        entity.KlasaPredmeta = dto.KlasaPredmeta ?? 0;
-        entity.DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva ?? default;
+        entity.KlasaPredmeta = dto.KlasaPredmeta ?? entity.KlasaPredmeta;
+        entity.DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva ?? entity.DatumPodnosenjaZahtjeva;
         entity.Adresa = dto.Adresa;
-        entity.RezultatObrade = dto.RezultatObrade ?? 0;
         entity.NapomenaObrade = dto.NapomenaObrade;
         entity.Email = dto.Email;
+
+        if (dto.RezultatObrade.HasValue)
+            entity.ManualniRezultatObrade = dto.RezultatObrade.Value;
     }
 
     #endregion

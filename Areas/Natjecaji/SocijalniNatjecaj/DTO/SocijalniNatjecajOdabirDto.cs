@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 
 public class SocijalniNatjecajOdabirDto
 {

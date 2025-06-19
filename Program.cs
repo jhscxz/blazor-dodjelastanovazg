@@ -9,6 +9,7 @@ using MudBlazor.Services;
 using System.Globalization;
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
+using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
 using DodjelaStanovaZG.Helpers;

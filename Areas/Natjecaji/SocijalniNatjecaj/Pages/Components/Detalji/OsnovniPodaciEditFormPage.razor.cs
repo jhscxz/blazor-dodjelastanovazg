@@ -1,4 +1,4 @@
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
