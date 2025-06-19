@@ -27,9 +27,35 @@
     <_ContentIncludedByDefault Remove="Pages\Login.razor" />
     <_ContentIncludedByDefault Remove="Components\UI\Buttons\MudInputs\DateInput.razor" />
     <_ContentIncludedByDefault Remove="Components\UI\Buttons\MudInputs\TextInput.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeEditTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\ClanEditFormDialog.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\ClanoviKucanstvaTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\KucanstvoEditFormPage.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\KucanstvoPodaciTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\OsnovniPodaciEditFormPage.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\OsnovniPodaciTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Index.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\SocijalniNatjecajDetalji.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\SocijalniNatjecajPregled.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\SocijalniNatjecajZahtjevAdd.razor" />
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeEditTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\ClanEditFormDialog.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\ClanoviKucanstvaTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\KucanstvoEditFormPage.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\KucanstvoPodaciTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\OsnovniPodaciEditFormPage.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\OsnovniPodaciTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Index.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\SocijalniNatjecajDetalji.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\SocijalniNatjecajPregled.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\SocijalniNatjecajZahtjevAdd.razor" />
     <AdditionalFiles Include="Components\UI\CardComponent.razor" />
   </ItemGroup>
 
