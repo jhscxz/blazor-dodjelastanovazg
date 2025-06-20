@@ -171,7 +171,8 @@ namespace DodjelaStanovaZG.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
+                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -199,6 +200,7 @@ namespace DodjelaStanovaZG.Migrations
                     Adresa = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     RezultatObrade = table.Column<byte>(type: "tinyint", nullable: false),
+                    ManualniRezultatObrade = table.Column<byte>(type: "tinyint", nullable: false),
                     NapomenaObrade = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     NatjecajId = table.Column<long>(type: "bigint", nullable: false),
                     PeriodEnd = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -208,7 +210,8 @@ namespace DodjelaStanovaZG.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
+                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -237,6 +240,93 @@ namespace DodjelaStanovaZG.Migrations
                 .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart");
 
             migrationBuilder.CreateTable(
+                name: "SocijalniNatjecajBodovi",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ZahtjevId = table.Column<long>(type: "bigint", nullable: false),
+                    BodoviStambeniStatus = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviSastavKucanstva = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviPoClanu = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviMaloljetni = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviPunoljetniUzdrzavani = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviZajamcenaNaknada = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviNjegovatelj = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviDoplatakZaNjegu = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviOdraslihInvalidnina = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviMaloljetnihInvalidnina = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviZrtvaNasilja = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviAlternativnaSkrb = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviIznad55 = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviObrana = table.Column<float>(type: "real", nullable: false),
+                    BodoviSeksualnoNasilje = table.Column<byte>(type: "tinyint", nullable: false),
+                    BodoviCivilniStradalnici = table.Column<byte>(type: "tinyint", nullable: false),
+                    UkupnoBodova = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SocijalniNatjecajBodovi", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SocijalniNatjecajBodovi_AspNetUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SocijalniNatjecajBodovi_AspNetUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SocijalniNatjecajBodovi_SocijalniNatjecajZahtjevi_ZahtjevId",
+                        column: x => x.ZahtjevId,
+                        principalTable: "SocijalniNatjecajZahtjevi",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SocijalniNatjecajBodovnaGreske",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ZahtjevId = table.Column<long>(type: "bigint", nullable: false),
+                    Kod = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Poruka = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SocijalniNatjecajBodovnaGreske", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SocijalniNatjecajBodovnaGreske_AspNetUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SocijalniNatjecajBodovnaGreske_AspNetUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SocijalniNatjecajBodovnaGreske_SocijalniNatjecajZahtjevi_ZahtjevId",
+                        column: x => x.ZahtjevId,
+                        principalTable: "SocijalniNatjecajZahtjevi",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SocijalniNatjecajBodovniPodaci",
                 columns: table => new
                 {
@@ -261,7 +351,8 @@ namespace DodjelaStanovaZG.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
+                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -307,7 +398,8 @@ namespace DodjelaStanovaZG.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
+                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -342,7 +434,6 @@ namespace DodjelaStanovaZG.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ZahtjevId = table.Column<long>(type: "bigint", nullable: false),
-                    UkupniPrihodKucanstva = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     PrebivanjeOd = table.Column<DateOnly>(type: "date", nullable: true),
                     StambeniStatusKucanstva = table.Column<byte>(type: "tinyint", nullable: false),
                     SastavKucanstva = table.Column<byte>(type: "tinyint", nullable: false),
@@ -353,7 +444,8 @@ namespace DodjelaStanovaZG.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
+                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -380,6 +472,42 @@ namespace DodjelaStanovaZG.Migrations
                 .Annotation("SqlServer:TemporalHistoryTableSchema", null)
                 .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
                 .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart");
+
+            migrationBuilder.CreateTable(
+                name: "SocijalniPrihodi",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    UkupniPrihodKucanstva = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    PrihodPoClanu = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    PostotakProsjeka = table.Column<decimal>(type: "decimal(7,2)", precision: 7, scale: 2, nullable: true),
+                    IspunjavaUvjetPrihoda = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SocijalniPrihodi", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SocijalniPrihodi_AspNetUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SocijalniPrihodi_AspNetUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SocijalniPrihodi_SocijalniNatjecajKucanstvoPodaci_Id",
+                        column: x => x.Id,
+                        principalTable: "SocijalniNatjecajKucanstvoPodaci",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -436,6 +564,37 @@ namespace DodjelaStanovaZG.Migrations
                 name: "IX_Natjecaji_UpdatedBy",
                 table: "Natjecaji",
                 column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SocijalniNatjecajBodovi_CreatedBy",
+                table: "SocijalniNatjecajBodovi",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SocijalniNatjecajBodovi_UpdatedBy",
+                table: "SocijalniNatjecajBodovi",
+                column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SocijalniNatjecajBodovi_ZahtjevId",
+                table: "SocijalniNatjecajBodovi",
+                column: "ZahtjevId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SocijalniNatjecajBodovnaGreske_CreatedBy",
+                table: "SocijalniNatjecajBodovnaGreske",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SocijalniNatjecajBodovnaGreske_UpdatedBy",
+                table: "SocijalniNatjecajBodovnaGreske",
+                column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SocijalniNatjecajBodovnaGreske_ZahtjevId",
+                table: "SocijalniNatjecajBodovnaGreske",
+                column: "ZahtjevId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SocijalniNatjecajBodovniPodaci_CreatedBy",
@@ -498,6 +657,16 @@ namespace DodjelaStanovaZG.Migrations
                 name: "IX_SocijalniNatjecajZahtjevi_UpdatedBy",
                 table: "SocijalniNatjecajZahtjevi",
                 column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SocijalniPrihodi_CreatedBy",
+                table: "SocijalniPrihodi",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SocijalniPrihodi_UpdatedBy",
+                table: "SocijalniPrihodi",
+                column: "UpdatedBy");
         }
 
         /// <inheritdoc />
@@ -519,6 +688,12 @@ namespace DodjelaStanovaZG.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "SocijalniNatjecajBodovi");
+
+            migrationBuilder.DropTable(
+                name: "SocijalniNatjecajBodovnaGreske");
+
+            migrationBuilder.DropTable(
                 name: "SocijalniNatjecajBodovniPodaci")
                 .Annotation("SqlServer:IsTemporal", true)
                 .Annotation("SqlServer:TemporalHistoryTableName", "SocijalniNatjecajBodovniPodaciHistory")
@@ -535,15 +710,18 @@ namespace DodjelaStanovaZG.Migrations
                 .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart");
 
             migrationBuilder.DropTable(
+                name: "SocijalniPrihodi");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
                 name: "SocijalniNatjecajKucanstvoPodaci")
                 .Annotation("SqlServer:IsTemporal", true)
                 .Annotation("SqlServer:TemporalHistoryTableName", "SocijalniNatjecajKucanstvoPodaciHistory")
                 .Annotation("SqlServer:TemporalHistoryTableSchema", null)
                 .Annotation("SqlServer:TemporalPeriodEndColumnName", "PeriodEnd")
                 .Annotation("SqlServer:TemporalPeriodStartColumnName", "PeriodStart");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "SocijalniNatjecajZahtjevi")

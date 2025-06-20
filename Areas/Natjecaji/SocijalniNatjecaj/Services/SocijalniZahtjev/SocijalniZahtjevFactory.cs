@@ -1,6 +1,5 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 
@@ -22,7 +21,8 @@ public class SocijalniZahtjevFactory : ISocijalniZahtjevFactory
             NapomenaObrade = dto.NapomenaObrade
         };
 
-        zahtjev.Clanovi = [
+        zahtjev.Clanovi =
+        [
             new SocijalniNatjecajClan
             {
                 ImePrezime = imePrezime!,
@@ -32,19 +32,10 @@ public class SocijalniZahtjevFactory : ISocijalniZahtjevFactory
             }
         ];
 
-        zahtjev.KucanstvoPodaci = new() { Zahtjev = zahtjev };
-        zahtjev.BodovniPodaci = new() { Zahtjev = zahtjev };
-        zahtjev.Bodovi = new() { Zahtjev = zahtjev };
+        zahtjev.KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci { Zahtjev = zahtjev };
+        zahtjev.BodovniPodaci = new SocijalniNatjecajBodovniPodaci { Zahtjev = zahtjev };
+        zahtjev.Bodovi = new SocijalniNatjecajBodovi { Zahtjev = zahtjev };
 
         return zahtjev;
     }
-
-    public SocijalniPrihodi KreirajPrazanPrihod(long kucanstvoId)
-        => new()
-        {
-            Id = kucanstvoId,
-            UkupniPrihodKucanstva = 0,
-            PrihodPoClanu = 0,
-            IspunjavaUvjetPrihoda = true
-        };
 }

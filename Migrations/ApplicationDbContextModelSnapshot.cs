@@ -52,6 +52,11 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<DateOnly>("RokZaPrijavu")
                         .HasColumnType("date");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -134,6 +139,11 @@ namespace DodjelaStanovaZG.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<int>("UkupnoBodova")
                         .HasColumnType("int");
 
@@ -183,6 +193,11 @@ namespace DodjelaStanovaZG.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -256,6 +271,11 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.Property<bool>("PrimateljZajamceneMinimalneNaknade")
                         .HasColumnType("bit");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<bool>("StatusRoditeljaNjegovatelja")
                         .HasColumnType("bit");
@@ -333,6 +353,11 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("PeriodStart");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<int?>("Srodstvo")
                         .HasColumnType("int");
 
@@ -395,6 +420,11 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.Property<DateOnly?>("PrebivanjeOd")
                         .HasColumnType("date");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<byte>("SastavKucanstva")
                         .HasColumnType("tinyint");
@@ -487,6 +517,11 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<byte>("RezultatObrade")
                         .HasColumnType("tinyint");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -538,6 +573,11 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<decimal>("PrihodPoClanu")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<decimal>("UkupniPrihodKucanstva")
                         .HasPrecision(10, 2)

@@ -1,6 +1,5 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Helpers.IServices;
@@ -15,27 +14,31 @@ public class SocijalniZahtjevGreskaService(
     IAuditService auditService)
     : ISocijalniZahtjevGreskaService
 {
-    
-    private readonly IAuditService _auditService = auditService;
     public async Task ObradiGreskeAsync(SocijalniNatjecajZahtjev zahtjev)
     {
-        var manualniOsnovan = zahtjev.ManualniRezultatObrade == RezultatObrade.Osnovan;
-
         var noveGreske = await greskaService.PronadiGreskeAsync(zahtjev);
 
-        var stareGreske = await context.SocijalniNatjecajBodovnaGreske
-            .Where(g => g.ZahtjevId == zahtjev.Id)
-            .ToListAsync();
+        await SinkronizirajGreskeAsync(zahtjev.Id, noveGreske);
 
-        context.SocijalniNatjecajBodovnaGreske.RemoveRange(stareGreske);
+        zahtjev.RezultatObrade =
+            zahtjev.ManualniRezultatObrade == RezultatObrade.Osnovan && noveGreske.Any()
+                ? RezultatObrade.Greška
+                : zahtjev.ManualniRezultatObrade;
 
-        if (noveGreske.Any())
-            await context.SocijalniNatjecajBodovnaGreske.AddRangeAsync(noveGreske);
+        auditService.ApplyAudit(zahtjev, false);
+    }
 
-        zahtjev.RezultatObrade = manualniOsnovan && noveGreske.Any()
-            ? RezultatObrade.Greška
-            : zahtjev.ManualniRezultatObrade;
+    private async Task SinkronizirajGreskeAsync(
+        long zahtjevId,
+        IEnumerable<SocijalniNatjecajBodovnaGreska> noveGreske)
+    {
+        var set = context.SocijalniNatjecajBodovnaGreske;
 
-        _auditService.ApplyAudit(zahtjev, false);
+        var stare = await set.Where(g => g.ZahtjevId == zahtjevId).ToListAsync();
+        if (stare.Count > 0) set.RemoveRange(stare);
+
+        var socijalniNatjecajBodovnaGreskas = noveGreske as SocijalniNatjecajBodovnaGreska[] ?? noveGreske.ToArray();
+        if (socijalniNatjecajBodovnaGreskas.Length != 0)
+            await set.AddRangeAsync(socijalniNatjecajBodovnaGreskas);
     }
 }

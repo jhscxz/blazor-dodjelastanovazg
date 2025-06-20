@@ -11,18 +11,12 @@ public class SocijalniNatjecajPregledBase : ComponentBase
 {
     [Inject] public required IUnitOfWork UnitOfWork { get; set; }
     [Inject] public NavigationManager Navigation { get; set; } = null!;
-
     [Parameter] public long NatjecajId { get; set; }
-
     protected MudTable<SocijalniNatjecajZahtjevDto> Table = null!;
-    protected List<SocijalniNatjecajZahtjevDto> Natjecaji { get; set; } = [];
-
     protected const int TotalColumns = 7;
-    protected long? ExpandedRowId { get; set; }
-
+    public long? ExpandedRowId { get; set; }
     protected string? SearchText { get; set; }
     protected RezultatObrade? SelectedOsnovanost { get; set; }
-
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
         new() { Text = "Početna", Url = "/" },
@@ -90,16 +84,16 @@ public class SocijalniNatjecajPregledBase : ComponentBase
 
     #region Helpers
 
-    protected string FormatPrihod(decimal? prihod) =>
+    protected static string FormatPrihod(decimal? prihod) =>
         prihod.HasValue ? $"{prihod.Value:N2} €" : "–";
 
-    protected string FormatString(string? value) =>
+    protected static string FormatString(string? value) =>
         string.IsNullOrWhiteSpace(value) ? "–" : value;
 
-    protected string FormatInt(int? value) =>
+    protected static string FormatInt(int? value) =>
         value?.ToString() ?? "0";
 
-    protected string FormatOsnovanost(RezultatObrade? rezultat) =>
+    protected static string FormatOsnovanost(RezultatObrade? rezultat) =>
         rezultat switch
         {
             RezultatObrade.Osnovan => "Osnovan",

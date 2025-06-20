@@ -26,9 +26,10 @@ public class AuditService(IHttpContextAccessor accessor) : IAuditService
         auditable.UpdatedBy = _userId;
     }
 
-    public void ApplyAudit(IEnumerable<object> entities, bool isCreate)
+    public void ApplyAudit(object?[] entities, bool isCreate)
     {
         foreach (var entity in entities)
-            ApplyAudit(entity, isCreate);
+            if (entity != null)
+                ApplyAudit(entity, isCreate);
     }
 }

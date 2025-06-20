@@ -6,7 +6,6 @@ using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Helpers.IServices;
 using DodjelaStanovaZG.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
@@ -15,121 +14,100 @@ public class SocijalniZahtjevProcessor(
     ISocijalniZahtjevFactory factory,
     ISocijalniZahtjevWriteService writeService,
     ISocijalniBodoviService bodoviService,
-    ISocijalniZahtjevGreskaService greskaProcessor,
+    ISocijalniZahtjevGreskaService greskaService,
     ISocijalniBodovniPodaciService bodovniPodaciService,
     ISocijalniKucanstvoService kucanstvoService,
     ISocijalniClanService clanService,
     IAuditService auditService)
     : ISocijalniZahtjevProcessor
 {
-    private readonly ApplicationDbContext _context = context;
-    private readonly ISocijalniZahtjevFactory _factory = factory;
-    private readonly ISocijalniZahtjevWriteService _writeService = writeService;
-    private readonly ISocijalniBodoviService _bodoviService = bodoviService;
-    private readonly ISocijalniZahtjevGreskaService _greskaProcessor = greskaProcessor;
-    private readonly ISocijalniBodovniPodaciService _bodovniPodaciService = bodovniPodaciService;
-    private readonly ISocijalniKucanstvoService _kucanstvoService = kucanstvoService;
-    private readonly ISocijalniClanService _clanService = clanService;
-    private readonly IAuditService _auditService = auditService;
-
     private async Task ObradiBodoveIGreskeAsync(SocijalniNatjecajZahtjev zahtjev)
     {
-        await _bodoviService.IzracunajIBodujAsync(zahtjev.Id);
-        await _greskaProcessor.ObradiGreskeAsync(zahtjev);
+        await bodoviService.IzracunajIBodujAsync(zahtjev.Id);
+        await greskaService.ObradiGreskeAsync(zahtjev);
     }
 
-    private async Task TransakcijskiObradiAsync(SocijalniNatjecajZahtjev zahtjev, object? entity = null,
-        bool isCreate = false, Func<Task>? akcija = null)
+    public async Task<SocijalniNatjecajZahtjev> KreirajZahtjevAsync(
+        SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib)
     {
-        await using var tx = await _context.Database.BeginTransactionAsync();
-
-        if (entity != null)
-            _auditService.ApplyAudit(entity, isCreate);
-
-        _auditService.ApplyAudit(zahtjev, false);
-
-        if (akcija != null)
-            await akcija();
-
-        await _context.SaveChangesAsync();
-        await tx.CommitAsync();
-    }
-
-    public async Task<SocijalniNatjecajZahtjev> KreirajZahtjevAsync(SocijalniNatjecajZahtjevDto dto, string? imePrezime,
-        string? oib)
-    {
-        var zahtjev = _factory.KreirajNovi(dto, imePrezime, oib);
-
-        await TransakcijskiObradiAsync(zahtjev, zahtjev, true, async () =>
-        {
-            await _writeService.CreateAsync(zahtjev);
-            await ObradiBodoveIGreskeAsync(zahtjev);
-        });
-
+        var zahtjev = factory.KreirajNovi(dto, imePrezime, oib);
+        await writeService.CreateAsync(zahtjev);
+        await ObradiBodoveIGreskeAsync(zahtjev);
+        await context.SaveChangesAsync();
         return zahtjev;
     }
 
     public async Task AzurirajOsnovnoIObradiAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto)
     {
-        await _writeService.UpdateOsnovnoAsync(zahtjevId, dto);
-        var zahtjev = await _context.SocijalniNatjecajZahtjevi.FirstAsync(z => z.Id == zahtjevId);
+        await writeService.UpdateOsnovnoAsync(zahtjevId, dto);
+        var zahtjev = await context.SocijalniNatjecajZahtjevi.FindAsync(zahtjevId);
+        if (zahtjev == null) throw new Exception($"Zahtjev {zahtjevId} nije pronađen.");
 
-        await TransakcijskiObradiAsync(zahtjev, zahtjev, false, async () =>
-        {
-            if (dto.RezultatObrade == RezultatObrade.Osnovan)
-                await _bodoviService.IzracunajIBodujAsync(zahtjev.Id);
+        if (dto.RezultatObrade == RezultatObrade.Osnovan)
+            await bodoviService.IzracunajIBodujAsync(zahtjev.Id);
 
-            await _greskaProcessor.ObradiGreskeAsync(zahtjev);
-        });
+        await greskaService.ObradiGreskeAsync(zahtjev);
+        await context.SaveChangesAsync();
     }
 
     public async Task SpremiKucanstvoIObradiAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto)
     {
-        await _kucanstvoService.UpdateKucanstvoPodaciAsync(zahtjevId, dto);
+        await kucanstvoService.UpdateKucanstvoPodaciAsync(zahtjevId, dto);
 
-        var kuc = await _context.SocijalniNatjecajKucanstvoPodaci
-            .Include(k => k.Prihod)
-            .FirstAsync(k => k.ZahtjevId == zahtjevId);
+        var zahtjev = await context.SocijalniNatjecajZahtjevi.FindAsync(zahtjevId)
+                      ?? throw new Exception($"Zahtjev {zahtjevId} nije pronađen.");
 
-        var zahtjev = await _context.SocijalniNatjecajZahtjevi.FirstAsync(z => z.Id == zahtjevId);
-        _context.Entry(kuc.Prihod!).State = EntityState.Modified;
-
-        await TransakcijskiObradiAsync(zahtjev, kuc, false, () => ObradiBodoveIGreskeAsync(zahtjev));
+        await ObradiBodoveIGreskeAsync(zahtjev);
+        await context.SaveChangesAsync();
     }
 
     public async Task SpremiBodovnePodatkeIObradiAsync(long zahtjevId, SocijalniNatjecajBodovniPodaciDto dto)
     {
-        await _bodovniPodaciService.UpdateAsync(zahtjevId, dto);
-        var bodovni = await _context.SocijalniNatjecajBodovniPodaci.FirstAsync(x => x.ZahtjevId == zahtjevId);
-        var zahtjev = await _context.SocijalniNatjecajZahtjevi.FirstAsync(z => z.Id == zahtjevId);
+        await bodovniPodaciService.UpdateAsync(zahtjevId, dto);
 
-        await TransakcijskiObradiAsync(zahtjev, bodovni, false, () => ObradiBodoveIGreskeAsync(zahtjev));
+        var zahtjev = await context.SocijalniNatjecajZahtjevi.FindAsync(zahtjevId)
+                      ?? throw new Exception($"Zahtjev {zahtjevId} nije pronađen.");
+
+        await ObradiBodoveIGreskeAsync(zahtjev);
+        await context.SaveChangesAsync();
     }
 
     public async Task DodajClanaIObradiAsync(long zahtjevId, SocijalniNatjecajClanDto clanDto)
     {
         var novi = clanDto.ToEntity(zahtjevId);
-        await _clanService.AddClanAsync(novi);
-        var zahtjev = await _context.SocijalniNatjecajZahtjevi.FirstAsync(z => z.Id == zahtjevId);
+        auditService.ApplyAudit(novi, true);
+        await clanService.AddClanAsync(novi);
 
-        await TransakcijskiObradiAsync(zahtjev, novi, true, () => ObradiBodoveIGreskeAsync(zahtjev));
+        var zahtjev = await context.SocijalniNatjecajZahtjevi.FindAsync(zahtjevId)
+                      ?? throw new Exception($"Zahtjev {zahtjevId} nije pronađen.");
+
+        await ObradiBodoveIGreskeAsync(zahtjev);
+        await context.SaveChangesAsync();
     }
 
     public async Task UrediClanaIObradiAsync(SocijalniNatjecajClanDto clanDto)
     {
-        var clan = await _context.SocijalniNatjecajClanovi.FirstAsync(c => c.Id == clanDto.Id);
+        var clan = await context.SocijalniNatjecajClanovi.FindAsync(clanDto.Id)
+                   ?? throw new Exception($"Član {clanDto.Id} nije pronađen.");
+
         clanDto.MapOnto(clan);
+        auditService.ApplyAudit(clan, false);
 
-        var zahtjev = await _context.SocijalniNatjecajZahtjevi.FirstAsync(z => z.Id == clanDto.ZahtjevId);
+        var zahtjev = await context.SocijalniNatjecajZahtjevi.FindAsync(clanDto.ZahtjevId)
+                      ?? throw new Exception($"Zahtjev {clanDto.ZahtjevId} nije pronađen.");
 
-        await TransakcijskiObradiAsync(zahtjev, clan, false, () => ObradiBodoveIGreskeAsync(zahtjev));
+        await ObradiBodoveIGreskeAsync(zahtjev);
+        await context.SaveChangesAsync();
     }
 
     public async Task ObrisiClanaIObradiAsync(long zahtjevId, long clanId)
     {
-        await _clanService.RemoveClanAsync(zahtjevId, clanId);
-        var zahtjev = await _context.SocijalniNatjecajZahtjevi.FirstAsync(z => z.Id == zahtjevId);
+        await clanService.RemoveClanAsync(zahtjevId, clanId);
 
-        await TransakcijskiObradiAsync(zahtjev, null, false, () => ObradiBodoveIGreskeAsync(zahtjev));
+        var zahtjev = await context.SocijalniNatjecajZahtjevi.FindAsync(zahtjevId)
+                      ?? throw new Exception($"Zahtjev {zahtjevId} nije pronađen.");
+
+        await ObradiBodoveIGreskeAsync(zahtjev);
+        await context.SaveChangesAsync();
     }
 }

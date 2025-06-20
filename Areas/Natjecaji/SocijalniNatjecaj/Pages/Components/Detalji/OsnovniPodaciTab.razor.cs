@@ -10,7 +10,7 @@ public partial class OsnovniPodaciTab : ComponentBase
 {
     [Parameter] public long Id { get; set; }
 
-    [Inject] protected IUnitOfWork UnitOfWork { get; set; } = default!;
+    [Inject] protected IUnitOfWork UnitOfWork { get; set; } = null!;
 
     protected SocijalniNatjecajZahtjevDto Detalji { get; set; } = new();
 
@@ -19,7 +19,7 @@ public partial class OsnovniPodaciTab : ComponentBase
         Detalji = await UnitOfWork.SocijalniZahtjevRead.GetDetaljiAsync(Id);
     }
 
-    protected Color ChipColor => Detalji.RezultatObrade switch
+    private Color ChipColor => Detalji.RezultatObrade switch
     {
         RezultatObrade.Neosnovan => Color.Error,
         RezultatObrade.Greška => Color.Error,
@@ -28,7 +28,7 @@ public partial class OsnovniPodaciTab : ComponentBase
         _ => Color.Default
     };
 
-    protected string ChipIcon => Detalji.RezultatObrade switch
+    private string ChipIcon => Detalji.RezultatObrade switch
     {
         RezultatObrade.Neosnovan => Icons.Material.Filled.Dangerous,
         RezultatObrade.Greška => Icons.Material.Filled.Dangerous,
@@ -37,7 +37,7 @@ public partial class OsnovniPodaciTab : ComponentBase
         _ => Icons.Material.Filled.Info
     };
 
-    protected string ChipText => Detalji.RezultatObrade switch
+    private string ChipText => Detalji.RezultatObrade switch
     {
         RezultatObrade.Neosnovan => "Neosnovan",
         RezultatObrade.Nepotpun => "Nepotpuno",
@@ -46,7 +46,7 @@ public partial class OsnovniPodaciTab : ComponentBase
         _ => "Nepoznato"
     };
 
-    protected Variant ChipVariant => Detalji.RezultatObrade == RezultatObrade.Osnovan
+    private Variant ChipVariant => Detalji.RezultatObrade == RezultatObrade.Osnovan
         ? Variant.Outlined
         : Variant.Text;
 }

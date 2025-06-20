@@ -6,5 +6,4 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZ
 public interface ISocijalniZahtjevFactory
 {
     SocijalniNatjecajZahtjev KreirajNovi(SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib);
-    SocijalniPrihodi KreirajPrazanPrihod(long kucanstvoId);
 }

@@ -1,6 +1,5 @@
 using System.Web;
 using DodjelaStanovaZG.Components.UI;
-using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages;
@@ -9,20 +8,19 @@ public partial class SocijalniNatjecajDetalji
 {
     [Parameter] public long Id { get; set; }
 
-    [Inject] private IUnitOfWork UnitOfWork { get; set; } = default!;
-    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = null!;
 
     private int _selectedTabIndex;
     private string? _activeTab;
 
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } =
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
         new() { Text = "Početna", Url = "/" },
         new() { Text = "Socijalni natječaji", Url = "/socijalni-natjecaj" },
         new() { Text = "Detalji zahtjeva", CssClass = "text-red-500 font-bold" },
     ];
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
         try
         {
@@ -32,6 +30,8 @@ public partial class SocijalniNatjecajDetalji
         {
             Console.WriteLine($"Greška prilikom dohvaćanja detalja: {ex.Message}");
         }
+
+        return Task.CompletedTask;
     }
 
     private void ResolveTabIndexFromQuery()

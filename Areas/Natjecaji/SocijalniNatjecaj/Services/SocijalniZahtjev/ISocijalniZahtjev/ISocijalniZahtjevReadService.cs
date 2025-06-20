@@ -11,5 +11,5 @@ public interface ISocijalniZahtjevReadService
     Task<SocijalniNatjecajZahtjevDto> GetDetaljiAsync(long id);
     Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync();
     Task<PagedResult<SocijalniNatjecajZahtjevDto>> GetPagedAsync(long natjecajId, int page, int pageSize, string? sortBy, SortDirection sortDirection, string? search = null, RezultatObrade? osnovanost = null);
-    Task<SocijalniNatjecajZahtjev> GetZahtjevByIdAsync(long id);
+    Task<SocijalniNatjecajZahtjev?> GetZahtjevByIdAsync(long id);
 }

@@ -12,7 +12,7 @@
     <MudContainer MaxWidth="MaxWidth.Small">
         @if (_socijalniNatjecajModel is null)
         {
-            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
         }
         else
         {
@@ -33,15 +33,21 @@
 
                     <!-- Form content -->
                     <MudForm @ref="_form" Model="@_socijalniNatjecajModel" OnValidSubmit="OnValidSubmit">
+                        <input type="hidden"
+                               name="RowVersion"
+                               value="@Convert.ToBase64String(_socijalniNatjecajModel.RowVersion ?? [])"/>
+
                         <!-- 1. red: Klasa + Datum -->
                         <MudGrid Gutter="Size.Small">
                             <MudItem xs="12" sm="6">
-                                <TextInputInt T="int?" Label="Klasa predmeta" @bind-Value="_socijalniNatjecajModel.KlasaPredmeta"
-                                              Required="true" Class="mb-4" />
+                                <TextInputInt T="int?" Label="Klasa predmeta"
+                                              @bind-Value="_socijalniNatjecajModel.KlasaPredmeta"
+                                              Required="true" Class="mb-4"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
 
-                                <DateInput Label="Datum podnošenja" @bind-Value="_socijalniNatjecajModel.DatumPodnosenjaZahtjeva"
+                                <DateInput Label="Datum podnošenja"
+                                           @bind-Value="_socijalniNatjecajModel.DatumPodnosenjaZahtjeva"
                                            Required="true"/>
 
                             </MudItem>
@@ -51,34 +57,34 @@
                         <MudGrid Gutter="Size.Small">
                             <MudItem xs="12" sm="6">
                                 <TextInput T="string?" Label="Adresa" @bind-Value="_socijalniNatjecajModel.Adresa"
-                                           Required="true" Class="mb-4" />
+                                           Required="true" Class="mb-4"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
                                 <TextInput T="string?" Label="Email" @bind-Value="_socijalniNatjecajModel.Email"
-                                           Class="mb-4" />
+                                           Class="mb-4"/>
                             </MudItem>
                         </MudGrid>
 
                         <!-- 3. red: Rezultat obrade -->
                         <MudStack Class="mt-4 mb-6">
-                            <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection"
-                                            @bind-Value="_toggleRezultat"
-                                            CheckMark
-                                            Color="Color.Default">
-                                <MudToggleItem Value="@((int?)RezultatObrade.Nepotpun)" Text="NEPOTPUN" />
-                                <MudToggleItem Value="@((int?)RezultatObrade.Neosnovan)" Text="NEOSNOVAN" />
-                                <MudToggleItem Value="@((int?)RezultatObrade.Osnovan)" Text="OSNOVAN" />
+                            <MudToggleGroup T="RezultatObrade?"
+                                            @bind-Value="_socijalniNatjecajModel.RezultatObrade"
+                                            SelectionMode="SelectionMode.ToggleSelection"
+                                            CheckMark Color="Color.Default">
+                                <MudToggleItem Value="RezultatObrade.Nepotpun" Text="NEPOTPUN"/>
+                                <MudToggleItem Value="RezultatObrade.Neosnovan" Text="NEOSNOVAN"/>
+                                <MudToggleItem Value="RezultatObrade.Osnovan" Text="OSNOVAN"/>
                             </MudToggleGroup>
                         </MudStack>
 
                         <!-- 4. red: Napomena -->
                         <TextAreaInput T="string" Label="Napomena obrade"
                                        @bind-Value="_socijalniNatjecajModel.NapomenaObrade"
-                                       Class="mb-4" />
+                                       Class="mb-4"/>
 
                         <!-- Gumbi -->
                         <FormButtons Submit="Submit"
-                                     Cancel="Cancel" />
+                                     Cancel="Cancel"/>
 
                     </MudForm>
 

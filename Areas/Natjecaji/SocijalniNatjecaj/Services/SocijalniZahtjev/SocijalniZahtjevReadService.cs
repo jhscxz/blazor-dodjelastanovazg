@@ -9,67 +9,39 @@ using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
-public class SocijalniZahtjevReadService(
-    ApplicationDbContext context,
-    IHttpContextAccessor httpContextAccessor)
+public class SocijalniZahtjevReadService(ApplicationDbContext context)
     : ISocijalniZahtjevReadService
 {
-    private readonly ApplicationDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-
-    private IQueryable<SocijalniNatjecajZahtjev> BaseQuery(bool asNoTracking = false)
-    {
-        var query = _context.SocijalniNatjecajZahtjevi
-            .Include(z => z.Clanovi)
-                .ThenInclude(c => c.CreatedByUser)
-            .Include(z => z.Clanovi)
-                .ThenInclude(c => c.UpdatedByUser)
-            .Include(z => z.BodovniPodaci)
-            .Include(z => z.KucanstvoPodaci)
-                .ThenInclude(k => k!.Prihod)
-                    .ThenInclude(p => p!.CreatedByUser)
-            .Include(z => z.KucanstvoPodaci)
-                .ThenInclude(k => k!.Prihod)
-                    .ThenInclude(p => p!.UpdatedByUser)
-            .Include(z => z.KucanstvoPodaci)
-                .ThenInclude(k => k!.UpdatedByUser)
-            .Include(z => z.CreatedByUser)
-            .Include(z => z.UpdatedByUser);
-
-        return asNoTracking ? query.AsNoTracking() : query;
-    }
+    private IQueryable<SocijalniNatjecajZahtjev> Query(bool tracking = false) =>
+        tracking ? context.SocijalniNatjecajZahtjevi : context.SocijalniNatjecajZahtjevi.AsNoTracking();
 
     public async Task<SocijalniNatjecajZahtjevDto> GetDetaljiAsync(long id)
     {
-        var entity = await BaseQuery(asNoTracking: true)
-                         .FirstOrDefaultAsync(x => x.Id == id)
-                     ?? throw new Exception($"Zahtjev s ID-om {id} nije pronađen.");
+        var entitet = await Query()
+                          .Include(z => z.Clanovi)
+                          .Include(z => z.KucanstvoPodaci).ThenInclude(k => k.Prihod)
+                          .Include(z => z.CreatedByUser)      // ← DODAJ
+                          .Include(z => z.UpdatedByUser)      // ← DODAJ
+                          .FirstOrDefaultAsync(z => z.Id == id)
+                      ?? throw new($"Zahtjev {id} nije pronađen.");
 
-        return entity.ToDto();
+        return entitet.ToDto();
     }
 
     public Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync() =>
-        BaseQuery(asNoTracking: true)
-            .Select(x => new SocijalniNatjecajZahtjevDto
-            {
-                Id = x.Id,
-                KlasaPredmeta = x.KlasaPredmeta,
-                DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
-                Adresa = x.Adresa!,
-                NatjecajId = x.NatjecajId
-            })
-            .ToListAsync();
+        Query().Select(e => e.ToDto()).ToListAsync();
 
-    public async Task<SocijalniNatjecajZahtjev> GetZahtjevByIdAsync(long id)
+    public async Task<SocijalniNatjecajZahtjev?> GetZahtjevByIdAsync(long id)
     {
-        return await BaseQuery(asNoTracking: true)
-                   .Include(z => z.Natjecaj)
-                   .Include(z => z.Bodovi)
-                   .Include(z => z.Clanovi)
-                   .Include(z => z.KucanstvoPodaci)
-                       .ThenInclude(k => k!.Prihod)
-                   .FirstOrDefaultAsync(z => z.Id == id)
-               ?? throw new Exception($"Zahtjev s ID-om {id} nije pronađen.");
+        var zahtjev = await Query()
+            .Include(z => z.Natjecaj)
+            .Include(z => z.Bodovi)
+            .Include(z => z.Clanovi)
+            .Include(z => z.KucanstvoPodaci).ThenInclude(k => k.Prihod)
+            .FirstOrDefaultAsync(z => z.Id == id)
+            ?? throw new Exception($"Zahtjev {id} nije pronađen.");
+
+        return zahtjev;
     }
 
     public async Task<PagedResult<SocijalniNatjecajZahtjevDto>> GetPagedAsync(
@@ -77,83 +49,36 @@ public class SocijalniZahtjevReadService(
         int page,
         int pageSize,
         string? sortBy,
-        SortDirection sortDirection,
+        SortDirection direction,
         string? search = null,
-        RezultatObrade? osnovanost = null)
+        RezultatObrade? filter = null)
     {
-        var query = BaseQuery(asNoTracking: true)
-            .Where(x => x.NatjecajId == natjecajId);
+        var q = Query()
+            .Where(z => z.NatjecajId == natjecajId);
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var lowered = search.ToLower();
-
-            query = query.Where(x =>
-                x.KlasaPredmeta.ToString().Contains(lowered) ||
-                x.Clanovi.Any(c =>
-                    c.Srodstvo == Srodstvo.PodnositeljZahtjeva &&
-                    c.Oib != null &&
-                    (
-                        c.ImePrezime.ToLower().Contains(lowered) ||
-                        c.Oib.ToLower().Contains(lowered)
-                    )
-                ) ||
-                x.RezultatObrade.ToString().ToLower().Contains(lowered)
-            );
+            var s = search.ToLower();
+            q = q.Where(z => z.KlasaPredmeta.ToString().Contains(s) ||
+                             z.RezultatObrade.ToString().Contains(s, StringComparison.CurrentCultureIgnoreCase) 
+                             || z.Clanovi.Any(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva 
+                                                   && ((c.ImePrezime ?? "").Contains(s, StringComparison.CurrentCultureIgnoreCase) 
+                                                       || (c.Oib ?? "").Contains(s, StringComparison.CurrentCultureIgnoreCase))));
         }
 
-        if (osnovanost.HasValue)
-        {
-            query = query.Where(x => x.RezultatObrade == osnovanost.Value);
-        }
+        if (filter.HasValue)
+            q = q.Where(z => z.RezultatObrade == filter);
 
-        if (!string.IsNullOrEmpty(sortBy))
-        {
-            query = query.OrderByDynamic(sortBy, sortDirection == SortDirection.Descending);
-        }
+        if (!string.IsNullOrWhiteSpace(sortBy))
+            q = q.OrderByDynamic(sortBy, direction == SortDirection.Descending);
 
-        var totalCount = await query.CountAsync();
+        var total = await q.CountAsync();
 
-        var items = await query
-            .Skip(page * pageSize)
-            .Take(pageSize)
-            .Select(x => new SocijalniNatjecajZahtjevDto
-            {
-                Id = x.Id,
-                KlasaPredmeta = x.KlasaPredmeta,
-                DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
-                Adresa = x.Adresa!,
-                NatjecajId = x.NatjecajId,
+        var items = await q.Skip(page * pageSize)
+                           .Take(pageSize)
+                           .Select(e => e.ToDto())
+                           .ToListAsync();
 
-                ImePrezime = x.Clanovi
-                    .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
-                    .Select(c => c.ImePrezime)
-                    .FirstOrDefault() ?? string.Empty,
-
-                Oib = x.Clanovi
-                    .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
-                    .Select(c => c.Oib)
-                    .FirstOrDefault(),
-
-                RezultatObrade = x.RezultatObrade,
-
-                Bodovni = x.KucanstvoPodaci == null
-                    ? null
-                    : new SocijalniBodovniDto
-                    {
-                        UkupniPrihodKucanstva = x.KucanstvoPodaci.Prihod!.UkupniPrihodKucanstva,
-                        StambeniStatusKucanstva = x.KucanstvoPodaci.StambeniStatusKucanstva,
-                        SastavKucanstva = x.KucanstvoPodaci.SastavKucanstva
-                    },
-
-                Bodovi = x.Bodovi
-            })
-            .ToListAsync();
-
-        return new PagedResult<SocijalniNatjecajZahtjevDto>
-        {
-            Items = items,
-            TotalCount = totalCount
-        };
+        return new PagedResult<SocijalniNatjecajZahtjevDto> { Items = items, TotalCount = total };
     }
 }

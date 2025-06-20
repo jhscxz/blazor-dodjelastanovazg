@@ -17,6 +17,6 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
         public RezultatObrade? RezultatObrade { get; set; }
         public string? NapomenaObrade { get; set; }
         public long NatjecajId { get; set; }
-        
+        public byte[]? RowVersion { get; set; }
     }
 }

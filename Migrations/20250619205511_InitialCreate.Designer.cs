@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DodjelaStanovaZG.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250610204318_InitialCreate")]
+    [Migration("20250619205511_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace DodjelaStanovaZG.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -55,6 +55,11 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<DateOnly>("RokZaPrijavu")
                         .HasColumnType("date");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -72,6 +77,150 @@ namespace DodjelaStanovaZG.Migrations
                     b.HasIndex("UpdatedBy");
 
                     b.ToTable("Natjecaji");
+                });
+
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajBodovi", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<byte>("BodoviAlternativnaSkrb")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviCivilniStradalnici")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviDoplatakZaNjegu")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviIznad55")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviMaloljetni")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviMaloljetnihInvalidnina")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviNjegovatelj")
+                        .HasColumnType("tinyint");
+
+                    b.Property<float>("BodoviObrana")
+                        .HasColumnType("real");
+
+                    b.Property<byte>("BodoviOdraslihInvalidnina")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviPoClanu")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviPunoljetniUzdrzavani")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviSastavKucanstva")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviSeksualnoNasilje")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviStambeniStatus")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviZajamcenaNaknada")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("BodoviZrtvaNasilja")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int>("UkupnoBodova")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long>("ZahtjevId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.HasIndex("ZahtjevId")
+                        .IsUnique();
+
+                    b.ToTable("SocijalniNatjecajBodovi");
+                });
+
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajBodovnaGreska", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Kod")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Poruka")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long>("ZahtjevId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.HasIndex("ZahtjevId");
+
+                    b.ToTable("SocijalniNatjecajBodovnaGreske");
                 });
 
             modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajBodovniPodaci", b =>
@@ -125,6 +274,11 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.Property<bool>("PrimateljZajamceneMinimalneNaknade")
                         .HasColumnType("bit");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<bool>("StatusRoditeljaNjegovatelja")
                         .HasColumnType("bit");
@@ -202,6 +356,11 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("PeriodStart");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<int?>("Srodstvo")
                         .HasColumnType("int");
 
@@ -265,15 +424,16 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<DateOnly?>("PrebivanjeOd")
                         .HasColumnType("date");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<byte>("SastavKucanstva")
                         .HasColumnType("tinyint");
 
                     b.Property<byte>("StambeniStatusKucanstva")
                         .HasColumnType("tinyint");
-
-                    b.Property<decimal>("UkupniPrihodKucanstva")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -337,6 +497,9 @@ namespace DodjelaStanovaZG.Migrations
                     b.Property<int>("KlasaPredmeta")
                         .HasColumnType("int");
 
+                    b.Property<byte>("ManualniRezultatObrade")
+                        .HasColumnType("tinyint");
+
                     b.Property<string>("NapomenaObrade")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
@@ -356,6 +519,11 @@ namespace DodjelaStanovaZG.Migrations
 
                     b.Property<byte>("RezultatObrade")
                         .HasColumnType("tinyint");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -384,6 +552,54 @@ namespace DodjelaStanovaZG.Migrations
                                     .HasPeriodEnd("PeriodEnd")
                                     .HasColumnName("PeriodEnd");
                             }));
+                });
+
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniPrihodi", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IspunjavaUvjetPrihoda")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("PostotakProsjeka")
+                        .HasPrecision(7, 2)
+                        .HasColumnType("decimal(7,2)");
+
+                    b.Property<decimal>("PrihodPoClanu")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<decimal>("UkupniPrihodKucanstva")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.ToTable("SocijalniPrihodi");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -603,6 +819,52 @@ namespace DodjelaStanovaZG.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajBodovi", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UpdatedByUser")
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
+                    b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", "Zahtjev")
+                        .WithOne("Bodovi")
+                        .HasForeignKey("DodjelaStanovaZG.Models.SocijalniNatjecajBodovi", "ZahtjevId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("UpdatedByUser");
+
+                    b.Navigation("Zahtjev");
+                });
+
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajBodovnaGreska", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UpdatedByUser")
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
+                    b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", "Zahtjev")
+                        .WithMany("Greske")
+                        .HasForeignKey("ZahtjevId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("UpdatedByUser");
+
+                    b.Navigation("Zahtjev");
+                });
+
             modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajBodovniPodaci", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
@@ -695,6 +957,29 @@ namespace DodjelaStanovaZG.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniPrihodi", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy");
+
+                    b.HasOne("DodjelaStanovaZG.Models.SocijalniNatjecajKucanstvoPodaci", "KucanstvoPodaci")
+                        .WithOne("Prihod")
+                        .HasForeignKey("DodjelaStanovaZG.Models.SocijalniPrihodi", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UpdatedByUser")
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("KucanstvoPodaci");
+
+                    b.Navigation("UpdatedByUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -746,11 +1031,21 @@ namespace DodjelaStanovaZG.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajKucanstvoPodaci", b =>
+                {
+                    b.Navigation("Prihod")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DodjelaStanovaZG.Models.SocijalniNatjecajZahtjev", b =>
                 {
+                    b.Navigation("Bodovi");
+
                     b.Navigation("BodovniPodaci");
 
                     b.Navigation("Clanovi");
+
+                    b.Navigation("Greske");
 
                     b.Navigation("KucanstvoPodaci");
                 });

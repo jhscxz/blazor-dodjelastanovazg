@@ -26,16 +26,16 @@ public static class MappingExtensions
             Bodovni = new SocijalniBodovniDto(),
             KucanstvoPodaci = x.KucanstvoPodaci?.ToDto(),
             Clanovi = x.Clanovi.Select(c => c.ToDto()).ToList(),
-            
+
             CreatedAt = x.CreatedAt,
-            CreatedBy = x.CreatedByUser?.UserName ?? string.Empty,
+            CreatedBy = x.CreatedByUser?.NormalizedUserName ?? string.Empty,
             UpdatedAt = x.UpdatedAt,
-            UpdatedBy = x.UpdatedByUser?.UserName ?? string.Empty,
+            UpdatedBy = x.UpdatedByUser?.NormalizedUserName ?? string.Empty,
         };
     }
 
     public static SocijalniNatjecajClanDto ToDto(this SocijalniNatjecajClan c)
-        => new SocijalniNatjecajClanDto
+        => new()
         {
             Id = c.Id,
             ZahtjevId = c.ZahtjevId,
@@ -45,21 +45,25 @@ public static class MappingExtensions
             DatumRodjenja = c.DatumRodjenja
         };
 
-    public static SocijalniKucanstvoPodaciDto ToDto(this SocijalniNatjecajKucanstvoPodaci k) =>
-        new SocijalniKucanstvoPodaciDto
+    public static SocijalniKucanstvoPodaciDto ToDto(this SocijalniNatjecajKucanstvoPodaci k)
+    {
+        var p = k.Prihod;
+        return new SocijalniKucanstvoPodaciDto
         {
-            UkupniPrihodKucanstva = k.Prihod?.UkupniPrihodKucanstva,
-            PrihodPoClanu = k.Prihod?.PrihodPoClanu,
-            PostotakProsjeka = k.Prihod?.PostotakProsjeka,
-            IspunjavaUvjetPrihoda = k.Prihod?.IspunjavaUvjetPrihoda,
+            UkupniPrihodKucanstva = p?.UkupniPrihodKucanstva,
+            PrihodPoClanu = p?.PrihodPoClanu,
+            PostotakProsjeka = p?.PostotakProsjeka,
+            IspunjavaUvjetPrihoda = p?.IspunjavaUvjetPrihoda,
             PrebivanjeOd = k.PrebivanjeOd,
             StambeniStatusKucanstva = k.StambeniStatusKucanstva,
             SastavKucanstva = k.SastavKucanstva,
             ZahtjevId = k.ZahtjevId
         };
+    }
+
 
     public static SocijalniNatjecajBodovniPodaciDto ToDto(this SocijalniNatjecajBodovniPodaci b)
-        => new SocijalniNatjecajBodovniPodaciDto
+        => new()
         {
             ZahtjevId = b.ZahtjevId,
             BrojUzdrzavanePunoljetneDjece = b.BrojUzdrzavanePunoljetneDjece,
@@ -110,6 +114,9 @@ public static class MappingExtensions
         entity.NapomenaObrade = dto.NapomenaObrade;
         entity.Email = dto.Email;
 
+        if (dto.RowVersion is not null)
+            entity.RowVersion = dto.RowVersion;
+        
         if (dto.RezultatObrade.HasValue)
             entity.ManualniRezultatObrade = dto.RezultatObrade.Value;
     }
