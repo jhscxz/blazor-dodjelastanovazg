@@ -67,13 +67,13 @@
 
                         <!-- 3. red: Rezultat obrade -->
                         <MudStack Class="mt-4 mb-6">
-                            <MudToggleGroup T="RezultatObrade?"
-                                            @bind-Value="_socijalniNatjecajModel.RezultatObrade"
-                                            SelectionMode="SelectionMode.ToggleSelection"
-                                            CheckMark Color="Color.Default">
-                                <MudToggleItem Value="RezultatObrade.Nepotpun" Text="NEPOTPUN"/>
-                                <MudToggleItem Value="RezultatObrade.Neosnovan" Text="NEOSNOVAN"/>
-                                <MudToggleItem Value="RezultatObrade.Osnovan" Text="OSNOVAN"/>
+                            <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection"
+                                            @bind-Value="_toggleRezultat"
+                                            CheckMark
+                                            Color="Color.Default">
+                                <MudToggleItem Value="@((int?)RezultatObrade.Nepotpun)" Text="NEPOTPUN"/>
+                                <MudToggleItem Value="@((int?)RezultatObrade.Neosnovan)" Text="NEOSNOVAN"/>
+                                <MudToggleItem Value="@((int?)RezultatObrade.Osnovan)" Text="OSNOVAN"/>
                             </MudToggleGroup>
                         </MudStack>
 
