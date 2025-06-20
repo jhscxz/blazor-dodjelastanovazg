@@ -14,7 +14,7 @@ public partial class TextInput<T> : ComponentBase
     [Parameter] public int Lines { get; set; } = 1;
     [Parameter] public bool ReadOnly { get; set; }
     [Parameter] public InputType InputType { get; set; } = InputType.Text;
-    [Parameter] public Variant Variant { get; set; } = Variant.Text;
+    [Parameter] public Variant Variant { get; set; } = Variant.Outlined;
     [Parameter] public string Class { get; set; } = string.Empty;
 
     [Parameter(CaptureUnmatchedValues = true)]
