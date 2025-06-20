@@ -142,3 +142,54 @@ a {
     white-space: normal !important;
     overflow-wrap: anywhere;
 }
+
+/* MudTabs styling */
+/* MudTabs styling */
+.my-tabs .mud-tabs-tabbar {
+    background-color: #15407a !important;
+    box-shadow: none;
+}
+
+/* Toolbar bez paddinga */
+.my-tabs .mud-tabs-toolbar-content {
+    background-color: transparent !important;
+    padding: 0 !important;
+}
+
+/* Ukloni papirnatu pozadinu */
+.my-tabs .mud-paper {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Osnovni tab stil */
+.my-tabs .mud-tab {
+    color: white !important;
+    font-weight: bold;
+    font-size: 0.75rem !important;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+/* Hover stil – pozadina, ali zadrži bijeli font */
+.my-tabs .mud-tab:hover {
+    background-color: rgba(25, 78, 136, 0.2) !important;
+    color: white !important;
+}
+
+/* Aktivni tab */
+.my-tabs .mud-tab.mud-tab-active {
+    background-color: #194e88 !important;
+    color: white !important;
+}
+
+/* Klizač ispod aktivnog taba */
+.my-tabs .mud-tab-slider {
+    background-color: #194e88 !important;
+}
+
+/* Tab panel */
+.my-tabs .mud-tab-panel {
+    background-color: transparent !important;
+}

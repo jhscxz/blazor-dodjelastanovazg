@@ -30,15 +30,21 @@ public class SocijalniZahtjevGreskaService(
 
     private async Task SinkronizirajGreskeAsync(
         long zahtjevId,
-        IEnumerable<SocijalniNatjecajBodovnaGreska> noveGreske)
+        IEnumerable<SocijalniNatjecajBodovnaGreska> nove)
     {
         var set = context.SocijalniNatjecajBodovnaGreske;
 
-        var stare = await set.Where(g => g.ZahtjevId == zahtjevId).ToListAsync();
-        if (stare.Count > 0) set.RemoveRange(stare);
+        await set
+            .Where(g => g.ZahtjevId == zahtjevId && g.IsActive)
+            .ExecuteUpdateAsync(s => s.SetProperty(g => g.IsActive, false));
 
-        var socijalniNatjecajBodovnaGreskas = noveGreske as SocijalniNatjecajBodovnaGreska[] ?? noveGreske.ToArray();
-        if (socijalniNatjecajBodovnaGreskas.Length != 0)
-            await set.AddRangeAsync(socijalniNatjecajBodovnaGreskas);
+        foreach (var g in nove)
+        {
+            var existing = await set.FirstOrDefaultAsync(x => x.ZahtjevId == zahtjevId && x.Kod == g.Kod);
+            if (existing is null)
+                await set.AddAsync(g);
+            else
+                existing.IsActive = true;
+        }
     }
 }

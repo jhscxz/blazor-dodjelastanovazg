@@ -1,140 +1,76 @@
+// Helpers/MappingExtensions.cs
+#nullable enable
+using Mapster;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 
 namespace DodjelaStanovaZG.Helpers;
 
-public static class MappingExtensions
+/// <summary>
+/// Central place for mapping between Socijalni natječaj entiteti ↔ DTO‑i.
+/// Od .NET9 koristimo Mapster Source Generator za compile‑time, reflection‑free projekte.
+/// </summary>
+public static partial class MappingExtensions
 {
-    #region ToDto
-
-    public static SocijalniNatjecajZahtjevDto ToDto(this SocijalniNatjecajZahtjev x)
+    static MappingExtensions()
     {
-        var pod = x.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
-        return new SocijalniNatjecajZahtjevDto
-        {
-            Id = x.Id,
-            NatjecajId = x.NatjecajId,
-            KlasaPredmeta = x.KlasaPredmeta,
-            DatumPodnosenjaZahtjeva = x.DatumPodnosenjaZahtjeva,
-            Adresa = x.Adresa,
-            Email = x.Email,
-            ImePrezime = pod?.ImePrezime ?? string.Empty,
-            Oib = pod?.Oib,
-            RezultatObrade = x.RezultatObrade,
-            NapomenaObrade = x.NapomenaObrade,
-            Bodovni = new SocijalniBodovniDto(),
-            KucanstvoPodaci = x.KucanstvoPodaci?.ToDto(),
-            Clanovi = x.Clanovi.Select(c => c.ToDto()).ToList(),
+        // Globalna postavka: ignoriramo null vrijednosti kod DTO → entity mapa
+        TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
 
-            CreatedAt = x.CreatedAt,
-            CreatedBy = x.CreatedByUser?.NormalizedUserName ?? string.Empty,
-            UpdatedAt = x.UpdatedAt,
-            UpdatedBy = x.UpdatedByUser?.NormalizedUserName ?? string.Empty,
-        };
+        // ----- Entity → DTO --------------------------------------------------
+        TypeAdapterConfig<SocijalniNatjecajZahtjev, SocijalniNatjecajZahtjevDto>
+            .NewConfig()
+            .Map(dest => dest.ImePrezime,
+                 src => src.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)!.ImePrezime)
+            .Map(dest => dest.Oib,
+                 src => src.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)!.Oib);
+
+        // Ostali entiteti imaju 1‑na‑1 imena fieldova pa ne traže dodatnu konfiguraciju
     }
 
-    public static SocijalniNatjecajClanDto ToDto(this SocijalniNatjecajClan c)
-        => new()
-        {
-            Id = c.Id,
-            ZahtjevId = c.ZahtjevId,
-            ImePrezime = c.ImePrezime,
-            Oib = c.Oib,
-            Srodstvo = c.Srodstvo,
-            DatumRodjenja = c.DatumRodjenja
-        };
+    // ------------------- Entity → DTO --------------------------------------
 
-    public static SocijalniKucanstvoPodaciDto ToDto(this SocijalniNatjecajKucanstvoPodaci k)
+    public static SocijalniNatjecajZahtjevDto ToDto(this SocijalniNatjecajZahtjev entity)
+        => entity.Adapt<SocijalniNatjecajZahtjevDto>();
+
+    public static SocijalniNatjecajClanDto ToDto(this SocijalniNatjecajClan entity)
+        => entity.Adapt<SocijalniNatjecajClanDto>();
+
+    public static SocijalniKucanstvoPodaciDto ToDto(this SocijalniNatjecajKucanstvoPodaci entity)
+        => entity.Adapt<SocijalniKucanstvoPodaciDto>();
+
+    public static SocijalniNatjecajBodovniPodaciDto ToDto(this SocijalniNatjecajBodovniPodaci entity)
+        => entity.Adapt<SocijalniNatjecajBodovniPodaciDto>();
+
+    // ------------------- DTO → Entity --------------------------------------
+
+    public static SocijalniNatjecajClan ToEntity(this SocijalniNatjecajClanDto dto, long zahtjevId)
     {
-        var p = k.Prihod;
-        return new SocijalniKucanstvoPodaciDto
-        {
-            UkupniPrihodKucanstva = p?.UkupniPrihodKucanstva,
-            PrihodPoClanu = p?.PrihodPoClanu,
-            PostotakProsjeka = p?.PostotakProsjeka,
-            IspunjavaUvjetPrihoda = p?.IspunjavaUvjetPrihoda,
-            PrebivanjeOd = k.PrebivanjeOd,
-            StambeniStatusKucanstva = k.StambeniStatusKucanstva,
-            SastavKucanstva = k.SastavKucanstva,
-            ZahtjevId = k.ZahtjevId
-        };
+        ArgumentNullException.ThrowIfNull(dto);
+        var entity = dto.Adapt<SocijalniNatjecajClan>();
+        entity.ZahtjevId = zahtjevId;
+        return entity;
     }
 
-
-    public static SocijalniNatjecajBodovniPodaciDto ToDto(this SocijalniNatjecajBodovniPodaci b)
-        => new()
-        {
-            ZahtjevId = b.ZahtjevId,
-            BrojUzdrzavanePunoljetneDjece = b.BrojUzdrzavanePunoljetneDjece,
-            PrimateljZajamceneMinimalneNaknade = b.PrimateljZajamceneMinimalneNaknade,
-            StatusRoditeljaNjegovatelja = b.StatusRoditeljaNjegovatelja,
-            KorisnikDoplatkaZaPomoc = b.KorisnikDoplatkaZaPomoc,
-            BrojOdraslihKorisnikaInvalidnine = b.BrojOdraslihKorisnikaInvalidnine,
-            BrojMaloljetnihKorisnikaInvalidnine = b.BrojMaloljetnihKorisnikaInvalidnine,
-            ZrtvaObiteljskogNasilja = b.ZrtvaObiteljskogNasilja,
-            BrojOsobaUAlternativnojSkrbi = b.BrojOsobaUAlternativnojSkrbi,
-            BrojMjeseciObranaSuvereniteta = b.BrojMjeseciObranaSuvereniteta,
-            BrojClanovaZrtavaSeksualnogNasilja = b.BrojClanovaZrtavaSeksualnogNasilja,
-            BrojCivilnihStradalnika = b.BrojCivilnihStradalnika
-        };
-
-    #endregion
-
-    #region MapOnto
+    // ------------------- MapOnto / Patch‑map -------------------------------
 
     public static void MapOnto(this SocijalniNatjecajBodovniPodaciDto dto, SocijalniNatjecajBodovniPodaci entity)
-    {
-        entity.BrojUzdrzavanePunoljetneDjece = dto.BrojUzdrzavanePunoljetneDjece;
-        entity.PrimateljZajamceneMinimalneNaknade = dto.PrimateljZajamceneMinimalneNaknade;
-        entity.StatusRoditeljaNjegovatelja = dto.StatusRoditeljaNjegovatelja;
-        entity.KorisnikDoplatkaZaPomoc = dto.KorisnikDoplatkaZaPomoc;
-        entity.BrojOdraslihKorisnikaInvalidnine = dto.BrojOdraslihKorisnikaInvalidnine;
-        entity.BrojMaloljetnihKorisnikaInvalidnine = dto.BrojMaloljetnihKorisnikaInvalidnine;
-        entity.ZrtvaObiteljskogNasilja = dto.ZrtvaObiteljskogNasilja;
-        entity.BrojOsobaUAlternativnojSkrbi = dto.BrojOsobaUAlternativnojSkrbi;
-        entity.BrojMjeseciObranaSuvereniteta = dto.BrojMjeseciObranaSuvereniteta;
-        entity.BrojClanovaZrtavaSeksualnogNasilja = dto.BrojClanovaZrtavaSeksualnogNasilja;
-        entity.BrojCivilnihStradalnika = dto.BrojCivilnihStradalnika;
-    }
+        => dto.Adapt(entity);
 
     public static void MapOnto(this SocijalniNatjecajClanDto dto, SocijalniNatjecajClan entity)
-    {
-        entity.ImePrezime = dto.ImePrezime;
-        entity.Oib = dto.Oib;
-        entity.DatumRodjenja = dto.DatumRodjenja;
-        entity.Srodstvo = dto.Srodstvo;
-    }
+        => dto.Adapt(entity);
 
     public static void MapOnto(this SocijalniNatjecajOsnovnoEditDto dto, SocijalniNatjecajZahtjev entity)
     {
-        entity.KlasaPredmeta = dto.KlasaPredmeta ?? entity.KlasaPredmeta;
-        entity.DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva ?? entity.DatumPodnosenjaZahtjeva;
-        entity.Adresa = dto.Adresa;
-        entity.NapomenaObrade = dto.NapomenaObrade;
-        entity.Email = dto.Email;
+        dto.Adapt(entity);
 
+        // Manualne nadogradnje – Mapster neće dotaknuti RowVersion jer je byte[]
         if (dto.RowVersion is not null)
             entity.RowVersion = dto.RowVersion;
-        
+
+        // Manualni rezultat obrade update‑amo samo kad je poslan
         if (dto.RezultatObrade.HasValue)
             entity.ManualniRezultatObrade = dto.RezultatObrade.Value;
     }
-
-    #endregion
-
-    #region ToEntity
-
-    public static SocijalniNatjecajClan ToEntity(this SocijalniNatjecajClanDto dto, long zahtjevId)
-        => new()
-        {
-            ZahtjevId = zahtjevId,
-            ImePrezime = dto.ImePrezime,
-            Oib = dto.Oib,
-            DatumRodjenja = dto.DatumRodjenja,
-            Srodstvo = dto.Srodstvo,
-            Zahtjev = null!
-        };
-
-    #endregion
 }

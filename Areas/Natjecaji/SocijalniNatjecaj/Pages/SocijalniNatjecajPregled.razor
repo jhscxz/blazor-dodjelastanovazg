@@ -21,7 +21,7 @@
             <div class="flex-1">
                 <MudTextField Label="Pretraga zahtjeva"
                               Value="@SearchText"
-                              ValueChanged="@(EventCallback.Factory.Create<string>(this, OnSearchChanged))"
+                              ValueChanged="@(EventCallback.Factory.Create<string>(this, OnSearchChanged)!)"
                               Immediate="true"
                               DebounceInterval="300"
                               Variant="Variant.Outlined"

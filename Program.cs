@@ -55,7 +55,6 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Identity/Account/Login");
 });
 
-builder.Services.AddMudServices();
 builder.Services.AddScoped<NatjecajSeedService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();

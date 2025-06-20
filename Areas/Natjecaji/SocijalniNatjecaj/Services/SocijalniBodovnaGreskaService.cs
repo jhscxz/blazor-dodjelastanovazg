@@ -11,7 +11,7 @@ public class SocijalniBodovnaGreskaService(ApplicationDbContext context)
 {
     public async Task<List<SocijalniNatjecajBodovnaGreska>> GetByZahtjevIdAsync(long zahtjevId) =>
         await context.SocijalniNatjecajBodovnaGreske
-            .Where(g => g.ZahtjevId == zahtjevId)
+            .Where(g => g.ZahtjevId == zahtjevId && g.IsActive)
             .ToListAsync();
 
     public Task<List<SocijalniNatjecajBodovnaGreska>> PronadiGreskeAsync(SocijalniNatjecajZahtjev zahtjev)
