@@ -24,7 +24,7 @@ public sealed class SocijalniBodovnaGreskaService(ApplicationDbContext context)
     #region PublicAPI
 
     /// <inheritdoc />
-    private async Task<List<SocijalniNatjecajBodovnaGreska>> GetByZahtjevIdAsync(long zahtjevId) =>
+    public async Task<List<SocijalniNatjecajBodovnaGreska>> GetByZahtjevIdAsync(long zahtjevId) =>
         await context.SocijalniNatjecajBodovnaGreske
                      .Where(g => g.ZahtjevId == zahtjevId && g.IsActive)
                      .ToListAsync();
