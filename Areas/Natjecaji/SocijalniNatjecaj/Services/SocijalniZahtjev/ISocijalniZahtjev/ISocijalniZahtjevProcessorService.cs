@@ -3,7 +3,7 @@ using DodjelaStanovaZG.Models;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
 
-public interface ISocijalniZahtjevProcessor
+public interface ISocijalniZahtjevProcessorService
 {
     Task<SocijalniNatjecajZahtjev> KreirajZahtjevAsync(SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib);
     Task AzurirajOsnovnoIObradiAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto);

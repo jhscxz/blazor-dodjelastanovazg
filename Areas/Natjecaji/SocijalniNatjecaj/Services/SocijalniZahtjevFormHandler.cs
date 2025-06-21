@@ -26,7 +26,7 @@ public class SocijalniZahtjevFormHandler(
         try
         {
             var zahtjev =
-                await unitOfWork.SocijalniZahtjevProcessor.KreirajZahtjevAsync(model, model.ImePrezime, model.Oib);
+                await unitOfWork.SocijalniZahtjevProcessorService.KreirajZahtjevAsync(model, model.ImePrezime, model.Oib);
 
             await unitOfWork.SaveChangesAsync();
             await bodoviService.IzracunajIBodujAsync(zahtjev.Id);

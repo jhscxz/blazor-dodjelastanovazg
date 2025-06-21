@@ -63,7 +63,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.De
 
             if (_toggleRezultat != null) _socijalniNatjecajModel.RezultatObrade = (RezultatObrade)_toggleRezultat.Value;
 
-            await UnitOfWork.SocijalniZahtjevProcessor.AzurirajOsnovnoIObradiAsync(ZahtjevId, _socijalniNatjecajModel);
+            await UnitOfWork.SocijalniZahtjevProcessorService.AzurirajOsnovnoIObradiAsync(ZahtjevId, _socijalniNatjecajModel);
             
             Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=OsnovniPodaci");
         }

@@ -20,7 +20,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZ
 ///   <item>Eliminirano je ponavljanje istih <c>.Include(...)</c> i <c>SaveChangesAsync()</c> poziva.</item>
 /// </list>
 /// </remarks>
-public sealed class SocijalniZahtjevProcessor(
+public sealed class SocijalniZahtjevProcessorService(
     ApplicationDbContext           context,
     ISocijalniZahtjevFactory       factory,
     ISocijalniZahtjevWriteService  writeService,
@@ -29,7 +29,7 @@ public sealed class SocijalniZahtjevProcessor(
     ISocijalniBodovniPodaciService bodovniService,
     ISocijalniKucanstvoService     kucanstvoService,
     ISocijalniClanService          clanService)
-    : ISocijalniZahtjevProcessor
+    : ISocijalniZahtjevProcessorService
 {
     #region Infrastructure helpers
 

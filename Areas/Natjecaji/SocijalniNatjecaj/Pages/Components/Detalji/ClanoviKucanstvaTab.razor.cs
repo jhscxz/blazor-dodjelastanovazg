@@ -33,7 +33,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.De
 
             if (result is { Canceled: false, Data: SocijalniNatjecajClanDto noviClanDto })
             {
-                await UnitOfWork.SocijalniZahtjevProcessor.DodajClanaIObradiAsync(Id, noviClanDto);
+                await UnitOfWork.SocijalniZahtjevProcessorService.DodajClanaIObradiAsync(Id, noviClanDto);
 
                 Clanovi?.Add(noviClanDto);
                 Snackbar.Add("Član kućanstva je uspješno dodan!", Severity.Success);
@@ -77,7 +77,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.De
 
             if (result is { Canceled: false, Data: SocijalniNatjecajClanDto azuriraniClan })
             {
-                await UnitOfWork.SocijalniZahtjevProcessor.UrediClanaIObradiAsync(azuriraniClan);
+                await UnitOfWork.SocijalniZahtjevProcessorService.UrediClanaIObradiAsync(azuriraniClan);
 
                 if (Clanovi != null)
                 {
@@ -104,7 +104,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.De
 
             try
             {
-                await UnitOfWork.SocijalniZahtjevProcessor.ObrisiClanaIObradiAsync(Id, id);
+                await UnitOfWork.SocijalniZahtjevProcessorService.ObrisiClanaIObradiAsync(Id, id);
 
                 Clanovi?.RemoveAll(c => c.Id == id);
                 Snackbar.Add("Član kućanstva je obrisan.", Severity.Success);

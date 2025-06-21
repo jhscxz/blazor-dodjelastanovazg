@@ -15,7 +15,7 @@ namespace DodjelaStanovaZG.Infrastructure.Interfaces
         ISocijalniBodovnaGreskaService SocijalniBodovnaGreskaService { get; }
         ISocijalniZahtjevReadService SocijalniZahtjevRead { get; }
         ISocijalniZahtjevWriteService SocijalniZahtjevWrite { get; }
-        ISocijalniZahtjevProcessor SocijalniZahtjevProcessor { get; }
+        ISocijalniZahtjevProcessorService SocijalniZahtjevProcessorService { get; }
 
 
 

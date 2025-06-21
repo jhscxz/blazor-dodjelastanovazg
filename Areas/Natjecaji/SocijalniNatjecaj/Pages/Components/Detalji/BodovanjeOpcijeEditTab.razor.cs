@@ -32,7 +32,7 @@ public class BodovanjeOpcijeEditTabBase : ComponentBase
     {
         if (Model is null) return;
 
-        await UnitOfWork.SocijalniZahtjevProcessor.SpremiBodovnePodatkeIObradiAsync(Id, Model);
+        await UnitOfWork.SocijalniZahtjevProcessorService.SpremiBodovnePodatkeIObradiAsync(Id, Model);
 
         Snackbar.Add("Podaci uspješno spremljeni.", Severity.Success);
         Navigation.NavigateTo($"/socijalni/detalji/{Id}?tab=Bodovi");

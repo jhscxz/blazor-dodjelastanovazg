@@ -10,7 +10,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages;
 
 public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
 {
-    [Inject] public required ISocijalniZahtjevProcessor ZahtjevProcessor { get; set; }
+    [Inject] public required ISocijalniZahtjevProcessorService ZahtjevProcessorService { get; set; }
     [Inject] public required NavigationManager Navigation { get; set; }
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; private set; } = [];
     [Parameter] public long NatjecajId { get; set; }

@@ -68,7 +68,7 @@ public partial class KucanstvoEditFormPage
             ? DateOnly.FromDateTime(_prebivanjeOd.Value)
             : null;
 
-        await UnitOfWork.SocijalniZahtjevProcessor.SpremiKucanstvoIObradiAsync(ZahtjevId, _kucanstvoModel);
+        await UnitOfWork.SocijalniZahtjevProcessorService.SpremiKucanstvoIObradiAsync(ZahtjevId, _kucanstvoModel);
         Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=Kucanstvo");
     }
 
