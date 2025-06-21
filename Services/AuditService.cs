@@ -6,8 +6,7 @@ namespace DodjelaStanovaZG.Services;
 
 public class AuditService(IHttpContextAccessor accessor) : IAuditService
 {
-    private readonly string _userId = accessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier)
-                                      ?? throw new InvalidOperationException("Korisnik nije prijavljen.");
+    private readonly string _userId = accessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "system";
 
     public void ApplyAudit(object entity, bool isCreate)
     {
