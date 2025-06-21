@@ -7,24 +7,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 
-public class NatjecajService : INatjecajService
+public class NatjecajService(ApplicationDbContext context) : INatjecajService
 {
-    private readonly ApplicationDbContext _context;
-
-    public NatjecajService(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<NatjecajDto?> GetByKlasaAsync(int klasa)
     {
-        var entity = await _context.Natjecaji.FirstOrDefaultAsync(x => x.Klasa == klasa);
+        var entity = await context.Natjecaji.FirstOrDefaultAsync(x => x.Klasa == klasa);
         return entity?.Adapt<NatjecajDto>();
     }
 
     public async Task<IEnumerable<NatjecajDto>> GetAllAsync()
     {
-        return await _context.Natjecaji
+        return await context.Natjecaji
             .ProjectToType<NatjecajDto>()
             .ToListAsync();
     }
@@ -35,20 +28,20 @@ public class NatjecajService : INatjecajService
         entity.CreatedAt = DateTime.UtcNow;
         entity.UpdatedAt = DateTime.UtcNow;
 
-        _context.Natjecaji.Add(entity);
-        await _context.SaveChangesAsync();
+        context.Natjecaji.Add(entity);
+        await context.SaveChangesAsync();
         return true;
     }
 
     public async Task<bool> UpdateAsync(int klasa, NatjecajDto dto)
     {
-        var entity = await _context.Natjecaji.FirstOrDefaultAsync(x => x.Klasa == klasa);
+        var entity = await context.Natjecaji.FirstOrDefaultAsync(x => x.Klasa == klasa);
         if (entity is null) return false;
 
         dto.Adapt(entity);
         entity.UpdatedAt = DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return true;
     }
 
