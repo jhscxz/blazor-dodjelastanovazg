@@ -22,15 +22,11 @@ public static partial class MappingExtensions
         
         TypeAdapterConfig<Natjecaj, NatjecajDto>.NewConfig()
             .Map(dest => dest.Vrsta, src => src.PriustiviIliSocijalni == 2 ? "Socijalni" : "Priuštivi")
-            .Map(dest => dest.Status, src => src.Zakljucen == 2 ? "Zaključen" : "Aktivan")
-            .Map(dest => dest.DatumObjave, src => src.DatumObjave.ToDateTime(TimeOnly.MinValue))
-            .Map(dest => dest.RokZaPrijavu, src => src.RokZaPrijavu.ToDateTime(TimeOnly.MinValue));
+            .Map(dest => dest.Status, src => src.Zakljucen == 2 ? "Zaključen" : "Aktivan");
 
         TypeAdapterConfig<NatjecajDto, Natjecaj>.NewConfig()
             .Map(dest => dest.PriustiviIliSocijalni, src => src.Vrsta == "Socijalni" ? (byte)2 : (byte)1)
-            .Map(dest => dest.Zakljucen, src => src.Status == "Zaključen" ? (byte)2 : (byte)1)
-            .Map(dest => dest.DatumObjave, src => DateOnly.FromDateTime(src.DatumObjave!.Value))
-            .Map(dest => dest.RokZaPrijavu, src => DateOnly.FromDateTime(src.RokZaPrijavu!.Value));
+            .Map(dest => dest.Zakljucen, src => src.Status == "Zaključen" ? (byte)2 : (byte)1);
 
         
         // ---------- Entity → DTO konfiguracije ----------

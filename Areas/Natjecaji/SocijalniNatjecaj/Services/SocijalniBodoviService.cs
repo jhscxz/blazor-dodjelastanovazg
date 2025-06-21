@@ -1,28 +1,20 @@
-using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 
 public class SocijalniBodoviService(
-    ApplicationDbContext context,
+    ISocijalniBodoviRepository repository,
     IAuditService auditService)
     : ISocijalniBodoviService
 {
+    private readonly ISocijalniBodoviRepository _repository = repository;
     private readonly IAuditService _auditService = auditService;
     public async Task IzracunajIBodujAsync(long zahtjevId)
     {
-        var zahtjev = await context.SocijalniNatjecajZahtjevi
-            .Include(z => z.Natjecaj)
-            .Include(z => z.Clanovi)
-            .Include(z => z.KucanstvoPodaci)
-                .ThenInclude(k => k!.Prihod)
-            .Include(z => z.BodovniPodaci)
-            .Include(z => z.Bodovi)
-            .FirstOrDefaultAsync(z => z.Id == zahtjevId);
-
+        var zahtjev = await _repository.GetZahtjevWithDetailsAsync(zahtjevId);
         if (zahtjev == null || zahtjev.KucanstvoPodaci == null || zahtjev.BodovniPodaci == null)
             throw new InvalidOperationException("Podaci nisu potpuni za bodovanje.");
 
@@ -65,7 +57,7 @@ public class SocijalniBodoviService(
         bodovi.BodoviAlternativnaSkrb     = (byte)(bodovni.BrojOsobaUAlternativnojSkrbi * 10);
 
         var podnositelj = clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
-        bool hasValidDatum = podnositelj != null && podnositelj.DatumRodjenja.Year > 1900;
+        bool hasValidDatum = podnositelj is { DatumRodjenja.Year: > 1900 };
         bool isIznad55 = hasValidDatum && podnositelj!.DatumRodjenja.AddYears(55) <= DateOnly.FromDateTime(zahtjev.DatumPodnosenjaZahtjeva);
         bodovi.BodoviIznad55 = hasValidDatum ? (isIznad55 ? (byte)15 : (byte)0) : (byte)0;
 
@@ -112,34 +104,50 @@ public class SocijalniBodoviService(
         if (zahtjev.Bodovi == null)
         {
             _auditService.ApplyAudit(bodovi, true);
-            context.SocijalniNatjecajBodovi.Add(bodovi);
+            await _repository.AddBodoviAsync(bodovi);
         }
         else
         {
             _auditService.ApplyAudit(bodovi, false);
-            context.Entry(zahtjev.Bodovi).CurrentValues.SetValues(bodovi);
+            
+            // update existing bodovi values
+            zahtjev.Bodovi.BodoviStambeniStatus = bodovi.BodoviStambeniStatus;
+            zahtjev.Bodovi.BodoviSastavKucanstva = bodovi.BodoviSastavKucanstva;
+            zahtjev.Bodovi.BodoviPoClanu = bodovi.BodoviPoClanu;
+            zahtjev.Bodovi.BodoviMaloljetni = bodovi.BodoviMaloljetni;
+            zahtjev.Bodovi.BodoviPunoljetniUzdrzavani = bodovi.BodoviPunoljetniUzdrzavani;
+            zahtjev.Bodovi.BodoviZajamcenaNaknada = bodovi.BodoviZajamcenaNaknada;
+            zahtjev.Bodovi.BodoviNjegovatelj = bodovi.BodoviNjegovatelj;
+            zahtjev.Bodovi.BodoviDoplatakZaNjegu = bodovi.BodoviDoplatakZaNjegu;
+            zahtjev.Bodovi.BodoviOdraslihInvalidnina = bodovi.BodoviOdraslihInvalidnina;
+            zahtjev.Bodovi.BodoviMaloljetnihInvalidnina = bodovi.BodoviMaloljetnihInvalidnina;
+            zahtjev.Bodovi.BodoviZrtvaNasilja = bodovi.BodoviZrtvaNasilja;
+            zahtjev.Bodovi.BodoviAlternativnaSkrb = bodovi.BodoviAlternativnaSkrb;
+            zahtjev.Bodovi.BodoviIznad55 = bodovi.BodoviIznad55;
+            zahtjev.Bodovi.BodoviObrana = bodovi.BodoviObrana;
+            zahtjev.Bodovi.BodoviSeksualnoNasilje = bodovi.BodoviSeksualnoNasilje;
+            zahtjev.Bodovi.BodoviCivilniStradalnici = bodovi.BodoviCivilniStradalnici;
+            zahtjev.Bodovi.UkupnoBodova = bodovi.UkupnoBodova;
         }
 
-        await context.SaveChangesAsync();
+        await _repository.SaveChangesAsync();
     }
 
     public async Task<SocijalniNatjecajBodovi?> GetByIdAsync(long zahtjevId)
     {
-        return await context.SocijalniNatjecajBodovi
-            .AsNoTracking()
-            .Include(b => b.Zahtjev)
-                .ThenInclude(z => z.Clanovi)
-            .Include(b => b.Zahtjev)
-                .ThenInclude(z => z.KucanstvoPodaci)
-                    .ThenInclude(k => k!.Prihod)
-            .FirstOrDefaultAsync(b => b.ZahtjevId == zahtjevId);
+        return await _repository.GetZahtjevWithDetailsAsync(zahtjevId)
+            .ContinueWith(t => t.Result?.Bodovi);
     }
 
     public async Task<List<SocijalniNatjecajBodovi>> GetForZahtjeviAsync(List<long> zahtjevIds)
     {
-        return await context.SocijalniNatjecajBodovi
-            .Where(b => zahtjevIds.Contains(b.ZahtjevId))
-            .AsNoTracking()
-            .ToListAsync();
+        var list = new List<SocijalniNatjecajBodovi>();
+        foreach (var id in zahtjevIds)
+        {
+            var zahtjev = await _repository.GetZahtjevWithDetailsAsync(id);
+            if (zahtjev?.Bodovi != null)
+                list.Add(zahtjev.Bodovi);
+        }
+        return list;
     }
 }

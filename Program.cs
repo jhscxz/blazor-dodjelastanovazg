@@ -45,6 +45,9 @@ builder.Services.AddRazorPages(options =>
 
 builder.Services.AddApplicationServices();
 
+_ = typeof(DodjelaStanovaZG.Helpers.MappingExtensions);
+
+
 // Dodaj hrvatski jezik kao default
 var culture = new CultureInfo("hr-HR");
 CultureInfo.DefaultThreadCurrentCulture = culture;
