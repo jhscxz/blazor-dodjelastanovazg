@@ -25,7 +25,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
         public long NatjecajId { get; set; }
         [Required] public SocijalniBodovniDto? Bodovni { get; set; }
         public SocijalniNatjecajBodovi? Bodovi { get; set; }
-        public List<SocijalniNatjecajClanDto>? Clanovi { get; init; }
-        public SocijalniKucanstvoPodaciDto? KucanstvoPodaci { get; init; }
+        public List<SocijalniNatjecajClanDto>? Clanovi { get; set; }
+        public SocijalniKucanstvoPodaciDto? KucanstvoPodaci { get; set; }
     }
 }

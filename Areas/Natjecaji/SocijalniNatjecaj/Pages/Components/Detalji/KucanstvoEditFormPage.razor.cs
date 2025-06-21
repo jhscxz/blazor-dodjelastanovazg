@@ -29,19 +29,27 @@ public partial class KucanstvoEditFormPage
     {
         var zahtjev = await UnitOfWork.SocijalniZahtjevRead.GetZahtjevByIdAsync(ZahtjevId);
 
-        _kucanstvoModel = zahtjev.KucanstvoPodaci is null
+        _kucanstvoModel = zahtjev?.KucanstvoPodaci is null
             ? new SocijalniKucanstvoPodaciDto()
             : new SocijalniKucanstvoPodaciDto
             {
                 
-                UkupniPrihodKucanstva = zahtjev.KucanstvoPodaci.Prihod?.UkupniPrihodKucanstva,
-                PrebivanjeOd = zahtjev.KucanstvoPodaci.PrebivanjeOd,
-                StambeniStatusKucanstva = zahtjev.KucanstvoPodaci.StambeniStatusKucanstva == 0
+                Prihod = zahtjev.KucanstvoPodaci?.Prihod is null
                     ? null
-                    : zahtjev.KucanstvoPodaci.StambeniStatusKucanstva,
-                SastavKucanstva = zahtjev.KucanstvoPodaci.SastavKucanstva == 0
+                    : new SocijalniPrihodDto
+                    {
+                        UkupniPrihodKucanstva = zahtjev.KucanstvoPodaci.Prihod.UkupniPrihodKucanstva,
+                        PrihodPoClanu = zahtjev.KucanstvoPodaci.Prihod.PrihodPoClanu,
+                        PostotakProsjeka = zahtjev.KucanstvoPodaci.Prihod.PostotakProsjeka,
+                        IspunjavaUvjetPrihoda = zahtjev.KucanstvoPodaci.Prihod.IspunjavaUvjetPrihoda
+                    },
+                PrebivanjeOd = zahtjev.KucanstvoPodaci?.PrebivanjeOd,
+                StambeniStatusKucanstva = zahtjev.KucanstvoPodaci?.StambeniStatusKucanstva == 0
                     ? null
-                    : zahtjev.KucanstvoPodaci.SastavKucanstva
+                    : zahtjev.KucanstvoPodaci?.StambeniStatusKucanstva,
+                SastavKucanstva = zahtjev.KucanstvoPodaci?.SastavKucanstva == 0
+                    ? null
+                    : zahtjev.KucanstvoPodaci?.SastavKucanstva
             };
 
         _prebivanjeOd = _kucanstvoModel?.PrebivanjeOd?.ToDateTime(new TimeOnly(0));

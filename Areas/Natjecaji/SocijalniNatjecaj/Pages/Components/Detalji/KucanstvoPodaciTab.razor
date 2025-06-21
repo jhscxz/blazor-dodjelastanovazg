@@ -13,7 +13,7 @@ else
         <MudStack Spacing="2">
 
             <TextInput T="string" Label="Ukupni prihod kućanstva"
-                       Value="@($"{Kucanstvo.UkupniPrihodKucanstva:N2} €")"
+                       Value="@($"{Kucanstvo.Prihod?.UkupniPrihodKucanstva:N2} €")"
                        ReadOnly="true" />
 
             <TextInput T="string" Label="Prebivanje od"

@@ -17,6 +17,7 @@ public class SocijalniNatjecajPregledBase : ComponentBase
     public long? ExpandedRowId { get; set; }
     protected string? SearchText { get; set; }
     protected RezultatObrade? SelectedOsnovanost { get; set; }
+
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
         new() { Text = "Početna", Url = "/" },
@@ -39,7 +40,8 @@ public class SocijalniNatjecajPregledBase : ComponentBase
     protected string GetExpandIcon(SocijalniNatjecajZahtjevDto row) =>
         IsRowExpanded(row) ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore;
 
-    protected async Task<TableData<SocijalniNatjecajZahtjevDto>> LoadServerData(TableState state, CancellationToken cancellationToken)
+    protected async Task<TableData<SocijalniNatjecajZahtjevDto>> LoadServerData(TableState state,
+        CancellationToken cancellationToken)
     {
         var result = await UnitOfWork.SocijalniZahtjevRead.GetPagedAsync(
             natjecajId: NatjecajId,
@@ -54,14 +56,76 @@ public class SocijalniNatjecajPregledBase : ComponentBase
         var zahtjevIds = result.Items.Select(x => x.Id).ToList();
 
         var bodoviMap = (await UnitOfWork.SocijalniBodoviService
-            .GetForZahtjeviAsync(zahtjevIds))
+                .GetForZahtjeviAsync(zahtjevIds))
             .ToDictionary(x => x.ZahtjevId, x => x);
 
-        foreach (var dto in result.Items)
+        var bodovniMap = new Dictionary<long, SocijalniNatjecajBodovniPodaciDto>();
+        foreach (var zahtjevId in zahtjevIds)
         {
-            if (bodoviMap.TryGetValue(dto.Id, out var bodovi))
-                dto.Bodovi = bodovi;
+            try
+            {
+                var bodovni = await UnitOfWork.SocijalniBodovniPodaciService.GetAsync(zahtjevId);
+                bodovniMap[zahtjevId] = bodovni;
+            }
+            catch
+            {
+                // Ignoriraj ako ne postoji
+            }
         }
+
+        var clanoviMap = await UnitOfWork.SocijalniClanService.GetForZahtjeviAsync(zahtjevIds);
+
+foreach (var dto in result.Items)
+{
+    // Poveži članove
+    if (clanoviMap.TryGetValue(dto.Id, out var clanovi))
+        dto.Clanovi = clanovi;
+
+    if (bodoviMap.TryGetValue(dto.Id, out var bodovi))
+        dto.Bodovi = bodovi;
+
+    if (bodovniMap.TryGetValue(dto.Id, out var bodovni))
+    {
+        var kucanstvo = await UnitOfWork.SocijalniKucanstvoService.GetAsync(dto.Id);
+        dto.KucanstvoPodaci = kucanstvo;
+
+        // Računanje godina i maloljetnih
+        var datum = dto.DatumPodnosenjaZahtjeva.HasValue
+            ? DateOnly.FromDateTime(dto.DatumPodnosenjaZahtjeva.Value)
+            : DateOnly.FromDateTime(DateTime.Today);
+
+
+        var maloljetni = clanovi?.Count(c => c.DatumRodjenja.AddYears(18) > datum) ?? 0;
+        var podnositelj = clanovi?.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
+        var godine = podnositelj?.DatumRodjenja != null
+            ? datum.Year - podnositelj.DatumRodjenja.Year -
+              (datum < podnositelj.DatumRodjenja.AddYears(datum.Year - podnositelj.DatumRodjenja.Year) ? 1 : 0)
+            : 0;
+
+        dto.Bodovni = new SocijalniBodovniDto
+        {
+            UkupniPrihodKucanstva = kucanstvo?.Prihod?.UkupniPrihodKucanstva,
+            PostotakProsjeka = kucanstvo?.Prihod?.PostotakProsjeka,
+            StambeniStatusKucanstva = kucanstvo?.StambeniStatusKucanstva,
+            SastavKucanstva = kucanstvo?.SastavKucanstva,
+
+            BrojUzdrzavanePunoljetneDjece = bodovni.BrojUzdrzavanePunoljetneDjece,
+            PrimateljZajamceneMinimalneNaknade = bodovni.PrimateljZajamceneMinimalneNaknade,
+            StatusRoditeljaNjegovatelja = bodovni.StatusRoditeljaNjegovatelja,
+            KorisnikDoplatkaZaPomoc = bodovni.KorisnikDoplatkaZaPomoc,
+            BrojOdraslihKorisnikaInvalidnine = bodovni.BrojOdraslihKorisnikaInvalidnine,
+            BrojMaloljetnihKorisnikaInvalidnine = bodovni.BrojMaloljetnihKorisnikaInvalidnine,
+            ZrtvaObiteljskogNasilja = bodovni.ZrtvaObiteljskogNasilja,
+            BrojOsobaUAlternativnojSkrbi = bodovni.BrojOsobaUAlternativnojSkrbi,
+            BrojMjeseciObranaSuvereniteta = bodovni.BrojMjeseciObranaSuvereniteta,
+            BrojClanovaZrtavaSeksualnogNasilja = bodovni.BrojClanovaZrtavaSeksualnogNasilja,
+            BrojCivilnihStradalnika = bodovni.BrojCivilnihStradalnika,
+            PodnositeljIznad55Godina = godine >= 55,
+            BrojMaloljetneDjece = (byte)maloljetni
+        };
+    }
+}
+
 
         return new TableData<SocijalniNatjecajZahtjevDto>
         {
@@ -69,6 +133,7 @@ public class SocijalniNatjecajPregledBase : ComponentBase
             TotalItems = result.TotalCount
         };
     }
+
 
     protected async Task OnSearchChanged(string value)
     {

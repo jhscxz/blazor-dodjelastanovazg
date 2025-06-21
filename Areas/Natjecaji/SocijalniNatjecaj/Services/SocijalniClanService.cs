@@ -1,9 +1,11 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
+using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Helpers.Exceptions;
 using DodjelaStanovaZG.Models;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
@@ -73,5 +75,18 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
             _context.SocijalniNatjecajClanovi.Remove(clan);
             await _context.SaveChangesAsync();
         }
+        
+        public async Task<Dictionary<long, List<SocijalniNatjecajClanDto>>> GetForZahtjeviAsync(IEnumerable<long> zahtjevIds)
+        {
+            var clanovi = await _context.SocijalniNatjecajClanovi
+                .Where(c => zahtjevIds.Contains(c.ZahtjevId))
+                .ProjectToType<SocijalniNatjecajClanDto>()
+                .ToListAsync();
+
+            return clanovi
+                .GroupBy(c => c.ZahtjevId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+        }
+
     }
 }
