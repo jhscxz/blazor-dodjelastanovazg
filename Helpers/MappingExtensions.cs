@@ -1,4 +1,5 @@
 #nullable enable
+using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO;
 using Mapster;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Enums;
@@ -17,6 +18,21 @@ public static partial class MappingExtensions
         // Globalna postavka: ignoriramo null vrijednosti kod DTO → entity mapa
         TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
 
+        // ---------- Natjecaj <-> Natjecaj DTO konfiguracije ----------
+        
+        TypeAdapterConfig<Natjecaj, NatjecajDto>.NewConfig()
+            .Map(dest => dest.Vrsta, src => src.PriustiviIliSocijalni == 2 ? "Socijalni" : "Priuštivi")
+            .Map(dest => dest.Status, src => src.Zakljucen == 2 ? "Zaključen" : "Aktivan")
+            .Map(dest => dest.DatumObjave, src => src.DatumObjave.ToDateTime(TimeOnly.MinValue))
+            .Map(dest => dest.RokZaPrijavu, src => src.RokZaPrijavu.ToDateTime(TimeOnly.MinValue));
+
+        TypeAdapterConfig<NatjecajDto, Natjecaj>.NewConfig()
+            .Map(dest => dest.PriustiviIliSocijalni, src => src.Vrsta == "Socijalni" ? (byte)2 : (byte)1)
+            .Map(dest => dest.Zakljucen, src => src.Status == "Zaključen" ? (byte)2 : (byte)1)
+            .Map(dest => dest.DatumObjave, src => DateOnly.FromDateTime(src.DatumObjave!.Value))
+            .Map(dest => dest.RokZaPrijavu, src => DateOnly.FromDateTime(src.RokZaPrijavu!.Value));
+
+        
         // ---------- Entity → DTO konfiguracije ----------
 
         TypeAdapterConfig<SocijalniNatjecajZahtjev, SocijalniNatjecajZahtjevDto>
@@ -53,6 +69,12 @@ public static partial class MappingExtensions
 
     public static SocijalniNatjecajBodovniPodaciDto ToDto(this SocijalniNatjecajBodovniPodaci entity)
         => entity.Adapt<SocijalniNatjecajBodovniPodaciDto>();
+    
+    public static NatjecajDto ToDto(this Natjecaj entity)
+        => entity.Adapt<NatjecajDto>();
+
+    public static Natjecaj ToEntity(this NatjecajDto dto)
+        => dto.Adapt<Natjecaj>();
 
     // ---------- DTO → Entity metode ----------
 
