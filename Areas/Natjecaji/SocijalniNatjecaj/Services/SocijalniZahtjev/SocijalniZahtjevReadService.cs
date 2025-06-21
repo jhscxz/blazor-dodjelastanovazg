@@ -88,9 +88,11 @@ public class SocijalniZahtjevReadService(ApplicationDbContext context)
     {
         var zahtjev = await Query()
                           .Include(z => z.Natjecaj)
+                          .Include(z => z.BodovniPodaci)
                           .Include(z => z.Bodovi)
                           .Include(z => z.Clanovi)
-                          .Include(z => z.KucanstvoPodaci).ThenInclude(k => k.Prihod)
+                          .Include(z => z.CreatedByUser)
+                          .Include(z => z.KucanstvoPodaci).ThenInclude(k => k!.Prihod)
                           .FirstOrDefaultAsync(z => z.Id == id)
                       ?? throw new Exception($"Zahtjev {id} nije pronađen.");
 
