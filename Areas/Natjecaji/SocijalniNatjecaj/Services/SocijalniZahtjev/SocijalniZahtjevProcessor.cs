@@ -9,17 +9,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
-public class SocijalniZahtjevProcessor(
-    ApplicationDbContext            context,
-    ISocijalniZahtjevFactory        factory,
-    ISocijalniZahtjevWriteService   writeService,
-    ISocijalniBodoviService         bodoviService,
-    ISocijalniZahtjevGreskaService  greskaService,
-    ISocijalniBodovniPodaciService  bodovniService,
-    ISocijalniKucanstvoService      kucanstvoService,
-    ISocijalniClanService           clanService)
+/// <summary>
+/// Centralni “processor” koji rukuje svim zapisima nad socijalnim natječajem
+/// te nakon svake izmjene ponovno računa bodove i sinkronizira bodovne greške.
+/// </summary>
+/// <remarks>
+/// <list type="number">
+///   <item>Jedan <c>LoadZahtjevAsync</c> helper učitava sve potrebne navigacije.</item>
+///   <item><c>ObradiBodoveIGreskeAsync</c> prima samo <c>id</c> – unutar sebe učitava entitet.</item>
+///   <item>Eliminirano je ponavljanje istih <c>.Include(...)</c> i <c>SaveChangesAsync()</c> poziva.</item>
+/// </list>
+/// </remarks>
+public sealed class SocijalniZahtjevProcessor(
+    ApplicationDbContext           context,
+    ISocijalniZahtjevFactory       factory,
+    ISocijalniZahtjevWriteService  writeService,
+    ISocijalniBodoviService        bodoviService,
+    ISocijalniZahtjevGreskaService greskaService,
+    ISocijalniBodovniPodaciService bodovniService,
+    ISocijalniKucanstvoService     kucanstvoService,
+    ISocijalniClanService          clanService)
     : ISocijalniZahtjevProcessor
 {
+    #region Infrastructure helpers
+
     private async Task ExecuteAsync(Func<Task> work)
     {
         await using var tx = await context.Database.BeginTransactionAsync();
@@ -35,12 +48,28 @@ public class SocijalniZahtjevProcessor(
             throw new InvalidOperationException("Netko je u međuvremenu promijenio podatke. Osvježite stranicu pa pokušajte ponovo.");
         }
     }
-    
-    private async Task ObradiBodoveIGreskeAsync(SocijalniNatjecajZahtjev z)
+
+    private Task<SocijalniNatjecajZahtjev> LoadZahtjevAsync(long id) =>
+        context.SocijalniNatjecajZahtjevi
+               .Include(z => z.Clanovi)
+               .Include(z => z.KucanstvoPodaci)
+               .Include(z => z.BodovniPodaci)
+               .Include(z => z.Natjecaj)
+               .FirstAsync(z => z.Id == id);
+
+    private async Task ObradiBodoveIGreskeAsync(long zahtjevId)
     {
-        await bodoviService.IzracunajIBodujAsync(z.Id);
-        await greskaService.ObradiGreskeAsync(z);
+        // Bodovi računaju direktno po ID‑ju
+        await bodoviService.IzracunajIBodujAsync(zahtjevId);
+
+        // Greške trebaju kompletan entitet
+        var zahtjev = await LoadZahtjevAsync(zahtjevId);
+        await greskaService.ObradiGreskeAsync(zahtjev);
     }
+
+    #endregion
+
+    #region Kreiranje zahtjeva
 
     public async Task<SocijalniNatjecajZahtjev> KreirajZahtjevAsync(
         SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib)
@@ -50,61 +79,58 @@ public class SocijalniZahtjevProcessor(
         await ExecuteAsync(async () =>
         {
             await writeService.CreateAsync(zahtjev);
-            await ObradiBodoveIGreskeAsync(zahtjev);
+            await ObradiBodoveIGreskeAsync(zahtjev.Id);
         });
 
         return zahtjev;
     }
 
-    #region osnovno
+    #endregion
+
+    #region Osnovno
     public async Task AzurirajOsnovnoIObradiAsync(long id, SocijalniNatjecajOsnovnoEditDto dto)
     {
         await ExecuteAsync(async () =>
         {
             await writeService.UpdateOsnovnoAsync(id, dto);
-            var z = await context.SocijalniNatjecajZahtjevi.FirstAsync(x => x.Id == id);
 
             if (dto.RezultatObrade == RezultatObrade.Osnovan)
                 await bodoviService.IzracunajIBodujAsync(id);
 
-            await greskaService.ObradiGreskeAsync(z);
+            await ObradiBodoveIGreskeAsync(id);
         });
     }
     #endregion
-    
-    #region kućanstvo
+
+    #region Kućanstvo
     public async Task SpremiKucanstvoIObradiAsync(long id, SocijalniKucanstvoPodaciDto dto)
     {
         await ExecuteAsync(async () =>
         {
             await kucanstvoService.UpdateKucanstvoPodaciAsync(id, dto);
-            var z = await context.SocijalniNatjecajZahtjevi.FirstAsync(x => x.Id == id);
-            await ObradiBodoveIGreskeAsync(z);
+            await ObradiBodoveIGreskeAsync(id);
         });
     }
     #endregion
-    
-    #region bodovni podaci
+
+    #region Bodovni podaci
     public async Task SpremiBodovnePodatkeIObradiAsync(long id, SocijalniNatjecajBodovniPodaciDto dto)
     {
         await ExecuteAsync(async () =>
         {
             await bodovniService.UpdateAsync(id, dto);
-            var z = await context.SocijalniNatjecajZahtjevi.FirstAsync(x => x.Id == id);
-            await ObradiBodoveIGreskeAsync(z);
+            await ObradiBodoveIGreskeAsync(id);
         });
     }
     #endregion
-    
-    #region članovi
+
+    #region Članovi
     public async Task DodajClanaIObradiAsync(long id, SocijalniNatjecajClanDto clanDto)
     {
         await ExecuteAsync(async () =>
         {
-            var novi = clanDto.ToEntity(id);
-            await clanService.AddClanAsync(novi);
-            var z = await context.SocijalniNatjecajZahtjevi.FirstAsync(x => x.Id == id);
-            await ObradiBodoveIGreskeAsync(z);
+            await clanService.AddClanAsync(clanDto.ToEntity(id));
+            await ObradiBodoveIGreskeAsync(id);
         });
     }
 
@@ -114,8 +140,7 @@ public class SocijalniZahtjevProcessor(
         {
             var clan = await context.SocijalniNatjecajClanovi.FirstAsync(c => c.Id == dto.Id);
             dto.MapOnto(clan);
-            var z = await context.SocijalniNatjecajZahtjevi.FirstAsync(x => x.Id == dto.ZahtjevId);
-            await ObradiBodoveIGreskeAsync(z);
+            await ObradiBodoveIGreskeAsync(dto.ZahtjevId);
         });
     }
 
@@ -124,8 +149,7 @@ public class SocijalniZahtjevProcessor(
         await ExecuteAsync(async () =>
         {
             await clanService.RemoveClanAsync(zahtjevId, clanId);
-            var z = await context.SocijalniNatjecajZahtjevi.FirstAsync(x => x.Id == zahtjevId);
-            await ObradiBodoveIGreskeAsync(z);
+            await ObradiBodoveIGreskeAsync(zahtjevId);
         });
     }
     #endregion
