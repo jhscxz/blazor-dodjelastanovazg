@@ -90,14 +90,11 @@ app.MapRazorComponents<App>()
 
 app.MapRazorPages();
 
-// Seed baze 
-using (var scope = app.Services.CreateScope())
+// Pokreni seeding preko naredbe "dotnet run -- seed"
+if (args.Contains("seed"))
 {
-    var services = scope.ServiceProvider;
-    await DbInitializer.SeedAsync(services);
-
-    var natjecajSeeder = services.GetRequiredService<NatjecajSeedService>();
-    await natjecajSeeder.SeedNatjecajiAsync();
+    await DatabaseSeeder.SeedAsync(app);
+    return;
 }
 
 app.MapControllers();
