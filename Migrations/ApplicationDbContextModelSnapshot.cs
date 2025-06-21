@@ -184,9 +184,6 @@ namespace DodjelaStanovaZG.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Kod")
                         .IsRequired()
                         .HasMaxLength(50)

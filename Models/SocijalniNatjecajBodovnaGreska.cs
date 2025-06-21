@@ -12,5 +12,4 @@ public class SocijalniNatjecajBodovnaGreska : AuditableEntity
     [Required] [StringLength(50)] public string Kod { get; set; } = null!;
     [Required] [StringLength(500)] public string Poruka { get; set; } = null!;
     public SocijalniNatjecajZahtjev Zahtjev { get; init; } = null!;
-    public bool IsActive { get; set; } = true;
 }

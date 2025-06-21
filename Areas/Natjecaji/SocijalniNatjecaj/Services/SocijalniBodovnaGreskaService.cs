@@ -26,15 +26,15 @@ public sealed class SocijalniBodovnaGreskaService(ApplicationDbContext context)
     /// <inheritdoc />
     public async Task<List<SocijalniNatjecajBodovnaGreska>> GetByZahtjevIdAsync(long zahtjevId) =>
         await context.SocijalniNatjecajBodovnaGreske
-                     .Where(g => g.ZahtjevId == zahtjevId && g.IsActive)
-                     .AsNoTracking()
-                     .ToListAsync();
+            .Where(g => g.ZahtjevId == zahtjevId)
+            .AsNoTracking()
+            .ToListAsync();
 
     /// <inheritdoc />
     public Task<List<SocijalniNatjecajBodovnaGreska>> PronadiGreskeAsync(SocijalniNatjecajZahtjev zahtjev)
     {
         var errors = new Dictionary<string, SocijalniNatjecajBodovnaGreska>();
-        var today  = DateOnly.FromDateTime(DateTime.Today);
+        var today = DateOnly.FromDateTime(DateTime.Today);
 
         void Add(string code, string message)
         {
@@ -42,8 +42,8 @@ public sealed class SocijalniBodovnaGreskaService(ApplicationDbContext context)
             errors[code] = new SocijalniNatjecajBodovnaGreska
             {
                 ZahtjevId = zahtjev.Id,
-                Kod       = code,
-                Poruka    = message
+                Kod = code,
+                Poruka = message
             };
         }
 
@@ -120,10 +120,10 @@ public sealed class SocijalniBodovnaGreskaService(ApplicationDbContext context)
                 return;
             }
 
-            var brojClanova   = Math.Max(zahtjev.Clanovi.Count, 1);
+            var brojClanova = Math.Max(zahtjev.Clanovi.Count, 1);
             var prihodPoClanu = prihod.UkupniPrihodKucanstva / brojClanova / 12m;
-            var jeSamacko     = zahtjev.KucanstvoPodaci?.SastavKucanstva == SastavKucanstva.SamackoKucanstvo;
-            var limit         = prosjekPlace * (jeSamacko ? 0.50m : 0.30m);
+            var jeSamacko = zahtjev.KucanstvoPodaci?.SastavKucanstva == SastavKucanstva.SamackoKucanstvo;
+            var limit = prosjekPlace * (jeSamacko ? 0.50m : 0.30m);
 
             if (prihodPoClanu > limit)
                 Add("PRI-002", $"Mjesečni prihod po članu ({prihodPoClanu:C}) prelazi dopušteni ({limit:C}).");

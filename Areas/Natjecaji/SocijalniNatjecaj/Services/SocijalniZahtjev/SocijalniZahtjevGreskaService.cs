@@ -34,17 +34,12 @@ public class SocijalniZahtjevGreskaService(
     {
         var set = context.SocijalniNatjecajBodovnaGreske;
 
-        await set
-            .Where(g => g.ZahtjevId == zahtjevId && g.IsActive)
-            .ExecuteUpdateAsync(s => s.SetProperty(g => g.IsActive, false));
+        var postojece = await set
+            .Where(g => g.ZahtjevId == zahtjevId)
+            .ToListAsync();
 
-        foreach (var g in nove)
-        {
-            var existing = await set.FirstOrDefaultAsync(x => x.ZahtjevId == zahtjevId && x.Kod == g.Kod);
-            if (existing is null)
-                await set.AddAsync(g);
-            else
-                existing.IsActive = true;
-        }
+        set.RemoveRange(postojece);
+
+        await set.AddRangeAsync(nove);
     }
 }
