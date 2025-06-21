@@ -6,9 +6,9 @@
 
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudGrid Justify="Justify.Center">
-        
+
         <MudItem xs="12" sm="6" md="4">
-            <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
+            <MudCard Outlined="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
 
                     @if (ErrorMessages?.Any() == true)
@@ -25,7 +25,7 @@
 
                     <MudForm @ref="_form" Model="@ZahtjevModel">
                         <!-- Prvi red: Klasa predmeta i Datum podnošenja zahtjeva -->
-                        <MudGrid Gutter="Size.Small">
+                        <MudGrid>
                             <MudItem xs="12" sm="6">
                                 <TextInputInt T="int?" Label="Klasa predmeta" @bind-Value="ZahtjevModel.KlasaPredmeta"
                                               Required="true" Class="mb-4"/>
@@ -37,7 +37,7 @@
                         </MudGrid>
 
                         <!-- Drugi red: Ime i prezime i Adresa -->
-                        <MudGrid Gutter="Size.Small">
+                        <MudGrid>
                             <MudItem xs="12" sm="6">
                                 <TextInput T="string" Label="Ime i prezime" @bind-Value="ZahtjevModel.ImePrezime"
                                            Required="true" Class="mb-4"/>
@@ -49,7 +49,7 @@
                         </MudGrid>
 
                         <!-- Treći red: OIB i Email -->
-                        <MudGrid Gutter="Size.Small">
+                        <MudGrid>
                             <MudItem xs="12" sm="6">
                                 <TextInput T="string" Label="OIB" @bind-Value="ZahtjevModel.Oib" Class="mb-4"/>
                             </MudItem>

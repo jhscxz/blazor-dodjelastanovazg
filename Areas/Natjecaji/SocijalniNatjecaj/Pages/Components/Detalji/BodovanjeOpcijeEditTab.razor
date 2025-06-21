@@ -11,11 +11,11 @@
     <MudContainer MaxWidth="MaxWidth.Medium">
         @if (Model is null)
         {
-            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
         }
         else
         {
-            <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
+            <MudCard Outlined="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
                     <MudTabs Rounded="true" PanelClass="pa-0" Elevation="0">
                         <!-- TAB 1 -->
@@ -24,8 +24,7 @@
                                 <MudStack Spacing="1">
                                     <MudNumericField T="byte"
                                                      Label="Broj uzdržavanih punoljetnih na redovnom školovanju"
-                                                     @bind-Value="Model.BrojUzdrzavanePunoljetneDjece"
-                                                     Dense="true" />
+                                                     @bind-Value="Model.BrojUzdrzavanePunoljetneDjece"/>
                                 </MudStack>
                             </MudCard>
                         </MudTabPanel>
@@ -46,7 +45,8 @@
                                         <MudSelectItem Value="false">Ne</MudSelectItem>
                                     </MudSelect>
 
-                                    <MudSelect T="bool" Label="Korisnik doplatka za pomoć i njegu / inkluzivnog dodatka III. razine"
+                                    <MudSelect T="bool"
+                                               Label="Korisnik doplatka za pomoć i njegu / inkluzivnog dodatka III. razine"
                                                @bind-Value="Model.KorisnikDoplatkaZaPomoc" Dense="true">
                                         <MudSelectItem Value="true">Da</MudSelectItem>
                                         <MudSelectItem Value="false">Ne</MudSelectItem>
@@ -54,13 +54,11 @@
 
                                     <MudNumericField T="byte"
                                                      Label="Odrasli korisnici osobne invalidnine / dodatka I./II. razine"
-                                                     @bind-Value="Model.BrojOdraslihKorisnikaInvalidnine"
-                                                     Dense="true" />
+                                                     @bind-Value="Model.BrojOdraslihKorisnikaInvalidnine"/>
 
                                     <MudNumericField T="byte"
                                                      Label="Maloljetni korisnici osobne invalidnine / dodatka I./II. razine"
-                                                     @bind-Value="Model.BrojMaloljetnihKorisnikaInvalidnine"
-                                                     Dense="true" />
+                                                     @bind-Value="Model.BrojMaloljetnihKorisnikaInvalidnine"/>
                                 </MudStack>
                             </MudCard>
                         </MudTabPanel>
@@ -77,23 +75,19 @@
 
                                     <MudNumericField T="byte"
                                                      Label="Broj članova (18–29) koji su bili u alternativnoj skrbi"
-                                                     @bind-Value="Model.BrojOsobaUAlternativnojSkrbi"
-                                                     Dense="true" />
+                                                     @bind-Value="Model.BrojOsobaUAlternativnojSkrbi"/>
 
                                     <MudNumericField T="byte"
                                                      Label="Broj mjeseci obrane suvereniteta RH (maks. 40)"
-                                                     @bind-Value="Model.BrojMjeseciObranaSuvereniteta"
-                                                     Dense="true" />
+                                                     @bind-Value="Model.BrojMjeseciObranaSuvereniteta"/>
 
                                     <MudNumericField T="byte"
                                                      Label="Broj članova koji su žrtve seksualnog nasilja u DR"
-                                                     @bind-Value="Model.BrojClanovaZrtavaSeksualnogNasilja"
-                                                     Dense="true" />
+                                                     @bind-Value="Model.BrojClanovaZrtavaSeksualnogNasilja"/>
 
                                     <MudNumericField T="byte"
                                                      Label="Broj članova civilnih stradalnika iz DR"
-                                                     @bind-Value="Model.BrojCivilnihStradalnika"
-                                                     Dense="true" />
+                                                     @bind-Value="Model.BrojCivilnihStradalnika"/>
                                 </MudStack>
                             </MudCard>
                         </MudTabPanel>
@@ -103,7 +97,7 @@
                 <MudCardActions Class="mt-4">
                     <MudGrid>
                         <MudItem xs="12">
-                            <FormButtons Submit="SaveChanges" Cancel="Cancel" />
+                            <FormButtons Submit="SaveChanges" Cancel="Cancel"/>
                         </MudItem>
                     </MudGrid>
                 </MudCardActions>

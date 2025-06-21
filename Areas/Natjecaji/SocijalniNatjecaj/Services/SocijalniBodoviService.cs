@@ -19,7 +19,7 @@ public class SocijalniBodoviService(
             .Include(z => z.Natjecaj)
             .Include(z => z.Clanovi)
             .Include(z => z.KucanstvoPodaci)
-                .ThenInclude(k => k.Prihod)
+                .ThenInclude(k => k!.Prihod)
             .Include(z => z.BodovniPodaci)
             .Include(z => z.Bodovi)
             .FirstOrDefaultAsync(z => z.Id == zahtjevId);

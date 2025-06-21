@@ -18,6 +18,6 @@ namespace DodjelaStanovaZG.Models
         public StambeniStatusKucanstva StambeniStatusKucanstva { get; set; }
         [Required]
         public SastavKucanstva SastavKucanstva { get; set; }
-        public SocijalniPrihodi Prihod { get; set; }
+        public SocijalniPrihodi? Prihod { get; set; }
     }
 }

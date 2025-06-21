@@ -16,10 +16,10 @@
         }
         else
         {
-            <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
+            <MudCard Outlined="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
                     <MudForm @ref="_form" Model="@_kucanstvoModel">
-                        <MudGrid GutterSpacing="3">
+                        <MudGrid>
                             <MudItem xs="12">
                                 <TextInputDecimal T="decimal?" Label="Ukupni prihod kućanstva"
                                                   @bind-Value="_kucanstvoModel.Prihod!.UkupniPrihodKucanstva"

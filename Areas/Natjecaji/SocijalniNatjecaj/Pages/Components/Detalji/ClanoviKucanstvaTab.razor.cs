@@ -10,12 +10,8 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.De
         [Inject] public ISnackbar Snackbar { get; set; } = null!;
         [Inject] public IUnitOfWork UnitOfWork { get; set; } = null!;
         [Parameter] public long Id { get; set; }
-        protected SocijalniNatjecajZahtjevDto Zahtjev { get; set; } = null!;
-        protected List<SocijalniNatjecajClanDto>? Clanovi { get; set; } = new();
-
-        protected DateTime? ZadnjaPromjenaClanova => Clanovi.Count == 0
-            ? null
-            : Clanovi.Max(c => c.UpdatedAt ?? c.CreatedAt);
+        private SocijalniNatjecajZahtjevDto Zahtjev { get; set; } = null!;
+        protected List<SocijalniNatjecajClanDto>? Clanovi { get; set; } = [];
 
         private async Task AddClan()
         {
@@ -39,14 +35,14 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.De
             {
                 await UnitOfWork.SocijalniZahtjevProcessor.DodajClanaIObradiAsync(Id, noviClanDto);
 
-                Clanovi.Add(noviClanDto);
+                Clanovi?.Add(noviClanDto);
                 Snackbar.Add("Član kućanstva je uspješno dodan!", Severity.Success);
             }
         }
 
         private async Task EditClan(long id)
         {
-            var clanZaUrediti = Clanovi.FirstOrDefault(c => c.Id == id);
+            var clanZaUrediti = Clanovi?.FirstOrDefault(c => c.Id == id);
             if (clanZaUrediti is null)
             {
                 Snackbar.Add("Greška: Član nije pronađen.", Severity.Error);
@@ -83,9 +79,12 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.De
             {
                 await UnitOfWork.SocijalniZahtjevProcessor.UrediClanaIObradiAsync(azuriraniClan);
 
-                var index = Clanovi.FindIndex(c => c.Id == azuriraniClan.Id);
-                if (index >= 0)
-                    Clanovi[index] = azuriraniClan;
+                if (Clanovi != null)
+                {
+                    var index = Clanovi.FindIndex(c => c.Id == azuriraniClan.Id);
+                    if (index >= 0)
+                        Clanovi[index] = azuriraniClan;
+                }
 
                 Snackbar.Add("Član kućanstva je ažuriran.", Severity.Success);
             }

@@ -5,7 +5,7 @@
 <MudCard Outlined="true" Class="pa-2" Elevation="1">
     <MudCardContent>
 
-        <MudPaper Class="pa-3" Outlined="true" Elevation="0" Rounded="true">
+        <MudPaper Class="pa-3" Outlined="true" Elevation="0">
             <div
                 style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 16px; overflow: hidden; flex-shrink: 1;">
                 <div style="display: flex; flex-direction: column; margin-right: 8px;">
@@ -60,7 +60,7 @@
         <MudTabs Class="my-tabs" Rounded="true" Elevation="0" PanelClass="pa-2" Centered="false">
 
             <MudTabPanel Text="Stambeni status">
-                <MudPaper Class="pa-3" Outlined="true" Elevation="0" Rounded="true">
+                <MudPaper Class="pa-3" Outlined="true" Elevation="0">
                     <MudText Typo="Typo.body2">
                         Stambeni status:
                         <b>@Bodovi?.Zahtjev.KucanstvoPodaci?.StambeniStatusKucanstva.GetDisplayName()</b>
@@ -73,7 +73,7 @@
             </MudTabPanel>
 
             <MudTabPanel Text="Sastav kućanstva">
-                <MudPaper Class="pa-3" Outlined="true" Elevation="0" Rounded="true">
+                <MudPaper Class="pa-3" Outlined="true" Elevation="0" >
                     <MudText Typo="Typo.body2">
                         Sastav kućanstva: <b>@Bodovi?.Zahtjev.KucanstvoPodaci?.SastavKucanstva.GetDisplayName()</b>
                     </MudText>
@@ -85,7 +85,7 @@
             </MudTabPanel>
 
             <MudTabPanel Text="Socijalno-zdravstveni status">
-                <MudPaper Class="pa-3" Outlined="true" Elevation="0" Rounded="true">
+                <MudPaper Class="pa-3" Outlined="true" Elevation="0" >
                     @foreach (var red in Redovi.Where(r => r.Kategorija == "Socijalno-zdravstveni status"))
                     {
                         <MudText Typo="Typo.body2">@red.Kriterij: <b>@red.Vrijednost</b></MudText>
@@ -94,7 +94,7 @@
             </MudTabPanel>
 
             <MudTabPanel Text="Posebne okolnosti">
-                <MudPaper Class="pa-3" Outlined="true" Elevation="0" Rounded="true">
+                <MudPaper Class="pa-3" Outlined="true" Elevation="0" >
                     @foreach (var red in Redovi.Where(r => r.Kategorija == "Posebne okolnosti"))
                     {
                         <MudText Typo="Typo.body2">@red.Kriterij: <b>@red.Vrijednost</b></MudText>
@@ -108,8 +108,8 @@
         @{
             var z = Bodovi?.Zahtjev;
             var mozeGeneriratiZapisnik = z is not null &&
-                                         (z.RezultatObrade is RezultatObrade.Nepotpun or RezultatObrade.Neosnovan
-                                          || (z.RezultatObrade == RezultatObrade.Osnovan && !Greske.Any()));
+                                             (z.RezultatObrade is RezultatObrade.Nepotpun or RezultatObrade.Neosnovan
+                                                  || (z.RezultatObrade == RezultatObrade.Osnovan && !Greske.Any()));
         }
 
         @if (!mozeGeneriratiZapisnik)
@@ -135,7 +135,7 @@
         {
             <div class="d-flex align-center justify-space-between mt-2">
                 <MudText Typo="Typo.subtitle1">
-                    Ukupno bodova: <b>@Bodovi.UkupnoBodova</b>
+                    Ukupno bodova: <b>@Bodovi?.UkupnoBodova</b>
                 </MudText>
 
                 <MudButton OnClick="GenerirajZapisnik"
@@ -150,7 +150,6 @@
                 </MudButton>
             </div>
         }
-
 
 
     </MudCardContent>
