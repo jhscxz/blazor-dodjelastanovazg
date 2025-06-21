@@ -93,7 +93,6 @@
                 {
                     <MudTd ColSpan="@TotalColumns">
                         <MudPaper Class="pa-3 rounded-lg" Elevation="1">
-                            <MudText Typo="Typo.subtitle2" Class="mb-2">Detalji bodovanja</MudText>
 
                             <MudGrid GutterSize="8px">
 
@@ -164,16 +163,69 @@
                                             stradalnik:</b> @context.Bodovni?.BrojCivilnihStradalnika</MudText>
                                 </MudItem>
 
-                                <!-- Bodovni sažetak -->
-                                <MudItem xs="12">
-                                    <MudText Typo="Typo.subtitle2" Class="mt-2">Ukupno bodova:
-                                        <b>@FormatInt(context.Bodovi?.UkupnoBodova)</b></MudText>
+                            </MudGrid>
+                            <MudDivider Class="my-2"/>
+
+                            <MudGrid GutterSize="8px">
+
+
+                                <!-- Stupac 1 -->
+                                <MudItem xs="12" sm="6" md="4">
+                                    <MudText Typo="Typo.body2"><b>Stambeni
+                                            status:</b> @FormatInt(context.Bodovi?.BodoviStambeniStatus)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Sastav
+                                            kućanstva:</b> @FormatInt(context.Bodovi?.BodoviSastavKucanstva)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Po članu
+                                            kućanstva:</b> @FormatInt(context.Bodovi?.BodoviPoClanu)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Maloljetni
+                                            članovi:</b> @FormatInt(context.Bodovi?.BodoviMaloljetni)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Punoljetni
+                                            uzdržavani:</b> @FormatInt(context.Bodovi?.BodoviPunoljetniUzdrzavani)
+                                    </MudText>
                                 </MudItem>
 
+                                <!-- Stupac 2 -->
+                                <MudItem xs="12" sm="6" md="4">
+                                    <MudText Typo="Typo.body2"><b>Primatelj
+                                            ZMN:</b> @FormatInt(context.Bodovi?.BodoviZajamcenaNaknada)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Roditelj
+                                            njegovatelj:</b> @FormatInt(context.Bodovi?.BodoviNjegovatelj)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Doplatak za
+                                            njegu:</b> @FormatInt(context.Bodovi?.BodoviDoplatakZaNjegu)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Odrasli –
+                                            invalidnina:</b> @FormatInt(context.Bodovi?.BodoviOdraslihInvalidnina)
+                                    </MudText>
+                                    <MudText Typo="Typo.body2"><b>Maloljetni –
+                                            invalidnina:</b> @FormatInt(context.Bodovi?.BodoviMaloljetnihInvalidnina)
+                                    </MudText>
+                                </MudItem>
+
+                                <!-- Stupac 3 -->
+                                <MudItem xs="12" sm="6" md="4">
+                                    <MudText Typo="Typo.body2"><b>Žrtva obiteljskog
+                                            nasilja:</b> @FormatInt(context.Bodovi?.BodoviZrtvaNasilja)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Alternativna skrb
+                                            (18–29):</b> @FormatInt(context.Bodovi?.BodoviAlternativnaSkrb)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Iznad 55
+                                            godina:</b> @FormatInt(context.Bodovi?.BodoviIznad55)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Branitelj
+                                            (mjeseci):</b> @context.Bodovi?.BodoviObrana.ToString("0.##")</MudText>
+                                    <MudText Typo="Typo.body2"><b>Žrtva seksualnog
+                                            nasilja:</b> @FormatInt(context.Bodovi?.BodoviSeksualnoNasilje)</MudText>
+                                    <MudText Typo="Typo.body2"><b>Civilni
+                                            stradalnik:</b> @FormatInt(context.Bodovi?.BodoviCivilniStradalnici)
+                                    </MudText>
+
+                                </MudItem>
                             </MudGrid>
+                            <MudDivider Class="my-2"/>
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudText Typo="Typo.subtitle2"><b>Ukupno
+                                        bodova:</b> @FormatInt(context.Bodovi?.UkupnoBodova)</MudText>
+                            </MudItem>
+
+
                         </MudPaper>
-
-
                     </MudTd>
                 }
             </ChildRowContent>

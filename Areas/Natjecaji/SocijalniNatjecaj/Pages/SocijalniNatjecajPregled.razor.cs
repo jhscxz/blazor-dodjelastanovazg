@@ -95,7 +95,12 @@ foreach (var dto in result.Items)
             : DateOnly.FromDateTime(DateTime.Today);
 
 
-        var maloljetni = clanovi?.Count(c => c.DatumRodjenja.AddYears(18) > datum) ?? 0;
+        var maloljetni = clanovi?
+            .Where(c => c.DatumRodjenja != default)
+            .Count(c => c.DatumRodjenja.AddYears(18) > datum) ?? 0;
+        
+        Console.WriteLine($"Datum podnošenja zahtjeva: {datum}");
+        
         var podnositelj = clanovi?.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
         var godine = podnositelj?.DatumRodjenja != null
             ? datum.Year - podnositelj.DatumRodjenja.Year -
