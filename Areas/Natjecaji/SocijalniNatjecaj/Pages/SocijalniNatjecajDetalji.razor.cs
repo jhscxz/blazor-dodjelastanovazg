@@ -1,15 +1,15 @@
 using System.Web;
 using DodjelaStanovaZG.Components.UI;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages;
 
 public partial class SocijalniNatjecajDetalji
 {
     [Parameter] public long Id { get; set; }
-
     [Inject] private NavigationManager Navigation { get; set; } = null!;
-
+    [Inject] private ILogger<SocijalniNatjecajDetalji> Logger { get; set; } = null!;
     private int _selectedTabIndex;
     private string? _activeTab;
 
@@ -28,7 +28,7 @@ public partial class SocijalniNatjecajDetalji
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Greška prilikom dohvaćanja detalja: {ex.Message}");
+            Logger.LogError(ex, "Greška prilikom dohvaćanja detalja: {Message}", ex.Message);
         }
 
         return Task.CompletedTask;

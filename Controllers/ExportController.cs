@@ -7,6 +7,7 @@ namespace DodjelaStanovaZG.Controllers;
 [ApiController]
 [Route("api/export")]
 public class ExportController(
+    ILogger<ExportController> logger,
     IWordExportService wordExportService,
     IUnitOfWork unitOfWork)
     : ControllerBase
@@ -15,7 +16,8 @@ public class ExportController(
     public async Task<IActionResult> GetZapisnik(long id)
     {
         var zahtjev = await unitOfWork.SocijalniZahtjevRead.GetZahtjevByIdAsync(id);
-        Console.WriteLine($"Zahtjev za ID {id} => POSTOJI, bodovi: {(zahtjev?.Bodovi == null ? "NULL" : "OK")}");
+        logger.LogInformation("Zahtjev za ID {Id} => POSTOJI, bodovi: {Bodovi}", id,
+            zahtjev?.Bodovi == null ? "NULL" : "OK");
 
         if (zahtjev?.Bodovi == null)
             return NotFound();
