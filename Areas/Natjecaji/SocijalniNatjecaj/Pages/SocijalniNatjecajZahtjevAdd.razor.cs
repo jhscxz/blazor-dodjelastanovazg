@@ -25,7 +25,9 @@ public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
     {
         BreadcrumbItems = BreadcrumbProvider.ZahtjevDodaj(NatjecajId);
         ZahtjevModel.NatjecajId = NatjecajId;
-        ZahtjevModel.Bodovni = new();
+        ZahtjevModel.BodovniPodaci = new();
+        ZahtjevModel.KucanstvoPodaci = new();
+        ZahtjevModel.Prihod = new();
     }
 
     private async Task SubmitForm()

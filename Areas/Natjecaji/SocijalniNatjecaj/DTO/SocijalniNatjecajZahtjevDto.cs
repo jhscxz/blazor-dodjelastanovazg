@@ -23,9 +23,14 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
         public RezultatObrade? RezultatObrade { get; set; }
         public string? NapomenaObrade { get; set; }
         public long NatjecajId { get; set; }
-        [Required] public SocijalniBodovniDto? Bodovni { get; set; }
-        public SocijalniNatjecajBodovi? Bodovi { get; set; }
+        public SocijalniPrihodDto? Prihod { get; set; }
+        public SocijalniNatjecajBodovi? Bodovi { get; set; } 
         public List<SocijalniNatjecajClanDto>? Clanovi { get; set; }
+
         public SocijalniKucanstvoPodaciDto? KucanstvoPodaci { get; set; }
+        public SocijalniNatjecajBodovniPodaciDto? BodovniPodaci { get; set; }
+        
+        public byte BrojMaloljetneDjece { get; set; }
+        public bool PodnositeljIznad55 { get; set; }
     }
 }

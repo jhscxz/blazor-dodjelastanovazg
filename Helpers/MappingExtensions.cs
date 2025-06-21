@@ -22,18 +22,22 @@ public static partial class MappingExtensions
         TypeAdapterConfig<SocijalniNatjecajZahtjev, SocijalniNatjecajZahtjevDto>
             .NewConfig()
             .Map(dest => dest.ImePrezime,
-                 src => src.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)!.ImePrezime)
+                src => src.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)!.ImePrezime)
             .Map(dest => dest.Oib,
-                 src => src.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)!.Oib);
+                src => src.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)!.Oib)
+            .Map(dest => dest.Prihod,
+                src => src.KucanstvoPodaci!.Prihod!)
+            .Map(dest => dest.PodnositeljIznad55,
+                src => IzracunajPodnositeljIznad55(src))
+            .Map(dest => dest.BrojMaloljetneDjece,
+                src => IzracunajBrojMaloljetnih(src));
 
-        TypeAdapterConfig<SocijalniPrihodi, SocijalniPrihodDto>
-            .NewConfig();
-        
-        TypeAdapterConfig<SocijalniNatjecajBodovniPodaciDto, SocijalniBodovniDto>
-            .NewConfig()
-            .IgnoreNullValues(true);
+        TypeAdapterConfig<SocijalniNatjecajClan, SocijalniNatjecajClanDto>.NewConfig();
+        TypeAdapterConfig<SocijalniNatjecajBodovniPodaci, SocijalniNatjecajBodovniPodaciDto>.NewConfig();
+        TypeAdapterConfig<SocijalniNatjecajKucanstvoPodaci, SocijalniKucanstvoPodaciDto>.NewConfig();
+        TypeAdapterConfig<SocijalniPrihodi, SocijalniPrihodDto>.NewConfig();
 
-        // ---------- DTO → Entity konfiguracije (po potrebi dodavati ručno) ----------
+        // ---------- DTO → Entity konfiguracije (dodavati po potrebi) ----------
     }
 
     // ---------- Entity → DTO metode ----------
@@ -77,5 +81,25 @@ public static partial class MappingExtensions
 
         if (dto.RezultatObrade.HasValue)
             entity.ManualniRezultatObrade = dto.RezultatObrade.Value;
+    }
+
+    // ---------- Privatni helperi za Mapster konfiguraciju ----------
+
+    private static bool IzracunajPodnositeljIznad55(SocijalniNatjecajZahtjev src)
+    {
+        var podnositelj = src.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
+        if (podnositelj is null) return false;
+
+        var datum = DateOnly.FromDateTime(src.DatumPodnosenjaZahtjeva);
+        var age = datum.Year - podnositelj.DatumRodjenja.Year -
+                  (datum < podnositelj.DatumRodjenja.AddYears(datum.Year - podnositelj.DatumRodjenja.Year) ? 1 : 0);
+
+        return age >= 55;
+    }
+
+    private static byte IzracunajBrojMaloljetnih(SocijalniNatjecajZahtjev src)
+    {
+        var datum = DateOnly.FromDateTime(src.DatumPodnosenjaZahtjeva);
+        return (byte)(src.Clanovi.Count(c => c.DatumRodjenja.AddYears(18) > datum));
     }
 }

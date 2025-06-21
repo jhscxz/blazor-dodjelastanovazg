@@ -41,93 +41,82 @@ public class SocijalniNatjecajPregledBase : ComponentBase
     protected string GetExpandIcon(SocijalniNatjecajZahtjevDto row) =>
         IsRowExpanded(row) ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore;
 
-    protected async Task<TableData<SocijalniNatjecajZahtjevDto>> LoadServerData(TableState state,
-        CancellationToken cancellationToken)
-    {
-        var result = await UnitOfWork.SocijalniZahtjevRead.GetPagedAsync(
-            natjecajId: NatjecajId,
-            page: state.Page,
-            pageSize: state.PageSize,
-            sortBy: state.SortLabel,
-            sortDirection: state.SortDirection,
-            search: SearchText,
-            osnovanost: SelectedOsnovanost
-        );
-
-        var zahtjevIds = result.Items.Select(x => x.Id).ToList();
-
-        var bodoviMap = (await UnitOfWork.SocijalniBodoviService
-                .GetForZahtjeviAsync(zahtjevIds))
-            .ToDictionary(x => x.ZahtjevId, x => x);
-
-        var bodovniMap = new Dictionary<long, SocijalniNatjecajBodovniPodaciDto>();
-        foreach (var zahtjevId in zahtjevIds)
-        {
-            try
-            {
-                var bodovni = await UnitOfWork.SocijalniBodovniPodaciService.GetAsync(zahtjevId);
-                bodovniMap[zahtjevId] = bodovni;
-            }
-            catch
-            {
-                // Ignoriraj ako ne postoji
-            }
-        }
-
-        var clanoviMap = await UnitOfWork.SocijalniClanService.GetForZahtjeviAsync(zahtjevIds);
-
-foreach (var dto in result.Items)
+    protected async Task<TableData<SocijalniNatjecajZahtjevDto>> LoadServerData(TableState state, CancellationToken cancellationToken)
 {
-    // Poveži članove
-    if (clanoviMap.TryGetValue(dto.Id, out var clanovi))
-        dto.Clanovi = clanovi;
+    var result = await UnitOfWork.SocijalniZahtjevRead.GetPagedAsync(
+        natjecajId: NatjecajId,
+        page: state.Page,
+        pageSize: state.PageSize,
+        sortBy: state.SortLabel,
+        sortDirection: state.SortDirection,
+        search: SearchText,
+        osnovanost: SelectedOsnovanost
+    );
 
-    if (bodoviMap.TryGetValue(dto.Id, out var bodovi))
-        dto.Bodovi = bodovi;
+    var zahtjevIds = result.Items.Select(x => x.Id).ToList();
 
-    if (bodovniMap.TryGetValue(dto.Id, out var bodovni))
+    var bodoviMap = (await UnitOfWork.SocijalniBodoviService.GetForZahtjeviAsync(zahtjevIds))
+        .ToDictionary(x => x.ZahtjevId, x => x);
+
+    var bodovniMap = new Dictionary<long, SocijalniNatjecajBodovniPodaciDto>();
+    foreach (var zahtjevId in zahtjevIds)
     {
-        var kucanstvo = await UnitOfWork.SocijalniKucanstvoService.GetAsync(dto.Id);
-        dto.KucanstvoPodaci = kucanstvo;
-
-        // Računanje godina i maloljetnih
-        var datum = dto.DatumPodnosenjaZahtjeva.HasValue
-            ? DateOnly.FromDateTime(dto.DatumPodnosenjaZahtjeva.Value)
-            : DateOnly.FromDateTime(DateTime.Today);
-
-
-        var maloljetni = clanovi?
-            .Where(c => c.DatumRodjenja != default)
-            .Count(c => c.DatumRodjenja.AddYears(18) > datum) ?? 0;
-        
-        Console.WriteLine($"Datum podnošenja zahtjeva: {datum}");
-        
-        var podnositelj = clanovi?.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
-        var godine = podnositelj?.DatumRodjenja != null
-            ? datum.Year - podnositelj.DatumRodjenja.Year -
-              (datum < podnositelj.DatumRodjenja.AddYears(datum.Year - podnositelj.DatumRodjenja.Year) ? 1 : 0)
-            : 0;
-
-        dto.Bodovni = bodovni.Adapt<SocijalniBodovniDto>();
-        
-        dto.Bodovni.UkupniPrihodKucanstva = kucanstvo?.Prihod?.UkupniPrihodKucanstva;
-        dto.Bodovni.PostotakProsjeka = kucanstvo?.Prihod?.PostotakProsjeka;
-        dto.Bodovni.StambeniStatusKucanstva = kucanstvo?.StambeniStatusKucanstva;
-        dto.Bodovni.SastavKucanstva = kucanstvo?.SastavKucanstva;
-
-        dto.Bodovni.PodnositeljIznad55Godina = godine >= 55;
-        dto.Bodovni.BrojMaloljetneDjece = (byte)maloljetni;
-    }
-}
-
-
-        return new TableData<SocijalniNatjecajZahtjevDto>
+        try
         {
-            Items = result.Items,
-            TotalItems = result.TotalCount
-        };
+            var bodovni = await UnitOfWork.SocijalniBodovniPodaciService.GetAsync(zahtjevId);
+            bodovniMap[zahtjevId] = bodovni;
+        }
+        catch
+        {
+            // ignoriraj
+        }
     }
 
+    var clanoviMap = await UnitOfWork.SocijalniClanService.GetForZahtjeviAsync(zahtjevIds);
+
+    foreach (var dto in result.Items)
+    {
+        // članovi
+        if (clanoviMap.TryGetValue(dto.Id, out var clanovi))
+            dto.Clanovi = clanovi;
+
+        // bodovi
+        if (bodoviMap.TryGetValue(dto.Id, out var bodovi))
+            dto.Bodovi = bodovi;
+
+        // bodovni podaci + kućanstvo + izračun
+        if (bodovniMap.TryGetValue(dto.Id, out var bodovni))
+        {
+            var kucanstvo = await UnitOfWork.SocijalniKucanstvoService.GetAsync(dto.Id);
+            dto.KucanstvoPodaci = kucanstvo;
+            dto.BodovniPodaci = bodovni;
+
+            var datum = dto.DatumPodnosenjaZahtjeva.HasValue
+                ? DateOnly.FromDateTime(dto.DatumPodnosenjaZahtjeva.Value)
+                : DateOnly.FromDateTime(DateTime.Today);
+
+            var maloljetni = clanovi?
+                .Count(c => c.DatumRodjenja.AddYears(18) > datum) ?? 0;
+
+            var podnositelj = clanovi?.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
+            var godine = podnositelj?.DatumRodjenja != null
+                ? datum.Year - podnositelj.DatumRodjenja.Year -
+                  (datum < podnositelj.DatumRodjenja.AddYears(datum.Year - podnositelj.DatumRodjenja.Year) ? 1 : 0)
+                : 0;
+
+            dto.Prihod = kucanstvo?.Prihod?.Adapt<SocijalniPrihodDto>() ?? new SocijalniPrihodDto();
+
+            dto.BrojMaloljetneDjece = (byte)maloljetni;
+            dto.PodnositeljIznad55 = godine >= 55;
+        }
+    }
+
+    return new TableData<SocijalniNatjecajZahtjevDto>
+    {
+        Items = result.Items,
+        TotalItems = result.TotalCount
+    };
+}
 
     protected async Task OnSearchChanged(string value)
     {
