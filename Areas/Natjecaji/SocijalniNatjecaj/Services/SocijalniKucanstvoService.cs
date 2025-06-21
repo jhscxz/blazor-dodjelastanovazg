@@ -37,8 +37,11 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
             // --- PRIHOD ---
             var iznosPrihoda = dto.Prihod?.UkupniPrihodKucanstva ?? throw new ValidationException("Prihod nije naveden.");
 
-            podaci.Prihod.UkupniPrihodKucanstva = iznosPrihoda;
-            context.Entry(podaci.Prihod).State = EntityState.Modified;
+            if (podaci.Prihod != null)
+            {
+                podaci.Prihod.UkupniPrihodKucanstva = iznosPrihoda;
+                context.Entry(podaci.Prihod).State = EntityState.Modified;
+            }
 
             // --- OSTALO ---
             podaci.PrebivanjeOd = dto.PrebivanjeOd!.Value;

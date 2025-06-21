@@ -16,14 +16,14 @@
         }
         else
         {
-            <MudCard Outlined="true" Rounded="true" Class="pa-6 border border-gray-300">
+            <MudCard Outlined="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
                     <!-- Display error messages -->
-                    @if (ErrorMessages?.Any() == true)
+                    @if (_errorMessages?.Any() == true)
                     {
                         <MudAlert Severity="Severity.Error" Class="mb-4">
                             <ul>
-                                @foreach (var msg in ErrorMessages)
+                                @foreach (var msg in _errorMessages)
                                 {
                                     <li>@msg</li>
                                 }
@@ -38,7 +38,7 @@
                                value="@Convert.ToBase64String(_socijalniNatjecajModel.RowVersion ?? [])"/>
 
                         <!-- 1. red: Klasa + Datum -->
-                        <MudGrid Gutter="Size.Small">
+                        <MudGrid>
                             <MudItem xs="12" sm="6">
                                 <TextInputInt T="int?" Label="Klasa predmeta"
                                               @bind-Value="_socijalniNatjecajModel.KlasaPredmeta"
