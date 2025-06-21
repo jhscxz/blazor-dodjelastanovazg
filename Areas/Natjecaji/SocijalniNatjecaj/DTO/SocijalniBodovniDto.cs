@@ -6,8 +6,8 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 public class SocijalniBodovniDto
 {
     [Required(ErrorMessage = "Ukupni prihod kućanstva je obavezan.")]
-    public StambeniStatusKucanstva? StambeniStatusKucanstva { get; init; }
-    public SastavKucanstva? SastavKucanstva { get; init; }
+    public StambeniStatusKucanstva? StambeniStatusKucanstva { get; set; }
+    public SastavKucanstva? SastavKucanstva { get; set; }
     
     public byte BrojUzdrzavanePunoljetneDjece { get; set; }
     public bool PrimateljZajamceneMinimalneNaknade { get; set; }
@@ -22,9 +22,9 @@ public class SocijalniBodovniDto
     public byte BrojClanovaZrtavaSeksualnogNasilja { get; set; }
     public byte BrojCivilnihStradalnika { get; set; }
     
-    public decimal? UkupniPrihodKucanstva { get; init; }
-    public decimal? PrihodPoClanu { get; init; }
-    public decimal? PostotakProsjeka { get; init; }
-    public bool IspunjavaUvjetPrihoda { get; init; }
-    public byte BrojMaloljetneDjece { get; init; }
+    public decimal? UkupniPrihodKucanstva { get; set; }
+    public decimal? PrihodPoClanu { get; set; }
+    public decimal? PostotakProsjeka { get; set; }
+    public bool IspunjavaUvjetPrihoda { get; set; }
+    public byte BrojMaloljetneDjece { get; set; }
 }

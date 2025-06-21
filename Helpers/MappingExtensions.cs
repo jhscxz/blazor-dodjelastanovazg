@@ -28,6 +28,10 @@ public static partial class MappingExtensions
 
         TypeAdapterConfig<SocijalniPrihodi, SocijalniPrihodDto>
             .NewConfig();
+        
+        TypeAdapterConfig<SocijalniNatjecajBodovniPodaciDto, SocijalniBodovniDto>
+            .NewConfig()
+            .IgnoreNullValues(true);
 
         // ---------- DTO → Entity konfiguracije (po potrebi dodavati ručno) ----------
     }

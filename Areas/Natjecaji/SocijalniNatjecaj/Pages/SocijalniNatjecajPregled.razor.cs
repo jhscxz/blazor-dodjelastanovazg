@@ -2,6 +2,7 @@ using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
+using Mapster;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -107,27 +108,15 @@ foreach (var dto in result.Items)
               (datum < podnositelj.DatumRodjenja.AddYears(datum.Year - podnositelj.DatumRodjenja.Year) ? 1 : 0)
             : 0;
 
-        dto.Bodovni = new SocijalniBodovniDto
-        {
-            UkupniPrihodKucanstva = kucanstvo?.Prihod?.UkupniPrihodKucanstva,
-            PostotakProsjeka = kucanstvo?.Prihod?.PostotakProsjeka,
-            StambeniStatusKucanstva = kucanstvo?.StambeniStatusKucanstva,
-            SastavKucanstva = kucanstvo?.SastavKucanstva,
+        dto.Bodovni = bodovni.Adapt<SocijalniBodovniDto>();
+        
+        dto.Bodovni.UkupniPrihodKucanstva = kucanstvo?.Prihod?.UkupniPrihodKucanstva;
+        dto.Bodovni.PostotakProsjeka = kucanstvo?.Prihod?.PostotakProsjeka;
+        dto.Bodovni.StambeniStatusKucanstva = kucanstvo?.StambeniStatusKucanstva;
+        dto.Bodovni.SastavKucanstva = kucanstvo?.SastavKucanstva;
 
-            BrojUzdrzavanePunoljetneDjece = bodovni.BrojUzdrzavanePunoljetneDjece,
-            PrimateljZajamceneMinimalneNaknade = bodovni.PrimateljZajamceneMinimalneNaknade,
-            StatusRoditeljaNjegovatelja = bodovni.StatusRoditeljaNjegovatelja,
-            KorisnikDoplatkaZaPomoc = bodovni.KorisnikDoplatkaZaPomoc,
-            BrojOdraslihKorisnikaInvalidnine = bodovni.BrojOdraslihKorisnikaInvalidnine,
-            BrojMaloljetnihKorisnikaInvalidnine = bodovni.BrojMaloljetnihKorisnikaInvalidnine,
-            ZrtvaObiteljskogNasilja = bodovni.ZrtvaObiteljskogNasilja,
-            BrojOsobaUAlternativnojSkrbi = bodovni.BrojOsobaUAlternativnojSkrbi,
-            BrojMjeseciObranaSuvereniteta = bodovni.BrojMjeseciObranaSuvereniteta,
-            BrojClanovaZrtavaSeksualnogNasilja = bodovni.BrojClanovaZrtavaSeksualnogNasilja,
-            BrojCivilnihStradalnika = bodovni.BrojCivilnihStradalnika,
-            PodnositeljIznad55Godina = godine >= 55,
-            BrojMaloljetneDjece = (byte)maloljetni
-        };
+        dto.Bodovni.PodnositeljIznad55Godina = godine >= 55;
+        dto.Bodovni.BrojMaloljetneDjece = (byte)maloljetni;
     }
 }
 
