@@ -1,8 +1,8 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Helpers;
+using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 

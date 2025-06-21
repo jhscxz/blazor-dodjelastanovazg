@@ -1,5 +1,5 @@
 using DodjelaStanovaZG.Infrastructure.Interfaces;
-using DodjelaStanovaZG.Services.IServices;
+using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DodjelaStanovaZG.Controllers;

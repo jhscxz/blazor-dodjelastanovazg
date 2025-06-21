@@ -1,6 +1,6 @@
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Models;
+using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;

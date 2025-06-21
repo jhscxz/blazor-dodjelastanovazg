@@ -1,6 +1,7 @@
+using DodjelaStanovaZG.Data.Seeders.Models;
 using Microsoft.AspNetCore.Identity;
-using DodjelaStanovaZG.Seeders.Models;
-namespace DodjelaStanovaZG.Services;
+
+namespace DodjelaStanovaZG.Data.Seeders;
 
 public class SeedService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
 {

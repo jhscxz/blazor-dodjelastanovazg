@@ -1,4 +1,4 @@
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
+using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.Detalji

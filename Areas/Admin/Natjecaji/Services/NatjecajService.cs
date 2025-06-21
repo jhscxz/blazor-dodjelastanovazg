@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO;
 using DodjelaStanovaZG.Data;
+using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;

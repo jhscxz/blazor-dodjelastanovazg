@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 
-namespace DodjelaStanovaZG.Services
+namespace DodjelaStanovaZG.Services.Interfaces
 {
     public interface IPasswordService
     {

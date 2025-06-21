@@ -1,10 +1,10 @@
 // ReSharper disable StringLiteralTypo
 // ReSharper disable CommentTypo
 
-using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
+using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 // ⬇️ File‑scoped namespace – C# 10+

@@ -1,9 +1,8 @@
-using DodjelaStanovaZG.Helpers.IHelpers;
-using DodjelaStanovaZG.Models;
 using System.Security.Claims;
-using DodjelaStanovaZG.Helpers.IServices;
+using DodjelaStanovaZG.Models;
+using DodjelaStanovaZG.Services.Interfaces;
 
-namespace DodjelaStanovaZG.Helpers;
+namespace DodjelaStanovaZG.Services;
 
 public class AuditService(IHttpContextAccessor accessor) : IAuditService
 {

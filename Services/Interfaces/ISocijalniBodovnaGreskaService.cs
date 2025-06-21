@@ -1,6 +1,6 @@
 using DodjelaStanovaZG.Models;
 
-namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.IServices;
+namespace DodjelaStanovaZG.Services.Interfaces;
 
 public interface ISocijalniBodovnaGreskaService
 {

@@ -1,4 +1,4 @@
-namespace DodjelaStanovaZG.Helpers.IServices;
+namespace DodjelaStanovaZG.Services.Interfaces;
 
 public interface IAuditService
 {

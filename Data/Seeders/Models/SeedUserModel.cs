@@ -1,4 +1,4 @@
-namespace DodjelaStanovaZG.Seeders.Models;
+namespace DodjelaStanovaZG.Data.Seeders.Models;
 
 public class SeedUserModel
 {

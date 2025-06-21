@@ -1,4 +1,4 @@
-namespace DodjelaStanovaZG.Helpers.IHelpers;
+namespace DodjelaStanovaZG.Services.Interfaces;
 
 public interface IUserContextService
 {

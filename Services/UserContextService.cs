@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using DodjelaStanovaZG.Helpers.IHelpers;
+using DodjelaStanovaZG.Services.Interfaces;
 
-namespace DodjelaStanovaZG.Helpers;
+namespace DodjelaStanovaZG.Services;
 
 public class UserContextService(IHttpContextAccessor httpContextAccessor) : IUserContextService
 {

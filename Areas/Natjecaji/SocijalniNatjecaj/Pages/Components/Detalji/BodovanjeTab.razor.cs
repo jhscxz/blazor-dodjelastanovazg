@@ -1,8 +1,7 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
-using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.IServices;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
+using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.Detalji;

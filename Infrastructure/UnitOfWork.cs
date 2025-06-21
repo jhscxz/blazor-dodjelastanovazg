@@ -1,10 +1,8 @@
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
-using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
-using DodjelaStanovaZG.Helpers.IServices;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
+using DodjelaStanovaZG.Services.Interfaces;
 
 namespace DodjelaStanovaZG.Infrastructure;
 

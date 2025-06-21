@@ -1,6 +1,6 @@
 using DodjelaStanovaZG.Models;
 
-namespace DodjelaStanovaZG.Services.IServices;
+namespace DodjelaStanovaZG.Services.Interfaces;
 
 public interface IWordExportService
 {

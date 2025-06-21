@@ -1,6 +1,6 @@
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO;
 
-namespace DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
+namespace DodjelaStanovaZG.Services.Interfaces;
 
 public interface INatjecajService
 {

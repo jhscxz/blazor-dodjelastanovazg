@@ -3,6 +3,7 @@ using DodjelaStanovaZG.Components.UI;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using DodjelaStanovaZG.Services;
+using DodjelaStanovaZG.Services.Interfaces;
 
 namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser;
 

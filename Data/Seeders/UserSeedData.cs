@@ -1,4 +1,5 @@
-using DodjelaStanovaZG.Seeders.Models;
+using DodjelaStanovaZG.Data.Seeders.Models;
+
 namespace DodjelaStanovaZG.Seeders;
 
 public static class UserSeedData

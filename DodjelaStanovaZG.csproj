@@ -63,6 +63,7 @@
   <ItemGroup>
     <Folder Include="Areas\Izracun\" />
     <Folder Include="Areas\Natjecaji\" />
+    <Folder Include="Areas\Natjecaji\SocijalniNatjecaj\Services\IServices\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

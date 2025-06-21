@@ -1,10 +1,9 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
-using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.IServices;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Helpers.Exceptions;
 using DodjelaStanovaZG.Models;
+using DodjelaStanovaZG.Services.Interfaces;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 

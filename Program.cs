@@ -1,5 +1,3 @@
-using DodjelaStanovaZG.Areas.Admin.Korisnici.Services;
-using DodjelaStanovaZG.Areas.SocijalniNatjecaj.Services.IServices;
 using DodjelaStanovaZG.Components;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Services;
@@ -8,16 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using System.Globalization;
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
-using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
-using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.IServices;
-using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
-using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
-using DodjelaStanovaZG.Helpers;
-using DodjelaStanovaZG.Helpers.IHelpers;
-using DodjelaStanovaZG.Helpers.IServices;
-using DodjelaStanovaZG.Infrastructure;
-using DodjelaStanovaZG.Infrastructure.Interfaces;
-using DodjelaStanovaZG.Services.IServices;
 using Microsoft.AspNetCore.Localization;
 using MudBlazor;
 
@@ -55,31 +43,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Identity/Account/Login");
 });
 
-builder.Services.AddScoped<NatjecajSeedService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IPasswordService, PasswordService>();
-builder.Services.AddScoped<BreadcrumbService>();
-builder.Services.AddScoped<INatjecajService, NatjecajService>();
-builder.Services.AddScoped<SeedService>();
-builder.Services.AddScoped<INatjecajOdabirService, NatjecajOdabirService>();
-builder.Services.AddScoped<ISocijalniBodovniPodaciService, SocijalniBodovniPodaciService>();
-builder.Services.AddScoped<ISocijalniClanService, SocijalniClanService>();
-builder.Services.AddScoped<ISocijalniKucanstvoService, SocijalniKucanstvoService>();
-builder.Services.AddScoped<IUserContextService, UserContextService>();
-builder.Services.AddScoped<ISocijalniBodoviService, SocijalniBodoviService>();
-builder.Services.AddScoped<ISocijalniBodovnaGreskaService, SocijalniBodovnaGreskaService>();
-builder.Services.AddScoped<IWordExportService, WordExportService>();
-builder.Services.AddScoped<SocijalniZahtjevFactory>();
-builder.Services.AddScoped<ISocijalniZahtjevFactory, SocijalniZahtjevFactory>();
-builder.Services.AddScoped<ISocijalniZahtjevReadService, SocijalniZahtjevReadService>();
-builder.Services.AddScoped<ISocijalniZahtjevWriteService, SocijalniZahtjevWriteService>();
-builder.Services.AddScoped<ISocijalniZahtjevProcessor, SocijalniZahtjevProcessor>();
-builder.Services.AddScoped<ISocijalniZahtjevGreskaService, SocijalniZahtjevGreskaService>();
-builder.Services.AddScoped<IAuditService, AuditService>();
-builder.Services.AddScoped<ISocijalniZahtjevFormHandler, SocijalniZahtjevFormHandler>();
-
-
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddApplicationServices();
 
 // Dodaj hrvatski jezik kao default
 var culture = new CultureInfo("hr-HR");
@@ -89,16 +53,14 @@ CultureInfo.DefaultThreadCurrentUICulture = culture;
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     options.DefaultRequestCulture = new RequestCulture(culture);
-    options.SupportedCultures = new[] { culture };
-    options.SupportedUICultures = new[] { culture };
+    options.SupportedCultures = [culture];
+    options.SupportedUICultures = [culture];
 });
 
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
 });
-
-
 
 // =============================
 // KONFIGURACIJA APLIKACIJE

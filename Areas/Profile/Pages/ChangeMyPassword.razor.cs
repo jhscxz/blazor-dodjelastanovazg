@@ -2,6 +2,7 @@ using System.Security.Claims;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.DTO;
 using DodjelaStanovaZG.Services;
+using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;

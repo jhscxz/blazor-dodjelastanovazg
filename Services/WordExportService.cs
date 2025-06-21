@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Models;
-using DodjelaStanovaZG.Services.IServices;
+using DodjelaStanovaZG.Services.Interfaces;
 
 namespace DodjelaStanovaZG.Services;
 
