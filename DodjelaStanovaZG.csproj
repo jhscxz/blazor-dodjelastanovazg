@@ -2,8 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RazorLangVersion>9.0</RazorLangVersion>
+    <NoWarn>$(NoWarn);CS8669</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
