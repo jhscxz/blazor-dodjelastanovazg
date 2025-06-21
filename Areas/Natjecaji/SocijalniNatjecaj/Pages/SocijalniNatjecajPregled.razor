@@ -3,6 +3,7 @@
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Enums
 @using MudBlazor
+@using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components
 @inherits SocijalniNatjecajPregledBase
 
 <Container BreadcrumbItems="BreadcrumbItems">
@@ -28,7 +29,7 @@
                               Margin="Margin.Dense"
                               Adornment="Adornment.Start"
                               AdornmentIcon="@Icons.Material.Filled.Search"
-                              Class="w-full"/>
+                              Class="w-full" />
             </div>
 
             <div class="flex-none w-[160px]">
@@ -45,7 +46,6 @@
                     <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Osnovan">Osnovan</MudSelectItem>
                     <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Greška">Greška</MudSelectItem>
                 </MudSelect>
-
             </div>
         </div>
 
@@ -74,7 +74,7 @@
                 <MudTd>
                     <MudIconButton Icon="@GetExpandIcon(context)"
                                    OnClick="@(() => ToggleExpand(context.Id))"
-                                   Size="Size.Small"/>
+                                   Size="Size.Small" />
                 </MudTd>
                 <MudTd>@context.KlasaPredmeta</MudTd>
                 <MudTd>@FormatString(context.ImePrezime)</MudTd>
@@ -84,7 +84,7 @@
                 <MudTd>
                     <MudIconButton Icon="@Icons.Material.Filled.Info"
                                    Size="Size.Small"
-                                   OnClick="@(() => NavigateToDetails(context))"/>
+                                   OnClick="@(() => NavigateToDetails(context))" />
                 </MudTd>
             </RowTemplate>
 
@@ -92,146 +92,13 @@
                 @if (IsRowExpanded(context))
                 {
                     <MudTd ColSpan="@TotalColumns">
-                        <MudPaper Class="pa-3 rounded-lg" Elevation="1">
-
-                            <MudGrid GutterSize="8px">
-
-                                <!-- STUPAC 1 – Prihodi + članovi -->
-                                <MudItem xs="12" sm="6" md="2">
-                                    <MudText Typo="Typo.body2"><b>Ukupni
-                                            prihod:</b> @FormatPrihod(context.Prihod?.UkupniPrihodKucanstva)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Postotak
-                                            prosjeka:</b> @(context.Prihod?.PostotakProsjeka?.ToString("0.##") ?? "–")
-                                    </MudText>
-                                    <MudText Typo="Typo.body2"><b>Ispunjava uvjet
-                                            prihoda:</b> @(context.Prihod?.IspunjavaUvjetPrihoda == true ? "Da" : "Ne")
-                                    </MudText>
-                                    <MudText Typo="Typo.body2"><b>Broj članova:</b> @(context.Clanovi?.Count ?? 0)
-                                    </MudText>
-                                    <MudText Typo="Typo.body2"><b>Maloljetni
-                                            članovi:</b> @context.BrojMaloljetneDjece</MudText>
-                                </MudItem>
-
-                                <!-- STUPAC 2 – Kućanstvo -->
-                                <MudItem xs="12" sm="6" md="2">
-                                    <MudText Typo="Typo.body2"><b>Stambeni
-                                            status:</b> @FormatString(context.KucanstvoPodaci?.StambeniStatusKucanstva?.ToString())
-                                    </MudText>
-                                    <MudText Typo="Typo.body2"><b>Sastav
-                                            kućanstva:</b> @FormatString(context.KucanstvoPodaci?.SastavKucanstva?.ToString())
-                                    </MudText>
-                                </MudItem>
-
-                                <!-- STUPAC 3 – Socijalno-zdravstveni status -->
-                                <MudItem xs="12" sm="6" md="2">
-                                    <MudText Typo="Typo.body2">
-                                        <b>ZMN:</b> @(context.BodovniPodaci?.PrimateljZajamceneMinimalneNaknade == true ? "Da" : "Ne")
-                                    </MudText>
-                                    <MudText Typo="Typo.body2"><b>Roditelj
-                                            njegovatelj:</b> @(context.BodovniPodaci?.StatusRoditeljaNjegovatelja == true ? "Da" : "Ne")
-                                    </MudText>
-                                    <MudText Typo="Typo.body2"><b>Doplatak za
-                                            njegu:</b> @(context.BodovniPodaci?.KorisnikDoplatkaZaPomoc == true ? "Da" : "Ne")
-                                    </MudText>
-                                    <MudText Typo="Typo.body2"><b>Odrasli –
-                                            invalidnina:</b> @context.BodovniPodaci?.BrojOdraslihKorisnikaInvalidnine
-                                    </MudText>
-                                    <MudText Typo="Typo.body2"><b>Maloljetni –
-                                            invalidnina:</b> @context.BodovniPodaci?.BrojMaloljetnihKorisnikaInvalidnine
-                                    </MudText>
-                                </MudItem>
-
-                                <!-- STUPAC 4 – Osobne okolnosti -->
-                                <MudItem xs="12" sm="6" md="2">
-                                    <MudText Typo="Typo.body2"><b>Žrtva obiteljskog
-                                            nasilja:</b> @(context.BodovniPodaci?.ZrtvaObiteljskogNasilja == true ? "Da" : "Ne")
-                                    </MudText>
-                                    <MudText Typo="Typo.body2"><b>Alternativna skrb
-                                            (18–29):</b> @context.BodovniPodaci?.BrojOsobaUAlternativnojSkrbi</MudText>
-                                    <MudText Typo="Typo.body2"><b>Iznad 55
-                                            godina:</b> @(context.PodnositeljIznad55 == true ? "Da" : "Ne")
-                                    </MudText>
-                                </MudItem>
-
-                                <!-- STUPAC 5 – Ratni status -->
-                                <MudItem xs="12" sm="6" md="2">
-                                    <MudText Typo="Typo.body2"><b>Branitelj –
-                                            mjeseci:</b> @context.BodovniPodaci?.BrojMjeseciObranaSuvereniteta</MudText>
-                                    <MudText Typo="Typo.body2"><b>Žrtva seksualnog
-                                            nasilja:</b> @context.BodovniPodaci?.BrojClanovaZrtavaSeksualnogNasilja</MudText>
-                                    <MudText Typo="Typo.body2"><b>Civilni
-                                            stradalnik:</b> @context.BodovniPodaci?.BrojCivilnihStradalnika</MudText>
-                                </MudItem>
-
-                            </MudGrid>
-                            <MudDivider Class="my-2"/>
-
-                            <MudGrid GutterSize="8px">
-
-
-                                <!-- Stupac 1 -->
-                                <MudItem xs="12" sm="6" md="4">
-                                    <MudText Typo="Typo.body2"><b>Stambeni
-                                            status:</b> @FormatInt(context.Bodovi?.BodoviStambeniStatus)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Sastav
-                                            kućanstva:</b> @FormatInt(context.Bodovi?.BodoviSastavKucanstva)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Po članu
-                                            kućanstva:</b> @FormatInt(context.Bodovi?.BodoviPoClanu)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Maloljetni
-                                            članovi:</b> @FormatInt(context.Bodovi?.BodoviMaloljetni)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Punoljetni
-                                            uzdržavani:</b> @FormatInt(context.Bodovi?.BodoviPunoljetniUzdrzavani)
-                                    </MudText>
-                                </MudItem>
-
-                                <!-- Stupac 2 -->
-                                <MudItem xs="12" sm="6" md="4">
-                                    <MudText Typo="Typo.body2"><b>Primatelj
-                                            ZMN:</b> @FormatInt(context.Bodovi?.BodoviZajamcenaNaknada)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Roditelj
-                                            njegovatelj:</b> @FormatInt(context.Bodovi?.BodoviNjegovatelj)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Doplatak za
-                                            njegu:</b> @FormatInt(context.Bodovi?.BodoviDoplatakZaNjegu)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Odrasli –
-                                            invalidnina:</b> @FormatInt(context.Bodovi?.BodoviOdraslihInvalidnina)
-                                    </MudText>
-                                    <MudText Typo="Typo.body2"><b>Maloljetni –
-                                            invalidnina:</b> @FormatInt(context.Bodovi?.BodoviMaloljetnihInvalidnina)
-                                    </MudText>
-                                </MudItem>
-
-                                <!-- Stupac 3 -->
-                                <MudItem xs="12" sm="6" md="4">
-                                    <MudText Typo="Typo.body2"><b>Žrtva obiteljskog
-                                            nasilja:</b> @FormatInt(context.Bodovi?.BodoviZrtvaNasilja)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Alternativna skrb
-                                            (18–29):</b> @FormatInt(context.Bodovi?.BodoviAlternativnaSkrb)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Iznad 55
-                                            godina:</b> @FormatInt(context.Bodovi?.BodoviIznad55)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Branitelj
-                                            (mjeseci):</b> @context.Bodovi?.BodoviObrana.ToString("0.##")</MudText>
-                                    <MudText Typo="Typo.body2"><b>Žrtva seksualnog
-                                            nasilja:</b> @FormatInt(context.Bodovi?.BodoviSeksualnoNasilje)</MudText>
-                                    <MudText Typo="Typo.body2"><b>Civilni
-                                            stradalnik:</b> @FormatInt(context.Bodovi?.BodoviCivilniStradalnici)
-                                    </MudText>
-
-                                </MudItem>
-                            </MudGrid>
-                            <MudDivider Class="my-2"/>
-                            <MudItem xs="12" sm="6" md="4">
-                                <MudText Typo="Typo.subtitle2"><b>Ukupno
-                                        bodova:</b> @FormatInt(context.Bodovi?.UkupnoBodova)</MudText>
-                            </MudItem>
-
-
-                        </MudPaper>
+                        <SocijalniZahtjevPregledContent Model="context" />
                     </MudTd>
                 }
             </ChildRowContent>
 
             <PagerContent>
-                <MudTablePager/>
+                <MudTablePager />
             </PagerContent>
 
         </MudTable>
