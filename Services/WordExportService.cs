@@ -10,23 +10,43 @@ namespace DodjelaStanovaZG.Services;
 public class WordExportService(IWebHostEnvironment env) : IWordExportService
 {
     public async Task<byte[]> GenerirajIzvjestajAsync(SocijalniNatjecajZahtjev zahtjev, SocijalniNatjecajBodovi bodovi)
-{
-    var templatePath = Path.Combine(env.ContentRootPath, "Resources", "WordTemplates", "ZapisnikPredlozak.docx");
-    var tempPath = Path.GetTempFileName();
-
-    File.Copy(templatePath, tempPath, overwrite: true);
-
-    using (var wordDoc = WordprocessingDocument.Open(tempPath, true))
     {
-        var body = wordDoc.MainDocumentPart?.Document?.Body
-                   ?? throw new InvalidOperationException("Ne mogu učitati sadržaj dokumenta.");
+        var templatePath = Path.Combine(env.ContentRootPath, "Resources", "WordTemplates", "ZapisnikPredlozak.docx");
 
+        await using var templateStream = File.OpenRead(templatePath);
+        await using var memoryStream = new MemoryStream();
+        await templateStream.CopyToAsync(memoryStream);
+        memoryStream.Position = 0;
+
+        using (var wordDoc = WordprocessingDocument.Open(memoryStream, true))
+        {
+            var body = wordDoc.MainDocumentPart?.Document?.Body
+                       ?? throw new InvalidOperationException("Ne mogu učitati sadržaj dokumenta.");
+
+            var data = BuildPlaceholderDictionary(zahtjev, bodovi);
+
+            foreach (var (placeholder, value) in data)
+                ReplaceText(body, placeholder, value ?? string.Empty);
+
+            wordDoc.MainDocumentPart?.Document?.Save();
+        }
+
+        return memoryStream.ToArray();
+    }
+
+
+    private static Dictionary<string, string?> BuildPlaceholderDictionary(SocijalniNatjecajZahtjev zahtjev,
+        SocijalniNatjecajBodovi bodovi)
+    {
         var podnositelj = zahtjev.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
         var datumPodnosenja = DateOnly.FromDateTime(zahtjev.DatumPodnosenjaZahtjeva);
         var brojMaloljetnih = zahtjev.Clanovi.Count(c => c.DatumRodjenja.AddYears(18) > datumPodnosenja);
         var godinePodnositelj = podnositelj != null
             ? datumPodnosenja.Year - podnositelj.DatumRodjenja.Year -
-              (datumPodnosenja < podnositelj.DatumRodjenja.AddYears(datumPodnosenja.Year - podnositelj.DatumRodjenja.Year) ? 1 : 0)
+              (datumPodnosenja <
+               podnositelj.DatumRodjenja.AddYears(datumPodnosenja.Year - podnositelj.DatumRodjenja.Year)
+                  ? 1
+                  : 0)
             : 0;
 
         string UkupnoBodovaLabel() => zahtjev.RezultatObrade switch
@@ -38,7 +58,7 @@ public class WordExportService(IWebHostEnvironment env) : IWordExportService
 
         string F(float f, bool dec = false) => dec ? f.ToString("N2") : f.ToString("0");
 
-        var data = new Dictionary<string, string?>
+        return new Dictionary<string, string?>
         {
             ["{{ImePrezime}}"] = podnositelj?.ImePrezime,
             ["{{Klasa}}"] = zahtjev.KlasaPredmeta.ToString(),
@@ -50,7 +70,8 @@ public class WordExportService(IWebHostEnvironment env) : IWordExportService
             ["{{UkupniPrihod}}"] = zahtjev.KucanstvoPodaci?.Prihod?.UkupniPrihodKucanstva.ToString("N2"),
             ["{{PostotakProsjeka}}"] = zahtjev.KucanstvoPodaci?.Prihod?.PostotakProsjeka?.ToString("N2"),
             ["{{PrihodPoClanu}}"] = zahtjev.KucanstvoPodaci?.Prihod?.PrihodPoClanu.ToString("N2"),
-            ["{{IspunjavaUvjetPrihoda}}"] = zahtjev.KucanstvoPodaci?.Prihod?.IspunjavaUvjetPrihoda == true ? "Da" : "Ne",
+            ["{{IspunjavaUvjetPrihoda}}"] =
+                zahtjev.KucanstvoPodaci?.Prihod?.IspunjavaUvjetPrihoda == true ? "Da" : "Ne",
             ["{{StambeniStatus}}"] = zahtjev.KucanstvoPodaci?.StambeniStatusKucanstva.GetDisplayName(),
             ["{{StambeniStatusBodova}}"] = F(bodovi.BodoviStambeniStatus),
             ["{{SastavKucanstva}}"] = zahtjev.KucanstvoPodaci?.SastavKucanstva.GetDisplayName(),
@@ -87,18 +108,7 @@ public class WordExportService(IWebHostEnvironment env) : IWordExportService
             ["{{DatumObrade}}"] = zahtjev.CreatedAt.ToShortDateString(),
             ["{{UkupnoBodova}}"] = UkupnoBodovaLabel()
         };
-
-        foreach (var (placeholder, value) in data)
-            ReplaceText(body, placeholder, value ?? string.Empty);
-
-        wordDoc.MainDocumentPart?.Document?.Save();
     }
-
-    var bytes = await File.ReadAllBytesAsync(tempPath);
-    File.Delete(tempPath);
-    return bytes;
-}
-
 
 
     private static void ReplaceText(Body body, string placeholder, string? value)
