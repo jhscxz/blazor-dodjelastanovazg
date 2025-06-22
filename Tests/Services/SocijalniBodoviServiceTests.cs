@@ -3,6 +3,7 @@ using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -65,9 +66,10 @@ public class SocijalniBodoviServiceTests
 
         // Mock audit
         var audit = new Mock<IAuditService>();
+        var logger = new Mock<ILogger<SocijalniBodoviService>>();
 
         // Service
-        var service = new SocijalniBodoviService(repo.Object, audit.Object);
+        var service = new SocijalniBodoviService(repo.Object, audit.Object, logger.Object);
 
         // Act
         await service.IzracunajIBodujAsync(1);

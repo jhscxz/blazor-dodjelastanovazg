@@ -2,21 +2,28 @@ using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 
 public class SocijalniBodoviService(
     ISocijalniBodoviRepository repository,
-    IAuditService auditService)
+    IAuditService auditService,
+    ILogger<SocijalniBodoviService> logger)
     : ISocijalniBodoviService
 {
     private readonly ISocijalniBodoviRepository _repository = repository;
     private readonly IAuditService _auditService = auditService;
+    private readonly ILogger<SocijalniBodoviService> _logger = logger;
     public async Task IzracunajIBodujAsync(long zahtjevId)
     {
+        _logger.LogInformation("Započinjem bodovanje zahtjeva {ZahtjevId}", zahtjevId);
         var zahtjev = await _repository.GetZahtjevWithDetailsAsync(zahtjevId);
         if (zahtjev == null || zahtjev.KucanstvoPodaci == null || zahtjev.BodovniPodaci == null)
+        {
+            _logger.LogError("Podaci nisu potpuni za bodovanje zahtjeva {ZahtjevId}", zahtjevId);
             throw new InvalidOperationException("Podaci nisu potpuni za bodovanje.");
+        }
 
         var kucanstvo = zahtjev.KucanstvoPodaci;
         var bodovni    = zahtjev.BodovniPodaci;
@@ -84,8 +91,12 @@ public class SocijalniBodoviService(
             + bodovi.BodoviCivilniStradalnici
         );
 
-        var prihod = kucanstvo.Prihod
-                     ?? throw new InvalidOperationException("Prihod nije inicijaliziran.");
+        var prihod = kucanstvo.Prihod;
+        if (prihod == null)
+        {
+            _logger.LogError("Prihod nije inicijaliziran za zahtjev {ZahtjevId}", zahtjevId);
+            throw new InvalidOperationException("Prihod nije inicijaliziran.");
+        }
 
         var prosjek = zahtjev.Natjecaj?.ProsjekPlace ?? 0m;
 
@@ -131,6 +142,7 @@ public class SocijalniBodoviService(
         }
 
         await _repository.SaveChangesAsync();
+        _logger.LogInformation("Završeno bodovanje zahtjeva {ZahtjevId} - ukupno {Bodovi} bodova", zahtjevId, bodovi.UkupnoBodova);
     }
 
     public async Task<SocijalniNatjecajBodovi?> GetByIdAsync(long zahtjevId)

@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 {
-    public class SocijalniBodovniPodaciService(ApplicationDbContext context) : ISocijalniBodovniPodaciService
+    public class SocijalniBodovniPodaciService(
+        ApplicationDbContext context,
+        ILogger<SocijalniBodovniPodaciService> logger) : ISocijalniBodovniPodaciService
     {
         private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(bool asNoTracking = false)
         {
@@ -21,6 +23,8 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 
         public async Task<SocijalniNatjecajBodovniPodaciDto> GetAsync(long zahtjevId)
         {
+            logger.LogDebug("Dohvaćanje bodovnih podataka za zahtjev {ZahtjevId}", zahtjevId);
+            
             var entity = await context.SocijalniNatjecajBodovniPodaci
                                .Include(b => b.CreatedByUser)
                                .Include(b => b.UpdatedByUser)
@@ -32,6 +36,8 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 
         public async Task<SocijalniNatjecajBodovniPodaciDto> UpdateAsync(long zahtjevId, SocijalniNatjecajBodovniPodaciDto dto)
         {
+            logger.LogDebug("Ažuriranje bodovnih podataka za zahtjev {ZahtjevId}", zahtjevId);
+            
             var zahtjev = await BaseZahtjevQuery()
                               .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                           ?? throw new NotFoundException($"Zahtjev s ID-om {zahtjevId} nije pronađen.");

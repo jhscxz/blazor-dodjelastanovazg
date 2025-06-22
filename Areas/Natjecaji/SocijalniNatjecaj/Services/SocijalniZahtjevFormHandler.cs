@@ -6,10 +6,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 
-public class SocijalniZahtjevFormHandler(
-    IUnitOfWork unitOfWork,
-    ISocijalniBodoviService bodoviService,
-    NavigationManager navigation) : ISocijalniZahtjevFormHandler
+public class SocijalniZahtjevFormHandler(IUnitOfWork unitOfWork, ISocijalniBodoviService bodoviService, NavigationManager navigation, ILogger<SocijalniZahtjevFormHandler> logger)
+    : ISocijalniZahtjevFormHandler
 {
     public async Task<(bool Success, List<string> Errors)> SubmitAsync(SocijalniNatjecajZahtjevDto model, int? rezultatObrade)
     {
@@ -25,17 +23,21 @@ public class SocijalniZahtjevFormHandler(
 
         try
         {
-            var zahtjev =
-                await unitOfWork.SocijalniZahtjevProcessorService.KreirajZahtjevAsync(model, model.ImePrezime, model.Oib);
+            logger.LogInformation("Kreiranje zahtjeva za natječaj {NatjecajId}", model.NatjecajId);
+
+            var zahtjev = await unitOfWork.SocijalniZahtjevProcessorService.KreirajZahtjevAsync(model, model.ImePrezime, model.Oib);
 
             await unitOfWork.SaveChangesAsync();
             await bodoviService.IzracunajIBodujAsync(zahtjev.Id);
 
             navigation.NavigateTo($"/socijalni/detalji/{zahtjev.Id}");
+            logger.LogInformation("Zahtjev {ZahtjevId} uspješno kreiran", zahtjev.Id);
+
             return (true, []);
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Greška prilikom spremanja zahtjeva");
             errors.Add($"Greška prilikom spremanja: {ex.Message}");
             return (false, errors);
         }

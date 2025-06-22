@@ -15,19 +15,16 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 
         private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(bool asNoTracking = false)
         {
-            var query = _context.SocijalniNatjecajZahtjevi
-                .Include(z => z.Clanovi);
+            var query = _context.SocijalniNatjecajZahtjevi.Include(z => z.Clanovi);
 
             return asNoTracking ? query.AsNoTracking() : query;
         }
 
         private async Task<SocijalniNatjecajZahtjev> GetZahtjevByIdAsync(long id, bool asNoTracking)
         {
-            var zahtjev = await BaseZahtjevQuery(asNoTracking)
-                .FirstOrDefaultAsync(z => z.Id == id);
+            var zahtjev = await BaseZahtjevQuery(asNoTracking).FirstOrDefaultAsync(z => z.Id == id);
 
-            if (zahtjev == null)
-                throw new NotFoundException($"Zahtjev s ID-om {id} nije pronađen.");
+            if (zahtjev == null) throw new NotFoundException($"Zahtjev s ID-om {id} nije pronađen.");
 
             return zahtjev;
         }
@@ -35,14 +32,13 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         private static SocijalniNatjecajClan GetClanById(SocijalniNatjecajZahtjev zahtjev, long clanId)
         {
             var clan = zahtjev.Clanovi.FirstOrDefault(c => c.Id == clanId);
-            if (clan == null)
-                throw new NotFoundException($"Član s ID-om {clanId} nije pronađen.");
+            if (clan == null) throw new NotFoundException($"Član s ID-om {clanId} nije pronađen.");
             return clan;
         }
 
         public async Task<SocijalniNatjecajClanDto> AddClanAsync(SocijalniNatjecajClan noviClan)
         {
-            var zahtjev = await GetZahtjevByIdAsync(noviClan.ZahtjevId, true);
+            await GetZahtjevByIdAsync(noviClan.ZahtjevId, true);
 
             await _context.SocijalniNatjecajClanovi.AddAsync(noviClan);
             await _context.SaveChangesAsync();
@@ -74,7 +70,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
             _context.SocijalniNatjecajClanovi.Remove(clan);
             await _context.SaveChangesAsync();
         }
-        
+
         public async Task<Dictionary<long, List<SocijalniNatjecajClanDto>>> GetForZahtjeviAsync(IEnumerable<long> zahtjevIds)
         {
             var clanovi = await _context.SocijalniNatjecajClanovi
@@ -86,6 +82,5 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
                 .GroupBy(c => c.ZahtjevId)
                 .ToDictionary(g => g.Key, g => g.ToList());
         }
-
     }
 }
