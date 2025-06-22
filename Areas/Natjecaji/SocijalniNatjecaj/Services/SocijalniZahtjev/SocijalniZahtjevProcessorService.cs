@@ -28,7 +28,8 @@ public sealed class SocijalniZahtjevProcessorService(
     ISocijalniZahtjevGreskaService greskaService,
     ISocijalniBodovniPodaciService bodovniService,
     ISocijalniKucanstvoService     kucanstvoService,
-    ISocijalniClanService          clanService)
+    ISocijalniClanService          clanService,
+    ILogger<SocijalniZahtjevProcessorService> logger)
     : ISocijalniZahtjevProcessorService
 {
     #region Infrastructure helpers
@@ -74,6 +75,8 @@ public sealed class SocijalniZahtjevProcessorService(
     public async Task<SocijalniNatjecajZahtjev> KreirajZahtjevAsync(
         SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib)
     {
+        logger.LogInformation("Kreiranje zahtjeva za natječaj {NatjecajId}", dto.NatjecajId);
+        
         var zahtjev = factory.KreirajNovi(dto, imePrezime, oib);
 
         await ExecuteAsync(async () =>
@@ -82,6 +85,8 @@ public sealed class SocijalniZahtjevProcessorService(
             await ObradiBodoveIGreskeAsync(zahtjev.Id);
         });
 
+        logger.LogInformation("Zahtjev {ZahtjevId} kreiran", zahtjev.Id);
+        
         return zahtjev;
     }
 
@@ -90,6 +95,8 @@ public sealed class SocijalniZahtjevProcessorService(
     #region Osnovno
     public async Task AzurirajOsnovnoIObradiAsync(long id, SocijalniNatjecajOsnovnoEditDto dto)
     {
+        logger.LogInformation("Ažuriranje osnovnih podataka zahtjeva {Id}", id);
+        
         await ExecuteAsync(async () =>
         {
             await writeService.UpdateOsnovnoAsync(id, dto);
@@ -99,58 +106,80 @@ public sealed class SocijalniZahtjevProcessorService(
 
             await ObradiBodoveIGreskeAsync(id);
         });
+        
+        logger.LogInformation("Ažurirani osnovni podaci zahtjeva {Id}", id);
     }
     #endregion
 
     #region Kućanstvo
     public async Task SpremiKucanstvoIObradiAsync(long id, SocijalniKucanstvoPodaciDto dto)
     {
+        logger.LogInformation("Spremanje kućanstva za zahtjev {Id}", id);
+        
         await ExecuteAsync(async () =>
         {
             await kucanstvoService.UpdateKucanstvoPodaciAsync(id, dto);
             await ObradiBodoveIGreskeAsync(id);
         });
+        
+        logger.LogInformation("Spremljeno kućanstvo za zahtjev {Id}", id);
     }
     #endregion
 
     #region Bodovni podaci
     public async Task SpremiBodovnePodatkeIObradiAsync(long id, SocijalniNatjecajBodovniPodaciDto dto)
     {
+        logger.LogInformation("Spremanje bodovnih podataka za zahtjev {Id}", id);
+        
         await ExecuteAsync(async () =>
         {
             await bodovniService.UpdateAsync(id, dto);
             await ObradiBodoveIGreskeAsync(id);
         });
+        
+        logger.LogInformation("Spremljeni bodovni podaci za zahtjev {Id}", id);
     }
     #endregion
 
     #region Članovi
     public async Task DodajClanaIObradiAsync(long id, SocijalniNatjecajClanDto clanDto)
     {
+        logger.LogInformation("Dodavanje člana za zahtjev {Id}", id);
+        
         await ExecuteAsync(async () =>
         {
             await clanService.AddClanAsync(clanDto.ToEntity(id));
             await ObradiBodoveIGreskeAsync(id);
         });
+        
+        logger.LogInformation("Dodani član za zahtjev {Id}", id);
     }
 
     public async Task UrediClanaIObradiAsync(SocijalniNatjecajClanDto dto)
     {
+        logger.LogInformation("Uređivanje člana {ClanId} za zahtjev {ZahtjevId}", dto.Id, dto.ZahtjevId);
+        
         await ExecuteAsync(async () =>
         {
             var clan = await context.SocijalniNatjecajClanovi.FirstAsync(c => c.Id == dto.Id);
             dto.MapOnto(clan);
             await ObradiBodoveIGreskeAsync(dto.ZahtjevId);
         });
+        
+        logger.LogInformation("Uređen član {ClanId} za zahtjev {ZahtjevId}", dto.Id, dto.ZahtjevId);
     }
 
     public async Task ObrisiClanaIObradiAsync(long zahtjevId, long clanId)
     {
+        logger.LogInformation("Brisanje člana {ClanId} sa zahtjeva {ZahtjevId}", clanId, zahtjevId);
+        
         await ExecuteAsync(async () =>
         {
             await clanService.RemoveClanAsync(zahtjevId, clanId);
             await ObradiBodoveIGreskeAsync(zahtjevId);
         });
+        
+        logger.LogInformation("Obrisan član {ClanId} sa zahtjeva {ZahtjevId}", clanId, zahtjevId);
     }
     #endregion
 }

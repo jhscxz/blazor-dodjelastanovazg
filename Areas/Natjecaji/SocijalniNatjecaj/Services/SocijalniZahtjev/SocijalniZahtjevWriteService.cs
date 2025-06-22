@@ -10,11 +10,13 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZ
 
 public class SocijalniZahtjevWriteService(
     ApplicationDbContext context,
-    IAuditService auditService)
+    IAuditService auditService,
+    ILogger<SocijalniZahtjevWriteService> logger)
     : ISocijalniZahtjevWriteService
 {
     public async Task<SocijalniNatjecajZahtjev> CreateAsync(SocijalniNatjecajZahtjev zahtjev)
     {
+        logger.LogInformation("Creating zahtjev");
         auditService.ApplyAudit(zahtjev, true);
         auditService.ApplyAudit(zahtjev.Clanovi, true);
         auditService.ApplyAudit([
@@ -36,11 +38,13 @@ public class SocijalniZahtjevWriteService(
         await context.AddAsync(prihod);
 
         await SaveAsync();
+        logger.LogInformation("Created zahtjev {Id}", zahtjev.Id);
         return zahtjev;
     }
 
     public async Task UpdateOsnovnoAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto)
     {
+        logger.LogInformation("Updating osnovne podatke zahtjeva {Id}", zahtjevId);
         var zahtjev = await context.SocijalniNatjecajZahtjevi
                           .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                       ?? throw new Exception($"Zahtjev {zahtjevId} nije pronađen.");
@@ -49,6 +53,7 @@ public class SocijalniZahtjevWriteService(
         auditService.ApplyAudit(zahtjev, false);
 
         await SaveAsync();
+        logger.LogInformation("Updated osnovne podatke zahtjeva {Id}", zahtjevId);
     }
 
     private async Task SaveAsync()
@@ -56,9 +61,11 @@ public class SocijalniZahtjevWriteService(
         try
         {
             await context.SaveChangesAsync();
+            logger.LogDebug("Changes saved to database");
         }
         catch (DbUpdateConcurrencyException)
         {
+            logger.LogError("Concurrency conflict while saving");
             throw new InvalidOperationException(
                 "Netko je u međuvremenu promijenio podatke. Osvježite stranicu pa pokušajte ponovo.");
         }

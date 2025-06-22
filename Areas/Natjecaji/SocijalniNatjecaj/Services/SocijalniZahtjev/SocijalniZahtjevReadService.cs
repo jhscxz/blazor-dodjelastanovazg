@@ -9,7 +9,9 @@ using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
-public class SocijalniZahtjevReadService(ApplicationDbContext context)
+public class SocijalniZahtjevReadService(
+    ApplicationDbContext context,
+    ILogger<SocijalniZahtjevReadService> logger)
     : ISocijalniZahtjevReadService
 {
     private IQueryable<SocijalniNatjecajZahtjev> Query(bool tracking = false) =>
@@ -17,6 +19,7 @@ public class SocijalniZahtjevReadService(ApplicationDbContext context)
 
     public async Task<SocijalniNatjecajZahtjevDto> GetDetaljiAsync(long id)
     {
+        logger.LogDebug("Dohvaćanje detalja zahtjeva {ZahtjevId}", id);
         var entity = await context.SocijalniNatjecajZahtjevi
                          .Include(z => z.Clanovi)
                          .Include(z => z.BodovniPodaci)
@@ -36,89 +39,105 @@ public class SocijalniZahtjevReadService(ApplicationDbContext context)
         dto.CreatedBy = entity.CreatedByUser?.NormalizedUserName;
         dto.UpdatedBy = entity.UpdatedByUser?.NormalizedUserName;
 
+        logger.LogDebug("Dohvaćeni detalji zahtjeva {ZahtjevId}", id);
+
         return dto;
     }
 
 
-    public Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync() =>
-        Query().Select(e => e.ToDto()).ToListAsync();
+    public Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync()
+    {
+        logger.LogDebug("Dohvaćanje svih socijalnih zahtjeva");
+        return Query().Select(e => e.ToDto()).ToListAsync();
+    }
 
     public async Task<SocijalniNatjecajZahtjev?> GetZahtjevByIdAsync(long id)
     {
-        return await Query()
+        logger.LogDebug("Dohvaćanje zahtjeva {ZahtjevId}", id);
+        var entity = await Query()
             .Include(z => z.Natjecaj)
             .Include(z => z.BodovniPodaci)
             .Include(z => z.Bodovi)
             .Include(z => z.Clanovi)
             .Include(z => z.CreatedByUser)
             .Include(z => z.KucanstvoPodaci).ThenInclude(k => k!.Prihod)
-            .FirstOrDefaultAsync(z => z.Id == id)
-            ?? throw new($"Zahtjev {id} nije pronađen.");
+            .FirstOrDefaultAsync(z => z.Id == id);
+
+        if (entity == null)
+        {
+            logger.LogWarning("Zahtjev {ZahtjevId} nije pronađen", id);
+            throw new($"Zahtjev {id} nije pronađen.");
+        }
+
+        logger.LogDebug("Zahtjev {ZahtjevId} pronađen", id);
+        return entity;
     }
 
     public async Task<PagedResult<SocijalniNatjecajZahtjevDto>> GetPagedAsync(
-    long natjecajId,
-    int page,
-    int pageSize,
-    string? sortBy,
-    SortDirection direction,
-    string? search = null,
-    RezultatObrade? filter = null)
-{
-    var q = context.SocijalniNatjecajZahtjevi
-        .Include(z => z.Clanovi)
-        .Where(z => z.NatjecajId == natjecajId);
-
-    if (!string.IsNullOrWhiteSpace(search))
+        long natjecajId,
+        int page,
+        int pageSize,
+        string? sortBy,
+        SortDirection direction,
+        string? search = null,
+        RezultatObrade? filter = null)
     {
-        var s = search.ToLower();
-        q = q.Where(z =>
-            EF.Functions.Like(z.KlasaPredmeta.ToString(), $"%{s}%") ||
-            EF.Functions.Like(z.RezultatObrade.ToString(), $"%{s}%") ||
-            z.Clanovi.Any(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva &&
-                (EF.Functions.Like(c.ImePrezime!.ToLower(), $"%{s}%") ||
-                 EF.Functions.Like((c.Oib ?? string.Empty).ToLower(), $"%{s}%"))));
-    }
+        logger.LogDebug("Paged zahtjevi natječaja {NatjecajId} - page {Page} size {PageSize}", natjecajId, page, pageSize);
+        var q = context.SocijalniNatjecajZahtjevi
+            .Include(z => z.Clanovi)
+            .Where(z => z.NatjecajId == natjecajId);
 
-    if (filter is not null)
-        q = q.Where(z => z.RezultatObrade == filter);
-
-    q = !string.IsNullOrWhiteSpace(sortBy)
-        ? q.OrderByDynamic(sortBy, direction == SortDirection.Descending)
-        : q.OrderBy(z => z.Id);
-
-    var total = await q.CountAsync();
-
-    var items = await q
-        .Skip(page * pageSize)
-        .Take(pageSize)
-        .Select(z => new SocijalniNatjecajZahtjevDto
+        if (!string.IsNullOrWhiteSpace(search))
         {
-            Id = z.Id,
-            KlasaPredmeta = z.KlasaPredmeta,
-            DatumPodnosenjaZahtjeva = z.DatumPodnosenjaZahtjeva,
-            Adresa = z.Adresa!,
-            NatjecajId = z.NatjecajId,
-            RezultatObrade = z.RezultatObrade,
+            var s = search.ToLower();
+            q = q.Where(z =>
+                EF.Functions.Like(z.KlasaPredmeta.ToString(), $"%{s}%") ||
+                EF.Functions.Like(z.RezultatObrade.ToString(), $"%{s}%") ||
+                z.Clanovi.Any(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva &&
+                                   (EF.Functions.Like(c.ImePrezime!.ToLower(), $"%{s}%") ||
+                                    EF.Functions.Like((c.Oib ?? string.Empty).ToLower(), $"%{s}%"))));
+        }
 
-            ImePrezime = z.Clanovi
-                .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
-                .Select(c => c.ImePrezime)
-                .FirstOrDefault() ?? string.Empty,
+        if (filter is not null)
+            q = q.Where(z => z.RezultatObrade == filter);
 
-            Oib = z.Clanovi
-                .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
-                .Select(c => c.Oib)
-                .FirstOrDefault()
-        })
-        .AsNoTracking()
-        .ToListAsync();
+        q = !string.IsNullOrWhiteSpace(sortBy)
+            ? q.OrderByDynamic(sortBy, direction == SortDirection.Descending)
+            : q.OrderBy(z => z.Id);
 
-    return new PagedResult<SocijalniNatjecajZahtjevDto>
-    {
-        Items = items,
-        TotalCount = total
-    };
-}
+        var total = await q.CountAsync();
 
+        var items = await q
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .Select(z => new SocijalniNatjecajZahtjevDto
+            {
+                Id = z.Id,
+                KlasaPredmeta = z.KlasaPredmeta,
+                DatumPodnosenjaZahtjeva = z.DatumPodnosenjaZahtjeva,
+                Adresa = z.Adresa!,
+                NatjecajId = z.NatjecajId,
+                RezultatObrade = z.RezultatObrade,
+
+                ImePrezime = z.Clanovi
+                    .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
+                    .Select(c => c.ImePrezime)
+                    .FirstOrDefault() ?? string.Empty,
+
+                Oib = z.Clanovi
+                    .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
+                    .Select(c => c.Oib)
+                    .FirstOrDefault()
+            })
+            .AsNoTracking()
+            .ToListAsync();
+
+        logger.LogDebug("Pronađeno {Count} zahtjeva (ukupno {Total})", items.Count, total);
+        
+        return new PagedResult<SocijalniNatjecajZahtjevDto>
+        {
+            Items = items,
+            TotalCount = total
+        };
+    }
 }

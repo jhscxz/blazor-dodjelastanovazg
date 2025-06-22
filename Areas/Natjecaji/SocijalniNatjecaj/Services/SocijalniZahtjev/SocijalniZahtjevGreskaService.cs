@@ -10,13 +10,17 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZ
 public class SocijalniZahtjevGreskaService(
     ApplicationDbContext context,
     ISocijalniBodovnaGreskaService greskaService,
-    IAuditService auditService)
+    IAuditService auditService,
+    ILogger<SocijalniZahtjevGreskaService> logger)
     : ISocijalniZahtjevGreskaService
 {
     public async Task ObradiGreskeAsync(SocijalniNatjecajZahtjev zahtjev)
     {
+        logger.LogInformation("Obrada grešaka za zahtjev {ZahtjevId}", zahtjev.Id);
+        
         var noveGreske = await greskaService.PronadiGreskeAsync(zahtjev);
-
+        logger.LogInformation("Pronađeno {Count} grešaka", noveGreske.Count);
+        
         await SinkronizirajGreskeAsync(zahtjev.Id, noveGreske);
 
         zahtjev.RezultatObrade =
@@ -24,6 +28,8 @@ public class SocijalniZahtjevGreskaService(
                 ? RezultatObrade.Greška
                 : zahtjev.ManualniRezultatObrade;
 
+        logger.LogInformation("Rezultat obrade zahtjeva {ZahtjevId}: {Rezultat}", zahtjev.Id, zahtjev.RezultatObrade);
+        
         auditService.ApplyAudit(zahtjev, false);
     }
 

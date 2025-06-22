@@ -5,10 +5,12 @@ using DodjelaStanovaZG.Models;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
-public class SocijalniZahtjevFactory : ISocijalniZahtjevFactory
+public class SocijalniZahtjevFactory(ILogger<SocijalniZahtjevFactory> logger) : ISocijalniZahtjevFactory
 {
     public SocijalniNatjecajZahtjev KreirajNovi(SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib)
     {
+        logger.LogInformation("Kreiranje novog zahtjeva za natječaj {NatjecajId}", dto.NatjecajId);
+
         var zahtjev = new SocijalniNatjecajZahtjev
         {
             NatjecajId = dto.NatjecajId,

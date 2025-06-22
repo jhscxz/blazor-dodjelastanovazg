@@ -1,23 +1,12 @@
-// ReSharper disable StringLiteralTypo
-// ReSharper disable CommentTypo
-
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-// ⬇️ File‑scoped namespace – C# 10+
+
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 
-/// <summary>
-/// Servis za pronalaženje, sinkronizaciju i pohranu bodovnih grešaka u socijalnom natječaju.
-/// </summary>
-/// <remarks>
-/// • "Dedup" logika: isti kod greške dodaje se jednom po obradi.
-/// • Izračuni godina koriste <see cref="DateOnly.AddYears"/> kako bi izbjegli greške oko prestupnih godina.
-/// • Svako poslovno pravilo je izolirano u vlastiti helper radi preglednosti i lakšeg testiranja.
-/// </remarks>
 public sealed class SocijalniBodovnaGreskaService(ApplicationDbContext context)
     : ISocijalniBodovnaGreskaService
 {
