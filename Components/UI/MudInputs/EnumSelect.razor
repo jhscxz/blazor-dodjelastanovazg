@@ -4,7 +4,7 @@
 @typeparam T where T : struct, Enum
 
 <MudSelect T="T?" Label="@Label" @bind-Value="_value" Required="@Required"
-           ShrinkLabel="true" Variant="Variant.Text" Margin="Margin.Dense">
+           ShrinkLabel="true" Variant="Variant.Outlined" Margin="Margin.Dense">
     <MudSelectItem T="T?" Value="null">@Placeholder</MudSelectItem>
     @foreach (var item in Enum.GetValues(typeof(T)).Cast<T>())
     {
