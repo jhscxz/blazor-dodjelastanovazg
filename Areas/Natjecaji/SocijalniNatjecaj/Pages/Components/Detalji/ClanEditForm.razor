@@ -1,0 +1,53 @@
+@using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
+    @using DodjelaStanovaZG.Enums
+    @using MudBlazor
+
+    <MudForm @ref="_form" @bind-IsValid="_isValid">
+    <MudTextField @bind-Value="Clan.ImePrezime" Label="Ime i prezime" Required="true" />
+    <MudTextField @bind-Value="Clan.Oib" Label="OIB" Required="true" MaxLength="11" />
+
+    <MudSelect T="Srodstvo" Label="Srodstvo" @bind-Value="Clan.Srodstvo" Required="true">
+    @foreach (Srodstvo s in Enum.GetValues(typeof(Srodstvo)))
+{
+    <MudSelectItem Value="s">@s</MudSelectItem>
+}
+</MudSelect>
+
+    <MudDatePicker Label="Datum rođenja" @bind-Date="DatumRodjenjaProxy" Required="true" />
+
+    <MudStack Row="true" Spacing="2" Class="mt-4">
+    <MudButton OnClick="Submit" Variant="Variant.Filled" Color="Color.Primary">Spremi</MudButton>
+    <MudButton OnClick="Cancel" Variant="Variant.Outlined" Color="Color.Secondary">Odustani</MudButton>
+    </MudStack>
+    </MudForm>
+
+    @code {
+    [Parameter] public SocijalniNatjecajClanDto Clan { get; set; } = new();
+[Parameter] public EventCallback<SocijalniNatjecajClanDto> OnValidSubmit { get; set; }
+[Parameter] public EventCallback OnCancel { get; set; }
+
+private MudForm _form = null!;
+private bool _isValid;
+
+private DateTime? DatumRodjenjaProxy
+{
+    get => Clan.DatumRodjenja != default ? Clan.DatumRodjenja.ToDateTime(new TimeOnly(0, 0)) : null;
+    set
+    {
+        if (value.HasValue)
+            Clan.DatumRodjenja = DateOnly.FromDateTime(value.Value);
+    }
+}
+
+private async Task Submit()
+{
+    await _form.Validate();
+    if (_isValid)
+        await OnValidSubmit.InvokeAsync(Clan);
+}
+
+private async Task Cancel()
+{
+    await OnCancel.InvokeAsync();
+}
+}

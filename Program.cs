@@ -27,7 +27,14 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("MozeUpravljatiNatjecajima",
+        policy => policy.RequireRole("Management"));
+    options.AddPolicy("MozeUnositi",
+        policy => policy.RequireRole("Referent", "Management"));
+});
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

@@ -4,7 +4,7 @@
 @using DodjelaStanovaZG.Areas.Admin.Korisnici.Services
 @using DodjelaStanovaZG.Components.UI
 @using MudBlazor
-@attribute [Authorize(Roles = "Admin,SuperAdmin")]
+@attribute [Authorize(Roles = "Management")]
 
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudPaper Outlined="true" Class="pa-4">
@@ -43,9 +43,9 @@
                            Dense="true"
                            Class="w-full">
                     <MudSelectItem Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
-                    <MudSelectItem Value="@RoleNames.User">@RoleNames.User</MudSelectItem>
-                    <MudSelectItem Value="@RoleNames.Admin">@RoleNames.Admin</MudSelectItem>
-                    <MudSelectItem Value="@RoleNames.SuperAdmin">@RoleNames.SuperAdmin</MudSelectItem>
+                    <MudSelectItem Value="@RoleNames.Referent">@RoleNames.Referent</MudSelectItem>
+                    <MudSelectItem Value="@RoleNames.ReferentReadOnly">@RoleNames.ReferentReadOnly</MudSelectItem>
+                    <MudSelectItem Value="@RoleNames.Management">@RoleNames.Management</MudSelectItem>
                 </MudSelect>
             </div>
         </div>

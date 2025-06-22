@@ -3,6 +3,9 @@
 @using MudBlazor
 @using DodjelaStanovaZG.Enums
 @using DodjelaStanovaZG.Components.UI.MudInputs
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Policy = "MozeUnositi")]
 
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudGrid Justify="Justify.Center">

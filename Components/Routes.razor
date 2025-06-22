@@ -1,14 +1,27 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿@using DodjelaStanovaZG.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
 
 <CascadingAuthenticationState>
-    <Router AppAssembly="typeof(Program).Assembly" @rendermode="RenderMode.InteractiveServer">
+    <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="typeof(Layout.MainLayout)"/>
-            <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Dense="true" Class="ma-4">
+                        Nemate ovlasti za pristup ovoj stranici.
+                    </MudAlert>
+                </NotAuthorized>
+                <Authorizing>
+                    <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" />
+                </Authorizing>
+            </AuthorizeRouteView>
         </Found>
         <NotFound>
-            <MudText>Stranica nije pronađena.</MudText>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <MudAlert Severity="Severity.Warning" Variant="Variant.Filled" Dense="true" Class="ma-4">
+                    Stranica nije pronađena.
+                </MudAlert>
+            </LayoutView>
         </NotFound>
     </Router>
 </CascadingAuthenticationState>

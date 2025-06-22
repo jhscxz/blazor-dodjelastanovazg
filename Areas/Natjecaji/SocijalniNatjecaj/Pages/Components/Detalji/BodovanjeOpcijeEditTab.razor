@@ -3,7 +3,10 @@
 @using DodjelaStanovaZG.Components.UI
 @using Microsoft.AspNetCore.Components.Web
 @using DodjelaStanovaZG.Components.UI.Buttons
+@using Microsoft.AspNetCore.Authorization
 @inherits BodovanjeOpcijeEditTabBase
+
+@attribute [Authorize(Policy = "MozeUnositi")]
 
 <PageTitle>Uredi bodovne podatke</PageTitle>
 

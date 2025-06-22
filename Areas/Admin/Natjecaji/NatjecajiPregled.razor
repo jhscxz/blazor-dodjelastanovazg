@@ -1,8 +1,11 @@
 @page "/admin/natjecaji"
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO
+@using Microsoft.AspNetCore.Authorization
 @using MudBlazor
 @inherits NatjecajiPregledBase
+
+@attribute [Authorize(Policy = "MozeUpravljatiNatjecajima")]
 
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudPaper Outlined="true" Class="pa-4">

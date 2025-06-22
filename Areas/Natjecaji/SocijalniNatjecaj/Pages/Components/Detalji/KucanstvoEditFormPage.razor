@@ -5,6 +5,9 @@
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Components.UI.MudInputs
 @using DodjelaStanovaZG.Components.UI.Buttons
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Policy = "MozeUnositi")]
 
 <PageTitle>Uredi kućanstvo</PageTitle>
 

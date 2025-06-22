@@ -1,5 +1,4 @@
 using DodjelaStanovaZG.Data.Seeders;
-using DodjelaStanovaZG.Seeders;
 using DodjelaStanovaZG.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,13 +17,13 @@ namespace DodjelaStanovaZG.Data
             await context.Database.MigrateAsync();
             
             // Seed SuperAdmin korisnika
-            await seedService.SeedUserAsync(UserSeedData.GetSuperAdmin());
+            await seedService.SeedUserAsync(UserSeedData.GetManagement());
 
             // Seed Admin korisnika
-            await seedService.SeedUserAsync(UserSeedData.GetAdmin());
+            await seedService.SeedUserAsync(UserSeedData.GetManagement());
 
             // Seed ostalih korisnika
-            foreach (var user in UserSeedData.GetRegularUsers())
+            foreach (var user in UserSeedData.GetUsers())
             {
                 await seedService.SeedUserAsync(user);
             }

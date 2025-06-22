@@ -2,6 +2,9 @@
 @page "/admin/natjecaji/edit/{Klasa:int}"
 @using MudBlazor
 @using DodjelaStanovaZG.Components.UI
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Policy = "MozeUpravljatiNatjecajima")]
 
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudGrid Justify="Justify.Center">
