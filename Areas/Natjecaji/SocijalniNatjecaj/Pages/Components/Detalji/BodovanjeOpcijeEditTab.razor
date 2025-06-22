@@ -24,7 +24,9 @@
                                 <MudStack Spacing="1">
                                     <MudNumericField T="byte"
                                                      Label="Broj uzdržavanih punoljetnih na redovnom školovanju"
-                                                     @bind-Value="Model.BrojUzdrzavanePunoljetneDjece"/>
+                                                     @bind-Value="Model.BrojUzdrzavanePunoljetneDjece"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
                                 </MudStack>
                             </MudCard>
                         </MudTabPanel>
@@ -34,31 +36,41 @@
                             <MudCard Outlined="true" Class="pa-4">
                                 <MudStack Spacing="1">
                                     <MudSelect T="bool" Label="Primatelj zajamčene minimalne naknade"
-                                               @bind-Value="Model.PrimateljZajamceneMinimalneNaknade" Dense="true">
+                                               @bind-Value="Model.PrimateljZajamceneMinimalneNaknade" Dense="true"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense">
                                         <MudSelectItem Value="true">Da</MudSelectItem>
                                         <MudSelectItem Value="false">Ne</MudSelectItem>
                                     </MudSelect>
 
                                     <MudSelect T="bool" Label="Status roditelja njegovatelja / njegovatelja"
-                                               @bind-Value="Model.StatusRoditeljaNjegovatelja" Dense="true">
+                                               @bind-Value="Model.StatusRoditeljaNjegovatelja" Dense="true"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense">
                                         <MudSelectItem Value="true">Da</MudSelectItem>
                                         <MudSelectItem Value="false">Ne</MudSelectItem>
                                     </MudSelect>
 
                                     <MudSelect T="bool"
                                                Label="Korisnik doplatka za pomoć i njegu / inkluzivnog dodatka III. razine"
-                                               @bind-Value="Model.KorisnikDoplatkaZaPomoc" Dense="true">
+                                               @bind-Value="Model.KorisnikDoplatkaZaPomoc" Dense="true"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense">
                                         <MudSelectItem Value="true">Da</MudSelectItem>
                                         <MudSelectItem Value="false">Ne</MudSelectItem>
                                     </MudSelect>
 
                                     <MudNumericField T="byte"
                                                      Label="Odrasli korisnici osobne invalidnine / dodatka I./II. razine"
-                                                     @bind-Value="Model.BrojOdraslihKorisnikaInvalidnine"/>
+                                                     @bind-Value="Model.BrojOdraslihKorisnikaInvalidnine"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
 
                                     <MudNumericField T="byte"
                                                      Label="Maloljetni korisnici osobne invalidnine / dodatka I./II. razine"
-                                                     @bind-Value="Model.BrojMaloljetnihKorisnikaInvalidnine"/>
+                                                     @bind-Value="Model.BrojMaloljetnihKorisnikaInvalidnine"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
                                 </MudStack>
                             </MudCard>
                         </MudTabPanel>
@@ -68,26 +80,36 @@
                             <MudCard Outlined="true" Class="pa-4">
                                 <MudStack Spacing="1">
                                     <MudSelect T="bool" Label="Žrtva obiteljskog nasilja (pravomoćna presuda)"
-                                               @bind-Value="Model.ZrtvaObiteljskogNasilja" Dense="true">
+                                               @bind-Value="Model.ZrtvaObiteljskogNasilja" Dense="true"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense">
                                         <MudSelectItem Value="true">Da</MudSelectItem>
                                         <MudSelectItem Value="false">Ne</MudSelectItem>
                                     </MudSelect>
 
                                     <MudNumericField T="byte"
                                                      Label="Broj članova (18–29) koji su bili u alternativnoj skrbi"
-                                                     @bind-Value="Model.BrojOsobaUAlternativnojSkrbi"/>
+                                                     @bind-Value="Model.BrojOsobaUAlternativnojSkrbi"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
 
                                     <MudNumericField T="byte"
                                                      Label="Broj mjeseci obrane suvereniteta RH (maks. 40)"
-                                                     @bind-Value="Model.BrojMjeseciObranaSuvereniteta"/>
+                                                     @bind-Value="Model.BrojMjeseciObranaSuvereniteta"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
 
                                     <MudNumericField T="byte"
                                                      Label="Broj članova koji su žrtve seksualnog nasilja u DR"
-                                                     @bind-Value="Model.BrojClanovaZrtavaSeksualnogNasilja"/>
+                                                     @bind-Value="Model.BrojClanovaZrtavaSeksualnogNasilja"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
 
                                     <MudNumericField T="byte"
                                                      Label="Broj članova civilnih stradalnika iz DR"
-                                                     @bind-Value="Model.BrojCivilnihStradalnika"/>
+                                                     @bind-Value="Model.BrojCivilnihStradalnika"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
                                 </MudStack>
                             </MudCard>
                         </MudTabPanel>

@@ -13,7 +13,7 @@ public partial class TextInputDecimal<T> : ComponentBase
     [Parameter] public bool Required { get; set; }
     [Parameter] public int Lines { get; set; } = 1;
     [Parameter] public bool ShrinkLabel { get; set; } = true;
-    [Parameter] public Variant Variant { get; set; } = Variant.Text;
+    [Parameter] public Variant Variant { get; set; } = Variant.Outlined;
     [Parameter] public Margin Margin { get; set; } = Margin.Dense;
     [Parameter] public bool ReadOnly { get; set; }
     [Parameter] public string Class { get; set; } = string.Empty;
