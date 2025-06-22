@@ -58,16 +58,17 @@
                   RowsPerPage="10"
                   Outlined="true"
                   Breakpoint="Breakpoint.Sm"
-                  @ref="Table">
+                  @ref="Table"
+                  Class="rounded-lg overflow-hidden">
 
             <HeaderContent>
-                <MudTh></MudTh>
-                <MudTh>Klasa predmeta</MudTh>
-                <MudTh>Prezime i ime</MudTh>
-                <MudTh>OIB</MudTh>
-                <MudTh>Ukupno bodova</MudTh>
-                <MudTh>Osnovanost</MudTh>
-                <MudTh>Akcija</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73"></MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Klasa predmeta</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Prezime i ime</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">OIB</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Ukupno bodova</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Osnovanost</MudTh>
+                <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Akcija</MudTh>
             </HeaderContent>
 
             <RowTemplate>
@@ -92,10 +93,16 @@
                 @if (IsRowExpanded(context))
                 {
                     <MudTd ColSpan="@TotalColumns">
-                        <SocijalniZahtjevPregledContent Model="context" />
+                        <!-- sivi, zaobljeni kontejner -->
+                        <MudPaper Elevation="0"
+                                  Class="pa-4 rounded-lg"
+                                  Style="background-color: #f5f5f5;">
+                            <SocijalniZahtjevPregledContent Model="context" />
+                        </MudPaper>
                     </MudTd>
                 }
             </ChildRowContent>
+
 
             <PagerContent>
                 <MudTablePager />
