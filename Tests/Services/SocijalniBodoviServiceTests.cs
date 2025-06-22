@@ -1,8 +1,10 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
+using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
@@ -55,21 +57,30 @@ public class SocijalniBodoviServiceTests
 
         // Mock repo
         var repo = new Mock<ISocijalniBodoviRepository>();
-        repo.Setup(r => r.GetZahtjevWithDetailsAsync(1)).ReturnsAsync(zahtjev);
+        repo.Setup(r => r.GetZahtjevWithDetailsAsync(It.IsAny<ApplicationDbContext>(), 1))
+            .ReturnsAsync(zahtjev);
 
         SocijalniNatjecajBodovi? spremljeno = null;
-        repo.Setup(r => r.AddBodoviAsync(It.IsAny<SocijalniNatjecajBodovi>()))
-            .Callback<SocijalniNatjecajBodovi>(b => spremljeno = b)
+        repo.Setup(r => r.AddBodoviAsync(It.IsAny<ApplicationDbContext>(), It.IsAny<SocijalniNatjecajBodovi>()))
+            .Callback<ApplicationDbContext, SocijalniNatjecajBodovi>((_, b) => spremljeno = b)
             .Returns(Task.CompletedTask);
 
-        repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
+        repo.Setup(r => r.SaveChangesAsync(It.IsAny<ApplicationDbContext>()))
+            .Returns(Task.CompletedTask);
+
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        var context = new ApplicationDbContext(options);
+        var contextFactory = new Mock<IDbContextFactory<ApplicationDbContext>>();
+        contextFactory.Setup(f => f.CreateDbContext()).Returns(context);
 
         // Mock audit
         var audit = new Mock<IAuditService>();
         var logger = new Mock<ILogger<SocijalniBodoviService>>();
 
         // Service
-        var service = new SocijalniBodoviService(repo.Object, audit.Object, logger.Object);
+        var service = new SocijalniBodoviService(contextFactory.Object, repo.Object, audit.Object, logger.Object);
 
         // Act
         await service.IzracunajIBodujAsync(1);

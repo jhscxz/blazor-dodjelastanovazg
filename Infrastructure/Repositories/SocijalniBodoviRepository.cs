@@ -5,13 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Infrastructure.Repositories;
 
-public class SocijalniBodoviRepository(IDbContextFactory<ApplicationDbContext> contextFactory) : ISocijalniBodoviRepository
+public class SocijalniBodoviRepository : ISocijalniBodoviRepository
 {
-    private readonly IDbContextFactory<ApplicationDbContext> _contextFactory = contextFactory;
-
-    public async Task<SocijalniNatjecajZahtjev?> GetZahtjevWithDetailsAsync(long zahtjevId)
+    public async Task<SocijalniNatjecajZahtjev?> GetZahtjevWithDetailsAsync(ApplicationDbContext context, long zahtjevId)
+    
     {
-        await using var context = _contextFactory.CreateDbContext();
         return await context.SocijalniNatjecajZahtjevi
             .Include(z => z.Natjecaj)
             .Include(z => z.Clanovi)
@@ -22,16 +20,13 @@ public class SocijalniBodoviRepository(IDbContextFactory<ApplicationDbContext> c
             .FirstOrDefaultAsync(z => z.Id == zahtjevId);
     }
 
-    public async Task AddBodoviAsync(SocijalniNatjecajBodovi bodovi)
+    public async Task AddBodoviAsync(ApplicationDbContext context, SocijalniNatjecajBodovi bodovi)
     {
-        await using var context = _contextFactory.CreateDbContext();
-        context.SocijalniNatjecajBodovi.Add(bodovi);
-        await context.SaveChangesAsync();
+        await context.SocijalniNatjecajBodovi.AddAsync(bodovi);
     }
 
-    public async Task SaveChangesAsync()
+    public async Task SaveChangesAsync(ApplicationDbContext context)
     {
-        await using var context = _contextFactory.CreateDbContext();
         await context.SaveChangesAsync();
     }
 }

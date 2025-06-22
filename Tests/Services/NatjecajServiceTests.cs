@@ -80,4 +80,32 @@ public class NatjecajServiceTests
         )), Times.Once);
         repo.Verify(r => r.SaveChangesAsync(), Times.Once);
     }
+    [Fact]
+    public async Task UpdateAsync_CallsRepositoryUpdate()
+    {
+        // Arrange
+        var entity = new Natjecaj
+        {
+            Id = 1,
+            Klasa = 55,
+            Zakljucen = 1
+        };
+
+        var repo = new Mock<INatjecajRepository>();
+        repo.Setup(r => r.GetByKlasaAsync(55)).ReturnsAsync(entity);
+        repo.Setup(r => r.UpdateAsync(entity)).Returns(Task.CompletedTask);
+
+        var logger = new Mock<ILogger<NatjecajService>>();
+        var service = new NatjecajService(repo.Object, logger.Object);
+
+        var dto = new NatjecajDto { Status = "Zaključen" };
+
+        // Act
+        var result = await service.UpdateAsync(55, dto);
+
+        // Assert
+        Assert.True(result);
+        Assert.Equal(2, entity.Zakljucen);
+        repo.Verify(r => r.UpdateAsync(entity), Times.Once);
+    }
 }

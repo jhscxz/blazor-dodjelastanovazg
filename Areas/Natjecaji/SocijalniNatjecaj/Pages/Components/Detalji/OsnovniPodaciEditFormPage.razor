@@ -25,7 +25,7 @@
                     <ErrorAlert Messages="_errorMessages" />
 
                     <!-- Form content -->
-                    <MudForm @ref="_form" Model="@_socijalniNatjecajModel" OnValidSubmit="OnValidSubmit">
+                    <MudForm @ref="_form" Model="@_socijalniNatjecajModel" OnValidSubmit="Submit">
                         <input type="hidden"
                                name="RowVersion"
                                value="@Convert.ToBase64String(_socijalniNatjecajModel.RowVersion ?? [])"/>

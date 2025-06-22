@@ -1,24 +1,29 @@
+using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 
 public class SocijalniBodoviService(
+    IDbContextFactory<ApplicationDbContext> contextFactory,
     ISocijalniBodoviRepository repository,
     IAuditService auditService,
     ILogger<SocijalniBodoviService> logger)
     : ISocijalniBodoviService
 {
+    private readonly IDbContextFactory<ApplicationDbContext> _contextFactory = contextFactory;
     private readonly ISocijalniBodoviRepository _repository = repository;
     private readonly IAuditService _auditService = auditService;
     private readonly ILogger<SocijalniBodoviService> _logger = logger;
     public async Task IzracunajIBodujAsync(long zahtjevId)
     {
         _logger.LogInformation("Započinjem bodovanje zahtjeva {ZahtjevId}", zahtjevId);
-        var zahtjev = await _repository.GetZahtjevWithDetailsAsync(zahtjevId);
+        await using var context = _contextFactory.CreateDbContext();
+        var zahtjev = await _repository.GetZahtjevWithDetailsAsync(context, zahtjevId);
         if (zahtjev == null || zahtjev.KucanstvoPodaci == null || zahtjev.BodovniPodaci == null)
         {
             _logger.LogError("Podaci nisu potpuni za bodovanje zahtjeva {ZahtjevId}", zahtjevId);
@@ -114,7 +119,7 @@ public class SocijalniBodoviService(
         if (zahtjev.Bodovi == null)
         {
             _auditService.ApplyAudit(bodovi, true);
-            await _repository.AddBodoviAsync(bodovi);
+            await _repository.AddBodoviAsync(context, bodovi);
         }
         else
         {
@@ -140,22 +145,24 @@ public class SocijalniBodoviService(
             zahtjev.Bodovi.UkupnoBodova = bodovi.UkupnoBodova;
         }
 
-        await _repository.SaveChangesAsync();
+        await context.SaveChangesAsync();
         _logger.LogInformation("Završeno bodovanje zahtjeva {ZahtjevId} - ukupno {Bodovi} bodova", zahtjevId, bodovi.UkupnoBodova);
     }
 
     public async Task<SocijalniNatjecajBodovi?> GetByIdAsync(long zahtjevId)
     {
-        return await _repository.GetZahtjevWithDetailsAsync(zahtjevId)
+        await using var context = _contextFactory.CreateDbContext();
+        return await _repository.GetZahtjevWithDetailsAsync(context, zahtjevId)
             .ContinueWith(t => t.Result?.Bodovi);
     }
 
     public async Task<List<SocijalniNatjecajBodovi>> GetForZahtjeviAsync(List<long> zahtjevIds)
     {
+        await using var context = _contextFactory.CreateDbContext();
         var list = new List<SocijalniNatjecajBodovi>();
         foreach (var id in zahtjevIds)
         {
-            var zahtjev = await _repository.GetZahtjevWithDetailsAsync(id);
+            var zahtjev = await _repository.GetZahtjevWithDetailsAsync(context, id);
             if (zahtjev?.Bodovi != null)
                 list.Add(zahtjev.Bodovi);
         }

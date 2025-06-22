@@ -59,7 +59,7 @@ public class NatjecajService(INatjecajRepository repo, ILogger<NatjecajService> 
         dto.Adapt(entity);
         entity.UpdatedAt = DateTime.UtcNow;
 
-        await repo.SaveChangesAsync();
+        await repo.UpdateAsync(entity);
         logger.LogInformation("Natječaj {Klasa} ažuriran", klasa);
         return true;
     }

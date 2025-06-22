@@ -47,5 +47,6 @@ public class SocijalniZahtjevGreskaService(
         set.RemoveRange(postojece);
 
         await set.AddRangeAsync(nove);
+        await context.SaveChangesAsync();
     }
 }

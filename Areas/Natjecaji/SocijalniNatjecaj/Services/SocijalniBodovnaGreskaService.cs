@@ -99,11 +99,6 @@ public sealed class SocijalniBodovnaGreskaService(IDbContextFactory<ApplicationD
         void ProvjeriPrihode()
         {
             var prihod = zahtjev.KucanstvoPodaci?.Prihod;
-            if (prihod is null)
-            {
-                Add("PRI-001", "Nije unesen podatak o ukupnom prihodu kućanstva.");
-                return;
-            }
 
             var prosjekPlace = zahtjev.Natjecaj?.ProsjekPlace ?? 0m;
             if (prosjekPlace <= 0)
@@ -113,7 +108,7 @@ public sealed class SocijalniBodovnaGreskaService(IDbContextFactory<ApplicationD
             }
 
             var brojClanova = Math.Max(zahtjev.Clanovi.Count, 1);
-            var prihodPoClanu = prihod.UkupniPrihodKucanstva / brojClanova / 12m;
+            var prihodPoClanu = prihod!.UkupniPrihodKucanstva / brojClanova / 12m;
             var jeSamacko = zahtjev.KucanstvoPodaci?.SastavKucanstva == SastavKucanstva.SamackoKucanstvo;
             var limit = prosjekPlace * (jeSamacko ? 0.50m : 0.30m);
 
