@@ -72,7 +72,7 @@ public class SocijalniBodoviService(
         bodovi.BodoviSeksualnoNasilje   = (byte)(bodovni.BrojClanovaZrtavaSeksualnogNasilja * 10);
         bodovi.BodoviCivilniStradalnici = (byte)(bodovni.BrojCivilnihStradalnika * 8);
 
-        bodovi.UkupnoBodova = (ushort)(
+        bodovi.UkupnoBodova =
               bodovi.BodoviStambeniStatus
             + bodovi.BodoviSastavKucanstva
             + bodovi.BodoviPoClanu
@@ -88,8 +88,7 @@ public class SocijalniBodoviService(
             + bodovi.BodoviIznad55
             + bodovi.BodoviObrana
             + bodovi.BodoviSeksualnoNasilje
-            + bodovi.BodoviCivilniStradalnici
-        );
+            + bodovi.BodoviCivilniStradalnici;
 
         var prihod = kucanstvo.Prihod;
         if (prihod == null)

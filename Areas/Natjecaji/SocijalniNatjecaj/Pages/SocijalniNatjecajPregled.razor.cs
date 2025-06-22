@@ -137,6 +137,9 @@ public class SocijalniNatjecajPregledBase : ComponentBase
     protected static string FormatInt(int? value) =>
         value?.ToString() ?? "0";
 
+    protected static string FormatFloat(float? value) =>
+        value?.ToString("0.##") ?? "0";
+    
     protected static string FormatOsnovanost(RezultatObrade? rezultat) =>
         rezultat switch
         {

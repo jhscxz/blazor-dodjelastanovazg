@@ -78,7 +78,7 @@ public class SocijalniBodoviServiceTests
         Assert.NotNull(spremljeno);
 
         // Ovisno o pravilima bodovanja – ovo ćeš možda trebati ažurirati:
-        Assert.Equal((ushort)71, spremljeno!.UkupnoBodova); // Ako znaš pravila, ovo je ok
+        Assert.Equal(71f, spremljeno!.UkupnoBodova); // Ako znaš pravila, ovo je ok
 
         Assert.Equal(1000m, zahtjev.KucanstvoPodaci!.Prihod!.PrihodPoClanu);
         Assert.Equal(100m, zahtjev.KucanstvoPodaci.Prihod.PostotakProsjeka);
