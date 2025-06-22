@@ -11,23 +11,14 @@ public partial class ClanEditFormPage : ComponentBase
 {
     [Parameter] public long ZahtjevId { get; set; }
     [Parameter] public long? ClanId { get; set; }
-
     [Inject] private IUnitOfWork UnitOfWork { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     private SocijalniNatjecajClanDto? _model;
     private MudForm _form = null!;
-    private bool IsPodnositelj => _model?.Srodstvo == Enums.Srodstvo.PodnositeljZahtjeva;
-    private DateTime? DatumRodjenjaProxy
-    {
-        get => _model?.DatumRodjenja != default ? _model.DatumRodjenja.ToDateTime(new TimeOnly(0)) : null;
-        set
-        {
-            if (value.HasValue && _model is not null)
-                _model.DatumRodjenja = DateOnly.FromDateTime(value.Value);
-        }
-    }
+    private bool IsPodnositelj => _model?.Srodstvo == Srodstvo.PodnositeljZahtjeva;
+    private DateTime? _datumRodjenja;
 
     private List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
@@ -52,7 +43,7 @@ public partial class ClanEditFormPage : ComponentBase
         }
 
         var clan = ClanId.HasValue
-            ? zahtjev.Clanovi.FirstOrDefault(c => c.Id == ClanId.Value)
+            ? zahtjev.Clanovi?.FirstOrDefault(c => c.Id == ClanId.Value)
             : null;
 
         _model = clan is null
@@ -67,6 +58,10 @@ public partial class ClanEditFormPage : ComponentBase
                 ZahtjevId = ZahtjevId
             };
 
+        _datumRodjenja = _model.DatumRodjenja != default
+            ? _model.DatumRodjenja.ToDateTime(new TimeOnly(0))
+            : null;
+        
         BreadcrumbItems[2].Url = $"/socijalni/detalji/{ZahtjevId}";
     }
 
@@ -75,6 +70,10 @@ public partial class ClanEditFormPage : ComponentBase
         await _form.Validate();
         if (!_form.IsValid || _model is null)
             return;
+        
+        _model.DatumRodjenja = _datumRodjenja.HasValue
+            ? DateOnly.FromDateTime(_datumRodjenja.Value)
+            : default;
 
         if (ClanId.HasValue)
         {

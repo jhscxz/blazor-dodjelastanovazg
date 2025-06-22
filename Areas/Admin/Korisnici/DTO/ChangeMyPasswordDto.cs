@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace DodjelaStanovaZG.DTO
+namespace DodjelaStanovaZG.Areas.Admin.Korisnici.DTO
 {
     public class ChangeMyPasswordDto
     {
