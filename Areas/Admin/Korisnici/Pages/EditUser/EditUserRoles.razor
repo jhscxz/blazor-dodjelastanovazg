@@ -1,19 +1,10 @@
 @using Microsoft.AspNetCore.Authorization
 @using MudBlazor
+@using DodjelaStanovaZG.Components.UI
 
 @attribute [Authorize(Policy = "ImaPristupAdmin")]
 
-@if (ErrorMessages?.Count > 0)
-{
-    <MudAlert Severity="Severity.Error" Elevation="0" Class="mb-4">
-        <ul>
-            @foreach (var msg in ErrorMessages)
-            {
-                <li>@msg</li>
-            }
-        </ul>
-    </MudAlert>
-}
+<ErrorAlert Messages="ErrorMessages" />
 
 <!-- Tablica prikazuje sve role (string) u kojima je korisnik -->
 <MudTable Items="@UserRoles" Hover="true" Striped="true" Outlined="true" RowsPerPage="@RowsPerPage" Dense="true" SortLabel="Sort By">

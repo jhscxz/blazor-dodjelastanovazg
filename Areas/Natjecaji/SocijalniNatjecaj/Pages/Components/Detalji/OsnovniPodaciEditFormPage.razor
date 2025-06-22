@@ -22,17 +22,7 @@
             <MudCard Outlined="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
                     <!-- Display error messages -->
-                    @if (_errorMessages?.Any() == true)
-                    {
-                        <MudAlert Severity="Severity.Error" Class="mb-4">
-                            <ul>
-                                @foreach (var msg in _errorMessages)
-                                {
-                                    <li>@msg</li>
-                                }
-                            </ul>
-                        </MudAlert>
-                    }
+                    <ErrorAlert Messages="_errorMessages" />
 
                     <!-- Form content -->
                     <MudForm @ref="_form" Model="@_socijalniNatjecajModel" OnValidSubmit="OnValidSubmit">

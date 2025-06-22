@@ -15,17 +15,7 @@
             <MudCard Outlined="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
 
-                    @if (ErrorMessages?.Any() == true)
-                    {
-                        <MudAlert Severity="Severity.Error" Class="mb-4">
-                            <ul>
-                                @foreach (var msg in ErrorMessages)
-                                {
-                                    <li>@msg</li>
-                                }
-                            </ul>
-                        </MudAlert>
-                    }
+                    <ErrorAlert Messages="ErrorMessages" />
 
                     <MudForm @ref="_form" Model="@ZahtjevModel">
                         <!-- Prvi red: Klasa predmeta i Datum podnošenja zahtjeva -->
