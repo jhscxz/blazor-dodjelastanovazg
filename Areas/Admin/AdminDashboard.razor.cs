@@ -1,10 +1,8 @@
 using DodjelaStanovaZG.Components.UI;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 
 namespace DodjelaStanovaZG.Areas.Admin;
 
-[Authorize(Roles = "Admin")]
 public partial class AdminDashboard : ComponentBase
 {
     protected List<AdminCard> AdminCards = [];

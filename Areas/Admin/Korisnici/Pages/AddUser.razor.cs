@@ -7,7 +7,6 @@ using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages;
 
-[Authorize(Roles = "Admin,SuperAdmin")]
 public partial class AddUser : ComponentBase
 {
     [Inject] private UserManager<IdentityUser> UserManager { get; set; } = null!;

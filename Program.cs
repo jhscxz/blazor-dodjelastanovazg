@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using System.Globalization;
-using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using Microsoft.AspNetCore.Localization;
 using MudBlazor;
 

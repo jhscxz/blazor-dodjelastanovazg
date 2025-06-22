@@ -10,7 +10,6 @@ using DodjelaStanovaZG.Components.UI;
 
 namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages;
 
-[Authorize(Roles = "Admin,SuperAdmin")]
 public partial class Users : ComponentBase
 {
     [Inject] private UserManager<IdentityUser> UserManager { get; set; } = null!;
