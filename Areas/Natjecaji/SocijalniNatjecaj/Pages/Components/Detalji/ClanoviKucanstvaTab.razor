@@ -3,7 +3,6 @@
 @using DodjelaStanovaZG.Helpers
 @using MudBlazor
 @using DodjelaStanovaZG.Components.UI
-@inject IDialogService DialogService
 
 <MudCard Outlined="true" Class="pa-4" Elevation="2">
 
@@ -11,7 +10,7 @@
 
         <!-- Gumb za dodavanje člana -->
         <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Class="mb-4">
-            <MudButton OnClick="AddClan"
+            <MudButton OnClick="StartAddClan"
                        Variant="Variant.Filled"
                        Color="Color.Default"
                        IconColor="Color.Success"
@@ -22,6 +21,24 @@
             </MudButton>
         </MudStack>
 
+        @if (IsFormVisible)
+        {
+            <ClanEditForm NewClan="CurrentClan" OnValidSubmit="SubmitClanAsync" OnCancel="CancelEdit" />
+        }
+
+        @if (DeletePendingId.HasValue)
+        {
+            <MudAlert Severity="Severity.Warning" Dense="true" Class="mb-2">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <span>Jeste li sigurni da želite obrisati ovog člana?</span>
+                    <MudStack Row="true" Spacing="2">
+                        <MudButton OnClick="ConfirmDeleteClanAsync" Color="Color.Error" Size="Size.Small" Variant="Variant.Filled">Da</MudButton>
+                        <MudButton OnClick="CancelDelete" Size="Size.Small" Variant="Variant.Outlined">Odustani</MudButton>
+                    </MudStack>
+                </MudStack>
+            </MudAlert>
+        }
+        
         <!-- Tablica članova -->
         <MudTable T="SocijalniNatjecajClanDto"
                   Items="Clanovi"
@@ -49,14 +66,14 @@
                 <MudTd DataLabel="Akcija">
                     <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                    Size="Size.Small"
-                                   OnClick="() => EditClan(context.Id)" />
+                                   OnClick="() => StartEditClan(context.Id)" />
 
                     @if (context.Srodstvo != Srodstvo.PodnositeljZahtjeva)
                     {
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                        Size="Size.Small"
                                        Color="Color.Error"
-                                       OnClick="() => DeleteClan(context.Id)" />
+                                       OnClick="() => PromptDeleteClan(context.Id)" />
                     }
                 </MudTd>
             </RowTemplate>

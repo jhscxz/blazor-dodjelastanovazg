@@ -3,122 +3,115 @@ using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.Detalji
+namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.Detalji;
+
+public partial class ClanoviKucanstvaTab : ComponentBase
 {
-    public partial class ClanoviKucanstvaTab : ComponentBase
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] public IUnitOfWork UnitOfWork { get; set; } = null!;
+
+    [Parameter] public long Id { get; set; }
+
+    private SocijalniNatjecajZahtjevDto Zahtjev { get; set; } = null!;
+    protected List<SocijalniNatjecajClanDto>? Clanovi { get; set; } = [];
+
+    // forma i brisanje
+    protected bool IsFormVisible { get; set; }
+    protected bool IsEditMode { get; set; }
+    protected SocijalniNatjecajClanDto CurrentClan { get; set; } = new();
+    protected long? DeletePendingId { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        [Inject] public ISnackbar Snackbar { get; set; } = null!;
-        [Inject] public IUnitOfWork UnitOfWork { get; set; } = null!;
-        [Parameter] public long Id { get; set; }
-        private SocijalniNatjecajZahtjevDto Zahtjev { get; set; } = null!;
-        protected List<SocijalniNatjecajClanDto>? Clanovi { get; set; } = [];
+        Zahtjev = await UnitOfWork.SocijalniZahtjevRead.GetDetaljiAsync(Id);
+        Clanovi = Zahtjev.Clanovi;
+    }
 
-        private async Task AddClan()
+    protected void StartAddClan()
+    {
+        IsEditMode = false;
+        CurrentClan = new SocijalniNatjecajClanDto { ZahtjevId = Id };
+        IsFormVisible = true;
+    }
+
+    protected void StartEditClan(long id)
+    {
+        var clan = Clanovi?.FirstOrDefault(c => c.Id == id);
+        if (clan is null)
         {
-            var parameters = new DialogParameters
-            {
-                { "NewClan", new SocijalniNatjecajClanDto() },
-                { "ZahtjevId", Id }
-            };
-
-            var options = new DialogOptions
-            {
-                CloseButton = true,
-                MaxWidth = MaxWidth.Small,
-                FullWidth = true
-            };
-
-            var dialogReference = await DialogService.ShowAsync<ClanEditFormDialog>("Dodaj člana", parameters, options);
-            var result = await dialogReference.Result;
-
-            if (result is { Canceled: false, Data: SocijalniNatjecajClanDto noviClanDto })
-            {
-                await UnitOfWork.SocijalniZahtjevProcessorService.DodajClanaIObradiAsync(Id, noviClanDto);
-
-                Clanovi?.Add(noviClanDto);
-                Snackbar.Add("Član kućanstva je uspješno dodan!", Severity.Success);
-            }
+            Snackbar.Add("Greška: Član nije pronađen.", Severity.Error);
+            return;
         }
 
-        private async Task EditClan(long id)
+        IsEditMode = true;
+        CurrentClan = new SocijalniNatjecajClanDto
         {
-            var clanZaUrediti = Clanovi?.FirstOrDefault(c => c.Id == id);
-            if (clanZaUrediti is null)
+            Id = clan.Id,
+            ImePrezime = clan.ImePrezime,
+            Oib = clan.Oib,
+            Srodstvo = clan.Srodstvo,
+            DatumRodjenja = clan.DatumRodjenja,
+            ZahtjevId = Id
+        };
+        IsFormVisible = true;
+    }
+
+    protected async Task SubmitClanAsync(SocijalniNatjecajClanDto clan)
+    {
+        if (IsEditMode)
+        {
+            await UnitOfWork.SocijalniZahtjevProcessorService.UrediClanaIObradiAsync(clan);
+            if (Clanovi is not null)
             {
-                Snackbar.Add("Greška: Član nije pronađen.", Severity.Error);
-                return;
+                var index = Clanovi.FindIndex(c => c.Id == clan.Id);
+                if (index >= 0)
+                    Clanovi[index] = clan;
             }
-
-            var parameters = new DialogParameters
-            {
-                {
-                    "NewClan", new SocijalniNatjecajClanDto
-                    {
-                        Id = clanZaUrediti.Id,
-                        ImePrezime = clanZaUrediti.ImePrezime,
-                        Oib = clanZaUrediti.Oib,
-                        Srodstvo = clanZaUrediti.Srodstvo,
-                        DatumRodjenja = clanZaUrediti.DatumRodjenja,
-                        ZahtjevId = Id
-                    }
-                },
-                { "ZahtjevId", Id }
-            };
-
-            var options = new DialogOptions
-            {
-                CloseButton = true,
-                MaxWidth = MaxWidth.Small,
-                FullWidth = true
-            };
-
-            var dialogReference = await DialogService.ShowAsync<ClanEditFormDialog>("Uredi člana", parameters, options);
-            var result = await dialogReference.Result;
-
-            if (result is { Canceled: false, Data: SocijalniNatjecajClanDto azuriraniClan })
-            {
-                await UnitOfWork.SocijalniZahtjevProcessorService.UrediClanaIObradiAsync(azuriraniClan);
-
-                if (Clanovi != null)
-                {
-                    var index = Clanovi.FindIndex(c => c.Id == azuriraniClan.Id);
-                    if (index >= 0)
-                        Clanovi[index] = azuriraniClan;
-                }
-
-                Snackbar.Add("Član kućanstva je ažuriran.", Severity.Success);
-            }
+            Snackbar.Add("Član kućanstva je ažuriran.", Severity.Success);
+        }
+        else
+        {
+            await UnitOfWork.SocijalniZahtjevProcessorService.DodajClanaIObradiAsync(Id, clan);
+            Clanovi?.Add(clan);
+            Snackbar.Add("Član kućanstva je uspješno dodan!", Severity.Success);
         }
 
-        private async Task DeleteClan(long id)
+        IsFormVisible = false;
+        CurrentClan = new SocijalniNatjecajClanDto();
+    }
+
+    protected void CancelEdit()
+    {
+        IsFormVisible = false;
+        CurrentClan = new SocijalniNatjecajClanDto();
+    }
+
+    protected void PromptDeleteClan(long id)
+    {
+        DeletePendingId = id;
+    }
+
+    protected async Task ConfirmDeleteClanAsync()
+    {
+        if (DeletePendingId is null)
+            return;
+
+        try
         {
-            bool? confirmed = await DialogService.ShowMessageBox(
-                "Brisanje člana",
-                "Jeste li sigurni da želite obrisati ovog člana?",
-                "Da",
-                "Odustani",
-                options: new DialogOptions { CloseButton = true });
-
-            if (confirmed != true)
-                return;
-
-            try
-            {
-                await UnitOfWork.SocijalniZahtjevProcessorService.ObrisiClanaIObradiAsync(Id, id);
-
-                Clanovi?.RemoveAll(c => c.Id == id);
-                Snackbar.Add("Član kućanstva je obrisan.", Severity.Success);
-            }
-            catch (Exception ex)
-            {
-                Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
-            }
+            await UnitOfWork.SocijalniZahtjevProcessorService.ObrisiClanaIObradiAsync(Id, DeletePendingId.Value);
+            Clanovi?.RemoveAll(c => c.Id == DeletePendingId.Value);
+            Snackbar.Add("Član kućanstva je obrisan.", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
         }
 
-        protected override async Task OnInitializedAsync()
-        {
-            Zahtjev = await UnitOfWork.SocijalniZahtjevRead.GetDetaljiAsync(Id);
-            Clanovi = Zahtjev.Clanovi;
-        }
+        DeletePendingId = null;
+    }
+
+    protected void CancelDelete()
+    {
+        DeletePendingId = null;
     }
 }
