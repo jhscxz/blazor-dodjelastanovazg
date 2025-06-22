@@ -22,16 +22,16 @@ public class SocijalniBodoviRepository(IDbContextFactory<ApplicationDbContext> c
             .FirstOrDefaultAsync(z => z.Id == zahtjevId);
     }
 
-    public Task AddBodoviAsync(SocijalniNatjecajBodovi bodovi)
+    public async Task AddBodoviAsync(SocijalniNatjecajBodovi bodovi)
     {
         await using var context = _contextFactory.CreateDbContext();
         context.SocijalniNatjecajBodovi.Add(bodovi);
-        return Task.CompletedTask;
+        await context.SaveChangesAsync();
     }
 
-    public Task SaveChangesAsync()
+    public async Task SaveChangesAsync()
     {
         await using var context = _contextFactory.CreateDbContext();
-        return context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 }

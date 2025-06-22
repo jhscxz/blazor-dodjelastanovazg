@@ -21,16 +21,16 @@ public class NatjecajRepository(IDbContextFactory<ApplicationDbContext> contextF
         return await context.Natjecaji.ToListAsync();
     }
 
-    public Task AddAsync(Natjecaj natjecaj)
+    public async Task AddAsync(Natjecaj natjecaj)
     {
         await using var context = _contextFactory.CreateDbContext();
         context.Natjecaji.Add(natjecaj);
-        return Task.CompletedTask;
+        await context.SaveChangesAsync();
     }
 
-    public Task SaveChangesAsync()
+    public async Task SaveChangesAsync()
     {
         await using var context = _contextFactory.CreateDbContext();
-        return context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 }

@@ -32,10 +32,4 @@ public class UnitOfWork(
     public ISocijalniZahtjevWriteService SocijalniZahtjevWrite { get; } = socijalniZahtjevWriteService;
     public ISocijalniZahtjevProcessorService SocijalniZahtjevProcessorService { get; } = socijalniZahtjevProcessorService;
     private readonly IDbContextFactory<ApplicationDbContext> _contextFactory = contextFactory;
-
-    public async Task SaveChangesAsync()
-    {
-        await using var context = _contextFactory.CreateDbContext();
-        await context.SaveChangesAsync();
-    }
 }

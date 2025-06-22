@@ -18,6 +18,8 @@ public class SocijalniZahtjevWriteService(
     {
         logger.LogInformation("Creating zahtjev");
         
+        await using var context = contextFactory.CreateDbContext();
+        
         var natjecaj = await context.Natjecaji.FindAsync(zahtjev.NatjecajId)
                        ?? throw new Exception($"Natječaj {zahtjev.NatjecajId} nije pronađen.");
         if (natjecaj.IsClosed)
@@ -42,7 +44,6 @@ public class SocijalniZahtjevWriteService(
             IspunjavaUvjetPrihoda = true
         };
         auditService.ApplyAudit(prihod, true);
-        await using var context = contextFactory.CreateDbContext();
         
         await context.AddAsync(zahtjev);
         await context.AddAsync(prihod);

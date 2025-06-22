@@ -47,6 +47,7 @@ public sealed class SocijalniZahtjevProcessorService(
 
     private async Task EnsureNatjecajOpenForZahtjevAsync(long zahtjevId)
     {
+        await using var context = contextFactory.CreateDbContext();
         var info = await context.SocijalniNatjecajZahtjevi
             .Where(z => z.Id == zahtjevId)
             .Select(z => new { z.NatjecajId, z.Natjecaj!.IsClosed })
@@ -60,6 +61,8 @@ public sealed class SocijalniZahtjevProcessorService(
 
     private async Task EnsureNatjecajOpenAsync(long natjecajId)
     {
+        await using var context = contextFactory.CreateDbContext();
+        
         var isClosed = await context.Natjecaji
             .Where(n => n.Id == natjecajId)
             .Select(n => n.IsClosed)

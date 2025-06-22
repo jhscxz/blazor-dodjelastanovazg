@@ -1,4 +1,3 @@
-using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
 using DodjelaStanovaZG.Services.Interfaces;
 
@@ -16,9 +15,5 @@ namespace DodjelaStanovaZG.Infrastructure.Interfaces
         ISocijalniZahtjevReadService SocijalniZahtjevRead { get; }
         ISocijalniZahtjevWriteService SocijalniZahtjevWrite { get; }
         ISocijalniZahtjevProcessorService SocijalniZahtjevProcessorService { get; }
-
-
-
-        Task SaveChangesAsync();
     }
 }

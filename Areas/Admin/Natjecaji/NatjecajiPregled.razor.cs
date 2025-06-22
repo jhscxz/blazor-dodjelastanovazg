@@ -42,14 +42,12 @@ public class NatjecajiPregledBase : ComponentBase
     {
         natjecaj.Status = "Zaključen";
         await UnitOfWork.NatjecajiService.UpdateAsync(natjecaj.Klasa, natjecaj);
-        await UnitOfWork.SaveChangesAsync();
     }
 
     protected async Task Otkljucaj(NatjecajDto natjecaj)
     {
         natjecaj.Status = "Aktivan";
         await UnitOfWork.NatjecajiService.UpdateAsync(natjecaj.Klasa, natjecaj);
-        await UnitOfWork.SaveChangesAsync();
     }
     protected void OnVrstaChanged(string? vrsta)
     {
