@@ -13,7 +13,7 @@
     <MudContainer MaxWidth="MaxWidth.Small">
         @if (_model is null)
         {
-            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
         }
         else
         {
@@ -22,14 +22,14 @@
                     <MudForm @ref="_form" Model="@_model">
                         <MudGrid>
                             <MudItem xs="12" sm="6">
-                                <TextInput T="string" Label="Ime i prezime" @bind-Value="_model.ImePrezime" Required="true" Class="mb-4" />
+                                <TextInput T="string" Label="Ime i prezime" @bind-Value="_model.ImePrezime" Required="true" Class="mb-4"/>
                             </MudItem>
                             <MudItem xs="12" sm="6">
-                                <TextInput T="string" Label="OIB" @bind-Value="_model.Oib" Class="mb-4" />
+                                <TextInput T="string" Label="OIB" @bind-Value="_model.Oib" For="@(() => _model.Oib)" Class="mb-4"/>
                             </MudItem>
 
                             <MudItem xs="12">
-                                <DateInput Label="Datum rođenja" @bind-Value="_datumRodjenja" Required="true" />
+                                <DateInput Label="Datum rođenja" @bind-Value="_datumRodjenja" Required="true"/>
                             </MudItem>
 
                             <MudItem xs="12">
@@ -40,13 +40,13 @@
                                                 Label="Srodstvo"
                                                 Required="true"
                                                 Filter="item => item != Srodstvo.PodnositeljZahtjeva"
-                                                Placeholder="Odaberi..." />
+                                                Placeholder="Odaberi..."/>
                                 }
                             </MudItem>
 
                         </MudGrid>
 
-                        <FormButtons Submit="Submit" Cancel="Cancel" />
+                        <FormButtons Submit="Submit" Cancel="Cancel"/>
 
                     </MudForm>
                 </MudCardContent>

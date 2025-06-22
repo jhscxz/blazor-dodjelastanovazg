@@ -36,7 +36,8 @@ public class SocijalniZahtjevReadService(
         dto.Clanovi = entity.Clanovi.Select(c => c.ToDto()).ToList();
         dto.KucanstvoPodaci = entity.KucanstvoPodaci?.ToDto();
         dto.BodovniPodaci = entity.BodovniPodaci?.ToDto();
-
+        dto.RowVersion = entity.RowVersion;
+        
         dto.CreatedBy = entity.CreatedByUser?.NormalizedUserName;
         dto.UpdatedBy = entity.UpdatedByUser?.NormalizedUserName;
 

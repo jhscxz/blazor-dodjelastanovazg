@@ -39,7 +39,7 @@
             <!-- Treći red: OIB i Email -->
             <MudGrid>
                 <MudItem xs="12" sm="6">
-                    <TextInput T="string" Label="OIB" @bind-Value="ZahtjevModel.Oib" Class="mb-4"/>
+                    <TextInput T="string" Label="OIB"  @bind-Value="ZahtjevModel.Oib" For="@(() => ZahtjevModel.Oib)" Class="mb-4"/>
                 </MudItem>
                 <MudItem xs="12" sm="6">
                     <TextInput T="string" Label="Email" @bind-Value="ZahtjevModel.Email" Required="true"

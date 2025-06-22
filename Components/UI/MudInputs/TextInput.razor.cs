@@ -8,6 +8,7 @@ public partial class TextInput<T> : ComponentBase
 {
     [Parameter] public T? Value { get; set; }
     [Parameter] public EventCallback<T?> ValueChanged { get; set; }
+    [Parameter] public Expression<Func<T?>> For { get; set; } = default!;
     [Parameter] public Expression<Func<T?>>? ValueExpression { get; set; }
     [Parameter] public string Label { get; set; } = string.Empty;
     [Parameter] public bool Required { get; set; }
@@ -20,14 +21,9 @@ public partial class TextInput<T> : ComponentBase
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
-    protected T? CurrentValue
+    private async Task OnValueChanged(T newValue)
     {
-        get => Value;
-        set
-        {
-            if (EqualityComparer<T?>.Default.Equals(value, Value)) return;
-            Value = value;
-            ValueChanged.InvokeAsync(value);
-        }
+        Value = newValue;                      
+        await ValueChanged.InvokeAsync(newValue); 
     }
 }

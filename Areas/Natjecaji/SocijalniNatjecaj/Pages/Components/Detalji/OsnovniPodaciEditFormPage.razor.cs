@@ -39,6 +39,7 @@ public partial class OsnovniPodaciEditFormPage
             NapomenaObrade = zahtjev.NapomenaObrade,
             Email = zahtjev.Email,
             NatjecajId = zahtjev.NatjecajId,
+            RowVersion = zahtjev.RowVersion,
         };
 
         _toggleRezultat = (int?)_socijalniNatjecajModel.RezultatObrade;

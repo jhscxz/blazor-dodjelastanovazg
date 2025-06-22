@@ -37,6 +37,7 @@ public static partial class MappingExtensions
                 src => src.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)!.ImePrezime)
             .Map(dest => dest.Oib,
                 src => src.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)!.Oib)
+            .Map(dest => dest.RowVersion, src => src.RowVersion)
             .Map(dest => dest.Prihod,
                 src => src.KucanstvoPodaci!.Prihod!)
             .Map(dest => dest.PodnositeljIznad55,

@@ -75,6 +75,9 @@ public class SocijalniZahtjevWriteService(
         dto.MapOnto(zahtjev);
         auditService.ApplyAudit(zahtjev, false);
 
+        if (dto.RowVersion is not null)
+            context.Entry(zahtjev).Property(z => z.RowVersion).OriginalValue = dto.RowVersion;
+        
         await SaveAsync(context);
         logger.LogInformation("Updated osnovne podatke zahtjeva {Id}", zahtjevId);
     }

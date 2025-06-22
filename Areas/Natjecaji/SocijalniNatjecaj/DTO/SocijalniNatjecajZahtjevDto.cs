@@ -25,6 +25,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
         public RezultatObrade? RezultatObrade { get; set; }
         public string? NapomenaObrade { get; set; }
         public long NatjecajId { get; set; }
+        public byte[]? RowVersion { get; set; }
         public SocijalniPrihodDto? Prihod { get; set; }
         public SocijalniNatjecajBodovi? Bodovi { get; set; } 
         public List<SocijalniNatjecajClanDto>? Clanovi { get; set; }
