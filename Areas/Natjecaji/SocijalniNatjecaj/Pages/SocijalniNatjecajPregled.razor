@@ -8,46 +8,23 @@
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudPaper Outlined="true" Class="pa-4">
 
-        <div class="flex items-center gap-4 mb-4">
-            <MudButton OnClick="@AddZahtjev"
-                       Variant="Variant.Filled"
-                       Color="Color.Default"
-                       IconColor="Color.Success"
-                       DropShadow="false"
-                       StartIcon="@Icons.Material.Filled.Add"
-                       Style="padding: 10px 18px;">
-                DODAJ
-            </MudButton>
-
-            <div class="flex-1">
-                <MudTextField Label="Pretraga zahtjeva"
-                              Value="@SearchText"
-                              ValueChanged="@(EventCallback.Factory.Create<string>(this, OnSearchChanged)!)"
-                              Immediate="true"
-                              DebounceInterval="300"
-                              Variant="Variant.Outlined"
-                              Margin="Margin.Dense"
-                              Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Filled.Search"
-                              Class="w-full" />
-            </div>
-
-            <div class="flex-none w-[160px]">
-                <MudSelect T="RezultatObrade?" Label="Osnovanost"
-                           Value="@SelectedOsnovanost"
-                           ValueChanged="@(EventCallback.Factory.Create<RezultatObrade?>(this, OnOsnovanostChanged))"
-                           Variant="Variant.Outlined"
-                           Margin="Margin.Dense"
-                           Dense="true"
-                           Class="w-[200px]">
-                    <MudSelectItem T="RezultatObrade?" Value="null">Svi</MudSelectItem>
-                    <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Nepotpun">Nepotpun</MudSelectItem>
-                    <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Neosnovan">Neosnovan</MudSelectItem>
-                    <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Osnovan">Osnovan</MudSelectItem>
-                    <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Greška">Greška</MudSelectItem>
-                </MudSelect>
-            </div>
-        </div>
+        <ListHeader TFilter="RezultatObrade?"
+                    AddButtonText="DODAJ"
+                    OnAdd="AddZahtjev"
+                    SearchLabel="Pretraga zahtjeva"
+                    SearchText="@SearchText"
+                    OnSearchChanged="OnSearchChanged"
+                    FilterLabel="Osnovanost"
+                    FilterValue="@SelectedOsnovanost"
+                    OnFilterChanged="OnOsnovanostChanged">
+            <FilterOptions>
+                <MudSelectItem T="RezultatObrade?" Value="null">Svi</MudSelectItem>
+                <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Nepotpun">Nepotpun</MudSelectItem>
+                <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Neosnovan">Neosnovan</MudSelectItem>
+                <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Osnovan">Osnovan</MudSelectItem>
+                <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Greška">Greška</MudSelectItem>
+            </FilterOptions>
+        </ListHeader>
 
         <MudTable T="SocijalniNatjecajZahtjevDto"
                   ServerData="LoadServerData"
@@ -75,7 +52,7 @@
                 <MudTd>
                     <MudIconButton Icon="@GetExpandIcon(context)"
                                    OnClick="@(() => ToggleExpand(context.Id))"
-                                   Size="Size.Small" />
+                                   Size="Size.Small"/>
                 </MudTd>
                 <MudTd>@context.KlasaPredmeta</MudTd>
                 <MudTd>@FormatString(context.ImePrezime)</MudTd>
@@ -85,7 +62,7 @@
                 <MudTd>
                     <MudIconButton Icon="@Icons.Material.Filled.Info"
                                    Size="Size.Small"
-                                   OnClick="@(() => NavigateToDetails(context))" />
+                                   OnClick="@(() => NavigateToDetails(context))"/>
                 </MudTd>
             </RowTemplate>
 
@@ -97,7 +74,7 @@
                         <MudPaper Elevation="0"
                                   Class="pa-4 rounded-lg"
                                   Style="background-color: #f5f5f5;">
-                            <SocijalniZahtjevPregledContent Model="context" />
+                            <SocijalniZahtjevPregledContent Model="context"/>
                         </MudPaper>
                     </MudTd>
                 }
@@ -105,7 +82,7 @@
 
 
             <PagerContent>
-                <MudTablePager />
+                <MudTablePager/>
             </PagerContent>
 
         </MudTable>

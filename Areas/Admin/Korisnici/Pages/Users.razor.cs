@@ -29,7 +29,7 @@ public partial class Users : ComponentBase
         await _table.ReloadServerData();
     }
 
-    private async Task OnFilterRoleChanged(string newRole)
+    private async Task OnFilterRoleChanged(string? newRole)
     {
         FilterRole = newRole;
         await _table.ReloadServerData();

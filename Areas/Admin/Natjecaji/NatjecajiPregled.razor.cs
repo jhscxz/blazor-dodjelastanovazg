@@ -51,4 +51,8 @@ public class NatjecajiPregledBase : ComponentBase
         await UnitOfWork.NatjecajiService.UpdateAsync(natjecaj.Klasa, natjecaj);
         await UnitOfWork.SaveChangesAsync();
     }
+    protected void OnVrstaChanged(string? vrsta)
+    {
+        OdabranaVrsta = string.IsNullOrWhiteSpace(vrsta) ? null : vrsta;
+    }
 }

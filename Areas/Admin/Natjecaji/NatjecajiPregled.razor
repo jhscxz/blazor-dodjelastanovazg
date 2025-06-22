@@ -10,30 +10,17 @@
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudPaper Outlined="true" Class="pa-4">
 
-        <div class="flex items-center gap-4 mb-4">
-            <MudButton OnClick="@KreirajNatjecaj"
-                       Variant="Variant.Filled"
-                       Color="Color.Default"
-                       IconColor="Color.Success"
-                       DropShadow="false"
-                       StartIcon="@Icons.Material.Filled.Add"
-                       Style="padding: 10px 18px;">
-                Dodaj natječaj
-            </MudButton>
-
-            <div class="flex-none w-[200px]">
-                <MudSelect T="string"
-                           Label="Vrsta:"
-                           @bind-Value="OdabranaVrsta"
-                           Variant="Variant.Outlined"
-                           Margin="Margin.Dense"
-                           Dense="true"
-                           Class="w-full">
-                    <MudSelectItem Value="@("Socijalni")">Socijalni</MudSelectItem>
-                    <MudSelectItem Value="@("Priuštivi")">Priuštivi</MudSelectItem>
-                </MudSelect>
-            </div>
-        </div>
+    <ListHeader TFilter="string"
+                AddButtonText="Dodaj natječaj"
+                OnAdd="KreirajNatjecaj"
+                FilterLabel="Vrsta:"
+                FilterValue="@OdabranaVrsta"
+                OnFilterChanged="OnVrstaChanged">
+    <FilterOptions>
+        <MudSelectItem Value="@("Socijalni")">Socijalni</MudSelectItem>
+        <MudSelectItem Value="@("Priuštivi")">Priuštivi</MudSelectItem>
+                              </FilterOptions>
+                              </ListHeader>
 
         <MudTable T="NatjecajDto"
                   Items="FilteredNatjecaji"

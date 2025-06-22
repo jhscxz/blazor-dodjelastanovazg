@@ -10,46 +10,23 @@
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudPaper Outlined="true" Class="pa-4">
 
-        <div class="flex items-center gap-4 mb-4">
-            <MudButton OnClick="@AddUser"
-                       Variant="Variant.Filled"
-                       Color="Color.Default"
-                       IconColor="Color.Success"
-                       DropShadow="false"
-                       StartIcon="@Icons.Material.Filled.Add"
-                       Style="padding: 10px 18px;">
-                Dodaj
-            </MudButton>
-
-            <div class="flex-1">
-                <MudTextField Label="Pretraga korisnika"
-                              Value="@SearchText"
-                              ValueChanged="@(EventCallback.Factory.Create<string>(this, OnValueChanged))"
-                              Immediate="true"
-                              DebounceInterval="300"
-                              Variant="Variant.Outlined"
-                              Margin="Margin.Dense"
-                              Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Filled.Search"
-                              Class="w-full" />
-            </div>
-
-            <div class="flex-none w-[120px]">
-                <MudSelect T="string"
-                           Label="Role:"
-                           Value="@FilterRole"
-                           ValueChanged="@(EventCallback.Factory.Create<string>(this, OnFilterRoleChanged))"
-                           Variant="Variant.Outlined"
-                           Margin="Margin.Dense"
-                           Dense="true"
-                           Class="w-full">
-                    <MudSelectItem Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
-                    <MudSelectItem Value="@RoleNames.Referent">@RoleNames.Referent</MudSelectItem>
-                    <MudSelectItem Value="@RoleNames.ReferentReadOnly">@RoleNames.ReferentReadOnly</MudSelectItem>
-                    <MudSelectItem Value="@RoleNames.Management">@RoleNames.Management</MudSelectItem>
-                </MudSelect>
-            </div>
-        </div>
+        <ListHeader TFilter="string"
+                    AddButtonText="Dodaj"
+                    OnAdd="AddUser"
+                    SearchLabel="Pretraga korisnika"
+                    SearchText="@SearchText"
+                    OnSearchChanged="OnValueChanged"
+                    FilterLabel="Role:"
+                    FilterValue="@FilterRole"
+                    OnFilterChanged="OnFilterRoleChanged"
+                    FilterWidthClass="w-[120px]">
+            <FilterOptions>
+                <MudSelectItem Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
+                <MudSelectItem Value="@RoleNames.Referent">@RoleNames.Referent</MudSelectItem>
+                <MudSelectItem Value="@RoleNames.ReferentReadOnly">@RoleNames.ReferentReadOnly</MudSelectItem>
+                <MudSelectItem Value="@RoleNames.Management">@RoleNames.Management</MudSelectItem>
+            </FilterOptions>
+        </ListHeader>
 
         <MudTable T="UserDto"
                   ServerData="LoadUsers"
@@ -92,7 +69,7 @@
             </RowTemplate>
 
             <PagerContent>
-                <MudTablePager />
+                <MudTablePager/>
             </PagerContent>
         </MudTable>
     </MudPaper>
