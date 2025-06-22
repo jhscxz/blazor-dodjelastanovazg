@@ -3,6 +3,8 @@
 @using MudBlazor
 @using DodjelaStanovaZG.Components.UI
 
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
+
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudGrid Justify="Justify.Center">
         <MudItem xs="12" sm="10" md="6" lg="4">

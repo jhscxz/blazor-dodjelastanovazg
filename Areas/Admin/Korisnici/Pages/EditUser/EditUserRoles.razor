@@ -1,6 +1,8 @@
 @using Microsoft.AspNetCore.Authorization
 @using MudBlazor
 
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
+
 @if (ErrorMessages?.Count > 0)
 {
     <MudAlert Severity="Severity.Error" Elevation="0" Class="mb-4">
