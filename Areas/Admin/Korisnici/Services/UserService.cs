@@ -11,7 +11,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
         Task<bool> DeleteUserAsync(UserManager<IdentityUser> userManager, string userId);
     }
 
-    public class UserService : IUserService
+    public class UserService(ILogger<UserService> logger) : IUserService
     {
         public async Task<TableData<UserDto>> GetUsersAsync(
             UserManager<IdentityUser> userManager,
@@ -20,6 +20,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
             TableState state,
             CancellationToken cancellationToken)
         {
+            logger.LogDebug("Fetching users (search: {SearchText}, role: {Role})", searchText, filterRole);
             var query = userManager.Users.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchText))
@@ -35,6 +36,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
             }
 
             int totalItems = await query.CountAsync(cancellationToken);
+            logger.LogDebug("Total users after filtering: {Count}", totalItems);
 
             // Paginacija i dohvat
             var userEntities = await query
@@ -61,6 +63,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
                 });
             }
 
+            logger.LogDebug("Returning {Count} users", users.Count);
             return new TableData<UserDto>
             {
                 Items = users,
@@ -71,8 +74,18 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Services
         public async Task<bool> DeleteUserAsync(UserManager<IdentityUser> userManager, string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
-            if (user == null) return false;
+            if (user == null)
+            {
+                logger.LogWarning("User {UserId} not found for deletion", userId);
+                return false;
+            }
+
             var result = await userManager.DeleteAsync(user);
+            if (result.Succeeded)
+                logger.LogInformation("Deleted user {UserId}", userId);
+            else
+                logger.LogError("Failed to delete user {UserId}", userId);
+
             return result.Succeeded;
         }
     }

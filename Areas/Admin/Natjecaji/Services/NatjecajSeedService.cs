@@ -7,15 +7,20 @@ namespace DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 public class NatjecajSeedService
 {
     private readonly ApplicationDbContext _context;
-
-    public NatjecajSeedService(ApplicationDbContext context)
+    private readonly ILogger<NatjecajSeedService> _logger;
+    public NatjecajSeedService(ApplicationDbContext context, ILogger<NatjecajSeedService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task SeedNatjecajiAsync()
     {
-        if (await _context.Natjecaji.AnyAsync()) return;
+        if (await _context.Natjecaji.AnyAsync())
+        {
+            _logger.LogInformation("Natječaji već postoje, preskačem seeding.");
+            return;
+        }
 
         var lista = new List<Natjecaj>
         {
@@ -45,5 +50,6 @@ public class NatjecajSeedService
 
         _context.Natjecaji.AddRange(lista);
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Dodano {Count} natječaja u bazu.", lista.Count);
     }
 }
