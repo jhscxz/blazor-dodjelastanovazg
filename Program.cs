@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using System.Globalization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using MudBlazor;
 
@@ -20,7 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     {
         options.User.RequireUniqueEmail = true;
-        options.SignIn.RequireConfirmedAccount = false;
+        options.SignIn.RequireConfirmedAccount = true;
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -47,9 +48,14 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/");
     options.Conventions.AllowAnonymousToPage("/Identity/Account/Login");
+    options.Conventions.AllowAnonymousToPage("/Identity/Account/Register");
+    options.Conventions.AllowAnonymousToPage("/Identity/Account/RegisterConfirmation");
+    options.Conventions.AllowAnonymousToPage("/Identity/Account/ConfirmEmail");
+    options.Conventions.AllowAnonymousToPage("/Identity/Account/ResendEmailConfirmation");
 });
 
 builder.Services.AddApplicationServices();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 _ = typeof(DodjelaStanovaZG.Helpers.MappingExtensions);
 

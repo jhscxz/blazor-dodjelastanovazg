@@ -1,5 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
+
 #nullable disable
 
 using System;
@@ -116,14 +117,28 @@ namespace DodjelaStanovaZG.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
+
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
+
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
+                }
+
+                if (result.IsNotAllowed)
+                {
+                    var user = await _signInManager.UserManager.FindByNameAsync(Input.UserName);
+                    if (user != null && !await _signInManager.UserManager.IsEmailConfirmedAsync(user))
+                    {
+                        return RedirectToPage("RegisterConfirmation", new { email = user.Email });
+                    }
+
+                    ModelState.AddModelError(string.Empty, "Prijava nije dozvoljena.");
+                    return Page();
                 }
                 else
                 {

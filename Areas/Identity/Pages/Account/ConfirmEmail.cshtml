@@ -1,0 +1,22 @@
+@page
+@model DodjelaStanovaZG.Areas.Identity.Pages.Account.ConfirmEmailModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+    ViewData["Title"] = "Potvrda e-maila";
+}
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="~/css/output.css" rel="stylesheet"/>
+    <title>@ViewData["Title"]</title>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<div class="w-full max-w-md bg-white shadow-sm rounded p-6 border border-gray-300 hover:border-gray-400">
+    <h2 class="text-xl font-semibold text-gray-800 text-center mb-4">Potvrda e-maila</h2>
+    <p class="text-gray-700">@Model.StatusMessage</p>
+</div>
+</body>
+</html>
