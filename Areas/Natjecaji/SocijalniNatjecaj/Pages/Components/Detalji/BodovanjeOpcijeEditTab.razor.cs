@@ -27,10 +27,17 @@ public class BodovanjeOpcijeEditTabBase : ComponentBase
     {
         if (Model is null) return;
 
-        await UnitOfWork.SocijalniZahtjevProcessorService.SpremiBodovnePodatkeIObradiAsync(Id, Model);
+        try
+        {
+            await UnitOfWork.SocijalniZahtjevProcessorService.SpremiBodovnePodatkeIObradiAsync(Id, Model);
 
-        Snackbar.Add("Podaci uspješno spremljeni.", Severity.Success);
-        Navigation.NavigateTo($"/socijalni/detalji/{Id}?tab=Bodovi");
+            Snackbar.Add("Podaci uspješno spremljeni.", Severity.Success);
+            Navigation.NavigateTo($"/socijalni/detalji/{Id}?tab=Bodovi");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
+        }
     }
     
     protected void Cancel()

@@ -71,10 +71,17 @@ public partial class OsnovniPodaciEditFormPage
         if (_toggleRezultat.HasValue)
             _socijalniNatjecajModel.RezultatObrade = (RezultatObrade)_toggleRezultat.Value;
 
-        await UnitOfWork.SocijalniZahtjevProcessorService
-            .AzurirajOsnovnoIObradiAsync(ZahtjevId, _socijalniNatjecajModel);
+        try
+        {
+            await UnitOfWork.SocijalniZahtjevProcessorService
+                .AzurirajOsnovnoIObradiAsync(ZahtjevId, _socijalniNatjecajModel);
 
-        Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=OsnovniPodaci");
+            Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=OsnovniPodaci");
+        }
+        catch (Exception ex)
+        {
+            _errorMessages.Add($"Greška: {ex.Message}");
+        }
     }
 
     private void Cancel()

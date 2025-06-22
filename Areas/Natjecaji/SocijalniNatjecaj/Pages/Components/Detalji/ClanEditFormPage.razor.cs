@@ -67,13 +67,22 @@ public partial class ClanEditFormPage : ComponentBase
             ? DateOnly.FromDateTime(_datumRodjenja.Value)
             : default;
 
-        if (ClanId.HasValue)
+        try
         {
-            await UnitOfWork.SocijalniZahtjevProcessorService.UrediClanaIObradiAsync(_model);
+            if (ClanId.HasValue)
+            {
+                await UnitOfWork.SocijalniZahtjevProcessorService.UrediClanaIObradiAsync(_model);
+            }
+            else
+            {
+                await UnitOfWork.SocijalniZahtjevProcessorService.DodajClanaIObradiAsync(ZahtjevId, _model);
+            }
+
+            Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=Clanovi");
         }
-        else
+        catch (Exception ex)
         {
-            await UnitOfWork.SocijalniZahtjevProcessorService.DodajClanaIObradiAsync(ZahtjevId, _model);
+            Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
         }
 
         Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=Clanovi");
