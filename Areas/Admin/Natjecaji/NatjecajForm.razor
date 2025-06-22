@@ -8,78 +8,70 @@
 @attribute [Authorize(Policy = "ImaPristupAdmin")]
 
 <Container BreadcrumbItems="BreadcrumbItems">
-    <MudGrid Justify="Justify.Center">
-        <MudItem xs="12" sm="10" md="6" lg="5">
-            <MudCard Outlined="true" Class="pa-6 border border-gray-300">
-                <MudCardContent>
+    <FormCard Title="@FormTitle" Xs="12" Sm="10" Md="6" Lg="5" CardClass="pa-6 border border-gray-300">
 
-                    <MudText Typo="Typo.h6" Class="mb-4">@FormTitle</MudText>
+        <MudForm @ref="_form" Model="@Natjecaj" Valid="OnValidSubmit">
 
-                    <MudForm @ref="_form" Model="@Natjecaj" Valid="OnValidSubmit">
+            <MudSelect T="string"
+                       Label="Vrsta natječaja"
+                       @bind-Value="Natjecaj.Vrsta"
+                       Required="true"
+                       Variant="Variant.Outlined"
+                       Margin="Margin.Dense"
+                       Class="mb-4">
+                <MudSelectItem Value="@("Socijalni")">Socijalni</MudSelectItem>
+                <MudSelectItem Value="@("Priuštivi")">Priuštivi</MudSelectItem>
+            </MudSelect>
 
-                        <MudSelect T="string"
-                                   Label="Vrsta natječaja"
-                                   @bind-Value="Natjecaj.Vrsta"
-                                   Required="true"
-                                   Variant="Variant.Outlined"
-                                   Margin="Margin.Dense"
-                                   Class="mb-4">
-                            <MudSelectItem Value="@("Socijalni")">Socijalni</MudSelectItem>
-                            <MudSelectItem Value="@("Priuštivi")">Priuštivi</MudSelectItem>
-                        </MudSelect>
+            <MudTextField T="int"
+                          Label="Klasa"
+                          @bind-Value="Natjecaj.Klasa"
+                          Required="true"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Class="mb-4"
+                          Autocomplete="off"
+                          ShrinkLabel="true"/>
 
-                        <MudTextField T="int"
-                                      Label="Klasa"
-                                      @bind-Value="Natjecaj.Klasa"
-                                      Required="true"
-                                      Variant="Variant.Outlined"
-                                      Margin="Margin.Dense"
-                                      Class="mb-4"
-                                      Autocomplete="off"
-                                      ShrinkLabel="true" />
+            <MudTextField T="decimal"
+                          Label="Prosjek plaće (€)"
+                          @bind-Value="Natjecaj.ProsjekPlace"
+                          Required="true"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Class="mb-4"
+                          Autocomplete="off"
+                          ShrinkLabel="true"/>
 
-                        <MudTextField T="decimal"
-                                      Label="Prosjek plaće (€)"
-                                      @bind-Value="Natjecaj.ProsjekPlace"
-                                      Required="true"
-                                      Variant="Variant.Outlined"
-                                      Margin="Margin.Dense"
-                                      Class="mb-4"
-                                      Autocomplete="off"
-                                      ShrinkLabel="true" />
+            <MudDatePicker Label="Datum objave"
+                           @bind-Date="Natjecaj.DatumObjaveDateTime"
+                           DateFormat="dd.MM.yyyy."
+                           Required="true"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="mb-4"/>
 
-                        <MudDatePicker Label="Datum objave"
-                                       @bind-Date="Natjecaj.DatumObjaveDateTime"
-                                       DateFormat="dd.MM.yyyy."
-                                       Required="true"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense"
-                                       Class="mb-4" />
+            <MudDatePicker Label="Rok za prijavu"
+                           @bind-Date="Natjecaj.RokZaPrijavuDateTime"
+                           DateFormat="dd.MM.yyyy."
+                           Required="true"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Class="mb-4"/>
 
-                        <MudDatePicker Label="Rok za prijavu"
-                                       @bind-Date="Natjecaj.RokZaPrijavuDateTime"
-                                       DateFormat="dd.MM.yyyy."
-                                       Required="true"
-                                       Variant="Variant.Outlined"
-                                       Margin="Margin.Dense"
-                                       Class="mb-4" />
+            <MudSelect T="string"
+                       Label="Status"
+                       @bind-Value="Natjecaj.Status"
+                       Required="true"
+                       Variant="Variant.Outlined"
+                       Margin="Margin.Dense"
+                       Class="mb-4">
+                <MudSelectItem Value="@("Aktivan")">Aktivan</MudSelectItem>
+                <MudSelectItem Value="@("Zaključen")">Zaključen</MudSelectItem>
+            </MudSelect>
 
-                        <MudSelect T="string"
-                                   Label="Status"
-                                   @bind-Value="Natjecaj.Status"
-                                   Required="true"
-                                   Variant="Variant.Outlined"
-                                   Margin="Margin.Dense"
-                                   Class="mb-4">
-                            <MudSelectItem Value="@("Aktivan")">Aktivan</MudSelectItem>
-                            <MudSelectItem Value="@("Zaključen")">Zaključen</MudSelectItem>
-                        </MudSelect>
+            <FormButtons Submit="SubmitForm" Cancel="Povratak"/>
 
-                        <FormButtons Submit="SubmitForm" Cancel="Povratak" />
-
-                    </MudForm>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-    </MudGrid>
+        </MudForm>
+    </FormCard>
 </Container>

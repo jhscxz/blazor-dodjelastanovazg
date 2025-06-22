@@ -7,40 +7,32 @@
 @attribute [Authorize(Policy = "ImaPristupAdmin")]
 
 <Container BreadcrumbItems="BreadcrumbItems">
-    <MudGrid Justify="Justify.Center">
-        <MudItem xs="12" sm="10" md="6" lg="4">
-            <MudCard Outlined="true" Class="pa-6 border border-gray-300">
-                <MudCardContent>
-                    <ErrorAlert Messages="ErrorMessages" />
+    <FormCard Xs="12" Sm="10" Md="6" Lg="4" CardClass="pa-6 border border-gray-300" ErrorMessages="ErrorMessages">
+        <MudForm @ref="_addForm" Model="UserModel">
+            <MudTextField ShrinkLabel T="string" Label="Korisničko ime"
+                          @bind-Value="UserModel.UserName"
+                          Required="true" Variant="Variant.Outlined"
+                          Margin="Margin.Dense" Autocomplete="off"
+                          Class="mb-4"/>
 
-                    <MudForm @ref="_addForm" Model="UserModel">
-                        <MudTextField ShrinkLabel T="string" Label="Korisničko ime"
-                                      @bind-Value="UserModel.UserName"
-                                      Required="true" Variant="Variant.Outlined"
-                                      Margin="Margin.Dense" Autocomplete="off"
-                                      Class="mb-4" />
+            <MudTextField ShrinkLabel T="string" Label="Email"
+                          @bind-Value="UserModel.Email"
+                          Required="true" Variant="Variant.Outlined"
+                          Margin="Margin.Dense" Autocomplete="off"
+                          Class="mb-4"/>
 
-                        <MudTextField ShrinkLabel T="string" Label="Email"
-                                      @bind-Value="UserModel.Email"
-                                      Required="true" Variant="Variant.Outlined"
-                                      Margin="Margin.Dense" Autocomplete="off"
-                                      Class="mb-4" />
+            <!-- Lozinka -->
+            <MudTextField ShrinkLabel T="string"
+                          Label="Lozinka"
+                          @bind-Value="UserModel.Password"
+                          InputType="InputType.Password"
+                          Required="true"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Autocomplete="new-password"
+                          Class="mb-4"/>
 
-                        <!-- Lozinka -->
-                        <MudTextField ShrinkLabel T="string"
-                                      Label="Lozinka"
-                                      @bind-Value="UserModel.Password"
-                                      InputType="InputType.Password"
-                                      Required="true"
-                                      Variant="Variant.Outlined"
-                                      Margin="Margin.Dense"
-                                      Autocomplete="new-password"
-                                      Class="mb-4" />
-
-                        <FormButtons Submit="SubmitForm" Cancel="Cancel" />
-                    </MudForm>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-    </MudGrid>
+            <FormButtons Submit="SubmitForm" Cancel="Cancel"/>
+        </MudForm>
+    </FormCard>
 </Container>

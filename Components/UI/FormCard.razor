@@ -1,0 +1,27 @@
+@using MudBlazor
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="@Xs" sm="@Sm" md="@Md" lg="@Lg">
+        <MudCard Outlined="true" Class="@CardClass" Style="@CardStyle">
+            <MudCardContent>
+                @if (!string.IsNullOrWhiteSpace(Title))
+                {
+                    <MudText Typo="Typo.h6" Class="mb-4">@Title</MudText>
+                }
+
+                @if (ErrorMessages?.Any() == true)
+                {
+                    <MudAlert Severity="Severity.Error" Elevation="0" Class="mb-4">
+                        <ul>
+                            @foreach (var msg in ErrorMessages)
+                            {
+                                <li>@msg</li>
+                            }
+                        </ul>
+                    </MudAlert>
+                }
+
+                @ChildContent
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
