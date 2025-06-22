@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using DodjelaStanovaZG.Services;
@@ -17,14 +18,8 @@ public partial class ResetPassword : ComponentBase
     private MudForm _form = null!;
     private readonly ResetPasswordDto _resetPasswordModel = new();
     private readonly List<string> _errorMessages = [];
-    
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
-        new() { Text = "Korisnici", Url = "/admin/users" },
-        new() { Text = "Promijeni lozinku", CssClass = "text-red-500 font-bold" }
-    ];
+
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.AdminUserResetPassword();
 
     protected override async Task OnInitializedAsync()
     {

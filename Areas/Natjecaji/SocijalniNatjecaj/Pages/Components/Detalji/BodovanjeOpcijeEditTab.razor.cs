@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -14,18 +15,12 @@ public class BodovanjeOpcijeEditTabBase : ComponentBase
     [Inject] protected NavigationManager Navigation { get; set; } = null!;
     protected SocijalniNatjecajBodovniPodaciDto? Model { get; set; }
     
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Socijalni natječaji", Url = "/socijalni-natjecaj" },
-        new() { Text = "Detalji zahtjeva", Url = "" },
-        new() { Text = "Uredi bodovne podatke", CssClass = "text-red-500 font-bold" }
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
+        BreadcrumbItems = BreadcrumbProvider.ZahtjevEdit(Id, "Uredi bodovne podatke");
         Model = await UnitOfWork.SocijalniBodovniPodaciService.GetAsync(Id);
-        BreadcrumbItems[2].Url = $"/socijalni/detalji/{Id}";
     }
 
     protected async Task SaveChanges()

@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -19,12 +20,7 @@ public class NatjecajiPregledBase : ComponentBase
         ? Natjecaji
         : Natjecaji.Where(x => x.Vrsta == OdabranaVrsta).ToList();
 
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
-        new() { Text = "Natječaji", CssClass = "text-red-500 font-bold" },
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.AdminNatjecajiPregled();
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,7 +45,7 @@ public class NatjecajiPregledBase : ComponentBase
         await UnitOfWork.SaveChangesAsync();
     }
 
-    protected async Task  Otkljucaj(NatjecajDto natjecaj)
+    protected async Task Otkljucaj(NatjecajDto natjecaj)
     {
         natjecaj.Status = "Aktivan";
         await UnitOfWork.NatjecajiService.UpdateAsync(natjecaj.Klasa, natjecaj);

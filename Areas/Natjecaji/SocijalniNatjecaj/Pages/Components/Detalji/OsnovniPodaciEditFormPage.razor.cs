@@ -3,6 +3,7 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -20,17 +21,12 @@ public partial class OsnovniPodaciEditFormPage
     private MudForm? _form;
     private readonly List<string> _errorMessages = [];
     private int? _toggleRezultat;
-
-    private List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Socijalni natječaji", Url = "/socijalni-natjecaj" },
-        new() { Text = "Detalji zahtjeva", Url = "" },
-        new() { Text = "Uredi osnovne podatke", CssClass = "text-red-500 font-bold" }
-    ];
+    private List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
+        BreadcrumbItems = BreadcrumbProvider.ZahtjevEdit(ZahtjevId, "Uredi osnovne podatke");
+        
         var zahtjev = await UnitOfWork.SocijalniZahtjevRead.GetDetaljiAsync(ZahtjevId);
 
         _socijalniNatjecajModel = new SocijalniNatjecajOsnovnoEditDto
@@ -46,7 +42,6 @@ public partial class OsnovniPodaciEditFormPage
         };
 
         _toggleRezultat = (int?)_socijalniNatjecajModel.RezultatObrade;
-        BreadcrumbItems[2].Url = $"/socijalni/detalji/{ZahtjevId}";
     }
 
     private async Task Submit()

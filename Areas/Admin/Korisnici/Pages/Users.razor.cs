@@ -7,6 +7,7 @@ using MudBlazor;
 using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO;
 using DodjelaStanovaZG.Areas.Admin.Korisnici.Services;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 
 namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages;
 
@@ -20,12 +21,7 @@ public partial class Users : ComponentBase
     private string FilterRole { get; set; } = RoleNames.All;
     private static int RowsPerPage => 10;
 
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
-        new(text: "Korisnici", cssClass: "text-red-500 font-bold"),
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.AdminUsers();
 
     private async Task OnValueChanged(string newValue)
     {

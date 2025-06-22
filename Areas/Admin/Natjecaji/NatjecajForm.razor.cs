@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -13,17 +14,11 @@ public partial class NatjecajForm : ComponentBase
     [Inject] public required IUnitOfWork UnitOfWork { get; set; }
     private MudForm _form = null!;
     protected NatjecajDto Natjecaj { get; set; } = new();
-    private List<string> ErrorMessages { get; } = [];
+    private List<string> ErrorMessages { get; set; } = [];
 
     private string FormTitle => Klasa == null ? "Dodaj natječaj" : $"Uredi natječaj ({Klasa})";
 
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems =>
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
-        new() { Text = "Natječaji", Url = "/admin/natjecaji" },
-        new() { Text = Klasa == null ? "Dodaj" : $"Uredi: {Klasa}", CssClass = "text-red-500 font-bold" }
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems => BreadcrumbProvider.AdminNatjecajForm(Klasa);
 
     protected override async Task OnInitializedAsync()
     {

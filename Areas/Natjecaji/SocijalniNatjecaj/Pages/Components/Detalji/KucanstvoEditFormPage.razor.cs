@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -12,21 +13,15 @@ public partial class KucanstvoEditFormPage
 
     [Inject] private IUnitOfWork UnitOfWork { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
-
     private SocijalniKucanstvoPodaciDto? _kucanstvoModel;
     private MudForm _form = null!;
     private DateTime? _prebivanjeOd;
-
-    private List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Socijalni natječaji", Url = "/socijalni-natjecaj" },
-        new() { Text = "Detalji zahtjeva", Url = "" },
-        new() { Text = "Uredi kućanstvo", CssClass = "text-red-500 font-bold" }
-    ];
+    private List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
+        BreadcrumbItems = BreadcrumbProvider.ZahtjevEdit(ZahtjevId, "Uredi kućanstvo");
+        
         var zahtjev = await UnitOfWork.SocijalniZahtjevRead.GetZahtjevByIdAsync(ZahtjevId);
 
         _kucanstvoModel = zahtjev?.KucanstvoPodaci is null
@@ -53,8 +48,6 @@ public partial class KucanstvoEditFormPage
             };
 
         _prebivanjeOd = _kucanstvoModel?.PrebivanjeOd?.ToDateTime(new TimeOnly(0));
-
-        BreadcrumbItems[2].Url = $"/socijalni/detalji/{ZahtjevId}";
     }
 
     private async Task Submit()

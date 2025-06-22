@@ -13,7 +13,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
@@ -42,9 +42,9 @@ h1:focus {
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
-    }
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
@@ -100,11 +100,11 @@ a {
 
     /* Boje */
     color: #163d73 !important;
-    background-color: #f3f4f6!important; /* Možete dodati default background, npr. transparent ili bijelo */
+    background-color: #f3f4f6 !important; /* Možete dodati default background, npr. transparent ili bijelo */
 }
 
 .custom-nav-button:hover {
-    background-color: #f3f4f6!important; /* hover:bg-gray-100 */
+    background-color: #f3f4f6 !important; /* hover:bg-gray-100 */
 }
 
 .custom-nav-button:focus {
@@ -128,8 +128,8 @@ a {
 /* Primjer override-a za MudIcon */
 .custom-icon-sm {
     font-size: 1rem !important; /* override default 1.5rem */
-    width: 1rem !important;     /* ako se koristi i width */
-    height: 1rem !important;    /* ako se koristi i height */
+    width: 1rem !important; /* ako se koristi i width */
+    height: 1rem !important; /* ako se koristi i height */
 }
 
 .table-header-cell {
@@ -138,12 +138,18 @@ a {
     background-color: #163d73;
 }
 
+/* Table header styling used across MudBlazor tables */
+.table-header {
+    font-weight: bold !important;
+    color: white !important;
+    background-color: #163d73;
+}
+
 .multiline-label label {
     white-space: normal !important;
     overflow-wrap: anywhere;
 }
 
-/* MudTabs styling */
 /* MudTabs styling */
 .my-tabs .mud-tabs-tabbar {
     background-color: #15407a !important;

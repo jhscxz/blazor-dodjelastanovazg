@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 
@@ -12,12 +13,7 @@ public class IndexBase : ComponentBase
 
     protected List<SocijalniNatjecajOdabirDto> Natjecaji = [];
     protected int SelectedId;
-
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Socijalni natječaji", CssClass = "text-red-500 font-bold" },
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.SocijalniIndex();
 
     protected override async Task OnInitializedAsync()
     {

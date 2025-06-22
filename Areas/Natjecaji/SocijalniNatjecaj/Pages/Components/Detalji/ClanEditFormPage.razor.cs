@@ -4,6 +4,7 @@ using DodjelaStanovaZG.Components.UI;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Helpers;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.Detalji;
 
@@ -14,22 +15,15 @@ public partial class ClanEditFormPage : ComponentBase
     [Inject] private IUnitOfWork UnitOfWork { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
-
     private SocijalniNatjecajClanDto? _model;
     private MudForm _form = null!;
     private bool IsPodnositelj => _model?.Srodstvo == Srodstvo.PodnositeljZahtjeva;
     private DateTime? _datumRodjenja;
-
-    private List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Socijalni natječaji", Url = "/socijalni-natjecaj" },
-        new() { Text = "Detalji zahtjeva", Url = "" },
-        new() { Text = "Uredi člana", CssClass = "text-red-500 font-bold" }
-    ];
-
+    private List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; set; } = [];
     protected override async Task OnInitializedAsync()
     {
+        BreadcrumbItems = BreadcrumbProvider.ZahtjevEdit(ZahtjevId, "Uredi člana");
+        
         SocijalniNatjecajZahtjevDto zahtjev;
         try
         {
@@ -61,8 +55,6 @@ public partial class ClanEditFormPage : ComponentBase
         _datumRodjenja = _model.DatumRodjenja != default
             ? _model.DatumRodjenja.ToDateTime(new TimeOnly(0))
             : null;
-        
-        BreadcrumbItems[2].Url = $"/socijalni/detalji/{ZahtjevId}";
     }
 
     private async Task Submit()

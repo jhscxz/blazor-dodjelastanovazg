@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
@@ -18,13 +19,7 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
         protected bool AllowEditing { get; set; }
         private List<string> ErrorMessages { get; } = [];
 
-        protected readonly List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems =
-        [
-            new() { Text = "Početna", Url = "/" },
-            new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
-            new() { Text = "Korisnici", Url = "/admin/users" },
-            new() { Text = "Uredi korisnika", CssClass = "text-red-500 font-bold" }
-        ];
+        protected readonly List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems = BreadcrumbProvider.AdminUserEdit();
 
         private bool _firstRender = true;
 

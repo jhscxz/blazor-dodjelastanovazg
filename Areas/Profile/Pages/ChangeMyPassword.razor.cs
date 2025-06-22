@@ -2,6 +2,7 @@ using System.Security.Claims;
 using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.DTO;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Services;
 using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -22,12 +23,7 @@ public partial class ChangeMyPassword : ComponentBase
     private readonly List<string> _errorMessages = [];
     private readonly ChangeMyPasswordDto _changePasswordModel = new();
 
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Profil", Url = "/profile" },
-        new() { Text = "Promjena lozinke", CssClass = "text-red-500 font-bold" }
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.ChangeMyPassword();
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,4 +65,3 @@ public partial class ChangeMyPassword : ComponentBase
         }
     }
 }
-

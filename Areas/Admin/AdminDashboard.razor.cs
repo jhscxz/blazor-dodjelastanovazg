@@ -1,4 +1,5 @@
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using Microsoft.AspNetCore.Components;
 
 namespace DodjelaStanovaZG.Areas.Admin;
@@ -7,11 +8,7 @@ public partial class AdminDashboard : ComponentBase
 {
     protected List<AdminCard> AdminCards = [];
 
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Admin Nadzorna ploča", CssClass = "text-red-500 font-bold" },
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.AdminDashboard();
     
     protected override void OnInitialized()
     {

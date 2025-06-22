@@ -1,4 +1,5 @@
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -6,14 +7,7 @@ namespace DodjelaStanovaZG.Areas.Pocetna;
 
 public class HomePageBase : ComponentBase
 {
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new()
-        {
-            Text = "Početna",
-            CssClass = "text-red-500 font-bold",
-        }
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.Home();
 
     protected List<(string Title, string Description, string NavigateTo, string ButtonText, string Icon)> HomeCards =>
     [

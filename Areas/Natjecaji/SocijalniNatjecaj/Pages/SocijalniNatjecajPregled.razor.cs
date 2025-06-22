@@ -1,6 +1,7 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Components.UI;
 using DodjelaStanovaZG.Enums;
+using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Components;
@@ -19,12 +20,7 @@ public class SocijalniNatjecajPregledBase : ComponentBase
     protected string? SearchText { get; set; }
     protected RezultatObrade? SelectedOsnovanost { get; set; }
 
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Socijalni natječaji", Url = "/socijalni-natjecaj" },
-        new() { Text = "Pregled zapisa", CssClass = "text-red-500 font-bold" }
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.SocijalniPregled();
 
     protected void AddZahtjev() =>
         Navigation.NavigateTo($"/socijalni/dodaj/{NatjecajId}");

@@ -18,8 +18,8 @@
 <!-- Tablica prikazuje sve role (string) u kojima je korisnik -->
 <MudTable Items="@UserRoles" Hover="true" Striped="true" Outlined="true" RowsPerPage="@RowsPerPage" Dense="true" SortLabel="Sort By">
     <HeaderContent>
-        <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Rola</MudTh>
-        <MudTh Style="font-weight: bold; color: white; background-color: #163d73">Akcija</MudTh>
+        <MudTh Class="table-header">Rola</MudTh>
+        <MudTh Class="table-header">Akcija</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Role Name">@context</MudTd>

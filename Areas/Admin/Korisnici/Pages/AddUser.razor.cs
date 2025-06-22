@@ -1,5 +1,6 @@
 using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
@@ -16,13 +17,7 @@ public partial class AddUser : ComponentBase
 
     private List<string> ErrorMessages { get; } = [];
 
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Admin Nadzorna ploča", Url = "/admin" },
-        new() { Text = "Korisnici", Url = "/admin/users" },
-        new() { Text = "Dodaj korisnika", CssClass = "text-red-500 font-bold" }
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.AdminUserAdd();
     
     private async Task<bool> ValidateForm()
     {

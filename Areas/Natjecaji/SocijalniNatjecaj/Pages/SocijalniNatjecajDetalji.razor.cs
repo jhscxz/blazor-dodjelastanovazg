@@ -1,5 +1,6 @@
 using System.Web;
 using DodjelaStanovaZG.Components.UI;
+using DodjelaStanovaZG.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 
@@ -13,12 +14,7 @@ public partial class SocijalniNatjecajDetalji
     private int _selectedTabIndex;
     private string? _activeTab;
 
-    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
-    [
-        new() { Text = "Početna", Url = "/" },
-        new() { Text = "Socijalni natječaji", Url = "/socijalni-natjecaj" },
-        new() { Text = "Detalji zahtjeva", CssClass = "text-red-500 font-bold" },
-    ];
+    protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.SocijalniDetalji();
 
     protected override Task OnInitializedAsync()
     {

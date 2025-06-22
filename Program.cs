@@ -89,12 +89,12 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAntiforgery();
 
 app.UseRequestLocalization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .DisableAntiforgery()
     .RequireAuthorization();
 
 app.MapRazorPages();

@@ -1,11 +1,13 @@
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DodjelaStanovaZG.Controllers;
 
 [ApiController]
 [Route("api/export")]
+[Authorize]
 public class ExportController(
     ILogger<ExportController> logger,
     IWordExportService wordExportService,
