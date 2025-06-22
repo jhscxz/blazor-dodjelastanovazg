@@ -27,7 +27,11 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
                               .ThenInclude(k => k!.Prihod)
                               .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                           ?? throw new NotFoundException($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
-            if (zahtjev.Natjecaj!.IsClosed)
+            var isClosed = await context.Natjecaji
+                .Where(n => n.Id == zahtjev.NatjecajId)
+                .Select(n => n.IsClosed)
+                .FirstAsync();
+            if (isClosed)
             {
                 logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
                 throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");

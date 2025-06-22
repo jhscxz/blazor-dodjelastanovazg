@@ -62,7 +62,11 @@ public class SocijalniZahtjevWriteService(
                           .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                       ?? throw new Exception($"Zahtjev {zahtjevId} nije pronađen.");
 
-        if (zahtjev.Natjecaj!.IsClosed)
+        var isClosed = await context.Natjecaji
+            .Where(n => n.Id == zahtjev.NatjecajId)
+            .Select(n => n.IsClosed)
+            .FirstAsync();
+        if (isClosed)
         {
             logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
             throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");

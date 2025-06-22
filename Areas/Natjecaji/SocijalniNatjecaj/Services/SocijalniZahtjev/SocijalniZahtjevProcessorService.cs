@@ -50,7 +50,7 @@ public sealed class SocijalniZahtjevProcessorService(
         await using var context = contextFactory.CreateDbContext();
         var info = await context.SocijalniNatjecajZahtjevi
             .Where(z => z.Id == zahtjevId)
-            .Select(z => new { z.NatjecajId, z.Natjecaj!.IsClosed })
+            .Select(z => new { z.NatjecajId, IsClosed = z.Natjecaj == null || z.Natjecaj.IsClosed })
             .FirstAsync();
         if (info.IsClosed)
         {

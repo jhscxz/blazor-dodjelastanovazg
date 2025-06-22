@@ -42,13 +42,17 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         public async Task<SocijalniNatjecajClanDto> AddClanAsync(SocijalniNatjecajClan noviClan)
         {
             var zahtjev = await GetZahtjevByIdAsync(noviClan.ZahtjevId, true);
-            if (zahtjev.Natjecaj!.IsClosed)
+            await using var context = _contextFactory.CreateDbContext();
+            var isClosed = await context.Natjecaji
+                .Where(n => n.Id == zahtjev.NatjecajId)
+                .Select(n => n.IsClosed)
+                .FirstAsync();
+            if (isClosed)
             {
                 _logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
                 throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
             }
 
-            await using var context = _contextFactory.CreateDbContext();
             await context.SocijalniNatjecajClanovi.AddAsync(noviClan);
             await context.SaveChangesAsync();
 
@@ -59,7 +63,11 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         {
             await using var context = _contextFactory.CreateDbContext();
             var zahtjev = await GetZahtjevByIdAsync(azurirani.ZahtjevId, false);
-            if (zahtjev.Natjecaj!.IsClosed)
+            var isClosed = await context.Natjecaji
+                .Where(n => n.Id == zahtjev.NatjecajId)
+                .Select(n => n.IsClosed)
+                .FirstAsync();
+            if (isClosed)
             {
                 _logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
                 throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
@@ -81,7 +89,11 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         {
             await using var context = _contextFactory.CreateDbContext();
             var zahtjev = await GetZahtjevByIdAsync(zahtjevId, false);
-            if (zahtjev.Natjecaj!.IsClosed)
+            var isClosed = await context.Natjecaji
+                .Where(n => n.Id == zahtjev.NatjecajId)
+                .Select(n => n.IsClosed)
+                .FirstAsync();
+            if (isClosed)
             {
                 _logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
                 throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
