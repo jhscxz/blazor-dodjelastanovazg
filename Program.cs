@@ -29,7 +29,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("MozeUpravljatiNatjecajima",
+    options.AddPolicy("ImaPristupAdmin",
         policy => policy.RequireRole("Management"));
     options.AddPolicy("MozeUnositi",
         policy => policy.RequireRole("Referent", "Management"));

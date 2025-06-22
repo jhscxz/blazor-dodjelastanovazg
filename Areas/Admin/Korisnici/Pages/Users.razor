@@ -4,7 +4,8 @@
 @using DodjelaStanovaZG.Areas.Admin.Korisnici.Services
 @using DodjelaStanovaZG.Components.UI
 @using MudBlazor
-@attribute [Authorize(Roles = "Management")]
+
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
 
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudPaper Outlined="true" Class="pa-4">

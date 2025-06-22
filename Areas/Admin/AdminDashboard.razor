@@ -1,8 +1,9 @@
 @page "/admin"
-@attribute [Authorize(Roles = "Admin")]
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Components.UI.Buttons
 @using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
 
 <Container BreadcrumbItems="BreadcrumbItems">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full" style="overflow-x: hidden;">

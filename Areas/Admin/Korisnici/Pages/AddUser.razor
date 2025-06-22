@@ -3,7 +3,7 @@
 @using MudBlazor
 @using DodjelaStanovaZG.Components.UI
 
-@attribute [Authorize(Roles = "Admin,SuperAdmin")]
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
 
 <Container BreadcrumbItems="BreadcrumbItems">
     <MudGrid Justify="Justify.Center">
