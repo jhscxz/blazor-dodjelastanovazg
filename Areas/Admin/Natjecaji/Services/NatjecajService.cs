@@ -6,18 +6,14 @@ using Mapster;
 
 namespace DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 
-public class NatjecajService(
-    INatjecajRepository repo,
-    ILogger<NatjecajService> logger) : INatjecajService
+public class NatjecajService(INatjecajRepository repo, ILogger<NatjecajService> logger) : INatjecajService
 {
-    private readonly ILogger<NatjecajService> _logger = logger;
-
     public async Task<NatjecajDto?> GetByKlasaAsync(int klasa)
     {
-        _logger.LogDebug("Dohvaćanje natječaja {Klasa}", klasa);
+        logger.LogDebug("Dohvaćanje natječaja {Klasa}", klasa);
 
         var entity = await repo.GetByKlasaAsync(klasa);
-        _logger.LogDebug(entity != null
+        logger.LogDebug(entity != null
             ? "Natječaj {Klasa} pronađen"
             : "Natječaj {Klasa} nije pronađen", klasa);
 
@@ -26,9 +22,9 @@ public class NatjecajService(
 
     public async Task<IEnumerable<NatjecajDto>> GetAllAsync()
     {
-        _logger.LogDebug("Dohvaćanje svih natječaja");
+        logger.LogDebug("Dohvaćanje svih natječaja");
         var entities = await repo.GetAllAsync();
-        _logger.LogDebug("Pronađeno {Count} natječaja", entities.Count);
+        logger.LogDebug("Pronađeno {Count} natječaja", entities.Count);
         return entities.Adapt<IEnumerable<NatjecajDto>>();
     }
 
@@ -36,7 +32,7 @@ public class NatjecajService(
     {
         var entity = dto.Adapt<Natjecaj>(TypeAdapterConfig.GlobalSettings);
 
-        _logger.LogInformation("Kreiranje natječaja {Klasa}", entity.Klasa);
+        logger.LogInformation("Kreiranje natječaja {Klasa}", entity.Klasa);
 
         entity.CreatedAt = DateTime.UtcNow;
         entity.UpdatedAt = DateTime.UtcNow;
@@ -44,19 +40,19 @@ public class NatjecajService(
         await repo.AddAsync(entity);
         await repo.SaveChangesAsync();
 
-        _logger.LogInformation("Natječaj {Klasa} kreiran", entity.Klasa);
+        logger.LogInformation("Natječaj {Klasa} kreiran", entity.Klasa);
 
         return true;
     }
 
     public async Task<bool> UpdateAsync(int klasa, NatjecajDto dto)
     {
-        _logger.LogInformation("Ažuriranje natječaja {Klasa}", klasa);
+        logger.LogInformation("Ažuriranje natječaja {Klasa}", klasa);
 
         var entity = await repo.GetByKlasaAsync(klasa);
         if (entity is null)
         {
-            _logger.LogWarning("Natječaj {Klasa} nije pronađen", klasa);
+            logger.LogWarning("Natječaj {Klasa} nije pronađen", klasa);
             return false;
         }
 
@@ -64,7 +60,7 @@ public class NatjecajService(
         entity.UpdatedAt = DateTime.UtcNow;
 
         await repo.SaveChangesAsync();
-        _logger.LogInformation("Natječaj {Klasa} ažuriran", klasa);
+        logger.LogInformation("Natječaj {Klasa} ažuriran", klasa);
         return true;
     }
 }

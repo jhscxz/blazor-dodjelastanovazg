@@ -11,9 +11,9 @@ public class NatjecajServiceTests
 {
     public NatjecajServiceTests()
     {
-        System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(DodjelaStanovaZG.Helpers.MappingExtensions).TypeHandle);
+        System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Helpers.MappingExtensions).TypeHandle);
     }
-    
+
     [Fact]
     public async Task GetByKlasaAsync_ReturnsMappedDto()
     {
@@ -32,14 +32,15 @@ public class NatjecajServiceTests
         var repo = new Mock<INatjecajRepository>();
         repo.Setup(r => r.GetByKlasaAsync(123)).ReturnsAsync(entity);
 
-        var service = new NatjecajService(repo.Object);
+        var logger = new Mock<ILogger<NatjecajService>>();
+        var service = new NatjecajService(repo.Object, logger.Object);
 
         // Act
         var result = await service.GetByKlasaAsync(123);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(entity.Klasa, result!.Klasa);
+        Assert.Equal(entity.Klasa, result.Klasa);
         Assert.Equal(entity.ProsjekPlace, result.ProsjekPlace);
         Assert.Equal("Socijalni", result.Vrsta);
         Assert.Equal("Aktivan", result.Status);
@@ -57,14 +58,14 @@ public class NatjecajServiceTests
             Status = "Aktivan",
             DatumObjave = DateOnly.FromDateTime(DateTime.Today),
             RokZaPrijavu = DateOnly.FromDateTime(DateTime.Today.AddDays(15))
-
         };
 
         var repo = new Mock<INatjecajRepository>();
         repo.Setup(r => r.AddAsync(It.IsAny<Natjecaj>())).Returns(Task.CompletedTask);
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
 
-        var service = new NatjecajService(repo.Object);
+        var logger = new Mock<ILogger<NatjecajService>>();
+        var service = new NatjecajService(repo.Object, logger.Object);
 
         // Act
         var result = await service.CreateAsync(dto);
