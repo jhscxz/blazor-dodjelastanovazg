@@ -1,9 +1,11 @@
 using DodjelaStanovaZG.Components.UI;
+using Microsoft.Extensions.Logging;
 
 namespace DodjelaStanovaZG.Services;
 
-public class BreadcrumbService
+public class BreadcrumbService(ILogger<BreadcrumbService> logger)
 {
+    private readonly ILogger<BreadcrumbService> _logger = logger;
     private readonly Dictionary<string, (string? Url, string? CssClass)> _map = new()
     {
         ["Početna"] = ("/", null),
@@ -18,10 +20,14 @@ public class BreadcrumbService
         return labels.Select(label =>
         {
             var trimmed = label.Trim();
-            var (url, css) = _map.TryGetValue(trimmed, out var val)
+            var found = _map.TryGetValue(trimmed, out var val);
+            var (url, css) = found
                 ? val
                 : (null, null);
 
+            if (!found)
+                _logger.LogWarning("Unknown breadcrumb label: {Label}", trimmed);
+            
             return new Breadcrumbs.BreadcrumbItem
             {
                 Text = trimmed,

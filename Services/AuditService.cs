@@ -4,12 +4,15 @@ using DodjelaStanovaZG.Services.Interfaces;
 
 namespace DodjelaStanovaZG.Services;
 
-public class AuditService(IHttpContextAccessor accessor) : IAuditService
+public class AuditService(IHttpContextAccessor accessor, ILogger<AuditService> logger)
+    : IAuditService
 {
     private readonly string _userId = accessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "system";
 
     public void ApplyAudit(object entity, bool isCreate)
     {
+        logger.LogDebug("Applying audit on {EntityType} (create: {IsCreate}) by {UserId}", entity.GetType().Name, isCreate, _userId);
+
         if (entity is not AuditableEntity auditable) return;
 
         var now = DateTime.UtcNow;

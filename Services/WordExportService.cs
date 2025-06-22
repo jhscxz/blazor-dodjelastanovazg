@@ -7,33 +7,43 @@ using DodjelaStanovaZG.Services.Interfaces;
 
 namespace DodjelaStanovaZG.Services;
 
-public class WordExportService(IWebHostEnvironment env) : IWordExportService
+public class WordExportService(IWebHostEnvironment env, ILogger<WordExportService> logger) : IWordExportService
 {
     public async Task<byte[]> GenerirajIzvjestajAsync(SocijalniNatjecajZahtjev zahtjev, SocijalniNatjecajBodovi bodovi)
     {
-        var templatePath = Path.Combine(env.ContentRootPath, "Resources", "WordTemplates", "ZapisnikPredlozak.docx");
-
-        await using var templateStream = File.OpenRead(templatePath);
-        await using var memoryStream = new MemoryStream();
-        await templateStream.CopyToAsync(memoryStream);
-        memoryStream.Position = 0;
-
-        using (var wordDoc = WordprocessingDocument.Open(memoryStream, true))
+        try
         {
-            var body = wordDoc.MainDocumentPart?.Document?.Body
-                       ?? throw new InvalidOperationException("Ne mogu učitati sadržaj dokumenta.");
+            logger.LogInformation("Generiranje izvještaja za zahtjev {Id}", zahtjev.Id);
 
-            var data = BuildPlaceholderDictionary(zahtjev, bodovi);
+            var templatePath = Path.Combine(env.ContentRootPath, "Resources", "WordTemplates", "ZapisnikPredlozak.docx");
 
-            foreach (var (placeholder, value) in data)
-                ReplaceText(body, placeholder, value ?? string.Empty);
+            await using var templateStream = File.OpenRead(templatePath);
+            await using var memoryStream = new MemoryStream();
+            await templateStream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
 
-            wordDoc.MainDocumentPart?.Document?.Save();
+            using (var wordDoc = WordprocessingDocument.Open(memoryStream, true))
+            {
+                var body = wordDoc.MainDocumentPart?.Document.Body ?? throw new InvalidOperationException("Ne mogu učitati sadržaj dokumenta.");
+
+                var data = BuildPlaceholderDictionary(zahtjev, bodovi);
+
+                foreach (var (placeholder, value) in data)
+                    ReplaceText(body, placeholder, value ?? string.Empty);
+
+                wordDoc.MainDocumentPart?.Document.Save();
+            }
+
+            logger.LogInformation("Izvještaj generiran za zahtjev {Id}", zahtjev.Id);
+
+            return memoryStream.ToArray();
         }
-
-        return memoryStream.ToArray();
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Greška prilikom generiranja izvještaja za zahtjev {Id}", zahtjev.Id);
+            throw;
+        }
     }
-
 
     private static Dictionary<string, string?> BuildPlaceholderDictionary(SocijalniNatjecajZahtjev zahtjev,
         SocijalniNatjecajBodovi bodovi)
@@ -44,10 +54,7 @@ public class WordExportService(IWebHostEnvironment env) : IWordExportService
         var godinePodnositelj = podnositelj != null
             ? datumPodnosenja.Year - podnositelj.DatumRodjenja.Year -
               (datumPodnosenja <
-               podnositelj.DatumRodjenja.AddYears(datumPodnosenja.Year - podnositelj.DatumRodjenja.Year)
-                  ? 1
-                  : 0)
-            : 0;
+               podnositelj.DatumRodjenja.AddYears(datumPodnosenja.Year - podnositelj.DatumRodjenja.Year) ? 1 : 0) : 0;
 
         string UkupnoBodovaLabel() => zahtjev.RezultatObrade switch
         {
@@ -109,7 +116,6 @@ public class WordExportService(IWebHostEnvironment env) : IWordExportService
             ["{{UkupnoBodova}}"] = UkupnoBodovaLabel()
         };
     }
-
 
     private static void ReplaceText(Body body, string placeholder, string? value)
     {
