@@ -3,6 +3,7 @@
 @using MudBlazor
 @using DodjelaStanovaZG.Components.UI
 @using Microsoft.AspNetCore.Authorization
+@using DodjelaStanovaZG.Components.UI.Buttons
 
 @attribute [Authorize(Policy = "ImaPristupAdmin")]
 
@@ -74,28 +75,7 @@
                             <MudSelectItem Value="@("Zaključen")">Zaključen</MudSelectItem>
                         </MudSelect>
 
-                        <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
-                            <MudButton OnClick="SubmitForm"
-                                       StartIcon="@Icons.Material.Filled.Save"
-                                       Size="Size.Small"
-                                       Variant="Variant.Filled"
-                                       Style="border: 1px solid #d3d3d3;"
-                                       DropShadow="false"
-                                       IconColor="Color.Success"
-                                       Color="Color.Default">
-                                Spremi
-                            </MudButton>
-                            <MudButton OnClick="Povratak"
-                                       StartIcon="@Icons.Material.Filled.Cancel"
-                                       Size="Size.Small"
-                                       Variant="Variant.Filled"
-                                       Style="border: 1px solid #d3d3d3;"
-                                       DropShadow="false"
-                                       IconColor="Color.Error"
-                                       Color="Color.Default">
-                                Odustani
-                            </MudButton>
-                        </MudStack>
+                        <FormButtons Submit="SubmitForm" Cancel="Povratak" />
 
                     </MudForm>
                 </MudCardContent>

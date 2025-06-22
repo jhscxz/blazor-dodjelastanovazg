@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using DodjelaStanovaZG.Components.UI
 @using MudBlazor
+@using DodjelaStanovaZG.Components.UI.Buttons
 
 @attribute [Authorize]
 
@@ -27,16 +28,7 @@
                         </MudText>
 
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-4">
-                            <MudButton Variant="Variant.Filled"
-                                       Size="Size.Small"
-                                       IconColor="Color.Error"
-                                       DropShadow="false"
-                                       Color="Color.Default"
-                                       Style="border: 1px solid #d3d3d3;"
-                                       OnClick="NavigateToChangePassword"
-                                       StartIcon="@Icons.Material.Filled.LockReset">
-                                Promijeni lozinku
-                            </MudButton>
+                            <ChangePasswordButton OnClick="NavigateToChangePassword" />
                         </MudStack>
                     }
                 </MudCardContent>

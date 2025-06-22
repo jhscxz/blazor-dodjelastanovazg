@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using MudBlazor
 @using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Components.UI.Buttons
 
 @attribute [Authorize(Policy = "ImaPristupAdmin")]
 
@@ -46,28 +47,7 @@
                                       Autocomplete="new-password"
                                       Class="mb-4" />
 
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-4">
-                            <MudButton OnClick="SubmitForm"
-                                       StartIcon="@Icons.Material.Filled.Save"
-                                       Size="Size.Small"
-                                       Variant="Variant.Filled"
-                                       Style="border: 1px solid #d3d3d3;"
-                                       DropShadow="false"
-                                       IconColor="Color.Success"
-                                       Color="Color.Default">
-                                Spremi
-                            </MudButton>
-                            <MudButton OnClick="Cancel"
-                                       StartIcon="@Icons.Material.Filled.Cancel"
-                                       Size="Size.Small"
-                                       DropShadow="false"
-                                       Style="border: 1px solid #d3d3d3;"
-                                       Variant="Variant.Filled"
-                                       IconColor="Color.Error"
-                                       Color="Color.Default">
-                                Odustani
-                            </MudButton>
-                        </MudStack>
+                        <FormButtons Submit="SubmitForm" Cancel="Cancel" />
                     </MudForm>
                 </MudCardContent>
             </MudCard>

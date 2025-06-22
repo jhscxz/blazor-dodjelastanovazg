@@ -89,17 +89,7 @@
                                         Odustani
                                     </MudButton>
 
-                                    <MudButton
-                                        OnClick="@ChangePassword"
-                                        StartIcon="@Icons.Material.Filled.LockReset"
-                                        Size="Size.Small"
-                                        Variant="Variant.Filled"
-                                        DropShadow="false"
-                                        Color="Color.Default"
-                                        Style="border: 1px solid #d3d3d3;"
-                                        IconColor="Color.Error">
-                                        Promijeni lozinku
-                                    </MudButton>
+                                    <ChangePasswordButton OnClick="@ChangePassword" />
                                 </MudStack>
                             </MudForm>
                         </MudTabPanel>
