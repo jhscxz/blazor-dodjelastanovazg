@@ -58,6 +58,32 @@ public sealed class SocijalniZahtjevProcessorService(
                .Include(z => z.Natjecaj)
                .FirstAsync(z => z.Id == id);
 
+    private async Task EnsureNatjecajOpenForZahtjevAsync(long zahtjevId)
+    {
+        var info = await context.SocijalniNatjecajZahtjevi
+            .Where(z => z.Id == zahtjevId)
+            .Select(z => new { z.NatjecajId, z.Natjecaj!.IsClosed })
+            .FirstAsync();
+        if (info.IsClosed)
+        {
+            logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", info.NatjecajId);
+            throw new InvalidOperationException($"Natječaj {info.NatjecajId} je zaključen i izmjene nisu moguće");
+        }
+    }
+
+    private async Task EnsureNatjecajOpenAsync(long natjecajId)
+    {
+        var isClosed = await context.Natjecaji
+            .Where(n => n.Id == natjecajId)
+            .Select(n => n.IsClosed)
+            .FirstAsync();
+        if (isClosed)
+        {
+            logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", natjecajId);
+            throw new InvalidOperationException($"Natječaj {natjecajId} je zaključen i izmjene nisu moguće");
+        }
+    }
+    
     private async Task ObradiBodoveIGreskeAsync(long zahtjevId)
     {
         // Bodovi računaju direktno po ID‑ju
@@ -76,6 +102,8 @@ public sealed class SocijalniZahtjevProcessorService(
         SocijalniNatjecajZahtjevDto dto, string? imePrezime, string? oib)
     {
         logger.LogInformation("Kreiranje zahtjeva za natječaj {NatjecajId}", dto.NatjecajId);
+        
+        await EnsureNatjecajOpenAsync(dto.NatjecajId);
         
         var zahtjev = factory.KreirajNovi(dto, imePrezime, oib);
 
@@ -97,6 +125,8 @@ public sealed class SocijalniZahtjevProcessorService(
     {
         logger.LogInformation("Ažuriranje osnovnih podataka zahtjeva {Id}", id);
         
+        await EnsureNatjecajOpenForZahtjevAsync(id);
+        
         await ExecuteAsync(async () =>
         {
             await writeService.UpdateOsnovnoAsync(id, dto);
@@ -116,6 +146,8 @@ public sealed class SocijalniZahtjevProcessorService(
     {
         logger.LogInformation("Spremanje kućanstva za zahtjev {Id}", id);
         
+        await EnsureNatjecajOpenForZahtjevAsync(id);
+        
         await ExecuteAsync(async () =>
         {
             await kucanstvoService.UpdateKucanstvoPodaciAsync(id, dto);
@@ -130,6 +162,8 @@ public sealed class SocijalniZahtjevProcessorService(
     public async Task SpremiBodovnePodatkeIObradiAsync(long id, SocijalniNatjecajBodovniPodaciDto dto)
     {
         logger.LogInformation("Spremanje bodovnih podataka za zahtjev {Id}", id);
+        
+        await EnsureNatjecajOpenForZahtjevAsync(id);
         
         await ExecuteAsync(async () =>
         {
@@ -146,6 +180,8 @@ public sealed class SocijalniZahtjevProcessorService(
     {
         logger.LogInformation("Dodavanje člana za zahtjev {Id}", id);
         
+        await EnsureNatjecajOpenForZahtjevAsync(id);
+        
         await ExecuteAsync(async () =>
         {
             await clanService.AddClanAsync(clanDto.ToEntity(id));
@@ -158,6 +194,8 @@ public sealed class SocijalniZahtjevProcessorService(
     public async Task UrediClanaIObradiAsync(SocijalniNatjecajClanDto dto)
     {
         logger.LogInformation("Uređivanje člana {ClanId} za zahtjev {ZahtjevId}", dto.Id, dto.ZahtjevId);
+        
+        await EnsureNatjecajOpenForZahtjevAsync(dto.ZahtjevId);
         
         await ExecuteAsync(async () =>
         {
@@ -172,6 +210,8 @@ public sealed class SocijalniZahtjevProcessorService(
     public async Task ObrisiClanaIObradiAsync(long zahtjevId, long clanId)
     {
         logger.LogInformation("Brisanje člana {ClanId} sa zahtjeva {ZahtjevId}", clanId, zahtjevId);
+        
+        await EnsureNatjecajOpenForZahtjevAsync(zahtjevId);
         
         await ExecuteAsync(async () =>
         {

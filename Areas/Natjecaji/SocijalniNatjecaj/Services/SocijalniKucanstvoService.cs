@@ -21,11 +21,16 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
             logger.LogInformation("Updating kućanstvo podaci for zahtjev {Id}", zahtjevId);
 
             var zahtjev = await context.SocijalniNatjecajZahtjevi
+                              .Include(z => z.Natjecaj)
                               .Include(z => z.KucanstvoPodaci)
                               .ThenInclude(k => k!.Prihod)
                               .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                           ?? throw new NotFoundException($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
-
+            if (zahtjev.Natjecaj!.IsClosed)
+            {
+                logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
+                throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
+            }
             var podaci = zahtjev.KucanstvoPodaci;
 
             if (podaci == null)

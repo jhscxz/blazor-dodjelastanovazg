@@ -9,14 +9,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 {
-    public class SocijalniClanService(ApplicationDbContext context) : ISocijalniClanService
+    public class SocijalniClanService(ApplicationDbContext context, ILogger<SocijalniClanService> logger) : ISocijalniClanService
     {
         private readonly ApplicationDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
-
+        private readonly ILogger<SocijalniClanService> _logger = logger;
         private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(bool asNoTracking = false)
         {
-            var query = _context.SocijalniNatjecajZahtjevi.Include(z => z.Clanovi);
-
+            var query = _context.SocijalniNatjecajZahtjevi
+                .Include(z => z.Clanovi)
+                .Include(z => z.Natjecaj);
+            
             return asNoTracking ? query.AsNoTracking() : query;
         }
 
@@ -38,7 +40,12 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 
         public async Task<SocijalniNatjecajClanDto> AddClanAsync(SocijalniNatjecajClan noviClan)
         {
-            await GetZahtjevByIdAsync(noviClan.ZahtjevId, true);
+            var zahtjev = await GetZahtjevByIdAsync(noviClan.ZahtjevId, true);
+            if (zahtjev.Natjecaj!.IsClosed)
+            {
+                _logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
+                throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
+            }
 
             await _context.SocijalniNatjecajClanovi.AddAsync(noviClan);
             await _context.SaveChangesAsync();
@@ -49,6 +56,11 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         public async Task<SocijalniNatjecajClanDto> EditClanAsync(SocijalniNatjecajClanDto azurirani)
         {
             var zahtjev = await GetZahtjevByIdAsync(azurirani.ZahtjevId, false);
+            if (zahtjev.Natjecaj!.IsClosed)
+            {
+                _logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
+                throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
+            }
             var clan = GetClanById(zahtjev, azurirani.Id);
 
             clan.ImePrezime = azurirani.ImePrezime;
@@ -65,6 +77,11 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         public async Task RemoveClanAsync(long zahtjevId, long clanId)
         {
             var zahtjev = await GetZahtjevByIdAsync(zahtjevId, false);
+            if (zahtjev.Natjecaj!.IsClosed)
+            {
+                _logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
+                throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
+            }
             var clan = GetClanById(zahtjev, clanId);
 
             _context.SocijalniNatjecajClanovi.Remove(clan);

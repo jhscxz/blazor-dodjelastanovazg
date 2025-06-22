@@ -54,16 +54,19 @@ public class WordExportService(IWebHostEnvironment env, ILogger<WordExportServic
         var godinePodnositelj = podnositelj != null
             ? datumPodnosenja.Year - podnositelj.DatumRodjenja.Year -
               (datumPodnosenja <
-               podnositelj.DatumRodjenja.AddYears(datumPodnosenja.Year - podnositelj.DatumRodjenja.Year) ? 1 : 0) : 0;
+               podnositelj.DatumRodjenja.AddYears(datumPodnosenja.Year - podnositelj.DatumRodjenja.Year)
+                  ? 1
+                  : 0)
+            : 0;
 
         string UkupnoBodovaLabel() => zahtjev.RezultatObrade switch
         {
             RezultatObrade.Neosnovan => "Neosnovan",
             RezultatObrade.Nepotpun => "Nepotpun",
-            _ => bodovi.UkupnoBodova.ToString("0")
+            _ => bodovi.UkupnoBodova.ToString("0.##")
         };
 
-        string F(float f, bool dec = false) => dec ? f.ToString("N2") : f.ToString("0");
+        string F(float f, bool dec = false) => dec ? f.ToString("0.00") : f.ToString("0.##");
 
         return new Dictionary<string, string?>
         {

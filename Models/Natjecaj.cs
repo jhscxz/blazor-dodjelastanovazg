@@ -24,4 +24,7 @@ public class Natjecaj : AuditableEntity
     public DateOnly DatumObjave { get; set; }
     [Required]
     public DateOnly RokZaPrijavu { get; set; }
-    }
+    [NotMapped]
+    public bool IsClosed => Zakljucen == 2;
+}
+    

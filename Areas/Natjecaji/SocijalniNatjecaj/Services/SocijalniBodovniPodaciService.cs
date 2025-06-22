@@ -16,7 +16,8 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         {
             var query = context.SocijalniNatjecajZahtjevi
                                 .Include(z => z.BodovniPodaci).ThenInclude(b => b!.CreatedByUser)
-                                .Include(z => z.BodovniPodaci).ThenInclude(b => b!.UpdatedByUser);
+                                .Include(z => z.BodovniPodaci).ThenInclude(b => b!.UpdatedByUser)
+                                .Include(z => z.Natjecaj);
 
             return asNoTracking ? query.AsNoTracking() : query;
         }
@@ -42,6 +43,12 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
                               .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                           ?? throw new NotFoundException($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
 
+            if (zahtjev.Natjecaj!.IsClosed)
+            {
+                logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
+                throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
+            }
+            
             var b = zahtjev.BodovniPodaci
                     ?? throw new NotFoundException("Bodovni podaci nisu definirani.");
 

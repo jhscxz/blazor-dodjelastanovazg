@@ -17,6 +17,15 @@ public class SocijalniZahtjevWriteService(
     public async Task<SocijalniNatjecajZahtjev> CreateAsync(SocijalniNatjecajZahtjev zahtjev)
     {
         logger.LogInformation("Creating zahtjev");
+        
+        var natjecaj = await context.Natjecaji.FindAsync(zahtjev.NatjecajId)
+                       ?? throw new Exception($"Natječaj {zahtjev.NatjecajId} nije pronađen.");
+        if (natjecaj.IsClosed)
+        {
+            logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", natjecaj.Id);
+            throw new InvalidOperationException($"Natječaj {natjecaj.Id} je zaključen i izmjene nisu moguće");
+        }
+        
         auditService.ApplyAudit(zahtjev, true);
         auditService.ApplyAudit(zahtjev.Clanovi, true);
         auditService.ApplyAudit([
@@ -46,8 +55,15 @@ public class SocijalniZahtjevWriteService(
     {
         logger.LogInformation("Updating osnovne podatke zahtjeva {Id}", zahtjevId);
         var zahtjev = await context.SocijalniNatjecajZahtjevi
+                          .Include(z => z.Natjecaj)
                           .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                       ?? throw new Exception($"Zahtjev {zahtjevId} nije pronađen.");
+
+        if (zahtjev.Natjecaj!.IsClosed)
+        {
+            logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
+            throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
+        }
 
         dto.MapOnto(zahtjev);
         auditService.ApplyAudit(zahtjev, false);
