@@ -1,0 +1,20 @@
+@page "/socijalni/clan/edit/{ZahtjevId:long}/{ClanId:long?}"
+@using DodjelaStanovaZG.Components.UI
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using Microsoft.AspNetCore.Components.Web
+
+<PageTitle>Uredi člana kućanstva</PageTitle>
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudContainer MaxWidth="MaxWidth.Small">
+        @if (_model is null)
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        }
+        else
+        {
+            <ClanEditForm NewClan="_model" ZahtjevId="ZahtjevId" OnValidSubmit="HandleSubmit" OnCancel="HandleCancel" />
+        }
+    </MudContainer>
+</Container>

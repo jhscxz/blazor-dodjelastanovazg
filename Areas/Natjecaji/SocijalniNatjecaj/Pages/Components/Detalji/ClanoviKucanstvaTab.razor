@@ -10,7 +10,7 @@
 
         <!-- Gumb za dodavanje člana -->
         <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Class="mb-4">
-            <MudButton OnClick="StartAddClan"
+            <MudButton OnClick="NavigateAddClan"
                        Variant="Variant.Filled"
                        Color="Color.Default"
                        IconColor="Color.Success"
@@ -20,11 +20,6 @@
                 Dodaj člana kućanstva
             </MudButton>
         </MudStack>
-
-        @if (IsFormVisible)
-        {
-            <ClanEditForm NewClan="CurrentClan" OnValidSubmit="SubmitClanAsync" OnCancel="CancelEdit" />
-        }
 
         @if (DeletePendingId.HasValue)
         {
@@ -66,7 +61,7 @@
                 <MudTd DataLabel="Akcija">
                     <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                    Size="Size.Small"
-                                   OnClick="() => StartEditClan(context.Id)" />
+                                   OnClick="() => NavigateEditClan(context.Id)" />
 
                     @if (context.Srodstvo != Srodstvo.PodnositeljZahtjeva)
                     {
