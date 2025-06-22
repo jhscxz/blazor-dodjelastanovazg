@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @using DodjelaStanovaZG.Components.UI.Buttons
 @using Microsoft.AspNetCore.Authorization
+@using DodjelaStanovaZG.Components.UI.MudInputs
 @inherits BodovanjeOpcijeEditTabBase
 
 @attribute [Authorize(Policy = "MozeUnositi")]
@@ -38,30 +39,14 @@
                         <MudTabPanel Text="Socijalno-zdravstveni status">
                             <MudCard Outlined="true" Class="pa-4">
                                 <MudStack Spacing="1">
-                                    <MudSelect T="bool" Label="Primatelj zajamčene minimalne naknade"
-                                               @bind-Value="Model.PrimateljZajamceneMinimalneNaknade" Dense="true"
-                                               Variant="Variant.Outlined"
-                                               Margin="Margin.Dense">
-                                        <MudSelectItem Value="true">Da</MudSelectItem>
-                                        <MudSelectItem Value="false">Ne</MudSelectItem>
-                                    </MudSelect>
+                                    <BoolSelect Label="Primatelj zajamčene minimalne naknade"
+                                                @bind-Value="Model.PrimateljZajamceneMinimalneNaknade" />
 
-                                    <MudSelect T="bool" Label="Status roditelja njegovatelja / njegovatelja"
-                                               @bind-Value="Model.StatusRoditeljaNjegovatelja" Dense="true"
-                                               Variant="Variant.Outlined"
-                                               Margin="Margin.Dense">
-                                        <MudSelectItem Value="true">Da</MudSelectItem>
-                                        <MudSelectItem Value="false">Ne</MudSelectItem>
-                                    </MudSelect>
+                                    <BoolSelect Label="Status roditelja njegovatelja / njegovatelja"
+                                                @bind-Value="Model.StatusRoditeljaNjegovatelja" />
 
-                                    <MudSelect T="bool"
-                                               Label="Korisnik doplatka za pomoć i njegu / inkluzivnog dodatka III. razine"
-                                               @bind-Value="Model.KorisnikDoplatkaZaPomoc" Dense="true"
-                                               Variant="Variant.Outlined"
-                                               Margin="Margin.Dense">
-                                        <MudSelectItem Value="true">Da</MudSelectItem>
-                                        <MudSelectItem Value="false">Ne</MudSelectItem>
-                                    </MudSelect>
+                                    <BoolSelect Label="Korisnik doplatka za pomoć i njegu / inkluzivnog dodatka III. razine"
+                                                @bind-Value="Model.KorisnikDoplatkaZaPomoc" />
 
                                     <MudNumericField T="byte"
                                                      Label="Odrasli korisnici osobne invalidnine / dodatka I./II. razine"
@@ -82,13 +67,8 @@
                         <MudTabPanel Text="Posebne okolnosti">
                             <MudCard Outlined="true" Class="pa-4">
                                 <MudStack Spacing="1">
-                                    <MudSelect T="bool" Label="Žrtva obiteljskog nasilja (pravomoćna presuda)"
-                                               @bind-Value="Model.ZrtvaObiteljskogNasilja" Dense="true"
-                                               Variant="Variant.Outlined"
-                                               Margin="Margin.Dense">
-                                        <MudSelectItem Value="true">Da</MudSelectItem>
-                                        <MudSelectItem Value="false">Ne</MudSelectItem>
-                                    </MudSelect>
+                                    <BoolSelect Label="Žrtva obiteljskog nasilja (pravomoćna presuda)"
+                                                @bind-Value="Model.ZrtvaObiteljskogNasilja" />
 
                                     <MudNumericField T="byte"
                                                      Label="Broj članova (18–29) koji su bili u alternativnoj skrbi"
