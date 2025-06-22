@@ -8,6 +8,18 @@ namespace DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 
 public class NatjecajService(INatjecajRepository repo, ILogger<NatjecajService> logger) : INatjecajService
 {
+    public async Task<NatjecajDto?> GetByIdAsync(long id)
+    {
+        logger.LogDebug("Dohvaćanje natječaja {Id}", id);
+
+        var entity = await repo.GetByIdAsync(id);
+        logger.LogDebug(entity != null
+            ? "Natječaj {Id} pronađen"
+            : "Natječaj {Id} nije pronađen", id);
+
+        return entity?.Adapt<NatjecajDto>(TypeAdapterConfig.GlobalSettings);
+    }
+    
     public async Task<NatjecajDto?> GetByKlasaAsync(int klasa)
     {
         logger.LogDebug("Dohvaćanje natječaja {Klasa}", klasa);

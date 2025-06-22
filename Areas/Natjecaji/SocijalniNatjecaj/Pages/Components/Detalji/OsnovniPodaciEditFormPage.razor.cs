@@ -81,6 +81,7 @@ public partial class OsnovniPodaciEditFormPage
         catch (Exception ex)
         {
             _errorMessages.Add($"Greška: {ex.Message}");
+            throw; 
         }
     }
 

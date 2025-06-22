@@ -9,6 +9,12 @@ public class NatjecajRepository(IDbContextFactory<ApplicationDbContext> contextF
 {
     private readonly IDbContextFactory<ApplicationDbContext> _contextFactory = contextFactory;
 
+    public async Task<Natjecaj?> GetByIdAsync(long id)
+    {
+        await using var context = _contextFactory.CreateDbContext();
+        return await context.Natjecaji.FirstOrDefaultAsync(n => n.Id == id);
+    }
+
     public async Task<Natjecaj?> GetByKlasaAsync(int klasa)
     {
         await using var context = _contextFactory.CreateDbContext();

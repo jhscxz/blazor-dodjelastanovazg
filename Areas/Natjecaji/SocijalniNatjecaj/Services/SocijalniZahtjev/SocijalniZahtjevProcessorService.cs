@@ -40,6 +40,7 @@ public sealed class SocijalniZahtjevProcessorService(
         return await context.SocijalniNatjecajZahtjevi
             .Include(z => z.Clanovi)
             .Include(z => z.KucanstvoPodaci)
+            .ThenInclude(k => k!.Prihod)
             .Include(z => z.BodovniPodaci)
             .Include(z => z.Natjecaj)
             .FirstAsync(z => z.Id == id);
@@ -111,6 +112,8 @@ public sealed class SocijalniZahtjevProcessorService(
     public async Task AzurirajOsnovnoIObradiAsync(long id, SocijalniNatjecajOsnovnoEditDto dto)
     {
         logger.LogInformation("Ažuriranje osnovnih podataka zahtjeva {Id}", id);
+        
+        await using var ctx = await contextFactory.CreateDbContextAsync();
         
         await EnsureNatjecajOpenForZahtjevAsync(id);
         

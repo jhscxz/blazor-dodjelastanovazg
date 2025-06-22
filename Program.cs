@@ -15,8 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 // KONFIGURACIJA SERVISA
 // =============================
 
-builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
+    ServiceLifetime.Scoped);
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     {

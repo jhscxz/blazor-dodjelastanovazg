@@ -100,6 +100,12 @@ public sealed class SocijalniBodovnaGreskaService(IDbContextFactory<ApplicationD
         {
             var prihod = zahtjev.KucanstvoPodaci?.Prihod;
 
+            if (prihod == null)
+            {
+                Add("PRI-001", "Prihod nije unesen.");
+                return;
+            }
+            
             var prosjekPlace = zahtjev.Natjecaj?.ProsjekPlace ?? 0m;
             if (prosjekPlace <= 0)
             {

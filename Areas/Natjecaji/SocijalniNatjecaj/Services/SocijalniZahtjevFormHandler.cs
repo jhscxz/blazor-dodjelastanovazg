@@ -18,6 +18,20 @@ public class SocijalniZahtjevFormHandler(IUnitOfWork unitOfWork, ISocijalniBodov
             errors.Add("Rezultat obrade je obavezan.");
             return (false, errors);
         }
+        
+        var natjecaj = await unitOfWork.NatjecajiService.GetByIdAsync(model.NatjecajId);
+        if (natjecaj is null)
+        {
+            errors.Add($"Natječaj {model.NatjecajId} nije pronađen.");
+            return (false, errors);
+        }
+
+        var datumPodnosenja = DateOnly.FromDateTime(model.DatumPodnosenjaZahtjeva!.Value);
+        if (datumPodnosenja < natjecaj.DatumObjave || datumPodnosenja > natjecaj.RokZaPrijavu)
+        {
+            errors.Add($"Datum podnošenja mora biti između {natjecaj.DatumObjave} i {natjecaj.RokZaPrijavu}.");
+            return (false, errors);
+        }
 
         model.RezultatObrade = (RezultatObrade)rezultatObrade;
 
