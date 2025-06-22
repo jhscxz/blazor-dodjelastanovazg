@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 {
-    public class SocijalniKucanstvoService(ApplicationDbContext context, ILogger<SocijalniKucanstvoService> logger) : ISocijalniKucanstvoService
+    public class SocijalniKucanstvoService(IDbContextFactory<ApplicationDbContext> contextFactory, ILogger<SocijalniKucanstvoService> logger) : ISocijalniKucanstvoService
     {
-        private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery()
+        private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(ApplicationDbContext context)
             => context.SocijalniNatjecajZahtjevi
                 .Include(z => z.KucanstvoPodaci)
                 .ThenInclude(k => k!.Prihod);
@@ -20,6 +20,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         {
             logger.LogInformation("Updating kućanstvo podaci for zahtjev {Id}", zahtjevId);
 
+            await using var context = contextFactory.CreateDbContext();
             var zahtjev = await context.SocijalniNatjecajZahtjevi
                               .Include(z => z.Natjecaj)
                               .Include(z => z.KucanstvoPodaci)
@@ -67,6 +68,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         {
             logger.LogInformation("Fetching kućanstvo podaci for zahtjev {Id}", zahtjevId);
 
+            await using var context = contextFactory.CreateDbContext();
             var podaci = await context.SocijalniNatjecajKucanstvoPodaci
                 .Include(p => p.Prihod)
                 .AsNoTracking()

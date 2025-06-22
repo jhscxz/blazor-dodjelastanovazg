@@ -5,13 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Infrastructure.Repositories;
 
-public class SocijalniBodoviRepository(ApplicationDbContext context) : ISocijalniBodoviRepository
+public class SocijalniBodoviRepository(IDbContextFactory<ApplicationDbContext> contextFactory) : ISocijalniBodoviRepository
 {
-    private readonly ApplicationDbContext _context = context;
+    private readonly IDbContextFactory<ApplicationDbContext> _contextFactory = contextFactory;
 
     public async Task<SocijalniNatjecajZahtjev?> GetZahtjevWithDetailsAsync(long zahtjevId)
     {
-        return await _context.SocijalniNatjecajZahtjevi
+        await using var context = _contextFactory.CreateDbContext();
+        return await context.SocijalniNatjecajZahtjevi
             .Include(z => z.Natjecaj)
             .Include(z => z.Clanovi)
             .Include(z => z.KucanstvoPodaci)
@@ -23,12 +24,14 @@ public class SocijalniBodoviRepository(ApplicationDbContext context) : ISocijaln
 
     public Task AddBodoviAsync(SocijalniNatjecajBodovi bodovi)
     {
-        _context.SocijalniNatjecajBodovi.Add(bodovi);
+        await using var context = _contextFactory.CreateDbContext();
+        context.SocijalniNatjecajBodovi.Add(bodovi);
         return Task.CompletedTask;
     }
 
     public Task SaveChangesAsync()
     {
-        return _context.SaveChangesAsync();
+        await using var context = _contextFactory.CreateDbContext();
+        return context.SaveChangesAsync();
     }
 }

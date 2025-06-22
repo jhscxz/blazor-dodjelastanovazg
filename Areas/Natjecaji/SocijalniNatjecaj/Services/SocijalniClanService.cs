@@ -9,13 +9,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 {
-    public class SocijalniClanService(ApplicationDbContext context, ILogger<SocijalniClanService> logger) : ISocijalniClanService
+    public class SocijalniClanService(IDbContextFactory<ApplicationDbContext> contextFactory, ILogger<SocijalniClanService> logger) : ISocijalniClanService
     {
-        private readonly ApplicationDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
+        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory = contextFactory;
         private readonly ILogger<SocijalniClanService> _logger = logger;
-        private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(bool asNoTracking = false)
+        private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(ApplicationDbContext context, bool asNoTracking = false)
         {
-            var query = _context.SocijalniNatjecajZahtjevi
+            var query = context.SocijalniNatjecajZahtjevi
                 .Include(z => z.Clanovi)
                 .Include(z => z.Natjecaj);
             
@@ -24,7 +24,8 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 
         private async Task<SocijalniNatjecajZahtjev> GetZahtjevByIdAsync(long id, bool asNoTracking)
         {
-            var zahtjev = await BaseZahtjevQuery(asNoTracking).FirstOrDefaultAsync(z => z.Id == id);
+            await using var context = _contextFactory.CreateDbContext();
+            var zahtjev = await BaseZahtjevQuery(context, asNoTracking).FirstOrDefaultAsync(z => z.Id == id);
 
             if (zahtjev == null) throw new NotFoundException($"Zahtjev s ID-om {id} nije pronađen.");
 
@@ -47,14 +48,16 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
                 throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
             }
 
-            await _context.SocijalniNatjecajClanovi.AddAsync(noviClan);
-            await _context.SaveChangesAsync();
+            await using var context = _contextFactory.CreateDbContext();
+            await context.SocijalniNatjecajClanovi.AddAsync(noviClan);
+            await context.SaveChangesAsync();
 
             return noviClan.ToDto();
         }
 
         public async Task<SocijalniNatjecajClanDto> EditClanAsync(SocijalniNatjecajClanDto azurirani)
         {
+            await using var context = _contextFactory.CreateDbContext();
             var zahtjev = await GetZahtjevByIdAsync(azurirani.ZahtjevId, false);
             if (zahtjev.Natjecaj!.IsClosed)
             {
@@ -68,14 +71,15 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
             clan.Srodstvo = azurirani.Srodstvo;
             clan.DatumRodjenja = azurirani.DatumRodjenja;
 
-            _context.SocijalniNatjecajClanovi.Update(clan);
-            await _context.SaveChangesAsync();
+            context.SocijalniNatjecajClanovi.Update(clan);
+            await context.SaveChangesAsync();
 
             return clan.ToDto();
         }
 
         public async Task RemoveClanAsync(long zahtjevId, long clanId)
         {
+            await using var context = _contextFactory.CreateDbContext();
             var zahtjev = await GetZahtjevByIdAsync(zahtjevId, false);
             if (zahtjev.Natjecaj!.IsClosed)
             {
@@ -84,13 +88,14 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
             }
             var clan = GetClanById(zahtjev, clanId);
 
-            _context.SocijalniNatjecajClanovi.Remove(clan);
-            await _context.SaveChangesAsync();
+            context.SocijalniNatjecajClanovi.Remove(clan);
+            await context.SaveChangesAsync();
         }
 
         public async Task<Dictionary<long, List<SocijalniNatjecajClanDto>>> GetForZahtjeviAsync(IEnumerable<long> zahtjevIds)
         {
-            var clanovi = await _context.SocijalniNatjecajClanovi
+            await using var context = _contextFactory.CreateDbContext();
+            var clanovi = await context.SocijalniNatjecajClanovi
                 .Where(c => zahtjevIds.Contains(c.ZahtjevId))
                 .ProjectToType<SocijalniNatjecajClanDto>()
                 .ToListAsync();

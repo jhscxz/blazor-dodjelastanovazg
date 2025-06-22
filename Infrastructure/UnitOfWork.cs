@@ -3,11 +3,12 @@ using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtj
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Infrastructure;
 
 public class UnitOfWork(
-    ApplicationDbContext context,
+    IDbContextFactory<ApplicationDbContext> contextFactory,
     ISocijalniClanService socijalniClanService,
     ISocijalniKucanstvoService socijalniKucanstvoService,
     ISocijalniBodovniPodaciService socijalniBodovniPodaciService,
@@ -30,9 +31,11 @@ public class UnitOfWork(
     public ISocijalniZahtjevReadService SocijalniZahtjevRead { get; } = socijalniZahtjevReadService;
     public ISocijalniZahtjevWriteService SocijalniZahtjevWrite { get; } = socijalniZahtjevWriteService;
     public ISocijalniZahtjevProcessorService SocijalniZahtjevProcessorService { get; } = socijalniZahtjevProcessorService;
+    private readonly IDbContextFactory<ApplicationDbContext> _contextFactory = contextFactory;
 
     public async Task SaveChangesAsync()
     {
+        await using var context = _contextFactory.CreateDbContext();
         await context.SaveChangesAsync();
     }
 }

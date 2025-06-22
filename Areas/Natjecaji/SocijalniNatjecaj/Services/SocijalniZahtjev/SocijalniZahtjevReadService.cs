@@ -10,16 +10,17 @@ using MudBlazor;
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
 public class SocijalniZahtjevReadService(
-    ApplicationDbContext context,
+    IDbContextFactory<ApplicationDbContext> contextFactory,
     ILogger<SocijalniZahtjevReadService> logger)
     : ISocijalniZahtjevReadService
 {
-    private IQueryable<SocijalniNatjecajZahtjev> Query(bool tracking = false) =>
+    private IQueryable<SocijalniNatjecajZahtjev> Query(ApplicationDbContext context, bool tracking = false) =>
         tracking ? context.SocijalniNatjecajZahtjevi : context.SocijalniNatjecajZahtjevi.AsNoTracking();
 
     public async Task<SocijalniNatjecajZahtjevDto> GetDetaljiAsync(long id)
     {
         logger.LogDebug("Dohvaćanje detalja zahtjeva {ZahtjevId}", id);
+        await using var context = contextFactory.CreateDbContext();
         var entity = await context.SocijalniNatjecajZahtjevi
                          .Include(z => z.Clanovi)
                          .Include(z => z.BodovniPodaci)
@@ -45,16 +46,18 @@ public class SocijalniZahtjevReadService(
     }
 
 
-    public Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync()
+    public async Task<List<SocijalniNatjecajZahtjevDto>> GetAllAsync()
     {
         logger.LogDebug("Dohvaćanje svih socijalnih zahtjeva");
-        return Query().Select(e => e.ToDto()).ToListAsync();
+        await using var context = contextFactory.CreateDbContext();
+        return await Query(context).Select(e => e.ToDto()).ToListAsync();
     }
 
     public async Task<SocijalniNatjecajZahtjev?> GetZahtjevByIdAsync(long id)
     {
         logger.LogDebug("Dohvaćanje zahtjeva {ZahtjevId}", id);
-        var entity = await Query()
+        await using var context = contextFactory.CreateDbContext();
+        var entity = await Query(context)
             .Include(z => z.Natjecaj)
             .Include(z => z.BodovniPodaci)
             .Include(z => z.Bodovi)
@@ -83,6 +86,7 @@ public class SocijalniZahtjevReadService(
         RezultatObrade? filter = null)
     {
         logger.LogDebug("Paged zahtjevi natječaja {NatjecajId} - page {Page} size {PageSize}", natjecajId, page, pageSize);
+        await using var context = contextFactory.CreateDbContext();
         var q = context.SocijalniNatjecajZahtjevi
             .Include(z => z.Clanovi)
             .Where(z => z.NatjecajId == natjecajId);

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
 public class SocijalniZahtjevGreskaService(
-    ApplicationDbContext context,
+    IDbContextFactory<ApplicationDbContext> contextFactory,
     ISocijalniBodovnaGreskaService greskaService,
     IAuditService auditService,
     ILogger<SocijalniZahtjevGreskaService> logger)
@@ -37,6 +37,7 @@ public class SocijalniZahtjevGreskaService(
         long zahtjevId,
         IEnumerable<SocijalniNatjecajBodovnaGreska> nove)
     {
+        await using var context = contextFactory.CreateDbContext();
         var set = context.SocijalniNatjecajBodovnaGreske;
 
         var postojece = await set

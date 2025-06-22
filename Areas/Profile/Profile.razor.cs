@@ -15,7 +15,7 @@ public partial class Profile : ComponentBase
     private bool _isLoaded;
     private List<string> _userRoles = [];
 
-    [Inject] public ApplicationDbContext DbContext { get; set; } = null!;
+    [Inject] public IDbContextFactory<ApplicationDbContext> ContextFactory { get; set; } = null!;
     [Inject] public UserManager<IdentityUser> UserManager { get; set; } = null!;
     [Inject] public NavigationManager Navigation { get; set; } = null!;
 
@@ -23,7 +23,8 @@ public partial class Profile : ComponentBase
     protected override async Task OnInitializedAsync()
     {
 
-        var user = await DbContext.Users.FirstOrDefaultAsync(u => u.Id == UserId);
+        await using var context = ContextFactory.CreateDbContext();
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == UserId);
         if (user == null)
         {
             Navigation.NavigateTo("/profile");

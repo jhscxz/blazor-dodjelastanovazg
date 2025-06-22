@@ -7,17 +7,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 
-public sealed class SocijalniBodovnaGreskaService(ApplicationDbContext context)
+public sealed class SocijalniBodovnaGreskaService(IDbContextFactory<ApplicationDbContext> contextFactory)
     : ISocijalniBodovnaGreskaService
 {
     #region Public API
 
     /// <inheritdoc />
-    public async Task<List<SocijalniNatjecajBodovnaGreska>> GetByZahtjevIdAsync(long zahtjevId) =>
-        await context.SocijalniNatjecajBodovnaGreske
+    public async Task<List<SocijalniNatjecajBodovnaGreska>> GetByZahtjevIdAsync(long zahtjevId)
+    {
+        await using var context = contextFactory.CreateDbContext();
+        return await context.SocijalniNatjecajBodovnaGreske
             .Where(g => g.ZahtjevId == zahtjevId)
             .AsNoTracking()
             .ToListAsync();
+    }
 
     /// <inheritdoc />
     public Task<List<SocijalniNatjecajBodovnaGreska>> PronadiGreskeAsync(SocijalniNatjecajZahtjev zahtjev)

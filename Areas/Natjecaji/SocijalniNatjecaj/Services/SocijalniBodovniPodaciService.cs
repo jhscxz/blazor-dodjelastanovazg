@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore;
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 {
     public class SocijalniBodovniPodaciService(
-        ApplicationDbContext context,
+        IDbContextFactory<ApplicationDbContext> contextFactory,
         ILogger<SocijalniBodovniPodaciService> logger) : ISocijalniBodovniPodaciService
     {
-        private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(bool asNoTracking = false)
+        private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(ApplicationDbContext context, bool asNoTracking = false)
         {
             var query = context.SocijalniNatjecajZahtjevi
                                 .Include(z => z.BodovniPodaci).ThenInclude(b => b!.CreatedByUser)
@@ -25,6 +25,8 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         public async Task<SocijalniNatjecajBodovniPodaciDto> GetAsync(long zahtjevId)
         {
             logger.LogDebug("Dohvaćanje bodovnih podataka za zahtjev {ZahtjevId}", zahtjevId);
+            
+            await using var context = contextFactory.CreateDbContext();
             
             var entity = await context.SocijalniNatjecajBodovniPodaci
                                .Include(b => b.CreatedByUser)
@@ -39,7 +41,8 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         {
             logger.LogDebug("Ažuriranje bodovnih podataka za zahtjev {ZahtjevId}", zahtjevId);
             
-            var zahtjev = await BaseZahtjevQuery()
+            await using var context = contextFactory.CreateDbContext();
+            var zahtjev = await BaseZahtjevQuery(context)
                               .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                           ?? throw new NotFoundException($"Zahtjev s ID-om {zahtjevId} nije pronađen.");
 

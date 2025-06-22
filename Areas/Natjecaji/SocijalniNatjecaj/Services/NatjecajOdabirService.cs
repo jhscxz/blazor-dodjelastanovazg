@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 
-public class NatjecajOdabirService(ApplicationDbContext context, ILogger<NatjecajOdabirService> logger) : INatjecajOdabirService
+public class NatjecajOdabirService(IDbContextFactory<ApplicationDbContext> contextFactory, ILogger<NatjecajOdabirService> logger) : INatjecajOdabirService
 {
     public async Task<List<Natjecaj>> GetAllModelsAsync()
     {
         logger.LogInformation("Fetching all natjecaji");
+        await using var context = contextFactory.CreateDbContext();
         return await context.Natjecaji.ToListAsync();
     }
 }

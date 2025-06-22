@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
 public class SocijalniZahtjevWriteService(
-    ApplicationDbContext context,
+    IDbContextFactory<ApplicationDbContext> contextFactory,
     IAuditService auditService,
     ILogger<SocijalniZahtjevWriteService> logger)
     : ISocijalniZahtjevWriteService
@@ -42,11 +42,12 @@ public class SocijalniZahtjevWriteService(
             IspunjavaUvjetPrihoda = true
         };
         auditService.ApplyAudit(prihod, true);
-
+        await using var context = contextFactory.CreateDbContext();
+        
         await context.AddAsync(zahtjev);
         await context.AddAsync(prihod);
 
-        await SaveAsync();
+        await SaveAsync(context);
         logger.LogInformation("Created zahtjev {Id}", zahtjev.Id);
         return zahtjev;
     }
@@ -54,6 +55,7 @@ public class SocijalniZahtjevWriteService(
     public async Task UpdateOsnovnoAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto)
     {
         logger.LogInformation("Updating osnovne podatke zahtjeva {Id}", zahtjevId);
+        await using var context = contextFactory.CreateDbContext();
         var zahtjev = await context.SocijalniNatjecajZahtjevi
                           .Include(z => z.Natjecaj)
                           .FirstOrDefaultAsync(z => z.Id == zahtjevId)
@@ -68,11 +70,11 @@ public class SocijalniZahtjevWriteService(
         dto.MapOnto(zahtjev);
         auditService.ApplyAudit(zahtjev, false);
 
-        await SaveAsync();
+        await SaveAsync(context);
         logger.LogInformation("Updated osnovne podatke zahtjeva {Id}", zahtjevId);
     }
 
-    private async Task SaveAsync()
+    private async Task SaveAsync(ApplicationDbContext context)
     {
         try
         {

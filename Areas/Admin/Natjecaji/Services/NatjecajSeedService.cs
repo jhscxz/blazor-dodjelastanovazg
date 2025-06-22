@@ -6,17 +6,19 @@ namespace DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 
 public class NatjecajSeedService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
     private readonly ILogger<NatjecajSeedService> _logger;
-    public NatjecajSeedService(ApplicationDbContext context, ILogger<NatjecajSeedService> logger)
+    public NatjecajSeedService(IDbContextFactory<ApplicationDbContext> contextFactory, ILogger<NatjecajSeedService> logger)
     {
-        _context = context;
+        _contextFactory = contextFactory;
         _logger = logger;
     }
 
     public async Task SeedNatjecajiAsync()
     {
-        if (await _context.Natjecaji.AnyAsync())
+        await using var context = _contextFactory.CreateDbContext();
+
+        if (await context.Natjecaji.AnyAsync())
         {
             _logger.LogInformation("Natječaji već postoje, preskačem seeding.");
             return;
@@ -48,8 +50,8 @@ public class NatjecajSeedService
             }
         };
 
-        _context.Natjecaji.AddRange(lista);
-        await _context.SaveChangesAsync();
+        context.Natjecaji.AddRange(lista);
+        await context.SaveChangesAsync();
         _logger.LogInformation("Dodano {Count} natječaja u bazu.", lista.Count);
     }
 }

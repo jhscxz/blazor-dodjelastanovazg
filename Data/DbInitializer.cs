@@ -10,7 +10,8 @@ namespace DodjelaStanovaZG.Data
         {
             using var scope = services.CreateScope();
 
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
+            await using var context = factory.CreateDbContext();
             var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
 
             // Migracije baze
