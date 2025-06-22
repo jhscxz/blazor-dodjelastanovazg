@@ -16,17 +16,7 @@ namespace DodjelaStanovaZG.Data
             // Migracije baze
             await context.Database.MigrateAsync();
             
-            // Seed SuperAdmin korisnika
-            await seedService.SeedUserAsync(UserSeedData.GetManagement());
-
-            // Seed Admin korisnika
-            await seedService.SeedUserAsync(UserSeedData.GetManagement());
-
-            // Seed ostalih korisnika
-            foreach (var user in UserSeedData.GetUsers())
-            {
-                await seedService.SeedUserAsync(user);
-            }
+            await seedService.SeedFromConfigurationAsync();
         }
     }
 }
