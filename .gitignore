@@ -14,3 +14,8 @@ wwwroot/css/output.css.map
 *.gz
 *.br
 
+# Node dependencies
+node_modules/
+
+# JetBrains Rider settings
+*.DotSettings.user
