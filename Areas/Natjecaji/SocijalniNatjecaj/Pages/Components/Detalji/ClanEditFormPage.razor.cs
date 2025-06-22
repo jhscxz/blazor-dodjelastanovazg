@@ -3,6 +3,7 @@ using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Components.UI;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using DodjelaStanovaZG.Enums;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.Detalji;
 
@@ -16,6 +17,17 @@ public partial class ClanEditFormPage : ComponentBase
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     private SocijalniNatjecajClanDto? _model;
+    private MudForm _form = null!;
+    private bool IsPodnositelj => _model?.Srodstvo == Enums.Srodstvo.PodnositeljZahtjeva;
+    private DateTime? DatumRodjenjaProxy
+    {
+        get => _model?.DatumRodjenja != default ? _model.DatumRodjenja.ToDateTime(new TimeOnly(0)) : null;
+        set
+        {
+            if (value.HasValue && _model is not null)
+                _model.DatumRodjenja = DateOnly.FromDateTime(value.Value);
+        }
+    }
 
     private List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } =
     [
@@ -40,7 +52,7 @@ public partial class ClanEditFormPage : ComponentBase
         }
 
         var clan = ClanId.HasValue
-            ? zahtjev.Clanovi?.FirstOrDefault(c => c.Id == ClanId.Value)
+            ? zahtjev.Clanovi.FirstOrDefault(c => c.Id == ClanId.Value)
             : null;
 
         _model = clan is null
@@ -58,21 +70,25 @@ public partial class ClanEditFormPage : ComponentBase
         BreadcrumbItems[2].Url = $"/socijalni/detalji/{ZahtjevId}";
     }
 
-    private async Task HandleSubmit(SocijalniNatjecajClanDto clan)
+    private async Task Submit()
     {
+        await _form.Validate();
+        if (!_form.IsValid || _model is null)
+            return;
+
         if (ClanId.HasValue)
         {
-            await UnitOfWork.SocijalniZahtjevProcessorService.UrediClanaIObradiAsync(clan);
+            await UnitOfWork.SocijalniZahtjevProcessorService.UrediClanaIObradiAsync(_model);
         }
         else
         {
-            await UnitOfWork.SocijalniZahtjevProcessorService.DodajClanaIObradiAsync(ZahtjevId, clan);
+            await UnitOfWork.SocijalniZahtjevProcessorService.DodajClanaIObradiAsync(ZahtjevId, _model);
         }
 
         Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=Clanovi");
     }
 
-    private void HandleCancel()
+    private void Cancel()
     {
         Navigation.NavigateTo($"/socijalni/detalji/{ZahtjevId}?tab=Clanovi");
     }

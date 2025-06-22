@@ -44,7 +44,6 @@
     <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeEditTab.razor" />
     <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeTab.razor" />
     <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeTab.razor" />
-    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\ClanEditForm.razor" />
     <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\ClanEditFormPage.razor" />
     <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\ClanoviKucanstvaTab.razor" />
     <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\KucanstvoEditFormPage.razor" />
@@ -61,7 +60,6 @@
     <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeEditTab.razor" />
     <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeTab.razor" />
     <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeTab.razor" />
-    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\ClanEditForm.razor" />
     <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\ClanEditFormPage.razor" />
     <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\ClanoviKucanstvaTab.razor" />
     <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\KucanstvoEditFormPage.razor" />
