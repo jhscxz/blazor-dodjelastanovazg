@@ -31,7 +31,7 @@ public partial class Users : ComponentBase
 
     private async Task OnFilterRoleChanged(string? newRole)
     {
-        FilterRole = newRole;
+        FilterRole = newRole!;
         await _table.ReloadServerData();
     }
 

@@ -17,9 +17,7 @@
                     OnSearchChanged="OnSearchChanged"
                     FilterLabel="Osnovanost"
                     FilterValue="@SelectedOsnovanost"
-                    OnFilterChanged="OnOsnovanostChanged"
-                    ExportButtonText="EXCEL"
-                    OnExport="ExportExcel">
+                    OnFilterChanged="OnOsnovanostChanged">
             <FilterOptions>
                 <MudSelectItem T="RezultatObrade?" Value="null">Svi</MudSelectItem>
                 <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Nepotpun">Nepotpun</MudSelectItem>
@@ -31,7 +29,6 @@
 
         <MudTable T="SocijalniNatjecajZahtjevDto"
                   ServerData="LoadServerData"
-                  TableLayout="TableLayout.Fixed"
                   Hover="true"
                   Striped="true"
                   Dense="true"
@@ -83,8 +80,7 @@
             <ChildRowContent>
                 @if (IsRowExpanded(context))
                 {
-                    <MudTd ColSpan="@TotalColumns">
-                        <!-- sivi, zaobljeni kontejner -->
+                    <MudTd>
                         <MudPaper Elevation="0"
                                   Class="pa-4 rounded-lg"
                                   Style="background-color: #f5f5f5;">

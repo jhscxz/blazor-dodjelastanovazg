@@ -47,7 +47,7 @@ public class ResendEmailConfirmationModel(
             values: new { area = "Identity", userId = user.Id, code });
 
         await emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-            $"Molimo potvrdite račun klikom na <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>ovaj link</a>.");
+            $"Molimo potvrdite račun klikom na <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>ovaj link</a>.");
 
         return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
     }

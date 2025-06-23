@@ -11,7 +11,7 @@
 <Container BreadcrumbItems="BreadcrumbItems">
     <FormCard Title="@FormTitle" Xs="12" Sm="10" Md="6" Lg="5" CardClass="pa-6 border border-gray-300">
 
-        <MudForm @ref="_form" Model="@Natjecaj" Valid="OnValidSubmit">
+        <MudForm @ref="_form" Model="@Natjecaj">
 
             <MudSelect T="string"
                        Label="Vrsta natječaja"
@@ -30,7 +30,6 @@
                           @bind-Value="Natjecaj.Klasa"
                           Required="true"
                           Class="mb-4"
-                          Autocomplete="off"
                           ShrinkLabel="true"/>
 
             <TextInputDecimal T="decimal?"
@@ -38,7 +37,6 @@
                               @bind-Value="Natjecaj.ProsjekPlace"
                               Required="true"
                               Class="mb-4"
-                              Autocomplete="off"
                               ShrinkLabel="true"/>
 
             <DateInput Label="Datum objave"

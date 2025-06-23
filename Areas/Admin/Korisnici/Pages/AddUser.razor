@@ -12,16 +12,15 @@
             <MudTextField ShrinkLabel T="string" Label="Korisničko ime"
                           @bind-Value="UserModel.UserName"
                           Required="true" Variant="Variant.Outlined"
-                          Margin="Margin.Dense" Autocomplete="off"
+                          Margin="Margin.Dense"
                           Class="mb-4"/>
 
             <MudTextField ShrinkLabel T="string" Label="Email"
                           @bind-Value="UserModel.Email"
                           Required="true" Variant="Variant.Outlined"
-                          Margin="Margin.Dense" Autocomplete="off"
+                          Margin="Margin.Dense"
                           Class="mb-4"/>
 
-            <!-- Lozinka -->
             <MudTextField ShrinkLabel T="string"
                           Label="Lozinka"
                           @bind-Value="UserModel.Password"
@@ -29,7 +28,6 @@
                           Required="true"
                           Variant="Variant.Outlined"
                           Margin="Margin.Dense"
-                          Autocomplete="new-password"
                           Class="mb-4"/>
 
             <FormButtons Submit="SubmitForm" Cancel="Cancel"/>

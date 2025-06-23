@@ -21,11 +21,9 @@
         {
             <MudCard Outlined="true" Class="pa-6 border border-gray-300">
                 <MudCardContent>
-                    <!-- Display error messages -->
                     <ErrorAlert Messages="_errorMessages" />
 
-                    <!-- Form content -->
-                    <MudForm @ref="_form" Model="@_socijalniNatjecajModel" OnValidSubmit="Submit">
+                    <MudForm @ref="_form" Model="@_socijalniNatjecajModel">
                         <input type="hidden"
                                name="RowVersion"
                                value="@Convert.ToBase64String(_socijalniNatjecajModel.RowVersion ?? [])"/>
@@ -47,7 +45,7 @@
                         </MudGrid>
 
                         <!-- 2. red: Adresa i Email -->
-                        <MudGrid Gutter="Size.Small">
+                        <MudGrid>
                             <MudItem xs="12" sm="6">
                                 <TextInput T="string?" Label="Adresa" @bind-Value="_socijalniNatjecajModel.Adresa"
                                            Required="true" Class="mb-4"/>

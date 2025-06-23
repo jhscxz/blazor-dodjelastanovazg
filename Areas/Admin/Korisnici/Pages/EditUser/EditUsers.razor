@@ -17,9 +17,7 @@
             
             <!-- TAB 1: Osnovni podaci o korisniku -->
             <MudTabPanel Text="Korisnički podaci">
-                <MudForm @ref="_editForm" Model="@UserModel"
-                         Valid="@(() => _isValid = true)"
-                         Invalid="@(() => _isValid = false)">
+                <MudForm @ref="_editForm" Model="@UserModel">
 
                     <!-- Switch za omogućavanje izmjene podataka -->
                     <MudSwitch T="bool"

@@ -1,11 +1,9 @@
 @using MudBlazor
 @using System.Globalization
 
-<MudDatePicker ShrinkLabel T="DateTime?"
-               @bind-Value="InternalValue"
+<MudDatePicker ShrinkLabel
                @bind-Date="InternalValue"
                Label="@Label"
-               Immediate="true"
                Editable="true"
                DateFormat="@DateFormat"
                Culture="@Culture"
