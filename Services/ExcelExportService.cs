@@ -3,19 +3,17 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
-using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Services;
 
 public class ExcelExportService(
-    IDbContextFactory<ApplicationDbContext> contextFactory,
-    ILogger<ExcelExportService> logger) : IExcelExportService
+    IDbContextFactory<ApplicationDbContext> contextFactory) : IExcelExportService
 {
     public async Task<byte[]> ExportNatjecajAsync(long natjecajId, RezultatObrade? filter)
     {
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         var query = context.SocijalniNatjecajZahtjevi
             .Include(z => z.Clanovi)
             .Include(z => z.Bodovi)
