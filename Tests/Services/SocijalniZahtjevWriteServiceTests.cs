@@ -11,10 +11,10 @@ namespace DodjelaStanovaZG.Tests.Services;
 
 public class SocijalniZahtjevWriteServiceTests
 {
-    private class ConcurrencyFailDbContext : ApplicationDbContext
+    private class ConcurrencyFailDbContext(DbContextOptions<ApplicationDbContext> options) : ApplicationDbContext(options)
     {
         public byte[]? OriginalRowVersion { get; private set; }
-        public ConcurrencyFailDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entry = ChangeTracker.Entries<SocijalniNatjecajZahtjev>().First();
@@ -26,33 +26,29 @@ public class SocijalniZahtjevWriteServiceTests
     [Fact]
     public async Task UpdateOsnovnoAsync_ConcurrencyConflict_ThrowsInvalidOperation()
     {
-        // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
+        // Seed
         await using (var seed = new ApplicationDbContext(options))
         {
-            var natjecaj = new Natjecaj { Id = 1 };
-            var zahtjev = new SocijalniNatjecajZahtjev
+            seed.Natjecaji.Add(new Natjecaj { Id = 1 });
+            seed.SocijalniNatjecajZahtjevi.Add(new SocijalniNatjecajZahtjev
             {
                 Id = 1,
                 KlasaPredmeta = 1,
-                NatjecajId = natjecaj.Id,
-                Natjecaj = natjecaj
-            };
-            seed.Natjecaji.Add(natjecaj);
-            seed.SocijalniNatjecajZahtjevi.Add(zahtjev);
+                NatjecajId = 1
+            });
             await seed.SaveChangesAsync();
         }
 
         var ctx = new ConcurrencyFailDbContext(options);
-        var factoryMock = new Mock<IDbContextFactory<ApplicationDbContext>>();
-        factoryMock.Setup(f => f.CreateDbContext()).Returns(ctx);
+        var factory = Mock.Of<IDbContextFactory<ApplicationDbContext>>(f => f.CreateDbContext() == ctx);
+        var audit = Mock.Of<IAuditService>();
+        var logger = Mock.Of<ILogger<SocijalniZahtjevWriteService>>();
 
-        var audit = new Mock<IAuditService>();
-        var logger = new Mock<ILogger<SocijalniZahtjevWriteService>>();
-        var service = new SocijalniZahtjevWriteService(factoryMock.Object, audit.Object, logger.Object);
+        var service = new SocijalniZahtjevWriteService(factory, audit, logger);
 
         var dto = new SocijalniNatjecajOsnovnoEditDto
         {
@@ -60,11 +56,12 @@ public class SocijalniZahtjevWriteServiceTests
             KlasaPredmeta = 2,
             DatumPodnosenjaZahtjeva = DateTime.Now,
             NatjecajId = 1,
-            RowVersion = new byte[] { 5 }
+            RowVersion = [5]
         };
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.UpdateOsnovnoAsync(1, dto));
         Assert.Equal(dto.RowVersion, ctx.OriginalRowVersion);
     }
+
 }

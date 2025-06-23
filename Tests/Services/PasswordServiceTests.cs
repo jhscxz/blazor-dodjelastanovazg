@@ -12,13 +12,15 @@ public class PasswordServiceTests
     {
         // Arrange
         var userId = "user1";
-        var userStore = new Mock<IUserStore<IdentityUser>>();
-        var userManagerMock = new Mock<UserManager<IdentityUser>>(userStore.Object,
-            null!, null!, null!, null!, null!, null!, null!, null!);
-        userManagerMock.Setup(u => u.FindByIdAsync(userId))
+
+        var store = Mock.Of<IUserStore<IdentityUser>>();
+        var userManager = new Mock<UserManager<IdentityUser>>(
+            store, null!, null!, null!, null!, null!, null!, null!, null!);
+
+        userManager.Setup(u => u.FindByIdAsync(userId))
             .ReturnsAsync((IdentityUser?)null);
 
-        var service = new PasswordService(userManagerMock.Object);
+        var service = new PasswordService(userManager.Object);
 
         // Act
         var result = await service.ChangeOwnPasswordAsync(userId, "old", "new");
@@ -27,6 +29,9 @@ public class PasswordServiceTests
         Assert.False(result.Succeeded);
         var error = Assert.Single(result.Errors);
         Assert.Equal($"Korisnik s ID '{userId}' ne postoji.", error.Description);
-        userManagerMock.Verify(u => u.ChangePasswordAsync(It.IsAny<IdentityUser>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+
+        userManager.Verify(u =>
+                u.ChangePasswordAsync(It.IsAny<IdentityUser>(), It.IsAny<string>(), It.IsAny<string>()),
+            Times.Never);
     }
 }

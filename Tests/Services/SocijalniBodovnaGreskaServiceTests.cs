@@ -12,11 +12,10 @@ public class SocijalniBodovnaGreskaServiceTests
     [Fact]
     public async Task PronadiGreskeAsync_DateOutsideRange_ReturnsError()
     {
-        // Arrange
         var service = new SocijalniBodovnaGreskaService(Mock.Of<IDbContextFactory<ApplicationDbContext>>());
+
         var zahtjev = new SocijalniNatjecajZahtjev
         {
-            Id = 1,
             DatumPodnosenjaZahtjeva = new DateTime(2023, 12, 31),
             Natjecaj = new Natjecaj
             {
@@ -25,10 +24,9 @@ public class SocijalniBodovnaGreskaServiceTests
             }
         };
 
-        // Act
         var greske = await service.PronadiGreskeAsync(zahtjev);
 
-        // Assert
         Assert.Contains(greske, g => g.Kod == "DAT-001");
     }
+
 }

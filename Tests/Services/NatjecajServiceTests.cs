@@ -1,3 +1,4 @@
+
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO;
 using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
@@ -17,7 +18,6 @@ public class NatjecajServiceTests
     [Fact]
     public async Task GetByKlasaAsync_ReturnsMappedDto()
     {
-        // Arrange
         var entity = new Natjecaj
         {
             Id = 1,
@@ -29,16 +29,11 @@ public class NatjecajServiceTests
             RokZaPrijavu = DateOnly.FromDateTime(DateTime.Today.AddDays(30))
         };
 
-        var repo = new Mock<INatjecajRepository>();
-        repo.Setup(r => r.GetByKlasaAsync(123)).ReturnsAsync(entity);
+        var repo = Mock.Of<INatjecajRepository>(r => r.GetByKlasaAsync(123) == Task.FromResult(entity));
+        var service = new NatjecajService(repo, Mock.Of<ILogger<NatjecajService>>());
 
-        var logger = new Mock<ILogger<NatjecajService>>();
-        var service = new NatjecajService(repo.Object, logger.Object);
-
-        // Act
         var result = await service.GetByKlasaAsync(123);
 
-        // Assert
         Assert.NotNull(result);
         Assert.Equal(entity.Klasa, result.Klasa);
         Assert.Equal(entity.ProsjekPlace, result.ProsjekPlace);
@@ -49,7 +44,6 @@ public class NatjecajServiceTests
     [Fact]
     public async Task CreateAsync_AddsAndSaves()
     {
-        // Arrange
         var dto = new NatjecajDto
         {
             Klasa = 55,
@@ -64,13 +58,10 @@ public class NatjecajServiceTests
         repo.Setup(r => r.AddAsync(It.IsAny<Natjecaj>())).Returns(Task.CompletedTask);
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
 
-        var logger = new Mock<ILogger<NatjecajService>>();
-        var service = new NatjecajService(repo.Object, logger.Object);
+        var service = new NatjecajService(repo.Object, Mock.Of<ILogger<NatjecajService>>());
 
-        // Act
         var result = await service.CreateAsync(dto);
 
-        // Assert
         Assert.True(result);
         repo.Verify(r => r.AddAsync(It.Is<Natjecaj>(n =>
             n.Klasa == dto.Klasa &&
@@ -80,10 +71,10 @@ public class NatjecajServiceTests
         )), Times.Once);
         repo.Verify(r => r.SaveChangesAsync(), Times.Once);
     }
+
     [Fact]
     public async Task UpdateAsync_CallsRepositoryUpdate()
     {
-        // Arrange
         var entity = new Natjecaj
         {
             Id = 1,
@@ -95,15 +86,11 @@ public class NatjecajServiceTests
         repo.Setup(r => r.GetByKlasaAsync(55)).ReturnsAsync(entity);
         repo.Setup(r => r.UpdateAsync(entity)).Returns(Task.CompletedTask);
 
-        var logger = new Mock<ILogger<NatjecajService>>();
-        var service = new NatjecajService(repo.Object, logger.Object);
-
+        var service = new NatjecajService(repo.Object, Mock.Of<ILogger<NatjecajService>>());
         var dto = new NatjecajDto { Status = "Zaključen" };
 
-        // Act
         var result = await service.UpdateAsync(55, dto);
 
-        // Assert
         Assert.True(result);
         Assert.Equal(2, entity.Zakljucen);
         repo.Verify(r => r.UpdateAsync(entity), Times.Once);

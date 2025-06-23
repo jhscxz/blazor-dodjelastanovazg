@@ -1,3 +1,4 @@
+
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
@@ -36,42 +37,47 @@ public class SocijalniBodoviServiceTests
         var factory = new Mock<IDbContextFactory<ApplicationDbContext>>();
         factory.Setup(f => f.CreateDbContext()).Returns(context);
 
-        var audit = new Mock<IAuditService>();
-        var logger = new Mock<ILogger<SocijalniBodoviService>>();
+        var audit = Mock.Of<IAuditService>();
+        var logger = Mock.Of<ILogger<SocijalniBodoviService>>();
 
-        var service = new SocijalniBodoviService(factory.Object, repo.Object, audit.Object, logger.Object);
+        var service = new SocijalniBodoviService(factory.Object, repo.Object, audit, logger);
         return (service, () => spremljeni);
+    }
+
+    private static SocijalniNatjecajZahtjev BuildZahtjev(Action<SocijalniNatjecajZahtjev> configure)
+    {
+        var zahtjev = new SocijalniNatjecajZahtjev
+        {
+            Id = 1,
+            DatumPodnosenjaZahtjeva = new DateTime(2024, 6, 1),
+            Natjecaj = new Natjecaj { ProsjekPlace = 1000 }
+        };
+        configure(zahtjev);
+        return zahtjev;
     }
 
     [Fact]
     public async Task Test_Beskucnik_Samacko_55Plus_Zajamcena()
     {
-        var clan = new SocijalniNatjecajClan
+        var zahtjev = BuildZahtjev(z =>
         {
-            DatumRodjenja = new DateOnly(1960,
-                1,
-                1),
-            Srodstvo = Srodstvo.PodnositeljZahtjeva,
-            Zahtjev = null,
-        };
-
-        var zahtjev = new SocijalniNatjecajZahtjev
-        {
-            Id = 1,
-            DatumPodnosenjaZahtjeva = new DateTime(2024, 6, 1),
-            Natjecaj = new Natjecaj { ProsjekPlace = 1000 },
-            Clanovi = [clan],
-            KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci
+            z.Clanovi = [new()
+                {
+                    DatumRodjenja = new DateOnly(1960,
+                        1,
+                        1),
+                    Srodstvo = Srodstvo.PodnositeljZahtjeva,
+                    Zahtjev = null
+                }
+            ];
+            z.KucanstvoPodaci = new()
             {
                 StambeniStatusKucanstva = StambeniStatusKucanstva.Beskucnik,
                 SastavKucanstva = SastavKucanstva.SamackoKucanstvo,
-                Prihod = new SocijalniPrihodi { UkupniPrihodKucanstva = 0 }
-            },
-            BodovniPodaci = new SocijalniNatjecajBodovniPodaci
-            {
-                PrimateljZajamceneMinimalneNaknade = true
-            }
-        };
+                Prihod = new() { UkupniPrihodKucanstva = 0 }
+            };
+            z.BodovniPodaci = new() { PrimateljZajamceneMinimalneNaknade = true };
+        });
 
         var (service, getSpremljeni) = CreateService(zahtjev);
         await service.IzracunajIBodujAsync(1);
@@ -81,48 +87,43 @@ public class SocijalniBodoviServiceTests
     [Fact]
     public async Task Test_Slobodni_Jednoroditeljska_Maloljetni()
     {
-        var clanovi = new List<SocijalniNatjecajClan>
+        var zahtjev = BuildZahtjev(z =>
         {
-            new()
+            z.Clanovi = new List<SocijalniNatjecajClan>
             {
-                DatumRodjenja = new DateOnly(1990,
-                    1,
-                    1),
-                Srodstvo = Srodstvo.PodnositeljZahtjeva,
-                Zahtjev = null
-            },
-            new()
-            {
-                DatumRodjenja = new DateOnly(2015,
-                    1,
-                    1),
-                Srodstvo = Srodstvo.UzdrzavaniClan,
-                Zahtjev = null
-            },
-            new()
-            {
-                DatumRodjenja = new DateOnly(1990,
-                    1,
-                    1),
-                Srodstvo = Srodstvo.BracniDrug,
-                Zahtjev = null
-            }
-        };
-
-        var zahtjev = new SocijalniNatjecajZahtjev
-        {
-            Id = 1,
-            DatumPodnosenjaZahtjeva = new DateTime(2024, 6, 1),
-            Natjecaj = new Natjecaj { ProsjekPlace = 1000 },
-            Clanovi = clanovi,
-            KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci
+                new()
+                {
+                    DatumRodjenja = new DateOnly(1990,
+                        1,
+                        1),
+                    Srodstvo = Srodstvo.PodnositeljZahtjeva,
+                    Zahtjev = null
+                },
+                new()
+                {
+                    DatumRodjenja = new DateOnly(2015,
+                        1,
+                        1),
+                    Srodstvo = Srodstvo.UzdrzavaniClan,
+                    Zahtjev = null
+                },
+                new()
+                {
+                    DatumRodjenja = new DateOnly(1990,
+                        1,
+                        1),
+                    Srodstvo = Srodstvo.BracniDrug,
+                    Zahtjev = null
+                }
+            };
+            z.KucanstvoPodaci = new()
             {
                 StambeniStatusKucanstva = StambeniStatusKucanstva.SlobodniNajam,
                 SastavKucanstva = SastavKucanstva.JednoroditeljskaObitelj,
-                Prihod = new SocijalniPrihodi { UkupniPrihodKucanstva = 18000 }
-            },
-            BodovniPodaci = new SocijalniNatjecajBodovniPodaci()
-        };
+                Prihod = new() { UkupniPrihodKucanstva = 18000 }
+            };
+            z.BodovniPodaci = new();
+        });
 
         var (service, getSpremljeni) = CreateService(zahtjev);
         await service.IzracunajIBodujAsync(1);
@@ -141,25 +142,22 @@ public class SocijalniBodoviServiceTests
             Zahtjev = null
         };
 
-        var zahtjev = new SocijalniNatjecajZahtjev
+        var zahtjev = BuildZahtjev(z =>
         {
-            Id = 1,
-            DatumPodnosenjaZahtjeva = new DateTime(2024, 6, 1),
-            Natjecaj = new Natjecaj { ProsjekPlace = 1000 },
-            Clanovi = [clan, clan],
-            KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci
+            z.Clanovi = [clan, clan];
+            z.KucanstvoPodaci = new()
             {
                 StambeniStatusKucanstva = StambeniStatusKucanstva.Beskucnik,
                 SastavKucanstva = SastavKucanstva.SamackoKucanstvo,
-                Prihod = new SocijalniPrihodi { UkupniPrihodKucanstva = 12000 }
-            },
-            BodovniPodaci = new SocijalniNatjecajBodovniPodaci
+                Prihod = new() { UkupniPrihodKucanstva = 12000 }
+            };
+            z.BodovniPodaci = new()
             {
                 BrojMjeseciObranaSuvereniteta = 60,
                 BrojClanovaZrtavaSeksualnogNasilja = 1,
                 BrojCivilnihStradalnika = 2
-            }
-        };
+            };
+        });
 
         var (service, getSpremljeni) = CreateService(zahtjev);
         await service.IzracunajIBodujAsync(1);
@@ -169,12 +167,9 @@ public class SocijalniBodoviServiceTests
     [Fact]
     public async Task Test_Invalidi_Doplatak_Njegovatelj()
     {
-        var zahtjev = new SocijalniNatjecajZahtjev
+        var zahtjev = BuildZahtjev(z =>
         {
-            Id = 1,
-            DatumPodnosenjaZahtjeva = new DateTime(2024, 6, 1),
-            Natjecaj = new Natjecaj { ProsjekPlace = 1000 },
-            Clanovi = new List<SocijalniNatjecajClan>
+            z.Clanovi = new List<SocijalniNatjecajClan>
             {
                 new()
                 {
@@ -208,14 +203,14 @@ public class SocijalniBodoviServiceTests
                     Srodstvo = Srodstvo.UzdrzavaniClan,
                     Zahtjev = null
                 }
-            },
-            KucanstvoPodaci = new SocijalniNatjecajKucanstvoPodaci
+            };
+            z.KucanstvoPodaci = new()
             {
                 StambeniStatusKucanstva = StambeniStatusKucanstva.KodRoditelja,
                 SastavKucanstva = SastavKucanstva.JednoroditeljskaObitelj,
-                Prihod = new SocijalniPrihodi { UkupniPrihodKucanstva = 12000 }
-            },
-            BodovniPodaci = new SocijalniNatjecajBodovniPodaci
+                Prihod = new() { UkupniPrihodKucanstva = 12000 }
+            };
+            z.BodovniPodaci = new()
             {
                 BrojOdraslihKorisnikaInvalidnine = 2,
                 BrojMaloljetnihKorisnikaInvalidnine = 1,
@@ -223,8 +218,8 @@ public class SocijalniBodoviServiceTests
                 StatusRoditeljaNjegovatelja = true,
                 BrojUzdrzavanePunoljetneDjece = 1,
                 PrimateljZajamceneMinimalneNaknade = true
-            }
-        };
+            };
+        });
 
         var (service, getSpremljeni) = CreateService(zahtjev);
         await service.IzracunajIBodujAsync(1);

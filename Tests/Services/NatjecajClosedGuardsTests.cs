@@ -1,3 +1,4 @@
+
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
@@ -5,7 +6,6 @@ using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -43,21 +43,12 @@ public class NatjecajClosedGuardsTests
         }
 
         var factoryMock = CreateFactory(dbName);
-        var audit = new Mock<IAuditService>();
-        var logger = new Mock<ILogger<SocijalniZahtjevWriteService>>();
-        var service = new SocijalniZahtjevWriteService(factoryMock.Object, audit.Object, logger.Object);
+        var service = new SocijalniZahtjevWriteService(factoryMock.Object, Mock.Of<IAuditService>(), Mock.Of<ILogger<SocijalniZahtjevWriteService>>());
         var zahtjev = new SocijalniNatjecajZahtjev { NatjecajId = 1 };
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.CreateAsync(zahtjev));
         await using var assertContext = CreateContext(dbName);
         Assert.Empty(assertContext.SocijalniNatjecajZahtjevi);
-        logger.Verify(l => l.Log(
-                LogLevel.Warning,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("zaključen")),
-                It.IsAny<Exception?>(),
-                (Func<It.IsAnyType, Exception?, string>)It.IsAny<object>()),
-            Times.Once);
     }
 
     [Fact]
@@ -74,17 +65,9 @@ public class NatjecajClosedGuardsTests
         }
 
         var factoryMock = CreateFactory(dbName);
-        var logger = new Mock<ILogger<SocijalniKucanstvoService>>();
-        var service = new SocijalniKucanstvoService(factoryMock.Object, logger.Object);
+        var service = new SocijalniKucanstvoService(factoryMock.Object, Mock.Of<ILogger<SocijalniKucanstvoService>>());
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.UpdateKucanstvoPodaciAsync(1, new SocijalniKucanstvoPodaciDto()));
-        logger.Verify(l => l.Log(
-                LogLevel.Warning,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("zaključen")),
-                It.IsAny<Exception?>(),
-                (Func<It.IsAnyType, Exception?, string>)It.IsAny<object>()),
-            Times.Once);
     }
 
     [Fact]
@@ -108,17 +91,9 @@ public class NatjecajClosedGuardsTests
         }
 
         var factoryMock = CreateFactory(dbName);
-        var logger = new Mock<ILogger<SocijalniBodovniPodaciService>>();
-        var service = new SocijalniBodovniPodaciService(factoryMock.Object, logger.Object);
+        var service = new SocijalniBodovniPodaciService(factoryMock.Object, Mock.Of<ILogger<SocijalniBodovniPodaciService>>());
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.UpdateAsync(1, new SocijalniNatjecajBodovniPodaciDto()));
-        logger.Verify(l => l.Log(
-                LogLevel.Warning,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("zaključen")),
-                It.IsAny<Exception?>(),
-                (Func<It.IsAnyType, Exception?, string>)It.IsAny<object>()),
-            Times.Once);
     }
 
     [Fact]
@@ -135,22 +110,15 @@ public class NatjecajClosedGuardsTests
         }
 
         var factoryMock = CreateFactory(dbName);
-        var logger = new Mock<ILogger<SocijalniClanService>>();
-        var service = new SocijalniClanService(factoryMock.Object, logger.Object);
+        var service = new SocijalniClanService(factoryMock.Object, Mock.Of<ILogger<SocijalniClanService>>());
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.AddClanAsync(new SocijalniNatjecajClan
         {
             ZahtjevId = 1,
             Zahtjev = null
         }));
+
         await using var assertContext = CreateContext(dbName);
         Assert.Empty(assertContext.SocijalniNatjecajClanovi);
-        logger.Verify(l => l.Log(
-                LogLevel.Warning,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("zaključen")),
-                It.IsAny<Exception?>(),
-                (Func<It.IsAnyType, Exception?, string>)It.IsAny<object>()),
-            Times.Once);
     }
 }

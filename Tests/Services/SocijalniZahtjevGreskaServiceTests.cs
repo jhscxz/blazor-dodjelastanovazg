@@ -28,42 +28,37 @@ public class SocijalniZahtjevGreskaServiceTests
     [Fact]
     public async Task ObradiGreskeAsync_SetsRezultatObradeToGreska_WhenErrorsExist()
     {
-        // Arrange
-        var options = CreateOptions();
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
 
-        await using (var init = new ApplicationDbContext(options))
+        // Seed
+        await using (var seed = new ApplicationDbContext(options))
         {
-            init.SocijalniNatjecajZahtjevi.Add(new SocijalniNatjecajZahtjev
+            seed.SocijalniNatjecajZahtjevi.Add(new SocijalniNatjecajZahtjev
             {
                 Id = 1,
                 ManualniRezultatObrade = RezultatObrade.Osnovan,
                 RezultatObrade = RezultatObrade.Osnovan
             });
-            await init.SaveChangesAsync();
+            await seed.SaveChangesAsync();
         }
-
-        var greske = new List<SocijalniNatjecajBodovnaGreska>
-        {
-            new() { ZahtjevId = 1, Kod = "E1", Poruka = "p" }
-        };
 
         var greskaService = new Mock<ISocijalniBodovnaGreskaService>();
         greskaService.Setup(g => g.PronadiGreskeAsync(It.IsAny<SocijalniNatjecajZahtjev>()))
-            .ReturnsAsync(greske);
+            .ReturnsAsync([new SocijalniNatjecajBodovnaGreska { ZahtjevId = 1, Kod = "E1", Poruka = "p" }]);
 
-        var factoryMock = CreateFactory(options);
-        var audit = new Mock<IAuditService>();
-        var logger = new Mock<ILogger<SocijalniZahtjevGreskaService>>();
-        var service = new SocijalniZahtjevGreskaService(factoryMock.Object, greskaService.Object, audit.Object, logger.Object);
+        var factory = Mock.Of<IDbContextFactory<ApplicationDbContext>>(f => f.CreateDbContext() == new ApplicationDbContext(options));
+        var audit = Mock.Of<IAuditService>();
+        var logger = Mock.Of<ILogger<SocijalniZahtjevGreskaService>>();
 
-        var zahtjev = new SocijalniNatjecajZahtjev { Id = 1, ManualniRezultatObrade = RezultatObrade.Osnovan };
+        var service = new SocijalniZahtjevGreskaService(factory, greskaService.Object, audit, logger);
 
-        // Act
-        await service.ObradiGreskeAsync(zahtjev);
+        await service.ObradiGreskeAsync(new SocijalniNatjecajZahtjev { Id = 1, ManualniRezultatObrade = RezultatObrade.Osnovan });
 
-        // Assert
         await using var assertContext = new ApplicationDbContext(options);
         var saved = await assertContext.SocijalniNatjecajZahtjevi.FindAsync(1L);
+
         Assert.NotNull(saved);
         Assert.Equal(RezultatObrade.Greška, saved!.RezultatObrade);
     }
