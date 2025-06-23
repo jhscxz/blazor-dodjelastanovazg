@@ -28,6 +28,8 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
             await LoadUserRolesAsync();
             await LoadAllRolesAsync();
         }
+        
+        private void OnRoleChanged(string? value) => NewRoleName = value ?? "";
 
         private async Task LoadUserRolesAsync()
         {

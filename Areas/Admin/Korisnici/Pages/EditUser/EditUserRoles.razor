@@ -4,50 +4,53 @@
 
 @attribute [Authorize(Policy = "ImaPristupAdmin")]
 
-<ErrorAlert Messages="ErrorMessages" />
+<ErrorAlert Messages="ErrorMessages"/>
 
 <!-- Tablica prikazuje sve role (string) u kojima je korisnik -->
-<MudTable Items="@UserRoles" Hover="true" Striped="true" Outlined="true" RowsPerPage="@RowsPerPage" Dense="true" SortLabel="Sort By">
-    <HeaderContent>
-        <MudTh Class="table-header">Rola</MudTh>
-        <MudTh Class="table-header">Akcija</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Role Name">@context</MudTd>
-        <MudTd DataLabel="Akcije">
-            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                           Variant="Variant.Text"
-                           DisableElevation="true"
-                           Color="Color.Error"
-                           OnClick="() => RemoveUserFromRole(context)"
-                           Class="custom-icon-sm"/>
-        </MudTd>
-    </RowTemplate>
-</MudTable>
+<MudPaper Outlined="true" Class="pa-4">
+    <!-- Tablica prikazuje sve role (string) u kojima je korisnik -->
+    <MudTable Items="@UserRoles"
+              Hover="true"
+              Striped="true"
+              Outlined="true"
+              RowsPerPage="@RowsPerPage"
+              Dense="true"
+              SortLabel="Sort By"
+              Class="rounded-lg overflow-hidden">
+        <HeaderContent>
+            <MudTh Class="table-header">Rola</MudTh>
+            <MudTh Class="table-header">Akcija</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Role Name">@context</MudTd>
+            <MudTd DataLabel="Akcije">
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Variant="Variant.Text"
+                               DisableElevation="true"
+                               Color="Color.Error"
+                               OnClick="() => RemoveUserFromRole(context)"
+                               Class="custom-icon-sm"/>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager/>
+        </PagerContent>
+    </MudTable>
 
-<MudDivider Class="my-3"/>
+    <MudDivider Class="my-3"/>
 
-<!-- Dio za dodavanje nove role putem dropdowna -->
-<MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
-    <MudSelect ShrinkLabel T="string"
-               Label="Dodaj rolu"
-               @bind-Value="NewRoleName"
-               Variant="Variant.Outlined"
-               Margin="Margin.Dense"
-               Dense="true">
-        @foreach (var role in AllRoles)
-        {
-            <MudSelectItem T="string" Value="@role">@role</MudSelectItem>
-        }
-    </MudSelect>
-    <MudButton Variant="Variant.Filled"
-               Size="Size.Small"
-               IconColor="Color.Success"
-               OnClick="AddUserToRole"
-               Style="margin-top: 4px; border: 1px solid #d3d3d3;"
-               DropShadow="false"
-               Color="Color.Default"
-               StartIcon="@Icons.Material.Filled.Add">
-        Dodaj
-    </MudButton>
-</MudStack>
+    <!-- Dio za dodavanje nove role putem dropdowna -->
+    <ListHeader TFilter="string"
+                AddButtonText="Dodaj"
+                OnAdd="AddUserToRole"
+                FilterLabel="Dodaj rolu"
+                FilterValue="@NewRoleName"
+                OnFilterChanged="OnRoleChanged">
+        <FilterOptions>
+            @foreach (var role in AllRoles)
+            {
+                <MudSelectItem Value="@role">@role</MudSelectItem>
+            }
+        </FilterOptions>
+    </ListHeader>
+</MudPaper>
