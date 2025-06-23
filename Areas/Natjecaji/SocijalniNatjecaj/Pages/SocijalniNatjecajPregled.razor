@@ -17,7 +17,9 @@
                     OnSearchChanged="OnSearchChanged"
                     FilterLabel="Osnovanost"
                     FilterValue="@SelectedOsnovanost"
-                    OnFilterChanged="OnOsnovanostChanged">
+                    OnFilterChanged="OnOsnovanostChanged"
+                    ExportButtonText="EXCEL"
+                    OnExport="ExportExcel">
             <FilterOptions>
                 <MudSelectItem T="RezultatObrade?" Value="null">Svi</MudSelectItem>
                 <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Nepotpun">Nepotpun</MudSelectItem>

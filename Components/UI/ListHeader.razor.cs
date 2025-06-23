@@ -16,4 +16,6 @@ public partial class ListHeader<TFilter> : ComponentBase
     [Parameter] public EventCallback<TFilter?> OnFilterChanged { get; set; }
     [Parameter] public string FilterWidthClass { get; set; } = "w-[160px]";
     [Parameter] public RenderFragment? FilterOptions { get; set; }
+    [Parameter] public string ExportButtonText { get; set; } = "Export";
+    [Parameter] public EventCallback OnExport { get; set; }
 }

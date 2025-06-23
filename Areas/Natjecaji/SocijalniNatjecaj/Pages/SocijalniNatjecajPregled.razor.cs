@@ -125,6 +125,14 @@ public class SocijalniNatjecajPregledBase : ComponentBase
         SelectedOsnovanost = value;
         await Table.ReloadServerData();
     }
+    
+    protected void ExportExcel()
+    {
+        var url = Navigation.BaseUri + $"api/export/socijalni/{NatjecajId}/excel";
+        if (SelectedOsnovanost.HasValue)
+            url += $"?filter={SelectedOsnovanost}";
+        Navigation.NavigateTo(url, forceLoad: true);
+    }
 
     #region Helpers
 

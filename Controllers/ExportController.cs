@@ -1,3 +1,4 @@
+using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ namespace DodjelaStanovaZG.Controllers;
 public class ExportController(
     ILogger<ExportController> logger,
     IWordExportService wordExportService,
+    IExcelExportService excelExportService,
     IUnitOfWork unitOfWork)
     : ControllerBase
 {
@@ -30,5 +32,13 @@ public class ExportController(
         return File(bytes,
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             fileName);
+    }
+    
+    [HttpGet("socijalni/{natjecajId:long}/excel")]
+    public async Task<IActionResult> ExportSocijalniExcel(long natjecajId, [FromQuery] RezultatObrade? filter)
+    {
+        var bytes = await excelExportService.ExportNatjecajAsync(natjecajId, filter);
+        var fileName = $"Socijalni_{natjecajId}.xlsx";
+        return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
     }
 }
