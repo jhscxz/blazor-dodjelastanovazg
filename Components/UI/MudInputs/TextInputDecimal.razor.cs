@@ -7,8 +7,8 @@ namespace DodjelaStanovaZG.Components.UI.MudInputs;
 public partial class TextInputDecimal<T> : ComponentBase
 {
     [Parameter] public T? Value { get; set; }
-    [Parameter] public EventCallback<T?> ValueChanged { get; set; }
-    [Parameter] public Expression<Func<T?>>? ValueExpression { get; set; }
+    [Parameter] public EventCallback<T> ValueChanged { get; set; }
+    [Parameter] public Expression<Func<T?>> For { get; set; } = default!;
     [Parameter] public string Label { get; set; } = string.Empty;
     [Parameter] public bool Required { get; set; }
     [Parameter] public int Lines { get; set; } = 1;

@@ -2,8 +2,9 @@
 @using MudBlazor
 
 <MudTextField T="T"
-              @bind-Value="CurrentValue"
-              @bind-ValueExpression="ValueExpression"
+              Value="Value"
+              ValueChanged="ValueChanged"
+              For="For" 
               Label="@Label"
               Variant="@Variant"
               Margin="@Margin"
