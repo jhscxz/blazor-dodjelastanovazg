@@ -82,7 +82,6 @@ public partial class OsnovniPodaciEditFormPage
         }
         catch (Exception ex)
         {
-            _errorMessages.Add($"Greška: {ex.Message}");
             Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
         }
     }
