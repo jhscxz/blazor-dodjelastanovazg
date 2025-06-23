@@ -178,6 +178,14 @@ public class SocijalniZahtjevReadService(
             .AsNoTracking()
             .ToListAsync();
 
+        if (sortBy == SortKeys.RezultatObrade)
+        {
+            items = (direction == SortDirection.Descending
+                    ? items.OrderBy(i => GetRezultatObradePriority(i.RezultatObrade))
+                    : items.OrderByDescending(i => GetRezultatObradePriority(i.RezultatObrade))
+                ).ToList();
+        }
+        
         logger.LogDebug("Pronađeno {Count} zahtjeva (ukupno {Total})", items.Count, total);
         
         return new PagedResult<SocijalniNatjecajZahtjevDto>
@@ -186,4 +194,12 @@ public class SocijalniZahtjevReadService(
             TotalCount = total
         };
     }
+    private static int GetRezultatObradePriority(RezultatObrade? r) => r switch
+    {
+        RezultatObrade.Osnovan => 1,
+        RezultatObrade.Greška => 2,
+        RezultatObrade.Neosnovan => 3,
+        RezultatObrade.Nepotpun => 4,
+        _ => 5
+    };
 }
