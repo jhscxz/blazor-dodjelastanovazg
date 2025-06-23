@@ -4,7 +4,6 @@ using DodjelaStanovaZG.Infrastructure.Interfaces;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 
@@ -15,19 +14,14 @@ public class SocijalniBodoviService(
     ILogger<SocijalniBodoviService> logger)
     : ISocijalniBodoviService
 {
-    private readonly IDbContextFactory<ApplicationDbContext> _contextFactory = contextFactory;
-    private readonly ISocijalniBodoviRepository _repository = repository;
-    private readonly IAuditService _auditService = auditService;
-    private readonly ILogger<SocijalniBodoviService> _logger = logger;
-
     public async Task IzracunajIBodujAsync(long zahtjevId)
     {
-        _logger.LogInformation("Započinjem bodovanje zahtjeva {ZahtjevId}", zahtjevId);
-        await using var context = _contextFactory.CreateDbContext();
-        var zahtjev = await _repository.GetZahtjevWithDetailsAsync(context, zahtjevId);
+        logger.LogInformation("Započinjem bodovanje zahtjeva {ZahtjevId}", zahtjevId);
+        await using var context = contextFactory.CreateDbContext();
+        var zahtjev = await repository.GetZahtjevWithDetailsAsync(context, zahtjevId);
         if (zahtjev == null || zahtjev.KucanstvoPodaci == null || zahtjev.BodovniPodaci == null)
         {
-            _logger.LogError("Podaci nisu potpuni za bodovanje zahtjeva {ZahtjevId}", zahtjevId);
+            logger.LogError("Podaci nisu potpuni za bodovanje zahtjeva {ZahtjevId}", zahtjevId);
             throw new InvalidOperationException("Podaci nisu potpuni za bodovanje.");
         }
 
@@ -99,7 +93,7 @@ public class SocijalniBodoviService(
         var prihod = kucanstvo.Prihod;
         if (prihod == null)
         {
-            _logger.LogError("Prihod nije inicijaliziran za zahtjev {ZahtjevId}", zahtjevId);
+            logger.LogError("Prihod nije inicijaliziran za zahtjev {ZahtjevId}", zahtjevId);
             throw new InvalidOperationException("Prihod nije inicijaliziran.");
         }
 
@@ -114,17 +108,17 @@ public class SocijalniBodoviService(
             var prag = brojClanova == 1 ? 50m : 30m;
             prihod.IspunjavaUvjetPrihoda = prihod.PostotakProsjeka <= prag;
 
-            _auditService.ApplyAudit(prihod, false);
+            auditService.ApplyAudit(prihod, false);
         }
 
         if (zahtjev.Bodovi == null)
         {
-            _auditService.ApplyAudit(bodovi, true);
-            await _repository.AddBodoviAsync(context, bodovi);
+            auditService.ApplyAudit(bodovi, true);
+            await repository.AddBodoviAsync(context, bodovi);
         }
         else
         {
-            _auditService.ApplyAudit(bodovi, false);
+            auditService.ApplyAudit(bodovi, false);
 
             // update existing bodovi values
             zahtjev.Bodovi.BodoviStambeniStatus = bodovi.BodoviStambeniStatus;
@@ -147,23 +141,23 @@ public class SocijalniBodoviService(
         }
 
         await context.SaveChangesAsync();
-        _logger.LogInformation("Završeno bodovanje zahtjeva {ZahtjevId} - ukupno {Bodovi} bodova", zahtjevId, bodovi.UkupnoBodova);
+        logger.LogInformation("Završeno bodovanje zahtjeva {ZahtjevId} - ukupno {Bodovi} bodova", zahtjevId, bodovi.UkupnoBodova);
     }
 
     public async Task<SocijalniNatjecajBodovi?> GetByIdAsync(long zahtjevId)
     {
-        await using var context = _contextFactory.CreateDbContext();
-        return await _repository.GetZahtjevWithDetailsAsync(context, zahtjevId)
+        await using var context = contextFactory.CreateDbContext();
+        return await repository.GetZahtjevWithDetailsAsync(context, zahtjevId)
             .ContinueWith(t => t.Result?.Bodovi);
     }
 
     public async Task<List<SocijalniNatjecajBodovi>> GetForZahtjeviAsync(List<long> zahtjevIds)
     {
-        await using var context = _contextFactory.CreateDbContext();
+        await using var context = contextFactory.CreateDbContext();
         var list = new List<SocijalniNatjecajBodovi>();
         foreach (var id in zahtjevIds)
         {
-            var zahtjev = await _repository.GetZahtjevWithDetailsAsync(context, id);
+            var zahtjev = await repository.GetZahtjevWithDetailsAsync(context, id);
             if (zahtjev?.Bodovi != null)
                 list.Add(zahtjev.Bodovi);
         }

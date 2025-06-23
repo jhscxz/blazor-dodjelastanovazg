@@ -10,7 +10,6 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.De
 public partial class KucanstvoEditFormPage
 {
     [Parameter] public long ZahtjevId { get; set; }
-
     [Inject] private IUnitOfWork UnitOfWork { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
