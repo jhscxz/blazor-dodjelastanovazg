@@ -78,6 +78,7 @@
     <Folder Include="Areas\Izracun\" />
     <Folder Include="Areas\Natjecaji\" />
     <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
 </Project>
