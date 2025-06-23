@@ -169,15 +169,6 @@ public class SocijalniBodoviServiceTests
     [Fact]
     public async Task Test_Invalidi_Doplatak_Njegovatelj()
     {
-        var clan = new SocijalniNatjecajClan
-        {
-            DatumRodjenja = new DateOnly(2010,
-                1,
-                1),
-            Srodstvo = Srodstvo.PodnositeljZahtjeva,
-            Zahtjev = null,
-        };
-
         var zahtjev = new SocijalniNatjecajZahtjev
         {
             Id = 1,

@@ -16,6 +16,7 @@ public partial class OsnovniPodaciEditFormPage
 
     [Inject] private NavigationManager Navigation { get; set; } = default!;
     [Inject] private IUnitOfWork UnitOfWork { get; set; } = default!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     private SocijalniNatjecajOsnovnoEditDto? _socijalniNatjecajModel;
     private MudForm? _form;
@@ -82,7 +83,7 @@ public partial class OsnovniPodaciEditFormPage
         catch (Exception ex)
         {
             _errorMessages.Add($"Greška: {ex.Message}");
-            throw; 
+            Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
         }
     }
 

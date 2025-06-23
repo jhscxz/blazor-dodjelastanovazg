@@ -1,11 +1,9 @@
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
-using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
 using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -69,6 +67,4 @@ public class SocijalniZahtjevGreskaServiceTests
         Assert.NotNull(saved);
         Assert.Equal(RezultatObrade.Greška, saved!.RezultatObrade);
     }
-    
-    
 }

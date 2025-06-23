@@ -4,10 +4,8 @@ using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
-using System.Linq;
 
 namespace DodjelaStanovaZG.Tests.Services;
 
