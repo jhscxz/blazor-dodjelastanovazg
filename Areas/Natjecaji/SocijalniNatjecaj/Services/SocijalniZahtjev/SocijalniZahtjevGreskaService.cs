@@ -21,23 +21,32 @@ public class SocijalniZahtjevGreskaService(
         var noveGreske = await greskaService.PronadiGreskeAsync(zahtjev);
         logger.LogInformation("Pronađeno {Count} grešaka", noveGreske.Count);
         
-        await SinkronizirajGreskeAsync(zahtjev.Id, noveGreske);
+        await using var context = contextFactory.CreateDbContext();
+
+        await SinkronizirajGreskeAsync(context, zahtjev.Id, noveGreske);
 
         zahtjev.RezultatObrade =
-            zahtjev.ManualniRezultatObrade == RezultatObrade.Osnovan && noveGreske.Any()
+            noveGreske.Count != 0
                 ? RezultatObrade.Greška
                 : zahtjev.ManualniRezultatObrade;
 
         logger.LogInformation("Rezultat obrade zahtjeva {ZahtjevId}: {Rezultat}", zahtjev.Id, zahtjev.RezultatObrade);
         
+        context.Attach(zahtjev);
+        var entry = context.Entry(zahtjev);
+        entry.Property(z => z.RezultatObrade).IsModified = true;
+        entry.Property(z => z.UpdatedAt).IsModified = true;
+        entry.Property(z => z.UpdatedBy).IsModified = true;
+
+        await context.SaveChangesAsync();
         auditService.ApplyAudit(zahtjev, false);
     }
 
-    private async Task SinkronizirajGreskeAsync(
+    private static async Task SinkronizirajGreskeAsync(
+        ApplicationDbContext context,
         long zahtjevId,
         IEnumerable<SocijalniNatjecajBodovnaGreska> nove)
     {
-        await using var context = contextFactory.CreateDbContext();
         var set = context.SocijalniNatjecajBodovnaGreske;
 
         var postojece = await set

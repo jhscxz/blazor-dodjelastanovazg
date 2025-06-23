@@ -28,26 +28,25 @@ public class SocijalniZahtjevGreskaServiceTests
     }
 
     [Fact]
-    public async Task ObradiGreskeAsync_SavesFoundErrors()
+    public async Task ObradiGreskeAsync_SetsRezultatObradeToGreska_WhenErrorsExist()
     {
         // Arrange
         var options = CreateOptions();
 
-        await using (var initContext = new ApplicationDbContext(options))
+        await using (var init = new ApplicationDbContext(options))
         {
-            initContext.SocijalniNatjecajBodovnaGreske.Add(new SocijalniNatjecajBodovnaGreska
+            init.SocijalniNatjecajZahtjevi.Add(new SocijalniNatjecajZahtjev
             {
-                ZahtjevId = 1,
-                Kod = "OLD",
-                Poruka = "old"
+                Id = 1,
+                ManualniRezultatObrade = RezultatObrade.Osnovan,
+                RezultatObrade = RezultatObrade.Osnovan
             });
-            await initContext.SaveChangesAsync();
+            await init.SaveChangesAsync();
         }
 
         var greske = new List<SocijalniNatjecajBodovnaGreska>
         {
-            new() { ZahtjevId = 1, Kod = "NEW1", Poruka = "p1" },
-            new() { ZahtjevId = 1, Kod = "NEW2", Poruka = "p2" }
+            new() { ZahtjevId = 1, Kod = "E1", Poruka = "p" }
         };
 
         var greskaService = new Mock<ISocijalniBodovnaGreskaService>();
@@ -66,11 +65,10 @@ public class SocijalniZahtjevGreskaServiceTests
 
         // Assert
         await using var assertContext = new ApplicationDbContext(options);
-        var saved = await assertContext.SocijalniNatjecajBodovnaGreske
-            .Where(g => g.ZahtjevId == 1)
-            .ToListAsync();
-
-        Assert.Equal(2, saved.Count);
-        Assert.All(saved, g => Assert.NotEqual("OLD", g.Kod));
+        var saved = await assertContext.SocijalniNatjecajZahtjevi.FindAsync(1L);
+        Assert.NotNull(saved);
+        Assert.Equal(RezultatObrade.Greška, saved!.RezultatObrade);
     }
+    
+    
 }
