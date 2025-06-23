@@ -26,13 +26,6 @@ public class SocijalniZahtjevFormHandler(IUnitOfWork unitOfWork, ISocijalniBodov
             return (false, errors);
         }
 
-        var datumPodnosenja = DateOnly.FromDateTime(model.DatumPodnosenjaZahtjeva!.Value);
-        if (datumPodnosenja < natjecaj.DatumObjave || datumPodnosenja > natjecaj.RokZaPrijavu)
-        {
-            errors.Add($"Datum podnošenja mora biti između {natjecaj.DatumObjave} i {natjecaj.RokZaPrijavu}.");
-            return (false, errors);
-        }
-
         model.RezultatObrade = (RezultatObrade)rezultatObrade;
 
         try

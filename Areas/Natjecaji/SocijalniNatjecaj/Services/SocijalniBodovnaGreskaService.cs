@@ -40,6 +40,7 @@ public sealed class SocijalniBodovnaGreskaService(IDbContextFactory<ApplicationD
         }
 
         // poslovna pravila
+        ProvjeriDatumPodnosenja();
         ProvjeriKucanstvo();
         ProvjeriPodnositelja();
         ProvjeriPrihode();
@@ -49,6 +50,16 @@ public sealed class SocijalniBodovnaGreskaService(IDbContextFactory<ApplicationD
 
         // ------------------ HELPERI ------------------
 
+        void ProvjeriDatumPodnosenja()
+        {
+            var nat = zahtjev.Natjecaj;
+            if (nat is null) return;
+
+            var datum = DateOnly.FromDateTime(zahtjev.DatumPodnosenjaZahtjeva);
+            if (datum < nat.DatumObjave || datum > nat.RokZaPrijavu)
+                Add("DAT-001", "Zahtjev je unesen izvan roka natječaja.");
+        }
+        
         void ProvjeriKucanstvo()
         {
             var prebivanjeOd = zahtjev.KucanstvoPodaci?.PrebivanjeOd;

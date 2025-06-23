@@ -4,6 +4,7 @@ using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev.ISocijalniZahtjev;
 using DodjelaStanovaZG.Enums;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
+using DodjelaStanovaZG.Models;
 using DodjelaStanovaZG.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Moq;
@@ -21,7 +22,7 @@ public class SocijalniZahtjevFormHandlerTests
     }
 
     [Fact]
-    public async Task SubmitAsync_DateOutsideRange_ReturnsError()
+    public async Task SubmitAsync_DateOutsideRange_AllowsCreation()
     {
         // Arrange
         var natjecajDto = new NatjecajDto
@@ -34,8 +35,13 @@ public class SocijalniZahtjevFormHandlerTests
         natjecajService.Setup(s => s.GetByIdAsync(1)).ReturnsAsync(natjecajDto);
 
         var uow = new Mock<IUnitOfWork>();
+        
+        var processor = new Mock<ISocijalniZahtjevProcessorService>();
+        processor.Setup(p => p.KreirajZahtjevAsync(It.IsAny<SocijalniNatjecajZahtjevDto>(), It.IsAny<string?>(), It.IsAny<string?>()))
+            .ReturnsAsync(new SocijalniNatjecajZahtjev { Id = 5 });
+        
         uow.SetupGet(u => u.NatjecajiService).Returns(natjecajService.Object);
-        uow.SetupGet(u => u.SocijalniZahtjevProcessorService).Returns(Mock.Of<ISocijalniZahtjevProcessorService>());
+        uow.SetupGet(u => u.SocijalniZahtjevProcessorService).Returns(processor.Object);
 
         var bodoviService = new Mock<ISocijalniBodoviService>();
         var nav = new TestNavigationManager();
@@ -53,8 +59,8 @@ public class SocijalniZahtjevFormHandlerTests
         var result = await handler.SubmitAsync(model, (int)RezultatObrade.Osnovan);
 
         // Assert
-        Assert.False(result.Success);
-        Assert.Single(result.Errors);
-        Assert.Contains("Datum podnošenja", result.Errors[0]);
+        Assert.True(result.Success);
+        Assert.Empty(result.Errors);
+        Assert.Equal("/socijalni/detalji/5", nav.NavigatedTo);
     }
 }
