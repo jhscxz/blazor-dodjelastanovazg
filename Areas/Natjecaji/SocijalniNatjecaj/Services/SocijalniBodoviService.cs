@@ -19,6 +19,7 @@ public class SocijalniBodoviService(
     private readonly ISocijalniBodoviRepository _repository = repository;
     private readonly IAuditService _auditService = auditService;
     private readonly ILogger<SocijalniBodoviService> _logger = logger;
+
     public async Task IzracunajIBodujAsync(long zahtjevId)
     {
         _logger.LogInformation("Započinjem bodovanje zahtjeva {ZahtjevId}", zahtjevId);
@@ -31,8 +32,8 @@ public class SocijalniBodoviService(
         }
 
         var kucanstvo = zahtjev.KucanstvoPodaci;
-        var bodovni    = zahtjev.BodovniPodaci;
-        var clanovi    = zahtjev.Clanovi;
+        var bodovni = zahtjev.BodovniPodaci;
+        var clanovi = zahtjev.Clanovi;
 
         int brojClanova = clanovi.Count;
         int brojMaloljetnih = clanovi.Count(c => c.DatumRodjenja.AddYears(18) > DateOnly.FromDateTime(zahtjev.DatumPodnosenjaZahtjeva));
@@ -42,43 +43,43 @@ public class SocijalniBodoviService(
 
         bodovi.BodoviStambeniStatus = kucanstvo.StambeniStatusKucanstva switch
         {
-            StambeniStatusKucanstva.SlobodniNajam          => 12,
-            StambeniStatusKucanstva.KodRoditelja           => 9,
+            StambeniStatusKucanstva.SlobodniNajam => 12,
+            StambeniStatusKucanstva.KodRoditelja => 9,
             StambeniStatusKucanstva.OrganiziranoStanovanje => 15,
-            StambeniStatusKucanstva.Beskucnik              => 30,
-            _                                              => 0
+            StambeniStatusKucanstva.Beskucnik => 30,
+            _ => 0
         };
 
         bodovi.BodoviSastavKucanstva = kucanstvo.SastavKucanstva switch
         {
-            SastavKucanstva.SamohraniRoditelj         => 20,
-            SastavKucanstva.JednoroditeljskaObitelj  => 15,
-            SastavKucanstva.SamackoKucanstvo         => 15,
-            _                                        => 0
+            SastavKucanstva.SamohraniRoditelj => 20,
+            SastavKucanstva.JednoroditeljskaObitelj => 15,
+            SastavKucanstva.SamackoKucanstvo => 15,
+            _ => 0
         };
 
-        bodovi.BodoviPoClanu               = (byte)(brojClanova * 3);
-        bodovi.BodoviMaloljetni           = (byte)(brojMaloljetnih * 5);
+        bodovi.BodoviPoClanu = (byte)(brojClanova * 3);
+        bodovi.BodoviMaloljetni = (byte)(brojMaloljetnih * 5);
         bodovi.BodoviPunoljetniUzdrzavani = (byte)(brojPunoljetnihUzdrzavanih * 3);
-        bodovi.BodoviZajamcenaNaknada     = bodovni.PrimateljZajamceneMinimalneNaknade ? (byte)15 : (byte)0;
-        bodovi.BodoviNjegovatelj          = bodovni.StatusRoditeljaNjegovatelja        ? (byte)12 : (byte)0;
-        bodovi.BodoviDoplatakZaNjegu      = bodovni.KorisnikDoplatkaZaPomoc            ? (byte)9  : (byte)0;
-        bodovi.BodoviOdraslihInvalidnina  = (byte)(bodovni.BrojOdraslihKorisnikaInvalidnine * 15);
+        bodovi.BodoviZajamcenaNaknada = bodovni.PrimateljZajamceneMinimalneNaknade ? (byte)15 : (byte)0;
+        bodovi.BodoviNjegovatelj = bodovni.StatusRoditeljaNjegovatelja ? (byte)12 : (byte)0;
+        bodovi.BodoviDoplatakZaNjegu = bodovni.KorisnikDoplatkaZaPomoc ? (byte)9 : (byte)0;
+        bodovi.BodoviOdraslihInvalidnina = (byte)(bodovni.BrojOdraslihKorisnikaInvalidnine * 15);
         bodovi.BodoviMaloljetnihInvalidnina = (byte)(bodovni.BrojMaloljetnihKorisnikaInvalidnine * 20);
-        bodovi.BodoviZrtvaNasilja         = bodovni.ZrtvaObiteljskogNasilja ? (byte)10 : (byte)0;
-        bodovi.BodoviAlternativnaSkrb     = (byte)(bodovni.BrojOsobaUAlternativnojSkrbi * 10);
+        bodovi.BodoviZrtvaNasilja = bodovni.ZrtvaObiteljskogNasilja ? (byte)10 : (byte)0;
+        bodovi.BodoviAlternativnaSkrb = (byte)(bodovni.BrojOsobaUAlternativnojSkrbi * 10);
 
         var podnositelj = clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
         bool hasValidDatum = podnositelj is { DatumRodjenja.Year: > 1900 };
         bool isIznad55 = hasValidDatum && podnositelj!.DatumRodjenja.AddYears(55) <= DateOnly.FromDateTime(zahtjev.DatumPodnosenjaZahtjeva);
         bodovi.BodoviIznad55 = hasValidDatum ? (isIznad55 ? (byte)15 : (byte)0) : (byte)0;
 
-        bodovi.BodoviObrana             = Math.Min(bodovni.BrojMjeseciObranaSuvereniteta * 0.5f, 20f);
-        bodovi.BodoviSeksualnoNasilje   = (byte)(bodovni.BrojClanovaZrtavaSeksualnogNasilja * 10);
+        bodovi.BodoviObrana = Math.Min(bodovni.BrojMjeseciObranaSuvereniteta * 0.5f, 20f);
+        bodovi.BodoviSeksualnoNasilje = (byte)(bodovni.BrojClanovaZrtavaSeksualnogNasilja * 10);
         bodovi.BodoviCivilniStradalnici = (byte)(bodovni.BrojCivilnihStradalnika * 8);
 
         bodovi.UkupnoBodova =
-              bodovi.BodoviStambeniStatus
+            bodovi.BodoviStambeniStatus
             + bodovi.BodoviSastavKucanstva
             + bodovi.BodoviPoClanu
             + bodovi.BodoviMaloljetni
@@ -124,7 +125,7 @@ public class SocijalniBodoviService(
         else
         {
             _auditService.ApplyAudit(bodovi, false);
-            
+
             // update existing bodovi values
             zahtjev.Bodovi.BodoviStambeniStatus = bodovi.BodoviStambeniStatus;
             zahtjev.Bodovi.BodoviSastavKucanstva = bodovi.BodoviSastavKucanstva;
@@ -166,6 +167,7 @@ public class SocijalniBodoviService(
             if (zahtjev?.Bodovi != null)
                 list.Add(zahtjev.Bodovi);
         }
+
         return list;
     }
 }
