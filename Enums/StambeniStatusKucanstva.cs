@@ -16,6 +16,9 @@ public enum StambeniStatusKucanstva : byte
     [Display(Name = "Korisnik organiziranog stanovanja")]
     OrganiziranoStanovanje = 4,
 
-    [Display(Name = "Beskućnik")]
-    Beskucnik = 5
+    [Display(Name = "Beskućnik")] 
+    Beskucnik = 5,
+
+    [Display(Name = "Ostalo")] 
+    Ostalo = 6
 }
