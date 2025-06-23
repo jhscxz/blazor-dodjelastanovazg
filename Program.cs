@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using MudBlazor;
@@ -61,8 +62,7 @@ builder.Services.AddRazorPages(options =>
 builder.Services.AddApplicationServices();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-_ = typeof(DodjelaStanovaZG.Helpers.MappingExtensions);
-
+RuntimeHelpers.RunClassConstructor(typeof(DodjelaStanovaZG.Helpers.MappingExtensions).TypeHandle);
 
 // Dodaj hrvatski jezik kao default
 var culture = new CultureInfo("hr-HR");

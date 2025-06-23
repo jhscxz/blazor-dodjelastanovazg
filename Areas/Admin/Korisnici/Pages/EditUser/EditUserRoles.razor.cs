@@ -1,3 +1,4 @@
+using DodjelaStanovaZG.Areas.Admin.Korisnici.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 
@@ -85,6 +86,12 @@ namespace DodjelaStanovaZG.Areas.Admin.Korisnici.Pages.EditUser
         {
             ErrorMessages.Clear();
 
+            if (roleName == RoleNames.Management)
+            {
+                ErrorMessages.Add("Rola 'Management' se ne može ukloniti.");
+                return;
+            }
+            
             var user = await UserManager.FindByIdAsync(UserId);
             if (user is null)
             {
