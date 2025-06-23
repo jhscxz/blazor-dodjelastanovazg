@@ -4,6 +4,7 @@
 @using DodjelaStanovaZG.Components.UI
 @using Microsoft.AspNetCore.Authorization
 @using DodjelaStanovaZG.Components.UI.Buttons
+@using DodjelaStanovaZG.Components.UI.MudInputs
 
 @attribute [Authorize(Policy = "ImaPristupAdmin")]
 
@@ -23,41 +24,29 @@
                 <MudSelectItem Value="@("Priuštivi")">Priuštivi</MudSelectItem>
             </MudSelect>
 
-            <MudTextField T="int"
+            <TextInputInt T="int?"
                           Label="Klasa"
                           @bind-Value="Natjecaj.Klasa"
                           Required="true"
-                          Variant="Variant.Outlined"
-                          Margin="Margin.Dense"
                           Class="mb-4"
                           Autocomplete="off"
                           ShrinkLabel="true"/>
 
-            <MudTextField T="decimal"
-                          Label="Prosjek plaće (€)"
-                          @bind-Value="Natjecaj.ProsjekPlace"
-                          Required="true"
-                          Variant="Variant.Outlined"
-                          Margin="Margin.Dense"
-                          Class="mb-4"
-                          Autocomplete="off"
-                          ShrinkLabel="true"/>
+            <TextInputDecimal T="decimal?"
+                              Label="Prosjek plaće (€)"
+                              @bind-Value="Natjecaj.ProsjekPlace"
+                              Required="true"
+                              Class="mb-4"
+                              Autocomplete="off"
+                              ShrinkLabel="true"/>
 
-            <MudDatePicker Label="Datum objave"
-                           @bind-Date="Natjecaj.DatumObjaveDateTime"
-                           DateFormat="dd.MM.yyyy."
-                           Required="true"
-                           Variant="Variant.Outlined"
-                           Margin="Margin.Dense"
-                           Class="mb-4"/>
+            <DateInput Label="Datum objave"
+                       @bind-Value="Natjecaj.DatumObjaveDateTime"
+                       Required="true" />
 
-            <MudDatePicker Label="Rok za prijavu"
-                           @bind-Date="Natjecaj.RokZaPrijavuDateTime"
-                           DateFormat="dd.MM.yyyy."
-                           Required="true"
-                           Variant="Variant.Outlined"
-                           Margin="Margin.Dense"
-                           Class="mb-4"/>
+            <DateInput Label="Rok za prijavu"
+                       @bind-Value="Natjecaj.RokZaPrijavuDateTime"
+                       Required="true" />
 
             <MudSelect T="string"
                        Label="Status"

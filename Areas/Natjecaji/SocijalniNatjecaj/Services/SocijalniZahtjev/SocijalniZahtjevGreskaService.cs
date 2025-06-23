@@ -26,7 +26,7 @@ public class SocijalniZahtjevGreskaService(
         await SinkronizirajGreskeAsync(context, zahtjev.Id, noveGreske);
 
         zahtjev.RezultatObrade =
-            noveGreske.Count != 0
+            noveGreske.Count != 0 && zahtjev.ManualniRezultatObrade == RezultatObrade.Osnovan
                 ? RezultatObrade.Greška
                 : zahtjev.ManualniRezultatObrade;
 

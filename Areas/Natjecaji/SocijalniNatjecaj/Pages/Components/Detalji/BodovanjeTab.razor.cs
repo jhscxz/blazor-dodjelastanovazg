@@ -82,6 +82,7 @@ public partial class BodovanjeTab : ComponentBase
             RezultatObrade.Nepotpun => "Nepotpun",
             RezultatObrade.Neosnovan => "Neosnovan",
             RezultatObrade.Osnovan => "Osnovan",
+            RezultatObrade.Greška => "Greška",
             _ => "Nepoznato"
         };
     }

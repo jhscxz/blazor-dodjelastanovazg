@@ -43,9 +43,11 @@
 
             <RowTemplate>
                 <MudTd>@context.Vrsta</MudTd>
-                <MudTd>@context.DatumObjave.Year</MudTd>
+                <MudTd>@context.DatumObjave?.Year</MudTd>
                 <MudTd>@context.Klasa</MudTd>
-                <MudTd>@context.ProsjekPlace.ToString("N2") €</MudTd>
+                <MudTd>
+                    @(context.ProsjekPlace?.ToString("N2")) @(context.ProsjekPlace is null ? string.Empty : "€")
+                </MudTd>
                 <MudTd>
                     <MudChip T="string"
                              Variant="Variant.Text"
