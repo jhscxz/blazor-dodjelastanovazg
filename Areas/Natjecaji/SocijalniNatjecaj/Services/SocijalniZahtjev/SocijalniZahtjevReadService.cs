@@ -106,9 +106,50 @@ public class SocijalniZahtjevReadService(
         if (filter is not null)
             q = q.Where(z => z.RezultatObrade == filter);
 
-        q = !string.IsNullOrWhiteSpace(sortBy)
-            ? q.OrderByDynamic(sortBy, direction == SortDirection.Descending)
-            : q.OrderBy(z => z.Id);
+        if (!string.IsNullOrWhiteSpace(sortBy))
+        {
+            q = sortBy switch
+            {
+                SortKeys.KlasaPredmeta => direction == SortDirection.Descending
+                    ? q.OrderByDescending(z => z.KlasaPredmeta)
+                    : q.OrderBy(z => z.KlasaPredmeta),
+
+                SortKeys.ImePrezime => direction == SortDirection.Descending
+                    ? q.OrderByDescending(z => z.Clanovi
+                        .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
+                        .Select(c => c.ImePrezime)
+                        .FirstOrDefault())
+                    : q.OrderBy(z => z.Clanovi
+                        .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
+                        .Select(c => c.ImePrezime)
+                        .FirstOrDefault()),
+
+                SortKeys.Oib => direction == SortDirection.Descending
+                    ? q.OrderByDescending(z => z.Clanovi
+                        .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
+                        .Select(c => c.Oib)
+                        .FirstOrDefault())
+                    : q.OrderBy(z => z.Clanovi
+                        .Where(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva)
+                        .Select(c => c.Oib)
+                        .FirstOrDefault()),
+
+                SortKeys.Bodovi => direction == SortDirection.Descending
+                    ? q.OrderByDescending(z => z.Bodovi!.UkupnoBodova)
+                    : q.OrderBy(z => z.Bodovi!.UkupnoBodova),
+
+                SortKeys.RezultatObrade => direction == SortDirection.Descending
+                    ? q.OrderByDescending(z => z.RezultatObrade)
+                    : q.OrderBy(z => z.RezultatObrade),
+
+                _ => q.OrderByDynamic(sortBy, direction == SortDirection.Descending)
+            };
+        }
+
+        else
+        {
+            q = q.OrderBy(z => z.Id);
+        }
 
         var total = await q.CountAsync();
 

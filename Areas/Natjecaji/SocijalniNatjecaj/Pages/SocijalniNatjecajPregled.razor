@@ -2,6 +2,7 @@
 @using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
 @using DodjelaStanovaZG.Components.UI
 @using DodjelaStanovaZG.Enums
+@using DodjelaStanovaZG.Helpers
 @using MudBlazor
 @inherits SocijalniNatjecajPregledBase
 
@@ -35,16 +36,27 @@
                   RowsPerPage="10"
                   Outlined="true"
                   Breakpoint="Breakpoint.Sm"
+                  SortLabel="Sortiraj po"
                   @ref="Table"
                   Class="rounded-lg overflow-hidden">
 
             <HeaderContent>
                 <MudTh Class="table-header"></MudTh>
-                <MudTh Class="table-header">Klasa predmeta</MudTh>
-                <MudTh Class="table-header">Prezime i ime</MudTh>
-                <MudTh Class="table-header">OIB</MudTh>
-                <MudTh Class="table-header">Ukupno bodova</MudTh>
-                <MudTh Class="table-header">Osnovanost</MudTh>
+                <MudTh Class="table-header">
+                    <MudTableSortLabel T="SocijalniNatjecajZahtjevDto" SortLabel="klasaPredmeta">Klasa predmeta</MudTableSortLabel>
+                </MudTh>
+                <MudTh Class="table-header">
+                    <MudTableSortLabel T="SocijalniNatjecajZahtjevDto" SortLabel="imePrezime">Prezime i ime</MudTableSortLabel>
+                </MudTh>
+                <MudTh Class="table-header">
+                    <MudTableSortLabel T="SocijalniNatjecajZahtjevDto" SortLabel="oib">OIB</MudTableSortLabel>
+                </MudTh>
+                <MudTh Class="table-header">
+                    <MudTableSortLabel T="SocijalniNatjecajZahtjevDto" SortLabel="bodovi">Ukupno bodova</MudTableSortLabel>
+                </MudTh>
+                <MudTh Class="table-header">
+                    <MudTableSortLabel T="SocijalniNatjecajZahtjevDto" SortLabel="RezultatObrade">Osnovanost</MudTableSortLabel>
+                </MudTh>
                 <MudTh Class="table-header">Akcija</MudTh>
             </HeaderContent>
 
