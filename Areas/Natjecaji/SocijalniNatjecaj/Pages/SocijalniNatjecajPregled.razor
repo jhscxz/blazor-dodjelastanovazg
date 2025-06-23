@@ -17,7 +17,9 @@
                     OnSearchChanged="OnSearchChanged"
                     FilterLabel="Osnovanost"
                     FilterValue="@SelectedOsnovanost"
-                    OnFilterChanged="OnOsnovanostChanged">
+                    OnFilterChanged="OnOsnovanostChanged"
+                    ExportButtonText="EXCEL"
+                    OnExport="ExportExcel">
             <FilterOptions>
                 <MudSelectItem T="RezultatObrade?" Value="null">Svi</MudSelectItem>
                 <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Nepotpun">Nepotpun</MudSelectItem>
@@ -80,15 +82,16 @@
             <ChildRowContent>
                 @if (IsRowExpanded(context))
                 {
-                    <MudTd>
-                        <MudPaper Elevation="0"
-                                  Class="pa-4 rounded-lg"
-                                  Style="background-color: #f5f5f5;">
-                            <SocijalniZahtjevPregledContent Model="context"/>
-                        </MudPaper>
-                    </MudTd>
+                    <MudTr>
+                        <ExtendedMudTd ColSpan="7" Class="pa-0">
+                            <MudPaper Class="pa-4 rounded-lg" Style="background-color: #f5f5f5;">
+                                <SocijalniZahtjevPregledContent Model="context" />
+                            </MudPaper>
+                        </ExtendedMudTd>
+                    </MudTr>
                 }
             </ChildRowContent>
+
 
 
             <PagerContent>
