@@ -36,7 +36,10 @@
             </MudItem>
         </MudGrid>
 
-        <BoolSelect Label="Useljiva kuća/stan u Zagrebu/ZG županiji" Value="@Detalji.PosjedujeNekretninuZG" />
+        <TextInput T="string"
+                   Label="Useljiva kuća/stan u Zagrebu/ZG županiji"
+                   Value="@(Detalji.PosjedujeNekretninuZG ? "Da" : "Ne")"
+                   ReadOnly="true" />
         
         <TextAreaInput Label="Napomena obrade"
                        Value="@Detalji.NapomenaObrade"

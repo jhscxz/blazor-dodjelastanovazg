@@ -22,8 +22,7 @@ public class SocijalniNatjecajPregledBase : ComponentBase
     protected bool IsManagementUser { get; set; }
     [Parameter] public long NatjecajId { get; set; }
     protected MudTable<SocijalniNatjecajZahtjevDto> Table = null!;
-    protected const int TotalColumns = 7;
-    public long? ExpandedRowId { get; set; }
+    private long? ExpandedRowId { get; set; }
     protected string? SearchText { get; set; }
     protected RezultatObrade? SelectedOsnovanost { get; set; }
 
