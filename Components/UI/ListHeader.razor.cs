@@ -18,4 +18,5 @@ public partial class ListHeader<TFilter> : ComponentBase
     [Parameter] public RenderFragment? FilterOptions { get; set; }
     [Parameter] public string ExportButtonText { get; set; } = "Export";
     [Parameter] public EventCallback OnExport { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 }

@@ -12,4 +12,5 @@ public interface ISocijalniZahtjevProcessorService
     Task DodajClanaIObradiAsync(long zahtjevId, SocijalniNatjecajClanDto clanDto);
     Task UrediClanaIObradiAsync(SocijalniNatjecajClanDto clanDto);
     Task ObrisiClanaIObradiAsync(long zahtjevId, long clanId);
+    Task ObradiSveZahtjeveAsync(long natjecajId);
 }

@@ -5,6 +5,8 @@ using DodjelaStanovaZG.Helpers;
 using DodjelaStanovaZG.Infrastructure.Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages;
@@ -13,6 +15,11 @@ public class SocijalniNatjecajPregledBase : ComponentBase
 {
     [Inject] public required IUnitOfWork UnitOfWork { get; set; }
     [Inject] public NavigationManager Navigation { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] public UserManager<IdentityUser> UserManager { get; set; } = null!;
+    [Inject] public AuthenticationStateProvider AuthStateProvider { get; set; } = null!;
+
+    protected bool IsManagementUser { get; set; }
     [Parameter] public long NatjecajId { get; set; }
     protected MudTable<SocijalniNatjecajZahtjevDto> Table = null!;
     protected const int TotalColumns = 7;
@@ -36,6 +43,19 @@ public class SocijalniNatjecajPregledBase : ComponentBase
 
     protected string GetExpandIcon(SocijalniNatjecajZahtjevDto row) =>
         IsRowExpanded(row) ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            var identityUser = await UserManager.FindByNameAsync(user.Identity.Name!);
+            if (identityUser is not null)
+                IsManagementUser = await UserManager.IsInRoleAsync(identityUser, "Management");
+        }
+    }
 
     protected async Task<TableData<SocijalniNatjecajZahtjevDto>> LoadServerData(TableState state, CancellationToken cancellationToken)
 {
@@ -132,6 +152,21 @@ public class SocijalniNatjecajPregledBase : ComponentBase
         if (SelectedOsnovanost.HasValue)
             url += $"?filter={SelectedOsnovanost}";
         Navigation.NavigateTo(url, forceLoad: true);
+    }
+    
+    protected async Task BodujSve()
+    {
+        try
+        {
+            await UnitOfWork.SocijalniZahtjevProcessorService.ObradiSveZahtjeveAsync(NatjecajId);
+            Snackbar.Add("Bodovanje završeno", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Greška: {ex.Message}", Severity.Error);
+        }
+
+        await Table.ReloadServerData();
     }
 
     #region Helpers

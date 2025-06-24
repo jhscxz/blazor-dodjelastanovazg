@@ -197,5 +197,23 @@ public sealed class SocijalniZahtjevProcessorService(
         
         logger.LogInformation("Obrisan član {ClanId} sa zahtjeva {ZahtjevId}", clanId, zahtjevId);
     }
+    
+    public async Task ObradiSveZahtjeveAsync(long natjecajId)
+    {
+        logger.LogInformation("Obrada svih zahtjeva za natječaj {NatjecajId}", natjecajId);
+
+        await using var context = contextFactory.CreateDbContext();
+        var zahtjevi = await context.SocijalniNatjecajZahtjevi
+            .Where(z => z.NatjecajId == natjecajId)
+            .Select(z => z.Id)
+            .ToListAsync();
+
+        foreach (var id in zahtjevi)
+        {
+            await bodoviService.IzracunajIBodujAsync(id);
+            var zahtjev = await LoadZahtjevAsync(id);
+            await greskaService.ObradiGreskeAsync(zahtjev);
+        }
+    }
     #endregion
 }
