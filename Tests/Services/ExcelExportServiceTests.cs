@@ -25,15 +25,17 @@ public class ExcelExportServiceTests
                 KlasaPredmeta = 1,
                 NatjecajId = 5,
                 RezultatObrade = RezultatObrade.Osnovan,
+                DatumPodnosenjaZahtjeva = DateTime.Today,
                 Clanovi = [new()
                     {
                         ImePrezime = "Test",
                         Oib = "123",
                         Srodstvo = Srodstvo.PodnositeljZahtjeva,
+                        DatumRodjenja = new DateOnly(2000,1,1),
                         Zahtjev = null
                     }
                 ],
-                Bodovi = new SocijalniNatjecajBodovi { UkupnoBodova = 10 }
+                Bodovi = new SocijalniNatjecajBodovi { UkupnoBodova = 10, BodoviStambeniStatus = 5 }
             });
             await context.SaveChangesAsync();
         }
@@ -48,8 +50,14 @@ public class ExcelExportServiceTests
         var rows = doc.WorkbookPart!.WorksheetParts.First().Worksheet.GetFirstChild<SheetData>()!.Elements<Row>().ToList();
 
         Assert.Equal(2, rows.Count); // header + data
-        Assert.Equal("Klasa predmeta", rows[0].Elements<Cell>().First().CellValue!.Text);
-        Assert.Equal("1", rows[1].Elements<Cell>().First().CellValue!.Text);
+        var headerCells = rows[0].Elements<Cell>().ToList();
+        Assert.Equal("Klasa predmeta", headerCells[0].CellValue!.Text);
+        Assert.Equal("Datum rođenja podnositelja", headerCells[5].CellValue!.Text);
+        Assert.Equal("Stambeni status kućanstva bodovi", headerCells[12].CellValue!.Text);
+
+        var dataCells = rows[1].Elements<Cell>().ToList();
+        Assert.Equal("1", dataCells[0].CellValue!.Text);
+        Assert.Equal("5", dataCells[12].CellValue!.Text);
     }
 
     [Fact]
@@ -112,6 +120,6 @@ public class ExcelExportServiceTests
         var rows = doc.WorkbookPart!.WorksheetParts.First().Worksheet.GetFirstChild<SheetData>()!.Elements<Row>().ToList();
 
         Assert.Equal(3, rows.Count); // header + two data rows
-        Assert.All(rows.Skip(1), r => Assert.Equal("Osnovan", r.Elements<Cell>().Last().CellValue!.Text));
+        Assert.All(rows.Skip(1), r => Assert.Equal("Osnovan", r.Elements<Cell>().ElementAt(3).CellValue!.Text));
     }
 }
