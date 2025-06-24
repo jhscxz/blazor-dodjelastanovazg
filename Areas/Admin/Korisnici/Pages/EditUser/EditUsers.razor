@@ -51,6 +51,7 @@
                     <MudSwitch T="bool"
                                @bind-Value="UserModel.IsLocked"
                                Color="Color.Error"
+                               Disabled="@_isSelf"
                                Label="@LockLabel"/>
 
                     <!-- Gumbi (Spremi, Odustani, Promijeni lozinku) -->
