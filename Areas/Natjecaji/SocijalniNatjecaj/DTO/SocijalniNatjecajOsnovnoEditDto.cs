@@ -14,6 +14,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
         [EmailAddress(ErrorMessage = "Unesite važeći email.")]
         [StringLength(255, ErrorMessage = "Email adresa ne smije biti duža od 255 znakova.")]
         public string? Email { get; set; }
+        public bool PosjedujeNekretninuZG { get; set; } = false;
         public RezultatObrade? RezultatObrade { get; set; }
         public string? NapomenaObrade { get; set; }
         public long NatjecajId { get; set; }

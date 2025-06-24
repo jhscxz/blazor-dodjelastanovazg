@@ -11,6 +11,7 @@ public class SocijalniNatjecajZahtjev : AuditableEntity
     [Required] public DateTime DatumPodnosenjaZahtjeva { get; set; }
     [StringLength(255)] public string? Adresa { get; set; }
     [StringLength(255)] [EmailAddress] public string? Email { get; set; }
+    public bool PosjedujeNekretninuZG { get; set; } = false;
     [Required]
     public RezultatObrade RezultatObrade { get; set; }
     [Required]

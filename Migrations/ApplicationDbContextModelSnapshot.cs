@@ -514,6 +514,9 @@ namespace DodjelaStanovaZG.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("PeriodStart");
 
+                    b.Property<bool>("PosjedujeNekretninuZG")
+                        .HasColumnType("bit");
+
                     b.Property<byte>("RezultatObrade")
                         .HasColumnType("tinyint");
 

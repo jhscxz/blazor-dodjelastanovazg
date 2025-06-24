@@ -28,5 +28,17 @@ public class SocijalniBodovnaGreskaServiceTests
 
         Assert.Contains(greske, g => g.Kod == "DAT-001");
     }
+    
+    [Fact]
+    public async Task PronadiGreskeAsync_PosjedujeNekretninu_ReturnsError()
+    {
+        var service = new SocijalniBodovnaGreskaService(Mock.Of<IDbContextFactory<ApplicationDbContext>>());
+
+        var zahtjev = new SocijalniNatjecajZahtjev { PosjedujeNekretninuZG = true };
+
+        var greske = await service.PronadiGreskeAsync(zahtjev);
+
+        Assert.Contains(greske, g => g.Kod == "NEK-001");
+    }
 
 }

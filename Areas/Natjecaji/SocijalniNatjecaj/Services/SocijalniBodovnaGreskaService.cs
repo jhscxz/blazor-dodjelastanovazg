@@ -41,6 +41,7 @@ public sealed class SocijalniBodovnaGreskaService(IDbContextFactory<ApplicationD
 
         // poslovna pravila
         ProvjeriDatumPodnosenja();
+        ProvjeriNekretnine();
         ProvjeriKucanstvo();
         ProvjeriPodnositelja();
         ProvjeriPrihode();
@@ -58,6 +59,12 @@ public sealed class SocijalniBodovnaGreskaService(IDbContextFactory<ApplicationD
             var datum = DateOnly.FromDateTime(zahtjev.DatumPodnosenjaZahtjeva);
             if (datum < nat.DatumObjave || datum > nat.RokZaPrijavu)
                 Add("DAT-001", "Zahtjev je unesen izvan roka natječaja.");
+        }
+        
+        void ProvjeriNekretnine()
+        {
+            if (zahtjev.PosjedujeNekretninuZG)
+                Add("NEK-001", "Podnositelj ne smije imati useljivu nekretninu u Zagrebu ili ZG županiji.");
         }
         
         void ProvjeriKucanstvo()

@@ -16,6 +16,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
         [EmailAddress(ErrorMessage = "Unesite važeći email.")]
         [StringLength(255, ErrorMessage = "Email adresa ne smije biti duža od 255 znakova.")]
         public string? Email { get; set; }
+        public bool PosjedujeNekretninuZG { get; set; } = false;
         [Required(ErrorMessage = "Ime i prezime podnositelja su obavezni.")]
         public string ImePrezime { get; set; } = string.Empty;
         [RegularExpression(@"^\d{11}$", ErrorMessage = "OIB mora sadržavati 11 znamenki.")]
