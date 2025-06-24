@@ -4,7 +4,7 @@
     <MudGrid>
         <!-- Prihodi + članovi -->
         <MudItem xs="12" sm="6" md="2">
-            <MudText Typo="Typo.body2"><b>Ukupni prihod:</b> @FormatDecimal(Model.Prihod?.UkupniPrihodKucanstva)</MudText>
+            <MudText Typo="Typo.body2"><b>Ukupni godišnji prihod:</b> @FormatDecimal(Model.Prihod?.UkupniPrihodKucanstva)</MudText>
             <MudText Typo="Typo.body2"><b>Postotak prosjeka:</b> @(Model.Prihod?.PostotakProsjeka?.ToString("0.##") ?? "–")</MudText>
             <MudText Typo="Typo.body2"><b>Ispunjava uvjet prihoda:</b> @FormatBool(Model.Prihod?.IspunjavaUvjetPrihoda)</MudText>
             <MudText Typo="Typo.body2">

@@ -69,7 +69,7 @@ public class ExcelExportService(
         "Adresa",
         "Datum rođenja podnositelja",
         "Datum početka prebivališta",
-        "Ukupni prihod kućanstva",
+        "Ukupni godišnji prihod kućanstva",
         "Postotak prosjeka",
         "Prihod po članu kućanstva",
         "Ispunjava uvjet prihoda",
