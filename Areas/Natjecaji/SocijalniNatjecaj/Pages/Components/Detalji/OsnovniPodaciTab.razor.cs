@@ -28,15 +28,6 @@ public partial class OsnovniPodaciTab : ComponentBase
         _ => Color.Default
     };
 
-    private string ChipIcon => Detalji.RezultatObrade switch
-    {
-        RezultatObrade.Neosnovan => Icons.Material.Filled.Dangerous,
-        RezultatObrade.Greška => Icons.Material.Filled.Dangerous,
-        RezultatObrade.Nepotpun => Icons.Material.Filled.Warning,
-        RezultatObrade.Osnovan => Icons.Material.Filled.CheckCircle,
-        _ => Icons.Material.Filled.Info
-    };
-
     private string ChipText => Detalji.RezultatObrade switch
     {
         RezultatObrade.Neosnovan => "Neosnovan",
@@ -45,8 +36,4 @@ public partial class OsnovniPodaciTab : ComponentBase
         RezultatObrade.Greška =>"Greška",
         _ => "Nepoznato"
     };
-
-    private Variant ChipVariant => Detalji.RezultatObrade == RezultatObrade.Osnovan
-        ? Variant.Outlined
-        : Variant.Text;
 }
