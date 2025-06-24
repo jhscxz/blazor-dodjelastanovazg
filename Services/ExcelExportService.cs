@@ -50,6 +50,9 @@ public class ExcelExportService(
 
             foreach (var z in zahtjevi)
                 sheetData.Append(CreateDataRow(z));
+            
+            AddColumnWidths(wsPart.Worksheet, sheetData);
+            AddTable(wsPart, sheetData, zahtjevi.Count + 1);
 
             wbPart.Workbook.Save();
         }
@@ -185,5 +188,88 @@ public class ExcelExportService(
         };
 
         return new Row(cells);
+    }
+        
+            private static void AddColumnWidths(Worksheet worksheet, SheetData data)
+    {
+        var widths = new int[Headers.Length];
+        foreach (var row in data.Elements<Row>())
+        {
+            int i = 0;
+            foreach (var cell in row.Elements<Cell>())
+            {
+                var len = cell.CellValue?.Text?.Length ?? 0;
+                if (len > widths[i])
+                    widths[i] = len;
+                i++;
+            }
+        }
+
+        var columns = new Columns();
+        for (var i = 0; i < widths.Length; i++)
+        {
+            double w = widths[i] + 2;
+            columns.Append(new Column
+            {
+                Min = (uint)(i + 1),
+                Max = (uint)(i + 1),
+                Width = w,
+                CustomWidth = true,
+                BestFit = true
+            });
+        }
+
+        worksheet.InsertAt(columns, 0);
+    }
+
+    private static void AddTable(WorksheetPart wsPart, SheetData data, int rowCount)
+    {
+        var range = $"A1:{GetColumnLetter(Headers.Length)}{rowCount}";
+
+        var tablePart = wsPart.AddNewPart<TableDefinitionPart>();
+        var table = new Table
+        {
+            Id = 1U,
+            Name = "ZahtjeviTable",
+            DisplayName = "ZahtjeviTable",
+            Reference = range,
+            TotalsRowShown = false
+        };
+
+        table.Append(new AutoFilter { Reference = range });
+
+        var cols = new TableColumns { Count = (uint)Headers.Length };
+        for (uint i = 0; i < Headers.Length; i++)
+            cols.Append(new TableColumn { Id = i + 1, Name = Headers[i] });
+        table.Append(cols);
+
+        table.Append(new TableStyleInfo
+        {
+            Name = "TableStyleMedium2",
+            ShowFirstColumn = false,
+            ShowLastColumn = false,
+            ShowRowStripes = true,
+            ShowColumnStripes = false
+        });
+
+        tablePart.Table = table;
+
+        var tableParts = new TableParts { Count = 1U };
+        tableParts.Append(new TablePart { Id = wsPart.GetIdOfPart(tablePart) });
+        wsPart.Worksheet.Append(tableParts);
+    }
+
+    private static string GetColumnLetter(int index)
+    {
+        var dividend = index;
+        var columnName = string.Empty;
+        while (dividend > 0)
+        {
+            var modulo = (dividend - 1) % 26;
+            columnName = Convert.ToChar(65 + modulo) + columnName;
+            dividend = (dividend - modulo) / 26;
+        }
+
+        return columnName;
     }
 }
