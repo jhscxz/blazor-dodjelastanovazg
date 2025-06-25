@@ -80,6 +80,14 @@ builder.Services.AddResponseCompression(options =>
 //     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 // });
 
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+});
+
+
 RuntimeHelpers.RunClassConstructor(typeof(DodjelaStanovaZG.Helpers.MappingExtensions).TypeHandle);
 
 // Dodaj hrvatski jezik kao default

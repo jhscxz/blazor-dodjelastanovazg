@@ -13,6 +13,10 @@ public static class SecurityHeadersExtensions
             context.Response.Headers["Referrer-Policy"] = "no-referrer";
             context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
             context.Response.Headers["Content-Security-Policy"] = "default-src 'self'";
+            context.Response.Headers["Permissions-Policy"] = "accelerometer=(), camera=(), geolocation=(), microphone=()";
+            context.Response.Headers["Cross-Origin-Embedder-Policy"] = "require-corp";
+            context.Response.Headers["Cross-Origin-Opener-Policy"] = "same-origin";
+            context.Response.Headers["Cross-Origin-Resource-Policy"] = "same-origin";
 
             await next();
         });
