@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-
 namespace DodjelaStanovaZG.Infrastructure;
 
 public static class SecurityHeadersExtensions

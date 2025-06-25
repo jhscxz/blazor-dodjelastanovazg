@@ -33,6 +33,9 @@ builder.Host.UseSerilog();
 
 #region Baza podataka
 
+// AddDbContext registrira ApplicationDbContext za standardni DI s opsegom po zahtjevu.
+// AddDbContextFactory omogućuje stvaranje instanci DbContexta po potrebi (race condition issue).
+// nisu podržani paralelny queryji nad istom instancom konteksta
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
