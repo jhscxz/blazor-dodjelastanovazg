@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DodjelaStanovaZG.Data.Seeders;
 
-internal class SeedService(
-    UserManager<IdentityUser> userManager,
-    RoleManager<IdentityRole> roleManager,
-    IConfiguration configuration)
+internal abstract class SeedService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
 {
     public async Task SeedFromConfigurationAsync()
     {
@@ -17,7 +14,7 @@ internal class SeedService(
         }
     }
 
-    public async Task SeedUserAsync(SeedUserModel user)
+    private async Task SeedUserAsync(SeedUserModel user)
     {
         foreach (var role in user.Roles)
         {

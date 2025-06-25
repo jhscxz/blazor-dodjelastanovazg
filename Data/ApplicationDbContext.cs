@@ -5,19 +5,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : IdentityDbContext<IdentityUser>(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<IdentityUser>(options)
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        // Identity - jedinstveno korisničko ime
+        #region Identity konfiguracija
+
+        // Osiguraj jedinstvenost korisničkog imena (UserName)
         builder.Entity<IdentityUser>()
             .HasIndex(u => u.UserName)
             .IsUnique();
 
-        // Socijalni natječaj - Zahtjevi (temporal)
+        #endregion
+
+        #region Temporal konfiguracije
+
+        // Aktiviraj praćenje vremenske povijesti za glavne entitete (temporal tables)
+        
         builder.Entity<SocijalniNatjecajZahtjev>(entity =>
         {
             entity.ToTable("SocijalniNatjecajZahtjevi", tb => tb.IsTemporal(temporal =>
@@ -28,7 +34,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             }));
         });
 
-        // Clanovi (temporal)
         builder.Entity<SocijalniNatjecajClan>(entity =>
         {
             entity.ToTable("SocijalniNatjecajClanovi", tb => tb.IsTemporal(temporal =>
@@ -39,7 +44,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             }));
         });
 
-        // Bodovni podaci (temporal)
         builder.Entity<SocijalniNatjecajBodovniPodaci>(entity =>
         {
             entity.ToTable("SocijalniNatjecajBodovniPodaci", tb => tb.IsTemporal(temporal =>
@@ -50,7 +54,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             }));
         });
 
-        // Podaci o kućanstvu (temporal)
         builder.Entity<SocijalniNatjecajKucanstvoPodaci>(entity =>
         {
             entity.ToTable("SocijalniNatjecajKucanstvoPodaci", tb => tb.IsTemporal(temporal =>
@@ -61,15 +64,22 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             }));
         });
 
-        // 🔧 Veza 1:1 između SocijalniPrihodi i SocijalniNatjecajKucanstvoPodaci (shared primary key)
+        #endregion
+
+        #region Veze između entiteta
+
+        // 1:1 veza između SocijalniPrihodi i SocijalniNatjecajKucanstvoPodaci putem shared primary key
         builder.Entity<SocijalniPrihodi>()
             .HasOne(p => p.KucanstvoPodaci)
             .WithOne(k => k.Prihod)
             .HasForeignKey<SocijalniPrihodi>(p => p.Id)
             .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
     }
 
-    // DbSet-ovi
+    #region DbSet-ovi
+
     public DbSet<Natjecaj> Natjecaji { get; set; }
     public DbSet<SocijalniNatjecajZahtjev> SocijalniNatjecajZahtjevi { get; set; }
     public DbSet<SocijalniNatjecajClan> SocijalniNatjecajClanovi { get; set; }
@@ -78,4 +88,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<SocijalniPrihodi> SocijalniPrihodi { get; set; }
     public DbSet<SocijalniNatjecajBodovi> SocijalniNatjecajBodovi { get; set; }
     public DbSet<SocijalniNatjecajBodovnaGreska> SocijalniNatjecajBodovnaGreske { get; set; }
+
+    #endregion
 }

@@ -1,5 +1,4 @@
 using DodjelaStanovaZG.Data.Seeders;
-using DodjelaStanovaZG.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Data
@@ -11,7 +10,7 @@ namespace DodjelaStanovaZG.Data
             using var scope = services.CreateScope();
 
             var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
-            await using var context = factory.CreateDbContext();
+            await using var context = await factory.CreateDbContextAsync();
             var seedService = scope.ServiceProvider.GetRequiredService<SeedService>();
 
             // Migracije baze

@@ -34,14 +34,14 @@ public class NatjecajRepository(IDbContextFactory<ApplicationDbContext> contextF
 
     public async Task UpdateAsync(Natjecaj natjecaj)
     {
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         context.Natjecaji.Update(natjecaj);
         await context.SaveChangesAsync();
     }
 
     public async Task SaveChangesAsync()
     {
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         await context.SaveChangesAsync();
     }
 }
