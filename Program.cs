@@ -29,6 +29,9 @@ Log.Information("Pokretanje Blazor Server aplikacije");
 #endregion
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ovo interno mijenja ILogger
+// ILogger<T> ➝ Serilog-ov Log.ForContext<T>()
 builder.Host.UseSerilog();
 
 #region Baza podataka

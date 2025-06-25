@@ -1,5 +1,7 @@
 using DodjelaStanovaZG.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -13,14 +15,17 @@ public class PasswordServiceTests
         // Arrange
         var userId = "user1";
 
-        var store = Mock.Of<IUserStore<IdentityUser>>();
+        var userStore = Mock.Of<IUserStore<IdentityUser>>();
         var userManager = new Mock<UserManager<IdentityUser>>(
-            store, null!, null!, null!, null!, null!, null!, null!, null!);
+            userStore, null!, null!, null!, null!, null!, null!, null!, null!);
 
-        userManager.Setup(u => u.FindByIdAsync(userId))
-            .ReturnsAsync((IdentityUser?)null);
+        userManager.Setup(u => u.FindByIdAsync(userId)).ReturnsAsync((IdentityUser?)null);
 
-        var service = new PasswordService(userManager.Object);
+        var loggerMock = Mock.Of<ILogger<PasswordService>>();
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor.Setup(x => x.HttpContext!.Connection.RemoteIpAddress).Returns(System.Net.IPAddress.Parse("127.0.0.1"));
+
+        var service = new PasswordService(userManager.Object, loggerMock, httpContextAccessor.Object);
 
         // Act
         var result = await service.ChangeOwnPasswordAsync(userId, "old", "new");
@@ -30,8 +35,6 @@ public class PasswordServiceTests
         var error = Assert.Single(result.Errors);
         Assert.Equal($"Korisnik s ID '{userId}' ne postoji.", error.Description);
 
-        userManager.Verify(u =>
-                u.ChangePasswordAsync(It.IsAny<IdentityUser>(), It.IsAny<string>(), It.IsAny<string>()),
-            Times.Never);
+        userManager.Verify(u => u.ChangePasswordAsync(It.IsAny<IdentityUser>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 }

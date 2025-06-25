@@ -5,7 +5,6 @@ namespace DodjelaStanovaZG.Services;
 
 public class BreadcrumbService(ILogger<BreadcrumbService> logger)
 {
-    private readonly ILogger<BreadcrumbService> _logger = logger;
     private readonly Dictionary<string, (string? Url, string? CssClass)> _map = new()
     {
         ["Početna"] = ("/", null),
@@ -26,7 +25,7 @@ public class BreadcrumbService(ILogger<BreadcrumbService> logger)
                 : (null, null);
 
             if (!found)
-                _logger.LogWarning("Unknown breadcrumb label: {Label}", trimmed);
+                logger.LogWarning("Unknown breadcrumb label: {Label}", trimmed);
             
             return new Breadcrumbs.BreadcrumbItem
             {

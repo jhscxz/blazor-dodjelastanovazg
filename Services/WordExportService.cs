@@ -7,7 +7,7 @@ using DodjelaStanovaZG.Services.Interfaces;
 
 namespace DodjelaStanovaZG.Services;
 
-public class WordExportService(IWebHostEnvironment env, ILogger<WordExportService> logger) : IWordExportService
+internal class WordExportService(IWebHostEnvironment env, ILogger<WordExportService> logger) : IWordExportService
 {
     public async Task<byte[]> GenerirajIzvjestajAsync(SocijalniNatjecajZahtjev zahtjev, SocijalniNatjecajBodovi bodovi)
     {
@@ -28,8 +28,7 @@ public class WordExportService(IWebHostEnvironment env, ILogger<WordExportServic
 
                 var data = BuildPlaceholderDictionary(zahtjev, bodovi);
 
-                foreach (var (placeholder, value) in data)
-                    ReplaceText(body, placeholder, value ?? string.Empty);
+                foreach (var (placeholder, value) in data) ReplaceText(body, placeholder, value ?? string.Empty);
 
                 wordDoc.MainDocumentPart?.Document.Save();
             }
@@ -45,18 +44,14 @@ public class WordExportService(IWebHostEnvironment env, ILogger<WordExportServic
         }
     }
 
-    private static Dictionary<string, string?> BuildPlaceholderDictionary(SocijalniNatjecajZahtjev zahtjev,
-        SocijalniNatjecajBodovi bodovi)
+    private static Dictionary<string, string?> BuildPlaceholderDictionary(SocijalniNatjecajZahtjev zahtjev, SocijalniNatjecajBodovi bodovi)
     {
         var podnositelj = zahtjev.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
         var datumPodnosenja = DateOnly.FromDateTime(zahtjev.DatumPodnosenjaZahtjeva);
         var brojMaloljetnih = zahtjev.Clanovi.Count(c => c.DatumRodjenja.AddYears(18) > datumPodnosenja);
         var godinePodnositelj = podnositelj != null
             ? datumPodnosenja.Year - podnositelj.DatumRodjenja.Year -
-              (datumPodnosenja <
-               podnositelj.DatumRodjenja.AddYears(datumPodnosenja.Year - podnositelj.DatumRodjenja.Year)
-                  ? 1
-                  : 0)
+              (datumPodnosenja < podnositelj.DatumRodjenja.AddYears(datumPodnosenja.Year - podnositelj.DatumRodjenja.Year) ? 1 : 0)
             : 0;
 
         string UkupnoBodovaLabel() => zahtjev.RezultatObrade switch
@@ -81,8 +76,7 @@ public class WordExportService(IWebHostEnvironment env, ILogger<WordExportServic
             ["{{UkupniPrihod}}"] = zahtjev.KucanstvoPodaci?.Prihod?.UkupniPrihodKucanstva.ToString("N2"),
             ["{{PostotakProsjeka}}"] = zahtjev.KucanstvoPodaci?.Prihod?.PostotakProsjeka?.ToString("N2"),
             ["{{PrihodPoClanu}}"] = zahtjev.KucanstvoPodaci?.Prihod?.PrihodPoClanu.ToString("N2"),
-            ["{{IspunjavaUvjetPrihoda}}"] =
-                zahtjev.KucanstvoPodaci?.Prihod?.IspunjavaUvjetPrihoda == true ? "Da" : "Ne",
+            ["{{IspunjavaUvjetPrihoda}}"] = zahtjev.KucanstvoPodaci?.Prihod?.IspunjavaUvjetPrihoda == true ? "Da" : "Ne",
             ["{{StambeniStatus}}"] = zahtjev.KucanstvoPodaci?.StambeniStatusKucanstva.GetDisplayName(),
             ["{{StambeniStatusBodova}}"] = F(bodovi.BodoviStambeniStatus),
             ["{{SastavKucanstva}}"] = zahtjev.KucanstvoPodaci?.SastavKucanstva.GetDisplayName(),
@@ -123,9 +117,6 @@ public class WordExportService(IWebHostEnvironment env, ILogger<WordExportServic
 
     private static void ReplaceText(Body body, string placeholder, string? value)
     {
-        foreach (var text in body.Descendants<Text>().Where(t => t.Text.Contains(placeholder)))
-        {
-            text.Text = text.Text.Replace(placeholder, value ?? string.Empty);
-        }
+        foreach (var text in body.Descendants<Text>().Where(t => t.Text.Contains(placeholder))) text.Text = text.Text.Replace(placeholder, value ?? string.Empty);
     }
 }

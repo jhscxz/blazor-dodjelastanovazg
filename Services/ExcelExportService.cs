@@ -10,9 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Services;
 
-public class ExcelExportService(
-    IDbContextFactory<ApplicationDbContext> contextFactory) : IExcelExportService
+public class ExcelExportService(IDbContextFactory<ApplicationDbContext> contextFactory) : IExcelExportService
 {
+    #region Export
+
     public async Task<byte[]> ExportNatjecajAsync(long natjecajId, RezultatObrade? filter)
     {
         await using var context = await contextFactory.CreateDbContextAsync();
@@ -50,93 +51,54 @@ public class ExcelExportService(
 
             foreach (var z in zahtjevi)
                 sheetData.Append(CreateDataRow(z));
-            
+
             AddColumnWidths(wsPart.Worksheet, sheetData);
-            AddTable(wsPart, sheetData, zahtjevi.Count + 1);
+            AddTable(wsPart, zahtjevi.Count + 1);
 
             wbPart.Workbook.Save();
         }
 
         return ms.ToArray();
     }
-    
+
+    #endregion
+
+    #region Header
+
     private static readonly string[] Headers =
     [
-        "Klasa predmeta",
-        "Ime i prezime",
-        "OIB",
-        "Osnovanost",
-        "Adresa",
-        "Useljiva nekretnina ZG/ZG županija",
-        "Datum rođenja podnositelja",
-        "Datum početka prebivališta",
-        "Ukupni godišnji prihod kućanstva",
-        "Postotak prosjeka",
-        "Prihod po članu kućanstva",
-        "Ispunjava uvjet prihoda",
-        "Stambeni status kućanstva",
-        "Stambeni status kućanstva bodovi",
-        "Sastav kućanstva",
-        "Sastav kućanstva bodovi",
-        "Broj članova kućanstva",
-        "Broj članova kućanstva bodovi",
-        "Broj maloljetne djece",
-        "Maloljetna djeca bodovi",
-        "Broj punoljetne djece na školovanju",
-        "Punoljetna djeca na školovanju bodovi",
-        "Primatelj ZMN",
-        "ZMN bodovi",
-        "Roditelj njegovatelj",
-        "Roditelj njegovatelj bodovi",
-        "Doplatak za njegu",
-        "Doplatak za njegu bodovi",
-        "Broj odraslih korisnika invalidnine",
-        "Odrasli invalidnina bodovi",
-        "Broj maloljetnih korisnika invalidnine",
-        "Maloljetni invalidnina bodovi",
-        "Žrtva obiteljskog nasilja",
-        "Žrtva obiteljskog nasilja bodovi",
-        "Broj osoba u alternativnoj skrbi",
-        "Alternativna skrb bodovi",
-        "Iznad 55 godina",
-        "Iznad 55 godina bodovi",
-        "Broj mjeseci obrane suvereniteta",
-        "Branitelj bodovi",
-        "Broj članova žrtava seksualnog nasilja",
-        "Žrtva seksualnog nasilja bodovi",
-        "Broj civilnih stradalnika",
-        "Civilni stradalnik bodovi",
-        "Obradio",
-        "Datum obrade",
-        "Ukupno bodova"
+        "Klasa predmeta", "Ime i prezime", "OIB", "Osnovanost", "Adresa", "Useljiva nekretnina ZG/ZG županija",
+        "Datum rođenja podnositelja", "Datum početka prebivališta", "Ukupni godišnji prihod kućanstva",
+        "Postotak prosjeka", "Prihod po članu kućanstva", "Ispunjava uvjet prihoda", "Stambeni status kućanstva",
+        "Stambeni status kućanstva bodovi", "Sastav kućanstva", "Sastav kućanstva bodovi", "Broj članova kućanstva",
+        "Broj članova kućanstva bodovi", "Broj maloljetne djece", "Maloljetna djeca bodovi",
+        "Broj punoljetne djece na školovanju", "Punoljetna djeca na školovanju bodovi", "Primatelj ZMN", "ZMN bodovi",
+        "Roditelj njegovatelj", "Roditelj njegovatelj bodovi", "Doplatak za njegu", "Doplatak za njegu bodovi",
+        "Broj odraslih korisnika invalidnine", "Odrasli invalidnina bodovi", "Broj maloljetnih korisnika invalidnine",
+        "Maloljetni invalidnina bodovi", "Žrtva obiteljskog nasilja", "Žrtva obiteljskog nasilja bodovi",
+        "Broj osoba u alternativnoj skrbi", "Alternativna skrb bodovi", "Iznad 55 godina", "Iznad 55 godina bodovi",
+        "Broj mjeseci obrane suvereniteta", "Branitelj bodovi", "Broj članova žrtava seksualnog nasilja",
+        "Žrtva seksualnog nasilja bodovi", "Broj civilnih stradalnika", "Civilni stradalnik bodovi", "Obradio",
+        "Datum obrade", "Ukupno bodova"
     ];
 
-    private static Row CreateHeaderRow() => new(
-        Headers.Select(CreateTextCell).ToList());
+    private static Row CreateHeaderRow() => new(Headers.Select(CreateTextCell).ToList());
 
-    private static Cell CreateTextCell(string text) =>
-        new(new CellValue(text)) { DataType = CellValues.String };
-    
-        private static Row CreateDataRow(SocijalniNatjecajZahtjev zahtjev)
+    private static Cell CreateTextCell(string text) => new(new CellValue(text)) { DataType = CellValues.String };
+
+    #endregion
+
+    #region DataRow
+
+    private static Row CreateDataRow(SocijalniNatjecajZahtjev zahtjev)
     {
         var podnositelj = zahtjev.Clanovi.FirstOrDefault(c => c.Srodstvo == Srodstvo.PodnositeljZahtjeva);
         var datumPodnosenja = DateOnly.FromDateTime(zahtjev.DatumPodnosenjaZahtjeva);
-        var brojMaloljetnih = zahtjev.Clanovi.Count(c => c.DatumRodjenja.AddYears(18) > datumPodnosenja);
+        var brojMaloljetnih = zahtjev.Clanovi?.Count(c => c.DatumRodjenja.AddYears(18) > datumPodnosenja) ?? 0;
         var godinePodnositelj = podnositelj != null
             ? datumPodnosenja.Year - podnositelj.DatumRodjenja.Year -
-              (datumPodnosenja < podnositelj.DatumRodjenja.AddYears(datumPodnosenja.Year - podnositelj.DatumRodjenja.Year)
-                  ? 1
-                  : 0)
+              (datumPodnosenja < podnositelj.DatumRodjenja.AddYears(datumPodnosenja.Year - podnositelj.DatumRodjenja.Year) ? 1 : 0)
             : 0;
-
-        string UkupnoBodovaLabel() => zahtjev.RezultatObrade switch
-        {
-            RezultatObrade.Neosnovan => "Neosnovan",
-            RezultatObrade.Nepotpun => "Nepotpun",
-            _ => zahtjev.Bodovi?.UkupnoBodova.ToString("0.##") ?? string.Empty
-        };
-
-        string F(float f, bool dec = false) => dec ? f.ToString("0.00") : f.ToString("0.##");
 
         var cells = new List<Cell>
         {
@@ -152,47 +114,61 @@ public class ExcelExportService(
             CreateTextCell(zahtjev.KucanstvoPodaci?.Prihod?.PostotakProsjeka?.ToString("N2") ?? string.Empty),
             CreateTextCell(zahtjev.KucanstvoPodaci?.Prihod?.PrihodPoClanu.ToString("N2") ?? string.Empty),
             CreateTextCell(zahtjev.KucanstvoPodaci?.Prihod?.IspunjavaUvjetPrihoda == true ? "Da" : "Ne"),
-            CreateTextCell(zahtjev.KucanstvoPodaci?.StambeniStatusKucanstva.GetDisplayName()!),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviStambeniStatus) : string.Empty),
-            CreateTextCell(zahtjev.KucanstvoPodaci?.SastavKucanstva.GetDisplayName()!),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviSastavKucanstva) : string.Empty),
-            CreateTextCell(zahtjev.Clanovi.Count.ToString()),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviPoClanu) : string.Empty),
+            CreateTextCell(zahtjev.KucanstvoPodaci?.StambeniStatusKucanstva.GetDisplayName() ?? string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviStambeniStatus) : string.Empty),
+            CreateTextCell(zahtjev.KucanstvoPodaci?.SastavKucanstva.GetDisplayName() ?? string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviSastavKucanstva) : string.Empty),
+            CreateTextCell(zahtjev.Clanovi?.Count.ToString() ?? string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviPoClanu) : string.Empty),
             CreateTextCell(brojMaloljetnih.ToString()),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviMaloljetni) : string.Empty),
-            CreateTextCell(zahtjev.BodovniPodaci?.BrojUzdrzavanePunoljetneDjece.ToString()!),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviPunoljetniUzdrzavani) : string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviMaloljetni) : string.Empty),
+            CreateTextCell(zahtjev.BodovniPodaci?.BrojUzdrzavanePunoljetneDjece.ToString() ?? string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviPunoljetniUzdrzavani) : string.Empty),
             CreateTextCell(zahtjev.BodovniPodaci?.PrimateljZajamceneMinimalneNaknade == true ? "Da" : "Ne"),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviZajamcenaNaknada) : string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviZajamcenaNaknada) : string.Empty),
             CreateTextCell(zahtjev.BodovniPodaci?.StatusRoditeljaNjegovatelja == true ? "Da" : "Ne"),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviNjegovatelj) : string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviNjegovatelj) : string.Empty),
             CreateTextCell(zahtjev.BodovniPodaci?.KorisnikDoplatkaZaPomoc == true ? "Da" : "Ne"),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviDoplatakZaNjegu) : string.Empty),
-            CreateTextCell(zahtjev.BodovniPodaci?.BrojOdraslihKorisnikaInvalidnine.ToString()!),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviOdraslihInvalidnina) : string.Empty),
-            CreateTextCell(zahtjev.BodovniPodaci?.BrojMaloljetnihKorisnikaInvalidnine.ToString()!),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviMaloljetnihInvalidnina) : string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviDoplatakZaNjegu) : string.Empty),
+            CreateTextCell(zahtjev.BodovniPodaci?.BrojOdraslihKorisnikaInvalidnine.ToString() ?? string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviOdraslihInvalidnina) : string.Empty),
+            CreateTextCell(zahtjev.BodovniPodaci?.BrojMaloljetnihKorisnikaInvalidnine.ToString() ?? string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviMaloljetnihInvalidnina) : string.Empty),
             CreateTextCell(zahtjev.BodovniPodaci?.ZrtvaObiteljskogNasilja == true ? "Da" : "Ne"),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviZrtvaNasilja) : string.Empty),
-            CreateTextCell(zahtjev.BodovniPodaci?.BrojOsobaUAlternativnojSkrbi.ToString()!),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviAlternativnaSkrb) : string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviZrtvaNasilja) : string.Empty),
+            CreateTextCell(zahtjev.BodovniPodaci?.BrojOsobaUAlternativnojSkrbi.ToString() ?? string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviAlternativnaSkrb) : string.Empty),
             CreateTextCell(godinePodnositelj >= 55 ? "Da" : "Ne"),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviIznad55) : string.Empty),
-            CreateTextCell(zahtjev.BodovniPodaci?.BrojMjeseciObranaSuvereniteta.ToString()!),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviObrana, true) : string.Empty),
-            CreateTextCell(zahtjev.BodovniPodaci?.BrojClanovaZrtavaSeksualnogNasilja.ToString()!),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviSeksualnoNasilje) : string.Empty),
-            CreateTextCell(zahtjev.BodovniPodaci?.BrojCivilnihStradalnika.ToString()!),
-            CreateTextCell(zahtjev.Bodovi != null ? F(zahtjev.Bodovi.BodoviCivilniStradalnici) : string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviIznad55) : string.Empty),
+            CreateTextCell(zahtjev.BodovniPodaci?.BrojMjeseciObranaSuvereniteta.ToString() ?? string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviObrana, true) : string.Empty),
+            CreateTextCell(zahtjev.BodovniPodaci?.BrojClanovaZrtavaSeksualnogNasilja.ToString() ?? string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviSeksualnoNasilje) : string.Empty),
+            CreateTextCell(zahtjev.BodovniPodaci?.BrojCivilnihStradalnika.ToString() ?? string.Empty),
+            CreateTextCell(zahtjev.Bodovi != null ? FormatBod(zahtjev.Bodovi.BodoviCivilniStradalnici) : string.Empty),
             CreateTextCell(zahtjev.CreatedByUser?.UserName ?? string.Empty),
             CreateTextCell(zahtjev.CreatedAt.ToShortDateString()),
-            CreateTextCell(UkupnoBodovaLabel())
+            CreateTextCell(UkupnoBodovaLabel(zahtjev))
         };
 
         return new Row(cells);
     }
-        
-            private static void AddColumnWidths(Worksheet worksheet, SheetData data)
+
+    #endregion
+
+    #region Helpers
+
+    private static string UkupnoBodovaLabel(SocijalniNatjecajZahtjev zahtjev) => zahtjev.RezultatObrade switch
+    {
+        RezultatObrade.Neosnovan => "Neosnovan",
+        RezultatObrade.Nepotpun => "Nepotpun",
+        _ => zahtjev.Bodovi?.UkupnoBodova.ToString("0.##") ?? string.Empty
+    };
+
+    private static string FormatBod(float f, bool asDecimal = false)
+        => asDecimal ? f.ToString("0.00") : f.ToString("0.##");
+
+    private static void AddColumnWidths(Worksheet worksheet, SheetData data)
     {
         var widths = new int[Headers.Length];
         foreach (var row in data.Elements<Row>())
@@ -200,7 +176,7 @@ public class ExcelExportService(
             int i = 0;
             foreach (var cell in row.Elements<Cell>())
             {
-                var len = cell.CellValue?.Text?.Length ?? 0;
+                var len = cell.CellValue?.Text.Length ?? 0;
                 if (len > widths[i])
                     widths[i] = len;
                 i++;
@@ -224,7 +200,7 @@ public class ExcelExportService(
         worksheet.InsertAt(columns, 0);
     }
 
-    private static void AddTable(WorksheetPart wsPart, SheetData data, int rowCount)
+    private static void AddTable(WorksheetPart wsPart, int rowCount)
     {
         var range = $"A1:{GetColumnLetter(Headers.Length)}{rowCount}";
 
@@ -274,4 +250,6 @@ public class ExcelExportService(
 
         return columnName;
     }
+
+    #endregion
 }

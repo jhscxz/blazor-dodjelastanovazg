@@ -7,7 +7,8 @@ namespace DodjelaStanovaZG.Services;
 public class AuditService(IHttpContextAccessor accessor, ILogger<AuditService> logger)
     : IAuditService
 {
-    private readonly string _userId = accessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "system";
+    // Dohvaća ID korisnika iz HTTP konteksta; ako nije dostupan, koristi "system"
+    private readonly string _userId = accessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "system";
 
     public void ApplyAudit(object entity, bool isCreate)
     {

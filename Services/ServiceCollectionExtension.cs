@@ -5,7 +5,7 @@ namespace DodjelaStanovaZG.Services;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static void AddApplicationServices(this IServiceCollection services)
     {
         var assembly = Assembly.GetExecutingAssembly();
         services.RegisterBySuffix("Service", assembly)
@@ -13,6 +13,5 @@ public static class ServiceCollectionExtensions
             .RegisterBySuffix("Handler", assembly)
             .RegisterBySuffix("UnitOfWork", assembly)
             .RegisterBySuffix("Repository", assembly);
-        return services;
     }
 }
