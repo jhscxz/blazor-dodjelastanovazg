@@ -1,31 +1,48 @@
-using DodjelaStanovaZG.Components;
-using DodjelaStanovaZG.Data;
-using DodjelaStanovaZG.Services;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using MudBlazor.Services;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using MudBlazor;
-using System.Threading.RateLimiting;
+using MudBlazor.Services;
+
+using DodjelaStanovaZG.Components;
+using DodjelaStanovaZG.Data;
 using DodjelaStanovaZG.Infrastructure;
-using Microsoft.AspNetCore.RateLimiting;
+using DodjelaStanovaZG.Services;
+using Serilog;
+
+#region serilog
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+Log.Information("Pokretanje Blazor Server aplikacije");
+
+#endregion
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
-// =============================
-// KONFIGURACIJA SERVISA
-// =============================
+#region Baza podataka
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
     ServiceLifetime.Scoped);
+
+#endregion
+
+#region Autentikacija i autorizacija
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     {
@@ -38,12 +55,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("ImaPristupAdmin",
-        policy => policy.RequireRole("Management"));
-    options.AddPolicy("MozeUnositi",
-        policy => policy.RequireRole("Referent", "Management"));
+    options.AddPolicy("ImaPristupAdmin", policy => policy.RequireRole("Management"));
+    options.AddPolicy("MozeUnositi", policy => policy.RequireRole("Referent", "Management"));
 });
-
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -52,6 +66,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
+
+#endregion
+
+#region UI i Blazor
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -66,24 +84,15 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Identity/Account/ResendEmailConfirmation");
 });
 
-builder.Services.AddApplicationServices();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
-
-builder.Services.AddResponseCompression(options =>
+builder.Services.AddMudServices(config =>
 {
-    options.EnableForHttps = true;
-    options.Providers.Add<BrotliCompressionProvider>();
-    options.Providers.Add<GzipCompressionProvider>();
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
 });
 
-// builder.Services.AddAntiforgery(options =>
-// {
-//     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-// });
+#endregion
 
-RuntimeHelpers.RunClassConstructor(typeof(DodjelaStanovaZG.Helpers.MappingExtensions).TypeHandle);
+#region Lokalizacija
 
-// Dodaj hrvatski jezik kao default
 var culture = new CultureInfo("hr-HR");
 CultureInfo.DefaultThreadCurrentCulture = culture;
 CultureInfo.DefaultThreadCurrentUICulture = culture;
@@ -95,10 +104,9 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = [culture];
 });
 
-builder.Services.AddMudServices(config =>
-{
-    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
-});
+#endregion
+
+#region Sigurnosni i sistemski servisi
 
 builder.Services.AddHsts(options =>
 {
@@ -112,7 +120,7 @@ builder.Services.AddRateLimiter(options =>
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
         RateLimitPartition.GetFixedWindowLimiter(
             partitionKey: context.User.Identity?.Name ?? context.Request.Headers.Host.ToString(),
-            factory: partition => new FixedWindowRateLimiterOptions
+            factory: _ => new FixedWindowRateLimiterOptions
             {
                 AutoReplenishment = true,
                 PermitLimit = 100,
@@ -120,9 +128,26 @@ builder.Services.AddRateLimiter(options =>
             }));
 });
 
-// =============================
-// KONFIGURACIJA APLIKACIJE
-// =============================
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+});
+
+#endregion
+
+#region Aplikacijski servisi
+
+builder.Services.AddApplicationServices();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+// Inicijalizacija mapiranja (Mapster - MappingExtensions)
+RuntimeHelpers.RunClassConstructor(typeof(DodjelaStanovaZG.Helpers.MappingExtensions).TypeHandle);
+
+#endregion
+
+#region Konfiguracija aplikacije
 
 var app = builder.Build();
 
@@ -135,28 +160,45 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseSecurityHeaders();
 app.UseResponseCompression();
-app.UseRateLimiter();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseRequestLocalization();
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
 
-app.UseRequestLocalization();
+app.UseRateLimiter();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .RequireAuthorization();
 
 app.MapRazorPages();
+app.MapControllers();
 
-// Pokreni seeding preko naredbe "dotnet run -- seed"
+#endregion
+
+#region Seed podataka
+
 if (args.Contains("seed"))
 {
     await DatabaseSeeder.SeedAsync(app);
     return;
 }
 
-app.MapControllers();
-app.Run();
+#endregion
+
+try
+{
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Aplikacija se srušila!");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

@@ -19,3 +19,6 @@ node_modules/
 
 # JetBrains Rider settings
 *.DotSettings.user
+
+# Serilog log files
+Logs/
