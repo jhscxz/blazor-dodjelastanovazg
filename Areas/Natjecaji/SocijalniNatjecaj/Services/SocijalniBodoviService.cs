@@ -17,7 +17,7 @@ public class SocijalniBodoviService(
     public async Task IzracunajIBodujAsync(long zahtjevId)
     {
         logger.LogInformation("Započinjem bodovanje zahtjeva {ZahtjevId}", zahtjevId);
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         var zahtjev = await repository.GetZahtjevWithDetailsAsync(context, zahtjevId);
         if (zahtjev == null || zahtjev.KucanstvoPodaci == null || zahtjev.BodovniPodaci == null)
         {
@@ -119,8 +119,7 @@ public class SocijalniBodoviService(
         else
         {
             auditService.ApplyAudit(bodovi, false);
-
-            // update existing bodovi values
+            
             zahtjev.Bodovi.BodoviStambeniStatus = bodovi.BodoviStambeniStatus;
             zahtjev.Bodovi.BodoviSastavKucanstva = bodovi.BodoviSastavKucanstva;
             zahtjev.Bodovi.BodoviPoClanu = bodovi.BodoviPoClanu;
@@ -146,14 +145,14 @@ public class SocijalniBodoviService(
 
     public async Task<SocijalniNatjecajBodovi?> GetByIdAsync(long zahtjevId)
     {
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         return await repository.GetZahtjevWithDetailsAsync(context, zahtjevId)
             .ContinueWith(t => t.Result?.Bodovi);
     }
 
     public async Task<List<SocijalniNatjecajBodovi>> GetForZahtjeviAsync(List<long> zahtjevIds)
     {
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         var list = new List<SocijalniNatjecajBodovi>();
         foreach (var id in zahtjevIds)
         {

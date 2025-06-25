@@ -9,17 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
-/// <summary>
-/// Centralni “processor” koji rukuje svim zapisima nad socijalnim natječajem
-/// te nakon svake izmjene ponovno računa bodove i sinkronizira bodovne greške.
-/// </summary>
-/// <remarks>
-/// <list type="number">
-///   <item>Jedan <c>LoadZahtjevAsync</c> helper učitava sve potrebne navigacije.</item>
-///   <item><c>ObradiBodoveIGreskeAsync</c> prima samo <c>id</c> – unutar sebe učitava entitet.</item>
-///   <item>Eliminirano je ponavljanje istih <c>.Include(...)</c> i <c>SaveChangesAsync()</c> poziva.</item>
-/// </list>
-/// </remarks>
 public sealed class SocijalniZahtjevProcessorService(
     IDbContextFactory<ApplicationDbContext> contextFactory,
     ISocijalniZahtjevFactory       factory,
@@ -36,7 +25,7 @@ public sealed class SocijalniZahtjevProcessorService(
 
     private async Task<SocijalniNatjecajZahtjev> LoadZahtjevAsync(long id)
     {
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         return await context.SocijalniNatjecajZahtjevi
             .Include(z => z.Clanovi)
             .Include(z => z.KucanstvoPodaci)
@@ -48,7 +37,7 @@ public sealed class SocijalniZahtjevProcessorService(
 
     private async Task EnsureNatjecajOpenForZahtjevAsync(long zahtjevId)
     {
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         var info = await context.SocijalniNatjecajZahtjevi
             .Where(z => z.Id == zahtjevId)
             .Select(z => new { z.NatjecajId, IsClosed = z.Natjecaj == null || z.Natjecaj.IsClosed })
@@ -62,7 +51,7 @@ public sealed class SocijalniZahtjevProcessorService(
 
     private async Task EnsureNatjecajOpenAsync(long natjecajId)
     {
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         
         var isClosed = await context.Natjecaji
             .Where(n => n.Id == natjecajId)
@@ -77,10 +66,8 @@ public sealed class SocijalniZahtjevProcessorService(
     
     private async Task ObradiBodoveIGreskeAsync(long zahtjevId)
     {
-        // Bodovi računaju direktno po ID‑ju
         await bodoviService.IzracunajIBodujAsync(zahtjevId);
 
-        // Greške trebaju kompletan entitet
         var zahtjev = await LoadZahtjevAsync(zahtjevId);
         await greskaService.ObradiGreskeAsync(zahtjev);
     }

@@ -14,16 +14,14 @@ public partial class Profile : ComponentBase
     private ProfileDto _profileModel = new();
     private bool _isLoaded;
     private List<string> _userRoles = [];
-
     [Inject] public IDbContextFactory<ApplicationDbContext> ContextFactory { get; set; } = null!;
     [Inject] public UserManager<IdentityUser> UserManager { get; set; } = null!;
     [Inject] public NavigationManager Navigation { get; set; } = null!;
-
     protected List<Breadcrumbs.BreadcrumbItem> BreadcrumbItems { get; } = BreadcrumbProvider.Profile();
     protected override async Task OnInitializedAsync()
     {
 
-        await using var context = ContextFactory.CreateDbContext();
+        await using var context = await ContextFactory.CreateDbContextAsync();
         var user = await context.Users.FirstOrDefaultAsync(u => u.Id == UserId);
         if (user == null)
         {

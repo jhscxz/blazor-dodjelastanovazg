@@ -21,7 +21,7 @@ public class SocijalniZahtjevGreskaService(
         var noveGreske = await greskaService.PronadiGreskeAsync(zahtjev);
         logger.LogInformation("Pronađeno {Count} grešaka", noveGreske.Count);
         
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
 
         await SinkronizirajGreskeAsync(context, zahtjev.Id, noveGreske);
 

@@ -18,7 +18,6 @@ public partial class ChangeMyPassword : ComponentBase
     [Inject] private IPasswordService PasswordService { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
     [CascadingParameter] private Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
-
     private MudForm _form = null!;
     private readonly List<string> _errorMessages = [];
     private readonly ChangeMyPasswordDto _changePasswordModel = new();

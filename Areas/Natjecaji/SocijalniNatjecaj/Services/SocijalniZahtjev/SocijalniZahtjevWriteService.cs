@@ -8,17 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services.SocijalniZahtjev;
 
-public class SocijalniZahtjevWriteService(
-    IDbContextFactory<ApplicationDbContext> contextFactory,
-    IAuditService auditService,
-    ILogger<SocijalniZahtjevWriteService> logger)
-    : ISocijalniZahtjevWriteService
+public class SocijalniZahtjevWriteService(IDbContextFactory<ApplicationDbContext> contextFactory, IAuditService auditService, ILogger<SocijalniZahtjevWriteService> logger) : ISocijalniZahtjevWriteService
 {
     public async Task<SocijalniNatjecajZahtjev> CreateAsync(SocijalniNatjecajZahtjev zahtjev)
     {
         logger.LogInformation("Creating zahtjev");
         
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         
         var natjecaj = await context.Natjecaji.FindAsync(zahtjev.NatjecajId)
                        ?? throw new Exception($"Natječaj {zahtjev.NatjecajId} nije pronađen.");
@@ -56,7 +52,7 @@ public class SocijalniZahtjevWriteService(
     public async Task UpdateOsnovnoAsync(long zahtjevId, SocijalniNatjecajOsnovnoEditDto dto)
     {
         logger.LogInformation("Updating osnovne podatke zahtjeva {Id}", zahtjevId);
-        await using var context = contextFactory.CreateDbContext();
+        await using var context = await contextFactory.CreateDbContextAsync();
         var zahtjev = await context.SocijalniNatjecajZahtjevi
                           .Include(z => z.Natjecaj)
                           .FirstOrDefaultAsync(z => z.Id == zahtjevId)

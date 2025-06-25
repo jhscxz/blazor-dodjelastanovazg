@@ -8,9 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 {
-    public class SocijalniBodovniPodaciService(
-        IDbContextFactory<ApplicationDbContext> contextFactory,
-        ILogger<SocijalniBodovniPodaciService> logger) : ISocijalniBodovniPodaciService
+    public class SocijalniBodovniPodaciService(IDbContextFactory<ApplicationDbContext> contextFactory, ILogger<SocijalniBodovniPodaciService> logger) : ISocijalniBodovniPodaciService
     {
         private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(ApplicationDbContext context, bool asNoTracking = false)
         {
@@ -26,7 +24,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         {
             logger.LogDebug("Dohvaćanje bodovnih podataka za zahtjev {ZahtjevId}", zahtjevId);
             
-            await using var context = contextFactory.CreateDbContext();
+            await using var context = await contextFactory.CreateDbContextAsync();
             
             var entity = await context.SocijalniNatjecajBodovniPodaci
                                .Include(b => b.CreatedByUser)
@@ -41,7 +39,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         {
             logger.LogDebug("Ažuriranje bodovnih podataka za zahtjev {ZahtjevId}", zahtjevId);
             
-            await using var context = contextFactory.CreateDbContext();
+            await using var context = await contextFactory.CreateDbContextAsync();
             var zahtjev = await BaseZahtjevQuery(context)
                               .FirstOrDefaultAsync(z => z.Id == zahtjevId)
                           ?? throw new NotFoundException($"Zahtjev s ID-om {zahtjevId} nije pronađen.");

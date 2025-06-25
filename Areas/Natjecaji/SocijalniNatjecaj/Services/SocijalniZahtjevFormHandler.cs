@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services;
 
-public class SocijalniZahtjevFormHandler(IUnitOfWork unitOfWork, ISocijalniBodoviService bodoviService, NavigationManager navigation, ILogger<SocijalniZahtjevFormHandler> logger)
-    : ISocijalniZahtjevFormHandler
+public class SocijalniZahtjevFormHandler(IUnitOfWork unitOfWork, ISocijalniBodoviService bodoviService, NavigationManager navigation, ILogger<SocijalniZahtjevFormHandler> logger) : ISocijalniZahtjevFormHandler
 {
     public async Task<(bool Success, List<string> Errors)> SubmitAsync(SocijalniNatjecajZahtjevDto model, int? rezultatObrade)
     {

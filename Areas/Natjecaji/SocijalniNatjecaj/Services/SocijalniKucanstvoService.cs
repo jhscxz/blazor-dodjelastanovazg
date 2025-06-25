@@ -11,16 +11,11 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 {
     public class SocijalniKucanstvoService(IDbContextFactory<ApplicationDbContext> contextFactory, ILogger<SocijalniKucanstvoService> logger) : ISocijalniKucanstvoService
     {
-        private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(ApplicationDbContext context)
-            => context.SocijalniNatjecajZahtjevi
-                .Include(z => z.KucanstvoPodaci)
-                .ThenInclude(k => k!.Prihod);
-
         public async Task<SocijalniKucanstvoPodaciDto> UpdateKucanstvoPodaciAsync(long zahtjevId, SocijalniKucanstvoPodaciDto dto)
         {
             logger.LogInformation("Updating kućanstvo podaci for zahtjev {Id}", zahtjevId);
 
-            await using var context = contextFactory.CreateDbContext();
+            await using var context = await contextFactory.CreateDbContextAsync();
             var zahtjev = await context.SocijalniNatjecajZahtjevi
                               .Include(z => z.Natjecaj)
                               .Include(z => z.KucanstvoPodaci)
@@ -46,7 +41,6 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
                 logger.LogInformation("Created new kućanstvo podaci for zahtjev {Id}", zahtjevId);
             }
 
-            // --- PRIHOD ---
             var iznosPrihoda = dto.Prihod?.UkupniPrihodKucanstva ?? throw new ValidationException("Prihod nije naveden.");
 
             if (podaci.Prihod != null)
@@ -55,7 +49,6 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
                 context.Entry(podaci.Prihod).State = EntityState.Modified;
             }
 
-            // --- OSTALO ---
             podaci.PrebivanjeOd = dto.PrebivanjeOd!.Value;
             podaci.StambeniStatusKucanstva = dto.StambeniStatusKucanstva!.Value;
             podaci.SastavKucanstva = dto.SastavKucanstva!.Value;
@@ -72,7 +65,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         {
             logger.LogInformation("Fetching kućanstvo podaci for zahtjev {Id}", zahtjevId);
 
-            await using var context = contextFactory.CreateDbContext();
+            await using var context = await contextFactory.CreateDbContextAsync();
             var podaci = await context.SocijalniNatjecajKucanstvoPodaci
                 .Include(p => p.Prihod)
                 .AsNoTracking()

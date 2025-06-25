@@ -11,8 +11,6 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 {
     public class SocijalniClanService(IDbContextFactory<ApplicationDbContext> contextFactory, ILogger<SocijalniClanService> logger) : ISocijalniClanService
     {
-        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory = contextFactory;
-        private readonly ILogger<SocijalniClanService> _logger = logger;
         private IQueryable<SocijalniNatjecajZahtjev> BaseZahtjevQuery(ApplicationDbContext context, bool asNoTracking = false)
         {
             var query = context.SocijalniNatjecajZahtjevi
@@ -24,7 +22,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 
         private async Task<SocijalniNatjecajZahtjev> GetZahtjevByIdAsync(long id, bool asNoTracking)
         {
-            await using var context = _contextFactory.CreateDbContext();
+            await using var context = await contextFactory.CreateDbContextAsync();
             var zahtjev = await BaseZahtjevQuery(context, asNoTracking).FirstOrDefaultAsync(z => z.Id == id);
 
             if (zahtjev == null) throw new NotFoundException($"Zahtjev s ID-om {id} nije pronađen.");
@@ -42,14 +40,14 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
         public async Task<SocijalniNatjecajClanDto> AddClanAsync(SocijalniNatjecajClan noviClan)
         {
             var zahtjev = await GetZahtjevByIdAsync(noviClan.ZahtjevId, true);
-            await using var context = _contextFactory.CreateDbContext();
+            await using var context = await contextFactory.CreateDbContextAsync();
             var isClosed = await context.Natjecaji
                 .Where(n => n.Id == zahtjev.NatjecajId)
                 .Select(n => n.IsClosed)
                 .FirstAsync();
             if (isClosed)
             {
-                _logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
+                logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
                 throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
             }
 
@@ -61,7 +59,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 
         public async Task<SocijalniNatjecajClanDto> EditClanAsync(SocijalniNatjecajClanDto azurirani)
         {
-            await using var context = _contextFactory.CreateDbContext();
+            await using var context = await contextFactory.CreateDbContextAsync();
             var zahtjev = await GetZahtjevByIdAsync(azurirani.ZahtjevId, false);
             var isClosed = await context.Natjecaji
                 .Where(n => n.Id == zahtjev.NatjecajId)
@@ -69,7 +67,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
                 .FirstAsync();
             if (isClosed)
             {
-                _logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
+                logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
                 throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
             }
             var clan = GetClanById(zahtjev, azurirani.Id);
@@ -87,7 +85,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 
         public async Task RemoveClanAsync(long zahtjevId, long clanId)
         {
-            await using var context = _contextFactory.CreateDbContext();
+            await using var context = await contextFactory.CreateDbContextAsync();
             var zahtjev = await GetZahtjevByIdAsync(zahtjevId, false);
             var isClosed = await context.Natjecaji
                 .Where(n => n.Id == zahtjev.NatjecajId)
@@ -95,7 +93,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
                 .FirstAsync();
             if (isClosed)
             {
-                _logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
+                logger.LogWarning("Natječaj {NatjecajId} je zaključen i izmjene nisu moguće", zahtjev.NatjecajId);
                 throw new InvalidOperationException($"Natječaj {zahtjev.NatjecajId} je zaključen i izmjene nisu moguće");
             }
             var clan = GetClanById(zahtjev, clanId);
@@ -106,7 +104,7 @@ namespace DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Services
 
         public async Task<Dictionary<long, List<SocijalniNatjecajClanDto>>> GetForZahtjeviAsync(IEnumerable<long> zahtjevIds)
         {
-            await using var context = _contextFactory.CreateDbContext();
+            await using var context = await contextFactory.CreateDbContextAsync();
             var clanovi = await context.SocijalniNatjecajClanovi
                 .Where(c => zahtjevIds.Contains(c.ZahtjevId))
                 .ProjectToType<SocijalniNatjecajClanDto>()
