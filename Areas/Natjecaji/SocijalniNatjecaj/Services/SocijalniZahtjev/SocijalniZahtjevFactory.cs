@@ -18,7 +18,7 @@ public class SocijalniZahtjevFactory(ILogger<SocijalniZahtjevFactory> logger) : 
             DatumPodnosenjaZahtjeva = dto.DatumPodnosenjaZahtjeva ?? DateTime.UtcNow,
             Adresa = dto.Adresa,
             Email = dto.Email,
-            PosjedujeNekretninuZG = dto.PosjedujeNekretninuZG,
+            PosjedujeNekretninuZg = dto.PosjedujeNekretninuZG,
             RezultatObrade = dto.RezultatObrade!.Value,
             ManualniRezultatObrade = dto.RezultatObrade!.Value,
             NapomenaObrade = dto.NapomenaObrade

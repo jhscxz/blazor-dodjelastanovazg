@@ -69,7 +69,7 @@ internal class WordExportService(IWebHostEnvironment env, ILogger<WordExportServ
             ["{{Klasa}}"] = zahtjev.KlasaPredmeta.ToString(),
             ["{{StatusZahtjeva}}"] = zahtjev.RezultatObrade.ToString(),
             ["{{Adresa}}"] = zahtjev.Adresa,
-            ["{{NekretninaZG}}"] = zahtjev.PosjedujeNekretninuZG ? "Da" : "Ne",
+            ["{{NekretninaZG}}"] = zahtjev.PosjedujeNekretninuZg ? "Da" : "Ne",
             ["{{DatumRodjenja}}"] = podnositelj?.DatumRodjenja.ToString("dd.MM.yyyy"),
             ["{{Oib}}"] = podnositelj?.Oib,
             ["{{DatumPrebivalista}}"] = zahtjev.KucanstvoPodaci?.PrebivanjeOd?.ToString("dd.MM.yyyy"),

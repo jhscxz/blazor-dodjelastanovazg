@@ -63,7 +63,7 @@ public sealed class SocijalniBodovnaGreskaService(IDbContextFactory<ApplicationD
         
         void ProvjeriNekretnine()
         {
-            if (zahtjev.PosjedujeNekretninuZG)
+            if (zahtjev.PosjedujeNekretninuZg)
                 Add("NEK-001", "Podnositelj ne smije imati useljivu nekretninu u Zagrebu ili ZG županiji.");
         }
         

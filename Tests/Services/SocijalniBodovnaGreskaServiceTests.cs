@@ -34,7 +34,7 @@ public class SocijalniBodovnaGreskaServiceTests
     {
         var service = new SocijalniBodovnaGreskaService(Mock.Of<IDbContextFactory<ApplicationDbContext>>());
 
-        var zahtjev = new SocijalniNatjecajZahtjev { PosjedujeNekretninuZG = true };
+        var zahtjev = new SocijalniNatjecajZahtjev { PosjedujeNekretninuZg = true };
 
         var greske = await service.PronadiGreskeAsync(zahtjev);
 

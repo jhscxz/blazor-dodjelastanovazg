@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using DodjelaStanovaZG.Models.Interfaces;
-using Microsoft.AspNetCore.Identity;
 
 namespace DodjelaStanovaZG.Models;
 

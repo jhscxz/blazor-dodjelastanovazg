@@ -107,7 +107,7 @@ public class ExcelExportService(IDbContextFactory<ApplicationDbContext> contextF
             CreateTextCell(podnositelj?.Oib ?? string.Empty),
             CreateTextCell(zahtjev.RezultatObrade.ToString()),
             CreateTextCell(zahtjev.Adresa ?? string.Empty),
-            CreateTextCell(zahtjev.PosjedujeNekretninuZG ? "Da" : "Ne"),
+            CreateTextCell(zahtjev.PosjedujeNekretninuZg ? "Da" : "Ne"),
             CreateTextCell(podnositelj?.DatumRodjenja.ToString("dd.MM.yyyy") ?? string.Empty),
             CreateTextCell(zahtjev.KucanstvoPodaci?.PrebivanjeOd?.ToString("dd.MM.yyyy") ?? string.Empty),
             CreateTextCell(zahtjev.KucanstvoPodaci?.Prihod?.UkupniPrihodKucanstva.ToString("N2") ?? string.Empty),

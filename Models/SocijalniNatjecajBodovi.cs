@@ -7,13 +7,10 @@ public class SocijalniNatjecajBodovi : AuditableEntity
 {
     [Key]
     public long Id { get; init; }
-
     [Required]
     [ForeignKey(nameof(Zahtjev))]
     public long ZahtjevId { get; init; }
-
     public SocijalniNatjecajZahtjev Zahtjev { get; set; } = null!;
-
     public byte BodoviStambeniStatus { get; set; }
     public byte BodoviSastavKucanstva { get; set; }
     public byte BodoviPoClanu { get; set; }

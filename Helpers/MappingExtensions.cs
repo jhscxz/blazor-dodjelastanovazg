@@ -44,7 +44,7 @@ public static partial class MappingExtensions
                 src => IzracunajPodnositeljIznad55(src))
             .Map(dest => dest.BrojMaloljetneDjece,
                 src => IzracunajBrojMaloljetnih(src))
-            .Map(dest => dest.PosjedujeNekretninuZG, src => src.PosjedujeNekretninuZG);
+            .Map(dest => dest.PosjedujeNekretninuZG, src => src.PosjedujeNekretninuZg);
 
         TypeAdapterConfig<SocijalniNatjecajClan, SocijalniNatjecajClanDto>.NewConfig();
         TypeAdapterConfig<SocijalniNatjecajBodovniPodaci, SocijalniNatjecajBodovniPodaciDto>.NewConfig();
@@ -96,7 +96,7 @@ public static partial class MappingExtensions
     {
         dto.Adapt(entity);
 
-        entity.PosjedujeNekretninuZG = dto.PosjedujeNekretninuZG;
+        entity.PosjedujeNekretninuZg = dto.PosjedujeNekretninuZG;
         
         if (dto.RowVersion is not null)
             entity.RowVersion = dto.RowVersion;
