@@ -4,10 +4,7 @@ namespace DodjelaStanovaZG.Helpers;
 
 public static class ServiceRegistrationHelper
 {
-    public static IServiceCollection RegisterBySuffix(
-        this IServiceCollection services,
-        string suffix,
-        params Assembly[]? assemblies)
+    public static IServiceCollection RegisterBySuffix(this IServiceCollection services, string suffix, params Assembly[]? assemblies)
     {
         if (assemblies is null || assemblies.Length == 0)
         {
