@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
 using MudBlazor;
 using System.Threading.RateLimiting;
+using DodjelaStanovaZG.Infrastructure;
 using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -80,14 +81,6 @@ builder.Services.AddResponseCompression(options =>
 //     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 // });
 
-builder.Services.AddSession(options =>
-{
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.IdleTimeout = TimeSpan.FromMinutes(20);
-});
-
-
 RuntimeHelpers.RunClassConstructor(typeof(DodjelaStanovaZG.Helpers.MappingExtensions).TypeHandle);
 
 // Dodaj hrvatski jezik kao default
@@ -140,6 +133,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseSecurityHeaders();
+app.UseResponseCompression();
+app.UseRateLimiter();
 app.UseStaticFiles();
 app.UseRouting();
 

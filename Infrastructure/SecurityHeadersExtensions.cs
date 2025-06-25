@@ -12,7 +12,10 @@ public static class SecurityHeadersExtensions
             context.Response.Headers["X-Frame-Options"] = "DENY";
             context.Response.Headers["Referrer-Policy"] = "no-referrer";
             context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
-            context.Response.Headers["Content-Security-Policy"] = "default-src 'self'";
+            
+            // maknuti za production
+            context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'";
+            
             context.Response.Headers["Permissions-Policy"] = "accelerometer=(), camera=(), geolocation=(), microphone=()";
             context.Response.Headers["Cross-Origin-Embedder-Policy"] = "require-corp";
             context.Response.Headers["Cross-Origin-Opener-Policy"] = "same-origin";
