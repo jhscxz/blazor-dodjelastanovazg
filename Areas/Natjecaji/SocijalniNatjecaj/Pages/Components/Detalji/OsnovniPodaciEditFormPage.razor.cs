@@ -39,7 +39,7 @@ public partial class OsnovniPodaciEditFormPage
             RezultatObrade = zahtjev.RezultatObrade,
             NapomenaObrade = zahtjev.NapomenaObrade,
             Email = zahtjev.Email,
-            PosjedujeNekretninuZG = zahtjev.PosjedujeNekretninuZG,
+            PosjedujeNekretninuZg = zahtjev.PosjedujeNekretninuZg,
             NatjecajId = zahtjev.NatjecajId,
             RowVersion = zahtjev.RowVersion,
         };

@@ -34,7 +34,7 @@ public static class MappingExtensions
             .Map(dest => dest.Prihod, src => src.KucanstvoPodaci!.Prihod!)
             .Map(dest => dest.PodnositeljIznad55, src => IzracunajPodnositeljIznad55(src))
             .Map(dest => dest.BrojMaloljetneDjece, src => IzracunajBrojMaloljetnih(src))
-            .Map(dest => dest.PosjedujeNekretninuZG, src => src.PosjedujeNekretninuZg);
+            .Map(dest => dest.PosjedujeNekretninuZg, src => src.PosjedujeNekretninuZg);
 
         TypeAdapterConfig<SocijalniNatjecajClan, SocijalniNatjecajClanDto>.NewConfig();
         TypeAdapterConfig<SocijalniNatjecajBodovniPodaci, SocijalniNatjecajBodovniPodaciDto>.NewConfig();
@@ -77,7 +77,7 @@ public static class MappingExtensions
     {
         dto.Adapt(entity);
 
-        entity.PosjedujeNekretninuZg = dto.PosjedujeNekretninuZG;
+        entity.PosjedujeNekretninuZg = dto.PosjedujeNekretninuZg;
 
         if (dto.RowVersion is not null) entity.RowVersion = dto.RowVersion;
 
