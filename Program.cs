@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading.RateLimiting;
+using DodjelaStanovaZG.Areas.Admin.Natjecaji.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
@@ -11,6 +12,7 @@ using MudBlazor.Services;
 
 using DodjelaStanovaZG.Components;
 using DodjelaStanovaZG.Data;
+using DodjelaStanovaZG.Data.Seeders;
 using DodjelaStanovaZG.Infrastructure;
 using DodjelaStanovaZG.Services;
 using Serilog;
