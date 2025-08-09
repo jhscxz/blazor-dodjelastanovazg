@@ -76,11 +76,8 @@ public static class MappingExtensions
     public static void MapOnto(this SocijalniNatjecajOsnovnoEditDto dto, SocijalniNatjecajZahtjev entity)
     {
         dto.Adapt(entity);
-
         entity.PosjedujeNekretninuZg = dto.PosjedujeNekretninuZg;
-
         if (dto.RowVersion is not null) entity.RowVersion = dto.RowVersion;
-
         if (dto.RezultatObrade.HasValue) entity.ManualniRezultatObrade = dto.RezultatObrade.Value;
     }
 
