@@ -46,10 +46,8 @@ public partial class SocijalniNatjecajZahtjevAdd : ComponentBase, IDisposable
         {
             ErrorMessages.AddRange(errors);
         }
-        // po potrebi možeš dodati navigaciju ili ostale radnje na uspjeh (već je u form handleru)
     }
-
-
+    
     private void Cancel() => Navigation.NavigateTo($"/socijalni/pregled/{NatjecajId}");
     public void Dispose() => _disposed = true;
 }
