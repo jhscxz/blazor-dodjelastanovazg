@@ -1,0 +1,24 @@
+# .NET build output
+bin/
+obj/
+
+# Rider i JetBrains IDE metadata
+.idea/
+*.iml
+
+# Tailwind CSS output
+wwwroot/css/output.css
+wwwroot/css/output.css.map
+
+# Compression files
+*.gz
+*.br
+
+# Node dependencies
+node_modules/
+
+# JetBrains Rider settings
+*.DotSettings.user
+
+# Serilog log files
+Logs/

@@ -1,0 +1,71 @@
+@page "/socijalni/dodaj/{NatjecajId:long}"
+@using DodjelaStanovaZG.Components.UI
+@using MudBlazor
+@using DodjelaStanovaZG.Enums
+@using DodjelaStanovaZG.Components.UI.MudInputs
+@using Microsoft.AspNetCore.Authorization
+@using DodjelaStanovaZG.Components.UI.Buttons
+
+@attribute [Authorize(Policy = "MozeUnositi")]
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <FormCard Xs="12" Sm="6" Md="4" CardClass="pa-6 border border-gray-300" ErrorMessages="ErrorMessages">
+        <MudForm @ref="_form" Model="@ZahtjevModel">
+
+            <!-- Prvi red: Klasa predmeta i Datum podnošenja zahtjeva -->
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <TextInputInt T="int?" Label="Klasa predmeta" @bind-Value="ZahtjevModel.KlasaPredmeta"
+                                  Required="true" Class="mb-4"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <DateInput Label="Datum podnošenja" @bind-Value="ZahtjevModel.DatumPodnosenjaZahtjeva"
+                               Required="true"/>
+                </MudItem>
+            </MudGrid>
+
+            <!-- Drugi red: Ime i prezime i Adresa -->
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <TextInput T="string" Label="Ime i prezime" @bind-Value="ZahtjevModel.ImePrezime"
+                               Required="true" Class="mb-4"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <TextInput T="string" Label="Adresa" @bind-Value="ZahtjevModel.Adresa" Required="true"
+                               Class="mb-4"/>
+                </MudItem>
+            </MudGrid>
+
+            <!-- Treći red: OIB i Email -->
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <TextInput T="string" Label="OIB"  @bind-Value="ZahtjevModel.Oib" For="@(() => ZahtjevModel.Oib)" Class="mb-4"/>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <TextInput T="string" Label="Email" @bind-Value="ZahtjevModel.Email" 
+                               Class="mb-4"/>
+                </MudItem>
+            </MudGrid>
+
+            <BoolSelect Label="Useljiva kuća/stan u Zagrebu/ZG županiji" @bind-Value="ZahtjevModel.PosjedujeNekretninuZg" Class="mb-4" />
+            
+            <MudStack Class="mt-4 mb-6">
+                <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection"
+                                @bind-Value="_toggleRezultat"
+                                CheckMark
+                                Color="Color.Default">
+                    <MudToggleItem Value="@((int?)RezultatObrade.Nepotpun)" Text="NEPOTPUN"/>
+                    <MudToggleItem Value="@((int?)RezultatObrade.Neosnovan)" Text="NEOSNOVAN"/>
+                    <MudToggleItem Value="@((int?)RezultatObrade.Osnovan)" Text="OSNOVAN"/>
+                </MudToggleGroup>
+            </MudStack>
+
+            <MudItem xs="12">
+                <TextAreaInput T="string" Label="Napomena" @bind-Value="ZahtjevModel.NapomenaObrade"
+                               Class="mb-4"/>
+            </MudItem>
+
+            <FormButtons Submit="SubmitForm" Cancel="Cancel"/>
+        </MudForm>
+    </FormCard>
+</Container>

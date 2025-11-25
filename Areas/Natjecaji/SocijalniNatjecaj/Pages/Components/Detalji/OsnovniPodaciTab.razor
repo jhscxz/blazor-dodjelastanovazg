@@ -1,0 +1,64 @@
+@page "/socijalni/detalji/prikaz/{Id:long}"
+@using DodjelaStanovaZG.Components.UI.MudInputs
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+
+<MudStack Spacing="4">
+
+    <MudCard Outlined="true" Class="pa-4">
+
+        <MudGrid >
+            <MudItem xs="12" sm="6">
+                <TextInput T="string" Label="Klasa predmeta" Value="@Detalji.KlasaPredmeta?.ToString()"
+                           ReadOnly="true"/>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <TextInput T="string" Label="Datum podnošenja zahtjeva"
+                           Value="@Detalji.DatumPodnosenjaZahtjeva?.ToString("dd.MM.yyyy")" ReadOnly="true"/>
+            </MudItem>
+        </MudGrid>
+
+        <MudGrid >
+            <MudItem xs="12" sm="6">
+                <TextInput T="string" Label="Ime i prezime" Value="@Detalji.ImePrezime" ReadOnly="true"/>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <TextInput T="string" Label="Adresa" Value="@Detalji.Adresa" ReadOnly="true"/>
+            </MudItem>
+        </MudGrid>
+
+        <MudGrid >
+            <MudItem xs="12" sm="6">
+                <TextInput T="string" Label="OIB podnositelja" Value="@Detalji.Oib" ReadOnly="true"/>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <TextInput T="string" Label="Email podnositelja" Value="@Detalji.Email" ReadOnly="true"/>
+            </MudItem>
+        </MudGrid>
+
+        <TextInput T="string"
+                   Label="Useljiva kuća/stan u Zagrebu/ZG županiji"
+                   Value="@(Detalji.PosjedujeNekretninuZg ? "Da" : "Ne")"
+                   ReadOnly="true" />
+        
+        <TextAreaInput Label="Napomena obrade"
+                       Value="@Detalji.NapomenaObrade"
+                       ReadOnly="true"
+                       Class="mb-4"/>
+    </MudCard>
+
+    <MudStack Spacing="2" Row="true" Justify="Justify.SpaceBetween">
+        <MudChip T="string"
+                 Variant="Variant.Text"
+                 Color="@ChipColor"
+                 Size="Size.Small"
+                 Class="px-2 py-1 rounded-lg">
+            @ChipText
+        </MudChip>
+
+        <EditButton Href="@($"/socijalni/osnovno/edit/{Detalji.Id}")"/>
+    </MudStack>
+
+    <AuditInfo Model="Detalji" />
+
+</MudStack>

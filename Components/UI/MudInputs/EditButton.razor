@@ -1,0 +1,13 @@
+@using MudBlazor
+<MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="@Class">
+    <MudButton StartIcon="@Icon"
+               Variant="Variant.Filled"
+               Size="Size.Small"
+               Style="border: 1px solid #d3d3d3;"
+               DropShadow="false"
+               IconColor="Color.Info"
+               Color="Color.Default"
+               OnClick="HandleClick">
+        @Label
+    </MudButton>
+</MudStack>

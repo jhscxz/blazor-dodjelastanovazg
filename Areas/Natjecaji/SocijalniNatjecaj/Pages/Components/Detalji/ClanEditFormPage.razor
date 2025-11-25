@@ -1,0 +1,56 @@
+@page "/socijalni/clan/edit/{ZahtjevId:long}/{ClanId:long?}"
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Components.UI.MudInputs
+@using DodjelaStanovaZG.Components.UI.Buttons
+@using DodjelaStanovaZG.Enums
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using Microsoft.AspNetCore.Components.Web
+
+<PageTitle>Uredi člana kućanstva</PageTitle>
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudContainer MaxWidth="MaxWidth.Small">
+        @if (_model is null)
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+        }
+        else
+        {
+            <MudCard Outlined="true" Class="pa-6 border border-gray-300">
+                <MudCardContent>
+                    <MudForm @ref="_form" Model="@_model">
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <TextInput T="string" Label="Ime i prezime" @bind-Value="_model.ImePrezime" Required="true" Class="mb-4"/>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <TextInput T="string" Label="OIB" @bind-Value="_model.Oib" For="@(() => _model.Oib)" Class="mb-4"/>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <DateInput Label="Datum rođenja" @bind-Value="_datumRodjenja" Required="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                @if (!IsPodnositelj)
+                                {
+                                    <EnumSelect T="Srodstvo"
+                                                @bind-Value="_model.Srodstvo"
+                                                Label="Srodstvo"
+                                                Required="true"
+                                                Filter="item => item != Srodstvo.PodnositeljZahtjeva"
+                                                Placeholder="Odaberi..."/>
+                                }
+                            </MudItem>
+
+                        </MudGrid>
+
+                        <FormButtons Submit="Submit" Cancel="Cancel"/>
+
+                    </MudForm>
+                </MudCardContent>
+            </MudCard>
+        }
+    </MudContainer>
+</Container>

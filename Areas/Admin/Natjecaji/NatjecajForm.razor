@@ -1,0 +1,65 @@
+@page "/admin/natjecaji/add"
+@page "/admin/natjecaji/edit/{Klasa:int}"
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+@using Microsoft.AspNetCore.Authorization
+@using DodjelaStanovaZG.Components.UI.Buttons
+@using DodjelaStanovaZG.Components.UI.MudInputs
+
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <FormCard Title="@FormTitle" Xs="12" Sm="10" Md="6" Lg="5" CardClass="pa-6 border border-gray-300">
+
+        <MudForm @ref="_form" Model="@Natjecaj">
+
+            <MudSelect T="string"
+                       Label="Vrsta natječaja"
+                       @bind-Value="Natjecaj.Vrsta"
+                       Required="true"
+                       Variant="Variant.Outlined"
+                       Margin="Margin.Dense"
+                       ShrinkLabel="true"
+                       Class="mb-4">
+                <MudSelectItem Value="@("Socijalni")">Socijalni</MudSelectItem>
+                <MudSelectItem Value="@("Priuštivi")">Priuštivi</MudSelectItem>
+            </MudSelect>
+
+            <TextInputInt T="int?"
+                          Label="Klasa"
+                          @bind-Value="Natjecaj.Klasa"
+                          Required="true"
+                          Class="mb-4"
+                          ShrinkLabel="true"/>
+
+            <TextInputDecimal T="decimal?"
+                              Label="Prosjek plaće (€)"
+                              @bind-Value="Natjecaj.ProsjekPlace"
+                              Required="true"
+                              Class="mb-4"
+                              ShrinkLabel="true"/>
+
+            <DateInput Label="Datum objave"
+                       @bind-Value="Natjecaj.DatumObjaveDateTime"
+                       Required="true" />
+
+            <DateInput Label="Rok za prijavu"
+                       @bind-Value="Natjecaj.RokZaPrijavuDateTime"
+                       Required="true" />
+
+            <MudSelect T="string"
+                       Label="Status"
+                       @bind-Value="Natjecaj.Status"
+                       Required="true"
+                       Variant="Variant.Outlined"
+                       Margin="Margin.Dense"
+                       Class="mb-4">
+                <MudSelectItem Value="@("Aktivan")">Aktivan</MudSelectItem>
+                <MudSelectItem Value="@("Zaključen")">Zaključen</MudSelectItem>
+            </MudSelect>
+
+            <FormButtons Submit="SubmitForm" Cancel="Povratak"/>
+
+        </MudForm>
+    </FormCard>
+</Container>

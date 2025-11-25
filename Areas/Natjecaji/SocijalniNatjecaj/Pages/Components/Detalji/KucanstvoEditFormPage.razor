@@ -1,0 +1,57 @@
+@page "/socijalni/kucanstvo/edit/{ZahtjevId:long}"
+@using DodjelaStanovaZG.Enums
+@using MudBlazor
+@using Microsoft.AspNetCore.Components.Web
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Components.UI.MudInputs
+@using DodjelaStanovaZG.Components.UI.Buttons
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Policy = "MozeUnositi")]
+
+<PageTitle>Uredi kućanstvo</PageTitle>
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudContainer MaxWidth="MaxWidth.Small">
+        @if (_kucanstvoModel is null)
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+        }
+        else
+        {
+            <MudCard Outlined="true" Class="pa-6 border border-gray-300">
+                <MudCardContent>
+                    <MudForm @ref="_form" Model="@_kucanstvoModel">
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <TextInputDecimal T="decimal?" Label="Ukupni godišnji prihod kućanstva"
+                                                  @bind-Value="_kucanstvoModel.Prihod!.UkupniPrihodKucanstva"
+                                                  Required="true"/>
+                            </MudItem>
+
+
+                            <MudItem xs="12">
+                                <DateInput Label="Prebivanje od" @bind-Value="_prebivanjeOd" Required="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <EnumSelect T="StambeniStatusKucanstva"
+                                            @bind-Value="_kucanstvoModel.StambeniStatusKucanstva"
+                                            Label="Stambeni status kućanstva" Required="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <EnumSelect T="SastavKucanstva" @bind-Value="_kucanstvoModel.SastavKucanstva"
+                                            Label="Sastav kućanstva" Required="true"/>
+                            </MudItem>
+
+                            <MudItem xs="12">
+                                <FormButtons Submit="Submit" Cancel="Cancel"/>
+                            </MudItem>
+                        </MudGrid>
+                    </MudForm>
+                </MudCardContent>
+            </MudCard>
+        }
+    </MudContainer>
+</Container>

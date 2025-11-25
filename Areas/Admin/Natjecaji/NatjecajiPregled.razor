@@ -1,0 +1,93 @@
+@page "/admin/natjecaji"
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Areas.Admin.Natjecaji.DTO
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@inherits NatjecajiPregledBase
+
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudPaper Outlined="true" Class="pa-4">
+
+    <ListHeader TFilter="string"
+                AddButtonText="Dodaj natječaj"
+                OnAdd="KreirajNatjecaj"
+                FilterLabel="Vrsta:"
+                FilterValue="@OdabranaVrsta"
+                OnFilterChanged="OnVrstaChanged">
+    <FilterOptions>
+        <MudSelectItem Value="@("Socijalni")">Socijalni</MudSelectItem>
+        <MudSelectItem Value="@("Priuštivi")">Priuštivi</MudSelectItem>
+                              </FilterOptions>
+                              </ListHeader>
+
+        <MudTable T="NatjecajDto"
+                  Items="FilteredNatjecaji"
+                  Hover="true"
+                  Striped="true"
+                  RowsPerPage="10"
+                  Dense="true"
+                  Outlined="true"
+                  @ref="Table"
+                  Class="rounded-lg overflow-hidden">
+
+            <HeaderContent>
+                <MudTh Class="table-header">Vrsta</MudTh>
+                <MudTh Class="table-header">Godina</MudTh>
+                <MudTh Class="table-header">Klasa</MudTh>
+                <MudTh Class="table-header">Prosjek (€)</MudTh>
+                <MudTh Class="table-header">Status</MudTh>
+                <MudTh Class="table-header">Akcija</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd>@context.Vrsta</MudTd>
+                <MudTd>@context.DatumObjave?.Year</MudTd>
+                <MudTd>@context.Klasa</MudTd>
+                <MudTd>
+                    @(context.ProsjekPlace?.ToString("N2")) @(context.ProsjekPlace is null ? string.Empty : "€")
+                </MudTd>
+                <MudTd>
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@(context.Status == "Aktivan" ? Color.Success : Color.Error)">
+                        @context.Status
+                    </MudChip>
+                </MudTd>
+                <MudTd>
+                    <MudButton OnClick="() => Uredi(context)"
+                               Variant="Variant.Text"
+                               Class="p-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Edit" />
+                    </MudButton>
+
+                    @if (context.Status == "Aktivan")
+                    {
+                        <MudButton OnClick="() => Zakljucaj(context)"
+                                   Variant="Variant.Text"
+                                   Color="Color.Error"
+                                   Class="p-2">
+                            <MudIcon Icon="@Icons.Material.Filled.Lock" />
+                        </MudButton>
+                    }
+                    else
+                    {
+                        <MudButton OnClick="() => Otkljucaj(context)"
+                                   Variant="Variant.Text"
+                                   Color="Color.Primary"
+                                   Class="p-2">
+                            <MudIcon Icon="@Icons.Material.Filled.LockOpen" />
+                        </MudButton>
+                    }
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+
+        </MudTable>
+    </MudPaper>
+</Container>

@@ -1,0 +1,23 @@
+@page "/admin"
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Components.UI.Buttons
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full" style="overflow-x: hidden;">
+        @foreach (var card in AdminCards)
+        {
+            <SimpleCardComponent>
+                <h2 class="text-lg font-semibold mb-2">@card.Title</h2>
+                <p class="text-sm mb-4">@card.Description</p>
+
+                <NavigationButton NavigateTo="@card.NavigateTo" ButtonClass="custom-nav-button">
+                    @card.IconSvg
+                    <span class="ml-2">@card.ButtonText</span>
+                </NavigationButton>
+            </SimpleCardComponent>
+        }
+    </div>
+</Container>

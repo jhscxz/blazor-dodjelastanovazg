@@ -1,0 +1,156 @@
+@using DodjelaStanovaZG.Enums
+@using DodjelaStanovaZG.Helpers
+@using MudBlazor
+
+<MudCard Outlined="true" Class="pa-2" Elevation="1">
+    <MudCardContent>
+
+        <MudPaper Class="pa-3" Outlined="true" Elevation="0">
+            <div
+                style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 16px; overflow: hidden; flex-shrink: 1;">
+                <div style="display: flex; flex-direction: column; margin-right: 8px;">
+                    <MudText Typo="Typo.body2">Podnositelj:</MudText>
+                    <MudText Typo="Typo.body2"><b>@Podnositelj?.ImePrezime</b></MudText>
+                </div>
+                <div style="display: flex; flex-direction: column; margin-right: 8px;">
+                    <MudText Typo="Typo.body2">Adresa:</MudText>
+                    <MudText Typo="Typo.body2"><b>@Bodovi?.Zahtjev.Adresa</b></MudText>
+                </div>
+                <div style="display: flex; flex-direction: column; margin-right: 8px;">
+                    <MudText Typo="Typo.body2">Datum rođenja:</MudText>
+                    <MudText Typo="Typo.body2"><b>@Podnositelj?.DatumRodjenja.ToString("dd.MM.yyyy")</b></MudText>
+                </div>
+                <div style="display: flex; flex-direction: column; margin-right: 8px;">
+                    <MudText Typo="Typo.body2">OIB:</MudText>
+                    <MudText Typo="Typo.body2"><b>@Podnositelj?.Oib</b></MudText>
+                </div>
+                <div style="display: flex; flex-direction: column; margin-right: 8px;">
+                    <MudText Typo="Typo.body2">Status obrade:</MudText>
+                    <MudText Typo="Typo.body2"><b>@GetStatusText(Bodovi?.Zahtjev.RezultatObrade)</b></MudText>
+                </div>
+                <div style="display: flex; flex-direction: column; margin-right: 8px;">
+                    <MudText Typo="Typo.body2">Ukupni godišnji prihod kućanstva:</MudText>
+                    <MudText Typo="Typo.body2">
+                        <b>@Bodovi?.Zahtjev.KucanstvoPodaci?.Prihod?.UkupniPrihodKucanstva.ToString("F2")</b> €
+                    </MudText>
+                </div>
+                <div style="display: flex; flex-direction: column; margin-right: 8px;">
+                    <MudText Typo="Typo.body2">Mjesečni prihod po članu:</MudText>
+                    <MudText Typo="Typo.body2">
+                        <b>@Bodovi?.Zahtjev.KucanstvoPodaci?.Prihod?.PrihodPoClanu.ToString("F2")</b>
+                        €
+                    </MudText>
+                </div>
+                <div style="display: flex; flex-direction: column; margin-right: 8px;">
+                    <MudText Typo="Typo.body2">Postotak prosjeka:</MudText>
+                    <MudText Typo="Typo.body2">
+                        <b>@(Bodovi?.Zahtjev.KucanstvoPodaci?.Prihod?.PostotakProsjeka?.ToString("F2") ?? "0,00")</b> %
+                    </MudText>
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <MudText Typo="Typo.body2">Ispunjava uvjet prihoda:</MudText>
+                    <MudText Typo="Typo.body2">
+                        <b>@(Bodovi?.Zahtjev.KucanstvoPodaci?.Prihod?.IspunjavaUvjetPrihoda == true ? "Da" : "Ne")</b>
+                    </MudText>
+                </div>
+            </div>
+        </MudPaper>
+        <div style="height: 8px;"></div>
+
+        <MudTabs Class="my-tabs" Rounded="true" Elevation="0" PanelClass="pa-2" Centered="false">
+
+            <MudTabPanel Text="Stambeni status">
+                <MudPaper Class="pa-3" Outlined="true" Elevation="0">
+                    <MudText Typo="Typo.body2">
+                        Stambeni status:
+                        <b>@Bodovi?.Zahtjev.KucanstvoPodaci?.StambeniStatusKucanstva.GetDisplayName()</b>
+                    </MudText>
+                    @foreach (var red in Redovi.Where(r => r.Kategorija == "Stambeni status"))
+                    {
+                        <MudText Typo="Typo.body2">@red.Kriterij: <b>@red.Vrijednost</b></MudText>
+                    }
+                </MudPaper>
+            </MudTabPanel>
+
+            <MudTabPanel Text="Sastav kućanstva">
+                <MudPaper Class="pa-3" Outlined="true" Elevation="0" >
+                    <MudText Typo="Typo.body2">
+                        Sastav kućanstva: <b>@Bodovi?.Zahtjev.KucanstvoPodaci?.SastavKucanstva.GetDisplayName()</b>
+                    </MudText>
+                    @foreach (var red in Redovi.Where(r => r.Kategorija == "Sastav kućanstva"))
+                    {
+                        <MudText Typo="Typo.body2">@red.Kriterij: <b>@red.Vrijednost</b></MudText>
+                    }
+                </MudPaper>
+            </MudTabPanel>
+
+            <MudTabPanel Text="Socijalno-zdravstveni status">
+                <MudPaper Class="pa-3" Outlined="true" Elevation="0" >
+                    @foreach (var red in Redovi.Where(r => r.Kategorija == "Socijalno-zdravstveni status"))
+                    {
+                        <MudText Typo="Typo.body2">@red.Kriterij: <b>@red.Vrijednost</b></MudText>
+                    }
+                </MudPaper>
+            </MudTabPanel>
+
+            <MudTabPanel Text="Posebne okolnosti">
+                <MudPaper Class="pa-3" Outlined="true" Elevation="0" >
+                    @foreach (var red in Redovi.Where(r => r.Kategorija == "Posebne okolnosti"))
+                    {
+                        <MudText Typo="Typo.body2">@red.Kriterij: <b>@red.Vrijednost</b></MudText>
+                    }
+                </MudPaper>
+            </MudTabPanel>
+        </MudTabs>
+
+        <MudDivider Class="my-2"/>
+
+        @{
+            var z = Bodovi?.Zahtjev;
+            var mozeGeneriratiZapisnik = z is not null &&
+                                             (z.RezultatObrade is RezultatObrade.Nepotpun or RezultatObrade.Neosnovan
+                                                  || (z.RezultatObrade == RezultatObrade.Osnovan && !Greske.Any()));
+        }
+
+        @if (!mozeGeneriratiZapisnik)
+        {
+            <MudAlert Severity="Severity.Warning" Dense="true" Variant="Variant.Text">
+                Zapisnik nije moguće generirati jer obrada zahtjeva sadrži greške.
+            </MudAlert>
+        }
+
+        @if (Greske.Any())
+        {
+            <MudAlert Severity="Severity.Error" Dense="true">
+                <MudList T="object" Dense="true">
+                    @foreach (var g in Greske)
+                    {
+                        <MudListItem><b>@g.Kod</b>: @g.Poruka</MudListItem>
+                    }
+                </MudList>
+            </MudAlert>
+        }
+
+        @if (mozeGeneriratiZapisnik)
+        {
+            <div class="d-flex align-center justify-space-between mt-2">
+                <MudText Typo="Typo.subtitle1">
+                    Ukupno bodova: <b>@Bodovi?.UkupnoBodova</b>
+                </MudText>
+
+                <MudButton OnClick="GenerirajZapisnik"
+                           StartIcon="@Icons.Material.Filled.Description"
+                           Size="Size.Small"
+                           Variant="Variant.Filled"
+                           Style="border: 1px solid #d3d3d3;"
+                           DropShadow="false"
+                           IconColor="Color.Primary"
+                           Color="Color.Default">
+                    Zapisnik o bodovanju
+                </MudButton>
+            </div>
+        }
+
+
+    </MudCardContent>
+</MudCard>

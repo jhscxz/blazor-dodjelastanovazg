@@ -1,0 +1,88 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RazorLangVersion>9.0</RazorLangVersion>
+    <NoWarn>$(NoWarn);CS8669</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    <PackageReference Include="MudBlazor" Version="8.7.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="FluentAssertions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Moq" Version="4.20.72" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Shared\_Layout.cshtml" />
+    <_ContentIncludedByDefault Remove="Pages\Shared\_LoginPartial.cshtml" />
+    <_ContentIncludedByDefault Remove="Pages\Shared\_ValidationScriptsPartial.cshtml" />
+    <_ContentIncludedByDefault Remove="Pages\_ViewStart.cshtml" />
+    <_ContentIncludedByDefault Remove="Pages\Login.razor" />
+    <_ContentIncludedByDefault Remove="Components\UI\Buttons\MudInputs\DateInput.razor" />
+    <_ContentIncludedByDefault Remove="Components\UI\Buttons\MudInputs\TextInput.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeEditTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\ClanEditFormPage.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\ClanoviKucanstvaTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\KucanstvoEditFormPage.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\KucanstvoPodaciTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\OsnovniPodaciEditFormPage.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\OsnovniPodaciTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Index.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\SocijalniNatjecajDetalji.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\SocijalniNatjecajPregled.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\SocijalniNatjecajZahtjevAdd.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeEditTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeOpcijeTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\BodovanjeTab.razor" />
+    <_ContentIncludedByDefault Remove="Areas\SocijalniNatjecaj\Pages\Components\Detalji\ClanEditFormPage.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\ClanoviKucanstvaTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\KucanstvoEditFormPage.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\KucanstvoPodaciTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\OsnovniPodaciEditFormPage.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Components\Detalji\OsnovniPodaciTab.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\Index.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\SocijalniNatjecajDetalji.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\SocijalniNatjecajPregled.razor" />
+    <AdditionalFiles Include="Areas\Natjecaji\SocijalniNatjecaj\Pages\SocijalniNatjecajZahtjevAdd.razor" />
+    <AdditionalFiles Include="Components\UI\CardComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Izracun\" />
+    <Folder Include="Areas\Natjecaji\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\lib\" />
+  </ItemGroup>
+
+</Project>

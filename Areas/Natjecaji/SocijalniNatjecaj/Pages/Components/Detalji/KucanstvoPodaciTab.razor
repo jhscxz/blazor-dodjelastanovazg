@@ -1,0 +1,38 @@
+@using DodjelaStanovaZG.Components.UI.MudInputs
+@using DodjelaStanovaZG.Components.UI
+@using MudBlazor
+@inherits KucanstvoPodaciTabBase
+
+@if (Kucanstvo is null)
+{
+    <MudText Color="Color.Error">Podaci o kućanstvu nisu dostupni.</MudText>
+}
+else
+{
+    <MudCard Outlined="true" Class="pa-4">
+        <MudStack Spacing="2">
+
+            <TextInput T="string" Label="Ukupni godišnji prihod kućanstva"
+                       Value="@($"{Kucanstvo.Prihod?.UkupniPrihodKucanstva:N2} €")"
+                       ReadOnly="true" />
+
+            <TextInput T="string" Label="Prebivanje od"
+                       Value="@Kucanstvo.PrebivanjeOd?.ToString("dd.MM.yyyy.")"
+                       ReadOnly="true" />
+
+            <TextInput T="string" Label="Stambeni status kućanstva"
+                       Value="@GetDisplay(Kucanstvo.StambeniStatusKucanstva)"
+                       ReadOnly="true" />
+
+            <TextInput T="string" Label="Sastav kućanstva"
+                       Value="@GetDisplay(Kucanstvo.SastavKucanstva)"
+                       ReadOnly="true" />
+
+        </MudStack>
+    </MudCard>
+
+    <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-2">
+        <EditButton Href="@($"/socijalni/kucanstvo/edit/{Kucanstvo.ZahtjevId}")" />
+    </MudStack>
+
+}

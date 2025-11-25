@@ -1,0 +1,19 @@
+@using System.Globalization
+@using MudBlazor
+
+@if (Model is not null && Model.CreatedAt != default)
+{
+    <MudDivider Class="my-2" />
+
+    <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.overline">
+            Stvorio: <b>@(Model.CreatedByUserName ?? Model.CreatedBy ?? "-")</b>
+            (@Model.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy. HH:mm:ss", CultureInfo.CurrentCulture))
+        </MudText>
+
+        <MudText Typo="Typo.overline">
+            | Zadnje uređivao: <b>@(Model.UpdatedByUserName ?? Model.UpdatedBy ?? "-")</b>
+            (@(Model.UpdatedAt?.ToLocalTime().ToString("dd.MM.yyyy. HH:mm:ss", CultureInfo.CurrentCulture) ?? "-"))
+        </MudText>
+    </MudStack>
+}

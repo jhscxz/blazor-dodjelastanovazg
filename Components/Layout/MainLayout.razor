@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using DodjelaStanovaZG.Components.UI.Nav
+@using MudBlazor
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@inject SignInManager<IdentityUser> SignInManager
+
+<MudThemeProvider />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+
+<div class="flex flex-col min-h-screen">
+    
+    <!-- Gornja navigacija -->
+    <header class="bg-[#163d73] text-white">
+        <div class="max-w-[105rem] mx-auto px-4 py-2 flex items-center">
+            
+            <!-- Lijevi blok: Logo i naziv ureda -->
+            <div class="flex items-center mr-auto min-w-[220px]">
+                <img src="images/logo.png" alt="Zagreb Grb" class="h-14 w-auto" style="margin-right: 1rem;"/>
+                <div class="leading-tight">
+                    <div class="font-bold text-xs">
+                        GRAD ZAGREB - GRADSKI URED ZA UPRAVLJANJE IMOVINOM I STANOVANJE
+                    </div>
+                    <div class="text-xs">DODJELA STANOVA</div>
+                </div>
+            </div>
+
+
+            <!-- Središnja navigacija -->
+            <nav class="bg-[#1e497f] rounded-lg px-3 py-1 flex items-center space-x-3">
+                <NavMenuLinks/>
+            </nav>
+
+            <!-- Desni korisnički panel -->
+            <div class="ml-auto">
+                <div class="bg-[#1e497f] rounded-lg px-3 py-1 flex items-center space-x-3">
+                    <UserMenuLinks/>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Glavni sadržaj stranice -->
+    <main class="flex flex-col flex-grow w-full">
+        <article class="content flex-grow">
+            @Body
+        </article>
+    </main>
+
+    <!-- Prikaz greške u Blazoru -->
+    <div id="blazor-error-ui" data-nosnippet>
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+
+</div>

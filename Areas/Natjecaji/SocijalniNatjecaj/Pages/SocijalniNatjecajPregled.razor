@@ -1,0 +1,115 @@
+@page "/socijalni/pregled/{NatjecajId:long}"
+@using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Enums
+@using DodjelaStanovaZG.Helpers
+@using MudBlazor
+@inherits SocijalniNatjecajPregledBase
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudPaper Outlined="true" Class="pa-4">
+
+        <ListHeader TFilter="RezultatObrade?"
+                    AddButtonText="DODAJ"
+                    OnAdd="AddZahtjev"
+                    SearchLabel="Pretraga zahtjeva"
+                    SearchText="@SearchText"
+                    OnSearchChanged="OnSearchChanged"
+                    FilterLabel="Osnovanost"
+                    FilterValue="@SelectedOsnovanost"
+                    OnFilterChanged="OnOsnovanostChanged"
+                    ExportButtonText="EXCEL"
+                    OnExport="ExportExcel">
+            <FilterOptions>
+                <MudSelectItem T="RezultatObrade?" Value="null">Svi</MudSelectItem>
+                <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Nepotpun">Nepotpun</MudSelectItem>
+                <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Neosnovan">Neosnovan</MudSelectItem>
+                <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Osnovan">Osnovan</MudSelectItem>
+                <MudSelectItem T="RezultatObrade?" Value="RezultatObrade.Greška">Greška</MudSelectItem>
+            </FilterOptions>
+            <ChildContent>
+                @if (IsManagementUser)
+                {
+                    <MudButton OnClick="BodujSve"
+                               Variant="Variant.Filled"
+                               Color="Color.Default"
+                               DropShadow="false"
+                               IconColor="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.AutoFixHigh"
+                               Style="padding: 10px 18px;">
+                        Boduj sve
+                    </MudButton>
+                }
+            </ChildContent>
+        </ListHeader>
+
+        <MudTable T="SocijalniNatjecajZahtjevDto"
+                  ServerData="LoadServerData"
+                  Hover="true"
+                  Striped="true"
+                  Dense="true"
+                  RowsPerPage="10"
+                  Outlined="true"
+                  Breakpoint="Breakpoint.Sm"
+                  SortLabel="Sortiraj po"
+                  @ref="Table"
+                  Class="rounded-lg overflow-hidden">
+
+            <HeaderContent>
+                <MudTh Class="table-header"></MudTh>
+                <MudTh Class="table-header">
+                    <MudTableSortLabel T="SocijalniNatjecajZahtjevDto" SortLabel="klasaPredmeta">Klasa predmeta</MudTableSortLabel>
+                </MudTh>
+                <MudTh Class="table-header">
+                    <MudTableSortLabel T="SocijalniNatjecajZahtjevDto" SortLabel="imePrezime">Prezime i ime</MudTableSortLabel>
+                </MudTh>
+                <MudTh Class="table-header">
+                    <MudTableSortLabel T="SocijalniNatjecajZahtjevDto" SortLabel="oib">OIB</MudTableSortLabel>
+                </MudTh>
+                <MudTh Class="table-header">
+                    <MudTableSortLabel T="SocijalniNatjecajZahtjevDto" SortLabel="bodovi">Ukupno bodova</MudTableSortLabel>
+                </MudTh>
+                <MudTh Class="table-header">
+                    <MudTableSortLabel T="SocijalniNatjecajZahtjevDto" SortLabel="rezultatObrade">Osnovanost</MudTableSortLabel>
+                </MudTh>
+                <MudTh Class="table-header">Akcija</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd>
+                    <MudIconButton Icon="@GetExpandIcon(context)"
+                                   OnClick="@(() => ToggleExpand(context.Id))"
+                                   Size="Size.Small"/>
+                </MudTd>
+                <MudTd>@context.KlasaPredmeta</MudTd>
+                <MudTd>@FormatString(context.ImePrezime)</MudTd>
+                <MudTd>@FormatString(context.Oib)</MudTd>
+                <MudTd>@FormatFloat(context.Bodovi?.UkupnoBodova)</MudTd>
+                <MudTd>@FormatOsnovanost(context.RezultatObrade)</MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Info"
+                                   Size="Size.Small"
+                                   OnClick="@(() => NavigateToDetails(context))"/>
+                </MudTd>
+            </RowTemplate>
+
+            <ChildRowContent>
+                @if (IsRowExpanded(context))
+                {
+                    <MudTr>
+                        <ExtendedMudTd ColSpan="7" Class="pa-0">
+                            <MudPaper Class="pa-4 rounded-lg" Style="background-color: #f5f5f5;">
+                                <SocijalniZahtjevPregledContent Model="context" />
+                            </MudPaper>
+                        </ExtendedMudTd>
+                    </MudTr>
+                }
+            </ChildRowContent>
+
+            <PagerContent>
+                <MudTablePager/>
+            </PagerContent>
+
+        </MudTable>
+    </MudPaper>
+</Container>

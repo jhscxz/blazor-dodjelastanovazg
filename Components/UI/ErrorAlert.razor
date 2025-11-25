@@ -1,0 +1,12 @@
+@using MudBlazor
+@if (Messages?.Any() == true)
+{
+    <MudAlert Severity="Severity.Error" Elevation="0" Class="mb-4">
+        <ul>
+            @foreach (var msg in Messages!)
+            {
+                <li>@msg</li>
+            }
+        </ul>
+    </MudAlert>
+}

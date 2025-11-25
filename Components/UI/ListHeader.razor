@@ -1,0 +1,59 @@
+@using MudBlazor
+@typeparam TFilter
+<div class="flex items-center gap-4 mb-4">
+    <MudButton OnClick="@OnAdd"
+               Variant="Variant.Filled"
+               Color="Color.Default"
+               IconColor="Color.Success"
+               DropShadow="false"
+               StartIcon="@Icons.Material.Filled.Add"
+               Style="padding: 10px 18px;">
+        @AddButtonText
+    </MudButton>
+
+    @if (OnSearchChanged.HasDelegate)
+    {
+        <div class="flex-1">
+            <MudTextField Label="@SearchLabel"
+                          Value="@SearchText"
+                          ValueChanged="@OnSearchChanged"
+                          Immediate="true"
+                          DebounceInterval="300"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Class="w-full" />
+        </div>
+    }
+
+    @if (FilterOptions is not null && OnFilterChanged.HasDelegate)
+    {
+        <div class="flex-none @FilterWidthClass">
+            <MudSelect T="TFilter"
+                       Label="@FilterLabel"
+                       Value="@FilterValue"
+                       ValueChanged="@OnFilterChanged"
+                       Variant="Variant.Outlined"
+                       Margin="Margin.Dense"
+                       Dense="true"
+                       Class="w-full">
+                @FilterOptions
+            </MudSelect>
+        </div>
+    }
+    
+    @if (OnExport.HasDelegate)
+    {
+        <MudButton OnClick="@OnExport"
+                   Variant="Variant.Filled"
+                   Color="Color.Default"
+                   IconColor="Color.Primary"
+                   DropShadow="false"
+                   StartIcon="@Icons.Material.Filled.Download"
+                   Style="padding: 10px 18px;">
+            @ExportButtonText
+        </MudButton>
+    }
+    @ChildContent
+</div>

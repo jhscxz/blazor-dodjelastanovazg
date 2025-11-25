@@ -1,0 +1,55 @@
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
+
+<ErrorAlert Messages="ErrorMessages"/>
+
+<!-- Tablica prikazuje sve role (string) u kojima je korisnik -->
+<MudPaper Outlined="true" Class="pa-4">
+    <!-- Tablica prikazuje sve role (string) u kojima je korisnik -->
+    <MudTable Items="@UserRoles"
+              Hover="true"
+              Striped="true"
+              Outlined="true"
+              RowsPerPage="@RowsPerPage"
+              Dense="true"
+              SortLabel="Sort By"
+              Class="rounded-lg overflow-hidden">
+        <HeaderContent>
+            <MudTh Class="table-header">Rola</MudTh>
+            <MudTh Class="table-header">Akcija</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Role Name">@context</MudTd>
+            <MudTd DataLabel="Akcije">
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Variant="Variant.Text"
+                               Color="Color.Error"
+                               OnClick="() => RemoveUserFromRole(context)"
+                               Class="custom-icon-sm"/>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager/>
+        </PagerContent>
+    </MudTable>
+
+    <MudDivider Class="my-3"/>
+
+    <!-- Dio za dodavanje nove role putem dropdowna -->
+    <ListHeader TFilter="string"
+                AddButtonText="Dodaj"
+                OnAdd="AddUserToRole"
+                FilterLabel="Dodaj rolu"
+                FilterValue="@NewRoleName"
+                OnFilterChanged="OnRoleChanged">
+        <FilterOptions>
+            @foreach (var role in AllRoles)
+            {
+                <MudSelectItem Value="@role">@role</MudSelectItem>
+            }
+        </FilterOptions>
+    </ListHeader>
+</MudPaper>

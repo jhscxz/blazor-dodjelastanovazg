@@ -1,0 +1,36 @@
+@page "/admin/users/add"
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Components.UI.Buttons
+
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <FormCard Xs="12" Sm="10" Md="6" Lg="4" CardClass="pa-6 border border-gray-300" ErrorMessages="ErrorMessages">
+        <MudForm @ref="_addForm" Model="UserModel">
+            <MudTextField ShrinkLabel T="string" Label="Korisničko ime"
+                          @bind-Value="UserModel.UserName"
+                          Required="true" Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Class="mb-4"/>
+
+            <MudTextField ShrinkLabel T="string" Label="Email"
+                          @bind-Value="UserModel.Email"
+                          Required="true" Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Class="mb-4"/>
+
+            <MudTextField ShrinkLabel T="string"
+                          Label="Lozinka"
+                          @bind-Value="UserModel.Password"
+                          InputType="InputType.Password"
+                          Required="true"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Class="mb-4"/>
+
+            <FormButtons Submit="SubmitForm" Cancel="Cancel"/>
+        </MudForm>
+    </FormCard>
+</Container>

@@ -1,0 +1,84 @@
+@using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.DTO
+@using DodjelaStanovaZG.Enums
+@using DodjelaStanovaZG.Helpers
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+
+<MudCard Outlined="true" Class="pa-4" Elevation="2">
+
+    <MudCardContent>
+
+        <!-- Gumb za dodavanje člana -->
+        <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Class="mb-4">
+            <MudButton OnClick="NavigateAddClan"
+                       Variant="Variant.Filled"
+                       Color="Color.Default"
+                       IconColor="Color.Success"
+                       DropShadow="false"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       Style="padding: 10px 18px;">
+                Dodaj člana kućanstva
+            </MudButton>
+        </MudStack>
+
+        @if (DeletePendingId.HasValue)
+        {
+            <MudAlert Severity="Severity.Warning" Dense="true" Class="mb-2">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <span>Jeste li sigurni da želite obrisati ovog člana?</span>
+                    <MudStack Row="true" Spacing="2">
+                        <MudButton OnClick="ConfirmDeleteClanAsync" Color="Color.Error" Size="Size.Small" Variant="Variant.Filled">Da</MudButton>
+                        <MudButton OnClick="CancelDelete" Size="Size.Small" Variant="Variant.Outlined">Odustani</MudButton>
+                    </MudStack>
+                </MudStack>
+            </MudAlert>
+        }
+        
+        <!-- Tablica članova -->
+        <MudTable T="SocijalniNatjecajClanDto"
+                  Items="Clanovi"
+                  Hover="true"
+                  Dense="true"
+                  Elevation="0"
+                  Breakpoint="Breakpoint.Sm"
+                  Bordered="false"
+                  Outlined="true"
+                  Class="rounded-lg overflow-hidden">
+
+            <HeaderContent>
+                <MudTh Class="table-header">Ime i prezime</MudTh>
+                <MudTh Class="table-header">OIB</MudTh>
+                <MudTh Class="table-header">Srodstvo</MudTh>
+                <MudTh Class="table-header">Datum rođenja</MudTh>
+                <MudTh Class="table-header">Akcija</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Ime i prezime">@context.ImePrezime</MudTd>
+                <MudTd DataLabel="OIB">@context.Oib</MudTd>
+                <MudTd DataLabel="Srodstvo">@context.Srodstvo?.GetDisplayName()</MudTd>
+                <MudTd DataLabel="Datum rođenja">@context.DatumRodjenja.ToString("dd.MM.yyyy")</MudTd>
+                <MudTd DataLabel="Akcija">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Size="Size.Small"
+                                   OnClick="() => NavigateEditClan(context.Id)" />
+
+                    @if (context.Srodstvo != Srodstvo.PodnositeljZahtjeva)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Size="Size.Small"
+                                       Color="Color.Error"
+                                       OnClick="() => PromptDeleteClan(context.Id)" />
+                    }
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+
+        </MudTable>
+
+    </MudCardContent>
+
+</MudCard>

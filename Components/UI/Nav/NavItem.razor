@@ -1,0 +1,11 @@
+<NavLink href="@Href"
+         class="flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase rounded-lg hover:bg-[#163d73] transition-colors duration-200 whitespace-nowrap"
+         style="@Style">
+    @if (UseLogoutIcon)
+    {
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+    }
+    @Text
+</NavLink>

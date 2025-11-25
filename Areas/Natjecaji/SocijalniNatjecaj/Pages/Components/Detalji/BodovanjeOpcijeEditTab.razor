@@ -1,0 +1,112 @@
+@page "/socijalni/bodovi/edit/{Id:long}"
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+@using Microsoft.AspNetCore.Components.Web
+@using DodjelaStanovaZG.Components.UI.Buttons
+@using Microsoft.AspNetCore.Authorization
+@using DodjelaStanovaZG.Components.UI.MudInputs
+@inherits BodovanjeOpcijeEditTabBase
+
+@attribute [Authorize(Policy = "MozeUnositi")]
+
+<PageTitle>Uredi bodovne podatke</PageTitle>
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudContainer MaxWidth="MaxWidth.Medium">
+        @if (Model is null)
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+        }
+        else
+        {
+            <MudCard Outlined="true" Class="pa-6 border border-gray-300">
+                <MudCardContent>
+                    <MudTabs Rounded="true" PanelClass="pa-0" Elevation="0">
+                        <!-- TAB 1 -->
+                        <MudTabPanel Text="Sastav kućanstva">
+                            <MudCard Outlined="true" Class="pa-4">
+                                <MudStack Spacing="1">
+                                    <MudNumericField T="byte"
+                                                     Label="Broj uzdržavanih punoljetnih na redovnom školovanju"
+                                                     @bind-Value="Model.BrojUzdrzavanePunoljetneDjece"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
+                                </MudStack>
+                            </MudCard>
+                        </MudTabPanel>
+
+                        <!-- TAB 2 -->
+                        <MudTabPanel Text="Socijalno-zdravstveni status">
+                            <MudCard Outlined="true" Class="pa-4">
+                                <MudStack Spacing="1">
+                                    <BoolSelect Label="Primatelj zajamčene minimalne naknade"
+                                                @bind-Value="Model.PrimateljZajamceneMinimalneNaknade" />
+
+                                    <BoolSelect Label="Status roditelja njegovatelja / njegovatelja"
+                                                @bind-Value="Model.StatusRoditeljaNjegovatelja" />
+
+                                    <BoolSelect Label="Korisnik doplatka za pomoć i njegu / inkluzivnog dodatka III. razine"
+                                                @bind-Value="Model.KorisnikDoplatkaZaPomoc" />
+
+                                    <MudNumericField T="byte"
+                                                     Label="Odrasli korisnici osobne invalidnine / dodatka I./II. razine"
+                                                     @bind-Value="Model.BrojOdraslihKorisnikaInvalidnine"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
+
+                                    <MudNumericField T="byte"
+                                                     Label="Maloljetni korisnici osobne invalidnine / dodatka I./II. razine"
+                                                     @bind-Value="Model.BrojMaloljetnihKorisnikaInvalidnine"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
+                                </MudStack>
+                            </MudCard>
+                        </MudTabPanel>
+
+                        <!-- TAB 3 -->
+                        <MudTabPanel Text="Posebne okolnosti">
+                            <MudCard Outlined="true" Class="pa-4">
+                                <MudStack Spacing="1">
+                                    <BoolSelect Label="Žrtva obiteljskog nasilja (pravomoćna presuda)"
+                                                @bind-Value="Model.ZrtvaObiteljskogNasilja" />
+
+                                    <MudNumericField T="byte"
+                                                     Label="Broj članova (18–29) koji su bili u alternativnoj skrbi"
+                                                     @bind-Value="Model.BrojOsobaUAlternativnojSkrbi"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
+
+                                    <MudNumericField T="byte"
+                                                     Label="Broj mjeseci obrane suvereniteta RH (maks. 40)"
+                                                     @bind-Value="Model.BrojMjeseciObranaSuvereniteta"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
+
+                                    <MudNumericField T="byte"
+                                                     Label="Broj članova koji su žrtve seksualnog nasilja u DR"
+                                                     @bind-Value="Model.BrojClanovaZrtavaSeksualnogNasilja"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
+
+                                    <MudNumericField T="byte"
+                                                     Label="Broj članova civilnih stradalnika iz DR"
+                                                     @bind-Value="Model.BrojCivilnihStradalnika"
+                                                     Variant="Variant.Outlined"
+                                                     Margin="Margin.Dense"/>
+                                </MudStack>
+                            </MudCard>
+                        </MudTabPanel>
+                    </MudTabs>
+                </MudCardContent>
+
+                <MudCardActions Class="mt-4">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <FormButtons Submit="SaveChanges" Cancel="Cancel"/>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardActions>
+            </MudCard>
+        }
+    </MudContainer>
+</Container>

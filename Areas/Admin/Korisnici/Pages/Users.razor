@@ -1,0 +1,76 @@
+@page "/admin/users"
+@using Microsoft.AspNetCore.Authorization
+@using DodjelaStanovaZG.Areas.Admin.Korisnici.DTO
+@using DodjelaStanovaZG.Areas.Admin.Korisnici.Services
+@using DodjelaStanovaZG.Components.UI
+@using MudBlazor
+
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudPaper Outlined="true" Class="pa-4">
+
+        <ListHeader TFilter="string"
+                    AddButtonText="Dodaj"
+                    OnAdd="AddUser"
+                    SearchLabel="Pretraga korisnika"
+                    SearchText="@SearchText"
+                    OnSearchChanged="OnValueChanged"
+                    FilterLabel="Role:"
+                    FilterValue="@FilterRole"
+                    OnFilterChanged="OnFilterRoleChanged"
+                    FilterWidthClass="w-[120px]">
+            <FilterOptions>
+                <MudSelectItem Value="@RoleNames.All">@RoleNames.All</MudSelectItem>
+                <MudSelectItem Value="@RoleNames.Referent">@RoleNames.Referent</MudSelectItem>
+                <MudSelectItem Value="@RoleNames.ReferentReadOnly">@RoleNames.ReferentReadOnly</MudSelectItem>
+                <MudSelectItem Value="@RoleNames.Management">@RoleNames.Management</MudSelectItem>
+            </FilterOptions>
+        </ListHeader>
+
+        <MudTable T="UserDto"
+                  ServerData="LoadUsers"
+                  Hover="true"
+                  Striped="true"
+                  RowsPerPage="@RowsPerPage"
+                  Dense="true"
+                  Outlined="true"
+                  @ref="_table"
+                  Class="rounded-lg overflow-hidden">
+
+            <HeaderContent>
+                <MudTh Class="table-header">Korisničko ime</MudTh>
+                <MudTh Class="table-header">Email</MudTh>
+                <MudTh Class="table-header">Role</MudTh>
+                <MudTh Class="table-header">Status</MudTh>
+                <MudTh Class="table-header">Akcija</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd DataLabel="Username">@context.UserName</MudTd>
+                <MudTd DataLabel="Email">@context.Email</MudTd>
+                <MudTd DataLabel="Roles">@context.Roles</MudTd>
+                <MudTd DataLabel="Status">
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@(context.IsLocked ? Color.Error : Color.Success)">
+                        @(context.IsLocked ? "Zaključan" : "Otključan")
+                    </MudChip>
+                </MudTd>
+
+                <MudTd DataLabel="Actions">
+                    <MudButton OnClick="() => EditUser(context.Id)"
+                               Variant="Variant.Text"
+                               Class="p-2">
+                        <MudIcon Icon="@Icons.Material.Filled.Edit" Class="custom-icon-sm"/>
+                    </MudButton>
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <MudTablePager/>
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+</Container>

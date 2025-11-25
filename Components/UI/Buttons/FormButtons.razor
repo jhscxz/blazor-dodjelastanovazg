@@ -1,0 +1,24 @@
+@using MudBlazor
+<MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2" Class="mt-4">
+    <MudButton OnClick="Submit"
+               StartIcon="@Icons.Material.Filled.Save"
+               Size="Size.Small"
+               Variant="Variant.Filled"
+               Style="border: 1px solid #d3d3d3;"
+               DropShadow="false"
+               IconColor="Color.Success"
+               Color="Color.Default">
+        Spremi
+    </MudButton>
+
+    <MudButton OnClick="Cancel"
+               StartIcon="@Icons.Material.Filled.Cancel"
+               Size="Size.Small"
+               Variant="Variant.Filled"
+               Style="border: 1px solid #d3d3d3;"
+               DropShadow="false"
+               IconColor="Color.Error"
+               Color="Color.Default">
+        Odustani
+    </MudButton>
+</MudStack>

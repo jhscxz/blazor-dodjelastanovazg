@@ -1,0 +1,17 @@
+@using System.Linq.Expressions
+@using MudBlazor
+@typeparam T
+
+<MudTextField T="T"
+              Value="Value"
+              ValueChanged="OnValueChanged"
+              For="For" 
+              Label="@Label"
+              Variant="@Variant"
+              Margin="@Margin.Dense"
+              Required="@Required"
+              InputType="@InputType"
+              Lines="@Lines"
+              ShrinkLabel="true"
+              ReadOnly="@ReadOnly"
+              Class="@Class"/>

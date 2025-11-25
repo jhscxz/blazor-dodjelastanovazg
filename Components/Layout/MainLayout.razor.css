@@ -1,0 +1,118 @@
+/* Opći stilovi za raspored stranice */
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Glavni sadržaj se širi kako bi ispunio raspoloživi prostor */
+main {
+    flex: 1;
+}
+
+/* Sidebar s linearnom gradijent pozadine */
+.sidebar {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+
+/* Stilovi za gornji red (header) s navigacijom */
+.top-row {
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #d6d5d5;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 3.5rem;
+}
+
+/* Stilovi za linkove i gumbe unutar .top-row koristeći ::deep */
+.top-row ::deep a,
+.top-row ::deep .btn-link {
+    white-space: nowrap;
+    margin-left: 1.5rem;
+    text-decoration: none;
+}
+
+/* Hover efekt za linkove i gumbe unutar .top-row */
+.top-row ::deep a:hover,
+.top-row ::deep .btn-link:hover {
+    text-decoration: underline;
+}
+
+/* Prvi link unutar .top-row: sakriva višak teksta uz elipsu */
+.top-row ::deep a:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Prilagodbe za mobilne uređaje (max-width: 640.98px) */
+@media (max-width: 640.98px) {
+    .top-row {
+        justify-content: space-between;
+    }
+
+    .top-row ::deep a,
+    .top-row ::deep .btn-link {
+        margin-left: 0;
+    }
+}
+
+/* Prilagodbe za desktop uređaje (min-width: 641px) */
+@media (min-width: 641px) {
+    /* Promjena smjera rasporeda stranice */
+    .page {
+        flex-direction: row;
+    }
+
+    /* Fiksiranje sidebar-a s definiranim dimenzijama */
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    /* Gornji red postaje sticky za stalnu vidljivost */
+    .top-row {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    /* Dodatni stilovi za prvi link u .top-row kada je korisnik autentificiran */
+    .top-row.auth ::deep a:first-child {
+        flex: 1;
+        text-align: right;
+        width: 0;
+    }
+
+    /* Uniformno definirani horizontalni padding za .top-row i sadržaj članka */
+    .top-row,
+    article {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+/* Stilovi za Blazor error UI (obavijest o grešci) */
+#blazor-error-ui {
+    color-scheme: light only;
+    background: lightyellow;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: none;
+    z-index: 1000;
+}
+
+/* Stilovi za gumb za zatvaranje Blazor error UI */
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}

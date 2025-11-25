@@ -1,0 +1,54 @@
+@page "/socijalni/detalji/{Id:long}"
+@using DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.Detalji
+@using DodjelaStanovaZG.Components.UI
+@using MudBlazor
+@using ClanoviKucanstvaTab = DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.Detalji.ClanoviKucanstvaTab
+@using OsnovniPodaciTab   = DodjelaStanovaZG.Areas.Natjecaji.SocijalniNatjecaj.Pages.Components.Detalji.OsnovniPodaciTab
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudPaper Outlined="true" Class="pa-6 w-full">
+
+        <MudTabs @bind-ActivePanelIndex="_selectedTabIndex"
+                 Rounded="true"
+                 Class="my-tabs"
+                 Elevation="0"
+                 PanelClass="pa-2"
+                 Centered="false">
+
+            <MudTabPanel Text="Osnovni podaci">
+                <OsnovniPodaciTab Id="@Id"/>
+            </MudTabPanel>
+
+            <MudTabPanel Text="Podaci o kućanstvu">
+                <KucanstvoPodaciTab Id="@Id"/>
+            </MudTabPanel>
+
+            <MudTabPanel Text="Članovi kućanstva">
+                <ClanoviKucanstvaTab Id="@Id"/>
+            </MudTabPanel>
+
+            <MudTabPanel Text="Opcije bodovanja">
+                <BodovanjeOpcijeTab Id="@Id"/>
+            </MudTabPanel>
+
+            <MudTabPanel Text="Pregled bodova">
+                <BodovanjeTab Id="@Id"/>
+            </MudTabPanel>
+
+        </MudTabs>
+        
+        <MudStack Row="true" Justify="Justify.FlexEnd" Class="mt-4">
+            <MudButton OnClick="Povratak"
+                       StartIcon="@Icons.Material.Filled.ArrowBack"
+                       Size="Size.Small"
+                       Variant="Variant.Filled"
+                       Style="border: 1px solid #d3d3d3;"
+                       DropShadow="false"
+                       IconColor="Color.Info"
+                       Color="Color.Default">
+                Povratak
+            </MudButton>
+        </MudStack>
+        
+    </MudPaper>
+</Container>

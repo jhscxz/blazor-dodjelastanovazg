@@ -1,0 +1,145 @@
+@using MudBlazor
+
+<MudPaper Class="pa-3 rounded-lg" Elevation="1">
+    <MudGrid>
+        
+        <!-- Prihodi + članovi -->
+        <MudItem xs="12" sm="6" md="2">
+            <MudText Typo="Typo.body2"><b>Ukupni godišnji prihod:</b> @FormatDecimal(Model.Prihod?.UkupniPrihodKucanstva)</MudText>
+            <MudText Typo="Typo.body2"><b>Postotak prosjeka:</b> @(Model.Prihod?.PostotakProsjeka?.ToString("0.##") ?? "–")</MudText>
+            <MudText Typo="Typo.body2"><b>Ispunjava uvjet prihoda:</b> @FormatBool(Model.Prihod?.IspunjavaUvjetPrihoda)</MudText>
+            <MudText Typo="Typo.body2">
+                <b>Broj članova:</b> @(Model.Clanovi?.Count ?? 0)
+                @if ((Model.Bodovi?.BodoviPoClanu ?? 0) > 0)
+                {
+                    <span> (@FormatInt(Model.Bodovi?.BodoviPoClanu))</span>
+                }
+            </MudText>
+            <MudText Typo="Typo.body2">
+                <b>Maloljetni članovi:</b> @Model.BrojMaloljetneDjece
+                @if ((Model.Bodovi?.BodoviMaloljetni ?? 0) > 0)
+                {
+                    <span> (@FormatInt(Model.Bodovi?.BodoviMaloljetni))</span>
+                }
+            </MudText>
+        </MudItem>
+
+        <!-- Kućanstvo -->
+        <MudItem xs="12" sm="6" md="2">
+            @if (Model.KucanstvoPodaci?.StambeniStatusKucanstva is not null)
+            {
+                <MudText Typo="Typo.body2">
+                    <b>Stambeni status:</b> @Model.KucanstvoPodaci.StambeniStatusKucanstva
+                    (@FormatInt(Model.Bodovi?.BodoviStambeniStatus))
+                </MudText>
+            }
+            @if (Model.KucanstvoPodaci?.SastavKucanstva is not null)
+            {
+                <MudText Typo="Typo.body2">
+                    <b>Sastav kućanstva:</b> @Model.KucanstvoPodaci.SastavKucanstva
+                    (@FormatInt(Model.Bodovi?.BodoviSastavKucanstva))
+                </MudText>
+            }
+            @if ((Model.Bodovi?.BodoviPunoljetniUzdrzavani ?? 0) > 0)
+            {
+                <MudText Typo="Typo.body2">
+                    <b>Punoljetni uzdržavani:</b> @FormatInt(Model.Bodovi?.BodoviPunoljetniUzdrzavani)
+                </MudText>
+            }
+        </MudItem>
+
+        <!-- Socijalno-zdravstveni status -->
+        <MudItem xs="12" sm="6" md="2">
+            @if (Model.BodovniPodaci?.PrimateljZajamceneMinimalneNaknade == true)
+            {
+                <MudText Typo="Typo.body2"><b>ZMN:</b> Da (@FormatInt(Model.Bodovi?.BodoviZajamcenaNaknada))</MudText>
+            }
+            @if (Model.BodovniPodaci?.StatusRoditeljaNjegovatelja == true)
+            {
+                <MudText Typo="Typo.body2"><b>Roditelj njegovatelj:</b> Da (@FormatInt(Model.Bodovi?.BodoviNjegovatelj))</MudText>
+            }
+            @if (Model.BodovniPodaci?.KorisnikDoplatkaZaPomoc == true)
+            {
+                <MudText Typo="Typo.body2"><b>Doplatak za njegu:</b> Da (@FormatInt(Model.Bodovi?.BodoviDoplatakZaNjegu))</MudText>
+            }
+            @if ((Model.BodovniPodaci?.BrojOdraslihKorisnikaInvalidnine ?? 0) > 0)
+            {
+                <MudText Typo="Typo.body2">
+                    <b>Invalidnina – odrasli:</b> @Model.BodovniPodaci?.BrojOdraslihKorisnikaInvalidnine
+                    (@FormatInt(Model.Bodovi?.BodoviOdraslihInvalidnina))
+                </MudText>
+            }
+            @if ((Model.BodovniPodaci?.BrojMaloljetnihKorisnikaInvalidnine ?? 0) > 0)
+            {
+                <MudText Typo="Typo.body2">
+                    <b>Invalidnina – maloljetni:</b> @Model.BodovniPodaci?.BrojMaloljetnihKorisnikaInvalidnine
+                    (@FormatInt(Model.Bodovi?.BodoviMaloljetnihInvalidnina))
+                </MudText>
+            }
+        </MudItem>
+
+        <!-- Osobne okolnosti -->
+        <MudItem xs="12" sm="6" md="2">
+            @if (Model.BodovniPodaci?.ZrtvaObiteljskogNasilja == true)
+            {
+                <MudText Typo="Typo.body2"><b>Žrtva nasilja:</b> Da (@FormatInt(Model.Bodovi?.BodoviZrtvaNasilja))</MudText>
+            }
+            @if ((Model.BodovniPodaci?.BrojOsobaUAlternativnojSkrbi ?? 0) > 0)
+            {
+                <MudText Typo="Typo.body2">
+                    <b>Alternativna skrb:</b> @Model.BodovniPodaci?.BrojOsobaUAlternativnojSkrbi
+                    (@FormatInt(Model.Bodovi?.BodoviAlternativnaSkrb))
+                </MudText>
+            }
+            @if (Model.PodnositeljIznad55)
+            {
+                <MudText Typo="Typo.body2"><b>Iznad 55 godina:</b> Da (@FormatInt(Model.Bodovi?.BodoviIznad55))</MudText>
+            }
+        </MudItem>
+
+        <!-- Ratni status -->
+        <MudItem xs="12" sm="6" md="2">
+            @if ((Model.BodovniPodaci?.BrojMjeseciObranaSuvereniteta ?? 0) > 0)
+            {
+                <MudText Typo="Typo.body2">
+                    <b>Branitelj:</b> @Model.BodovniPodaci?.BrojMjeseciObranaSuvereniteta
+                    (@FormatFloat(Model.Bodovi?.BodoviObrana))
+                </MudText>
+            }
+            @if ((Model.BodovniPodaci?.BrojClanovaZrtavaSeksualnogNasilja ?? 0) > 0)
+            {
+                <MudText Typo="Typo.body2">
+                    <b>Seksualno nasilje:</b> @Model.BodovniPodaci?.BrojClanovaZrtavaSeksualnogNasilja
+                    (@FormatInt(Model.Bodovi?.BodoviSeksualnoNasilje))
+                </MudText>
+            }
+            @if ((Model.BodovniPodaci?.BrojCivilnihStradalnika ?? 0) > 0)
+            {
+                <MudText Typo="Typo.body2">
+                    <b>Civilni stradalnici:</b> @Model.BodovniPodaci?.BrojCivilnihStradalnika
+                    (@FormatInt(Model.Bodovi?.BodoviCivilniStradalnici))
+                </MudText>
+            }
+        </MudItem>
+    </MudGrid>
+
+    <MudDivider Class="my-2" />
+
+    <div class="d-flex align-center justify-space-between mt-2">
+        <MudText Typo="Typo.subtitle2">
+            <b>Ukupno bodova:</b> @FormatFloat(Model.Bodovi?.UkupnoBodova)
+        </MudText>
+
+        <MudButton OnClick="GenerirajZapisnik"
+                   Disabled="@ShouldDisableZapisnik"
+                   StartIcon="@Icons.Material.Filled.Description"
+                   Size="Size.Small"
+                   Variant="Variant.Filled"
+                   Style="border: 1px solid #d3d3d3;"
+                   DropShadow="false"
+                   IconColor="Color.Primary"
+                   Color="Color.Default">
+            Zapisnik o bodovanju
+        </MudButton>
+    </div>
+</MudPaper>

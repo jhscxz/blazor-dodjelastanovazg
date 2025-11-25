@@ -1,0 +1,14 @@
+@using MudBlazor
+@using DodjelaStanovaZG.Enums
+
+<MudStack Row="true" Spacing="2" Class="mt-4 mb-6">
+    <MudToggleGroup T="RezultatObrade?"
+                    SelectionMode="SelectionMode.ToggleSelection"
+                    @bind-Value="Value"
+                    Color="Color.Dark"
+                    CheckMark>
+        <MudToggleItem Value="@RezultatObrade.Nepotpun" Text="NEPOTPUN" />
+        <MudToggleItem Value="@RezultatObrade.Neosnovan" Text="NEOSNOVAN" />
+        <MudToggleItem Value="@RezultatObrade.Osnovan" Text="OSNOVAN" />
+    </MudToggleGroup>
+</MudStack>

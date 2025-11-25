@@ -1,0 +1,47 @@
+﻿@page
+@using DodjelaStanovaZG.Areas.Identity.Pages.Account.Model
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model LogoutModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Odjava";
+}
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    @* Uključi Tailwind CSS (provjeri točnost putanje) *@
+    <link href="~/css/output.css" rel="stylesheet" />
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-100">
+@* Kartica za odjavu *@
+<div class="bg-white rounded shadow p-6 max-w-sm border border-gray-300 hover:border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">@ViewData["Title"]</h2>
+    <p class="text-center mb-6">Jeste li sigurni da se želite odjaviti?</p>
+
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <form method="post"
+              asp-area="Identity"
+              asp-page="/Account/Logout"
+              asp-route-returnUrl='@Url.Page("/Account/Login", new { area = "Identity" })'>
+            @Html.AntiForgeryToken()
+
+            @* Prikaz gumba za odjavu *@
+            @await Html.PartialAsync("_LoginLogoutButton", new LoginLogoutButtonModel
+            {
+                ButtonText = "Odjavi se",
+                ButtonClasses = "inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold text-sm py-2 px-4 rounded focus:outline-none focus:ring-2 transition",
+                IconType = "logout"
+            })
+        </form>
+    }
+    else
+    {
+        <p class="text-center text-green-500">Uspješno ste odjavljeni.</p>
+    }
+</div>
+</body>
+</html>

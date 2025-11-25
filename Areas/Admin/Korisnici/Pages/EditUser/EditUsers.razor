@@ -1,0 +1,94 @@
+@page "/admin/users/edit/{UserId}"
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Components.UI.Buttons
+
+@attribute [Authorize(Policy = "ImaPristupAdmin")]
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <FormCard Xs="12" Sm="10" Md="6" Lg="4" CardClass="pa-6" ErrorMessages="ErrorMessages">
+
+        <MudTabs Color="Color.Default"
+                 Rounded="true"
+                 PanelClass="pa-6"
+                 Class="my-tabs"
+                 Elevation="0">
+            
+            <!-- TAB 1: Osnovni podaci o korisniku -->
+            <MudTabPanel Text="Korisnički podaci">
+                <MudForm @ref="_editForm" Model="@UserModel">
+
+                    <!-- Switch za omogućavanje izmjene podataka -->
+                    <MudSwitch T="bool"
+                               @bind-Value="AllowEditing"
+                               Color="Color.Primary"
+                               Class="mb-4"
+                               Label="Omogući izmjenu korisničkih podataka"/>
+
+                    <!-- Korisničko ime -->
+                    <MudTextField T="string"
+                                  Label="Korisničko ime"
+                                  @bind-Value="UserModel.UserName"
+                                  Disabled="@(!AllowEditing)"
+                                  Required="true"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Class="mb-4"
+                                  AutoFocus="true"/>
+
+                    <!-- Email -->
+                    <MudTextField T="string"
+                                  Label="Email"
+                                  @bind-Value="UserModel.Email"
+                                  Disabled="@(!AllowEditing)"
+                                  Required="true"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Class="mb-4"/>
+
+                    <!-- Switch za zaključavanje/otključavanje računa -->
+                    <MudSwitch T="bool"
+                               @bind-Value="UserModel.IsLocked"
+                               Color="Color.Error"
+                               Disabled="@_isSelf"
+                               Label="@LockLabel"/>
+
+                    <!-- Gumbi (Spremi, Odustani, Promijeni lozinku) -->
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-4"
+                              Style="width: 100%;">
+                        <MudButton OnClick="@SaveUser"
+                                   StartIcon="@Icons.Material.Filled.Save"
+                                   Size="Size.Small"
+                                   Variant="Variant.Filled"
+                                   DropShadow="false"
+                                   Color="Color.Default"
+                                   Style="border: 1px solid #d3d3d3;"
+                                   IconColor="Color.Success">
+                            Spremi
+                        </MudButton>
+
+                        <MudButton
+                            OnClick="@Cancel"
+                            StartIcon="@Icons.Material.Filled.Cancel"
+                            Size="Size.Small"
+                            Variant="Variant.Filled"
+                            DropShadow="false"
+                            IconColor="Color.Error"
+                            Style="border: 1px solid #d3d3d3;"
+                            Color="Color.Default">
+                            Odustani
+                        </MudButton>
+
+                        <ChangePasswordButton OnClick="@ChangePassword"/>
+                    </MudStack>
+                </MudForm>
+            </MudTabPanel>
+
+            <!-- TAB 2: Upravljanje rolama -->
+            <MudTabPanel Text="Role">
+                <EditUserRoles UserId="@UserId"/>
+            </MudTabPanel>
+        </MudTabs>
+    </FormCard>
+</Container>

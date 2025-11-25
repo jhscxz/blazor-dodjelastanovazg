@@ -1,0 +1,42 @@
+@page "/socijalni-natjecaj"
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+@inherits IndexBase
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <FormCard Xs="12" Sm="10" Md="6" Lg="5" CardClass="pa-6 border border-gray-300">
+        <MudText Typo="Typo.subtitle2" Class="mb-4">
+            Pregled dostupnih socijalnih natječaja
+        </MudText>
+
+        <MudSelect T="int"
+                   Label="Godina natječaja"
+                   @bind-Value="SelectedId"
+                   Required="true"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense"
+                   Dense="true"
+                   Class="mb-4 w-full">
+            @foreach (var natjecaj in Natjecaji)
+            {
+                <MudSelectItem Value="natjecaj.Id" @key="natjecaj.Id">
+                    @natjecaj.Godina
+                </MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
+            <MudButton OnClick="OnPregledajClick"
+                       StartIcon="@Icons.Material.Filled.Search"
+                       Size="Size.Small"
+                       Variant="Variant.Filled"
+                       Style="border: 1px solid #d3d3d3;"
+                       DropShadow="false"
+                       IconColor="Color.Success"
+                       Color="Color.Default">
+                Pregled
+            </MudButton>
+        </MudStack>
+
+    </FormCard>
+</Container>

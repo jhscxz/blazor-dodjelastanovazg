@@ -1,0 +1,26 @@
+@using Microsoft.AspNetCore.Components.Authorization
+
+<AuthorizeView>
+    <Authorized>
+        @if (!string.IsNullOrEmpty(_currentUserId))
+        {
+            <NavItem Href="@($"/profile/{_currentUserId}")"
+                     Text="@($"{_currentUserName}")" />
+        }
+        else
+        {
+            <span>Neuspjelo dohvaćanje ID-a</span>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <span>Prijavite se</span>
+    </NotAuthorized>
+</AuthorizeView>
+
+<NavItem Href="/admin" Text="ADMIN PANEL" TextColor="#ef4444" />
+
+<AuthorizeView>
+    <Authorized>
+        <NavItem Href="/Identity/Account/Logout" Text="ODJAVI SE" TextColor="#9CA3AF" UseLogoutIcon="true" />
+    </Authorized>
+</AuthorizeView>

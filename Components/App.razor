@@ -1,0 +1,39 @@
+﻿@using DodjelaStanovaZG.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    
+    <!-- 1) MudBlazor -->
+    <link rel="stylesheet" href="_content/MudBlazor/MudBlazor.min.css" />
+
+    <!-- 2) Tailwind  -->
+    <link href="css/output.css" rel="stylesheet">
+    
+    <!-- 3) Vaš custom CSS (ako imate) -->
+    <link href="css/app.css" rel="stylesheet">
+    
+    @*<link rel="stylesheet" href="@Assets["DodjelaStanovaZG.styles.css"]" />*@
+    <ImportMap />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    
+    <!-- Koristimo InteractiveServer render mode -->
+    <HeadOutlet @rendermode="RenderMode.InteractiveServer" />
+    <title>DodjelaStanovaZG</title>
+</head>
+<body>
+<CascadingAuthenticationState>
+    <Routes @rendermode="RenderMode.InteractiveServer" />
+</CascadingAuthenticationState>
+    
+<script src="_framework/blazor.web.js"></script>
+
+<!-- MudBlazor JS -->
+<script src="_content/MudBlazor/MudBlazor.min.js"></script>
+</body>
+</html>

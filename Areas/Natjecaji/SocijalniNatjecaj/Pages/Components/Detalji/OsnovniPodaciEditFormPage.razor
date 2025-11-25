@@ -1,0 +1,89 @@
+@page "/socijalni/osnovno/edit/{ZahtjevId:long}"
+@using DodjelaStanovaZG.Components.UI
+@using MudBlazor
+@using DodjelaStanovaZG.Enums
+@using Microsoft.AspNetCore.Components.Web
+@using DodjelaStanovaZG.Components.UI.MudInputs
+@using DodjelaStanovaZG.Components.UI.Buttons
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Policy = "MozeUnositi")]
+
+<PageTitle>Uredi osnovne podatke</PageTitle>
+
+<Container BreadcrumbItems="BreadcrumbItems">
+    <MudContainer MaxWidth="MaxWidth.Small">
+        @if (_socijalniNatjecajModel is null)
+        {
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+        }
+        else
+        {
+            <MudCard Outlined="true" Class="pa-6 border border-gray-300">
+                <MudCardContent>
+                    <ErrorAlert Messages="_errorMessages" />
+
+                    <MudForm @ref="_form" Model="@_socijalniNatjecajModel">
+                        <input type="hidden"
+                               name="RowVersion"
+                               value="@Convert.ToBase64String(_socijalniNatjecajModel.RowVersion ?? [])"/>
+
+                        <!-- 1. red: Klasa + Datum -->
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <TextInputInt T="int?" Label="Klasa predmeta"
+                                              @bind-Value="_socijalniNatjecajModel.KlasaPredmeta"
+                                              Required="true" Class="mb-4"/>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+
+                                <DateInput Label="Datum podnošenja"
+                                           @bind-Value="_socijalniNatjecajModel.DatumPodnosenjaZahtjeva"
+                                           Required="true"/>
+
+                            </MudItem>
+                        </MudGrid>
+
+                        <!-- 2. red: Adresa i Email -->
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <TextInput T="string?" Label="Adresa" @bind-Value="_socijalniNatjecajModel.Adresa"
+                                           Required="true" Class="mb-4"/>
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <TextInput T="string?" Label="Email" @bind-Value="_socijalniNatjecajModel.Email"
+                                           Class="mb-4"/>
+                            </MudItem>
+                        </MudGrid>
+
+                        <BoolSelect Label="Useljiva kuća/stan u Zagrebu/ZG županiji"
+                                    @bind-Value="_socijalniNatjecajModel.PosjedujeNekretninuZg"/>
+                        
+                        <!-- 3. red: Rezultat obrade -->
+                        <MudStack Class="mt-4 mb-6">
+                            <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection"
+                                            @bind-Value="_toggleRezultat"
+                                            CheckMark
+                                            Color="Color.Default">
+                                <MudToggleItem Value="@((int?)RezultatObrade.Nepotpun)" Text="NEPOTPUN"/>
+                                <MudToggleItem Value="@((int?)RezultatObrade.Neosnovan)" Text="NEOSNOVAN"/>
+                                <MudToggleItem Value="@((int?)RezultatObrade.Osnovan)" Text="OSNOVAN"/>
+                            </MudToggleGroup>
+                        </MudStack>
+
+                        <!-- 4. red: Napomena -->
+                        <TextAreaInput T="string" Label="Napomena obrade"
+                                       @bind-Value="_socijalniNatjecajModel.NapomenaObrade"
+                                       Class="mb-4"/>
+
+                        <!-- Gumbi -->
+                        <FormButtons Submit="Submit"
+                                     Cancel="Cancel"/>
+
+                    </MudForm>
+
+                </MudCardContent>
+            </MudCard>
+        }
+    </MudContainer>
+</Container>

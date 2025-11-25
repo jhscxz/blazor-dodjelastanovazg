@@ -1,0 +1,96 @@
+@using MudBlazor
+@using DodjelaStanovaZG.Components.UI
+@using DodjelaStanovaZG.Components.UI.MudInputs
+
+<MudCard Outlined="true">
+    <MudCardContent>
+        <MudTabs
+            Rounded="true"
+            PanelClass="pa-6"
+            Elevation="1"
+            Centered="false"
+            ActiveTabClass="border-solid border-1 mud-border-primary">
+
+            <!-- TAB 1 -->
+            <MudTabPanel Text="Sastav kućanstva">
+                <MudCard Outlined="true" Class="pa-2">
+                    <MudStack Spacing="1">
+                        <TextInput T="string"
+                                   Label="Broj uzdržavanih punoljetnih na redovnom školovanju"
+                                   Value="@BrojUzdrzavanihPunoljetnih.ToString()"
+                                   ReadOnly="true"/>
+                    </MudStack>
+                </MudCard>
+            </MudTabPanel>
+
+            <!-- TAB 2 -->
+            <MudTabPanel Text="Socijalno-zdravstveni status">
+                <MudCard Outlined="true" Class="pa-4">
+                    <MudStack Spacing="1">
+                        <TextInput T="string"
+                                   Label="Primatelj zajamčene minimalne naknade"
+                                   Value="@(PrimateljZMN ? "Da" : "Ne")"
+                                   ReadOnly="true"/>
+
+                        <TextInput T="string"
+                                   Label="Status roditelja njegovatelja / njegovatelja"
+                                   Value="@(StatusNjegovatelja ? "Da" : "Ne")"
+                                   ReadOnly="true"/>
+
+                        <TextInput T="string"
+                                   Label="Korisnik doplatka za pomoć i njegu / inkluzivnog dodatka III. razine"
+                                   Value="@(KorisnikDoplatka ? "Da" : "Ne")"
+                                   ReadOnly="true"/>
+
+                        <TextInput T="string"
+                                   Label="Odrasli korisnici osobne invalidnine / dodatka I./II. razine"
+                                   Value="@BrojOdraslihInvalidnina.ToString()"
+                                   ReadOnly="true"/>
+
+                        <TextInput T="string"
+                                   Label="Maloljetni korisnici osobne invalidnine / dodatka I./II. razine"
+                                   Value="@BrojMaloljetnihInvalidnina.ToString()"
+                                   ReadOnly="true"/>
+                    </MudStack>
+                </MudCard>
+            </MudTabPanel>
+
+            <!-- TAB 3 -->
+            <MudTabPanel Text="Posebne okolnosti">
+                <MudCard Outlined="true" Class="pa-4">
+                    <MudStack Spacing="1">
+                        <TextInput T="string"
+                                   Label="Žrtva obiteljskog nasilja (pravomoćna presuda)"
+                                   Value="@(ZrtvaObiteljskogNasilja ? "Da" : "Ne")"
+                                   ReadOnly="true"/>
+
+                        <TextInput T="string"
+                                   Label="Broj članova (18–29) koji su bili u alternativnoj skrbi"
+                                   Value="@BrojAlternativnaSkrb1829.ToString()"
+                                   ReadOnly="true"/>
+
+                        <TextInput T="string"
+                                   Label="Broj mjeseci obrane suvereniteta RH (maks. 40)"
+                                   Value="@BrojMjeseciObrana.ToString()"
+                                   ReadOnly="true"/>
+
+                        <TextInput T="string"
+                                   Label="Broj članova koji su žrtve seksualnog nasilja u DR"
+                                   Value="@BrojZrtavaSeksualnogNasilja.ToString()"
+                                   ReadOnly="true"/>
+
+                        <TextInput T="string"
+                                   Label="Broj članova civilnih stradalnika iz DR"
+                                   Value="@BrojCivilnihStradalnika.ToString()"
+                                   ReadOnly="true"/>
+                    </MudStack>
+                </MudCard>
+            </MudTabPanel>
+
+        </MudTabs>
+    </MudCardContent>
+
+    <MudCardActions Class="pa-4 d-flex justify-end">
+        <EditButton Href="@($"/socijalni/bodovi/edit/{Id}")"/>
+    </MudCardActions>
+</MudCard>
