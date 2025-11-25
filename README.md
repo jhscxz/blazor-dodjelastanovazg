@@ -1,5 +1,7 @@
 # Dodjela stanova po socioekonomskom statusu
 
+<img src="./grb-zg-og.png" align="left" alt="Grad Zagreb" width="60">
+
 Aplikacija za provedbu natječaja za dodjelu gradskih stanova prema socioekonomskom statusu. Razvijena je kao dio diplomskog rada i digitalizira unos zahtjeva, automatsko bodovanje prema kriterijima, pregled rezultata i izvoz podataka.
 
 ## Ključne mogućnosti
